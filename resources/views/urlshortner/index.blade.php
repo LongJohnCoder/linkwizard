@@ -103,26 +103,195 @@
 		
 		<div class="overlay overlay-boxify">
 			<nav>
-			<p><a>For More Products From Us, Like:</a></p>
 				<ul>
-					<li><a><i class="fa fa-code"></i>Websites</a></li>
-					<li><a><i class="fa fa-mobile"></i>Mobile Application</a></li>
+					<li><a href="#signup" data-toggle="modal" id="loginButton" data-target=".bs-modal-sm"><i class="fa fa-user"></i>Login</a></li>
+					<li><a id="registerButton"><i class="fa fa-sign-in"></i>Register</a></li>
 				</ul>
 				<ul>
-					<li><a><i class="fa fa-cloud"></i>API</a></li>
 					<li><a href="https://tier5.us/"><i class="fa fa-desktop"></i>Visit Our Website</a></li>
 					
 				</ul>
 			</nav>
 		</div>
+
+
+		<!-- Modal -->
+<div class="modal fade bs-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        <br>
+        <div class="bs-example bs-example-tabs">
+            <ul id="myTab" class="nav nav-tabs">
+              <li class="active"><a href="#signin" id="signInTab" style="color: #284666;" data-toggle="tab">Sign In</a></li>
+              <li class=""><a href="#signup" id="signUpTab" style="color: #284666;" data-toggle="tab">Register</a></li>
+              <li class=""><a href="#why" style="color: #284666;" data-toggle="tab">Why?</a></li>
+            </ul>
+        </div>
+      <div class="modal-body">
+        <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in" id="why">
+        <p>We need this information so that you can receive access to the site and its content. Rest assured your information will not be sold, traded, or given to anyone.</p>
+        <p></p><br> Please contact <a mailto:href="JoeSixPack@Sixpacksrus.com"></a>JoeSixPack@Sixpacksrus.com</a> for any other inquiries.</p>
+        </div>
+        <div class="tab-pane fade active in" id="signin">
+            <form class="form-horizontal" action="{{route('LoginAttempt')}}" method="post">
+            <fieldset>
+            <!-- Sign In Form -->
+            <!-- Text input-->
+            <div class="control-group">
+              <label class="control-label" for="userid">Email:</label>
+              <div class="controls">
+                <input required="" id="userid" name="email" type="email" class="form-control" placeholder="JoeSixpack" class="input-medium" required="">
+              </div>
+            </div>
+
+            <!-- Password input-->
+            <div class="control-group">
+              <label class="control-label" for="passwordinput">Password:</label>
+              <div class="controls">
+                <input required="" id="passwordinput" name="password" class="form-control" type="password" placeholder="********" class="input-medium">
+              </div>
+            </div>
+
+            <!-- Multiple Checkboxes (inline) -->
+            <div class="control-group">
+              <label class="control-label" for="rememberme"></label>
+              <div class="controls">
+                <label class="checkbox inline" for="rememberme-0">
+                  <input type="checkbox" name="rememberme" id="rememberme-0" value="Remember me">
+                  Remember me
+                </label>
+              </div>
+            </div>
+
+            <!-- Button -->
+            <div class="control-group">
+              <label class="control-label" for="signin"></label>
+              <div class="controls">
+              	<input type="hidden" name="_token" value="{{Session::token()}}">
+                <button id="signin" type="submit" style="background:#284666; color: #fff;" name="signin" class="btn btn-success">Sign In</button>
+              </div>
+            </div>
+            </fieldset>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="signup">
+            <form class="form-horizontal" action="{{route('postRegister')}}" method="post">
+            <fieldset>
+            <!-- Sign Up Form -->
+            <!-- Text input-->
+            <div class="control-group">
+              <label class="control-label" for="Email">Email:</label>
+              <div class="controls">
+                <input id="Email" name="Email" class="form-control" type="email" placeholder="JoeSixpack@sixpacksrus.com" class="input-large" required="">
+              </div>
+            </div>
+            
+            <!-- Password input-->
+            <div class="control-group">
+              <label class="control-label" for="password">Password:</label>
+              <div class="controls">
+                <input id="password" name="password" class="form-control" type="password" placeholder="********" class="input-large" required="">
+              </div>
+            </div>
+            
+            <!-- Text input-->
+            <div class="control-group">
+              <label class="control-label" for="reenterpassword">Re-Enter Password:</label>
+              <div class="controls">
+                <input id="reenterpassword" class="form-control" name="reenterpassword" type="password" placeholder="********" class="input-large" required="">
+              </div>
+            </div>
+            
+            <!-- Multiple Radios (inline) -->
+            <br>
+            <div class="control-group">
+              <label class="control-label" for="humancheck">Humanity Check:</label>
+              <div class="controls">
+                <label class="radio inline" for="humancheck-0">
+                  <input type="radio" name="humancheck" id="humancheck" value="robot" checked="checked" required="">I'm a Robot</label>
+                <label class="radio inline" for="humancheck-1">
+                  <input type="radio" name="humancheck" id="humancheck" value="human" required="">I'm Human</label>
+              </div>
+            </div>
+            
+            <!-- Button -->
+            <div class="control-group">
+              <label class="control-label" for="confirmsignup"></label>
+              <div class="controls">
+                <input type="hidden" name="_token" value="{{Session::token()}}">
+                <button id="confirmsignup" style="background:#284666; color: #fff;" type="submit" class="btn btn-success">Sign Up</button>
+              </div>
+            </div>
+            </fieldset>
+            </form>
+      </div>
+    </div>
+      </div>
+      <div class="modal-footer">
+      <center>
+        <button type="button" style="background:#284666; color: #fff;" class="btn btn-default" data-dismiss="modal">Close</button>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src="{{ URL::to('/').'/public/resources/js/min/toucheffects-min.js'}}"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 		<script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
+			    
+			   @if(Session::has('fail'))
+				   <script type="text/javascript">
+				   	$(document).ready(function(){
+				   		swal({
+							  title: "Error",
+							  text: "{{Session::get('fail')}}",
+							  type: "error",
+							  html: true
+							});
+					});	
+				   </script>
+                 
+               @else
+               @endif
+               @if(Session::has('success'))
+	               <script type="text/javascript">
+	               	$(document).ready(function(){
+	               		swal({
+							  title: "Success",
+							  text: "{{Session::get('success')}}",
+							  type: "success",
+							  html: true
+							});	
+	               	});
+	               </script>
+                 <!-- <div class="alert alert-success"><strong>Success!</strong> {{Session::get('success')}}
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                 </div> -->
+               @else
+               @endif
+
 
 			<script type="text/javascript">
 				$(document).ready(function(){
+
+
+
+					$('#loginButton').click(function(){
+						$('.nav-toggle').click();
+						$('#signInTab').click();
+					});
+					$('#registerButton').click(function(){
+						$('.nav-toggle').click();
+						$('#myModal').modal('show');
+						$('#signUpTab').click();
+					});
+
 
 					var options = {
 					    message:"Please wait a while"
@@ -132,6 +301,7 @@
 
 					$('#swalbtn').click(function(){
 							
+
 							  var url = $('#givenUrl').val();
 							  var validUrl = ValidURL(url);
 							  if(url)

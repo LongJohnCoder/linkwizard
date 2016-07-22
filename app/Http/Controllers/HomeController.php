@@ -5,12 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\User;
+use Illuminate\Support\Facades\Auth;
+use Event;
+use App\Events\MailEvent;
 
 class HomeController extends Controller
 {
-    public function test(Request $req)
+    public function test()
     {
-    	echo $req->url;
+    	/*$a = 2;
+    	$b = 3;
+    	//dd(1);
+    	$res = Event::fire(new MailEvent($a, $b));
+    	dd($res);*/
+    	header("Location: http://google.com");
+		die();
+
     }
 
     public function postShortUrl(Request $req)
@@ -57,4 +68,53 @@ class HomeController extends Controller
 	        return response()->json($json);
 	    }  
     }
+
+    public function LoginAttempt(Request $req)
+    {
+    	//dd($req);
+    	$email = $req->email;
+    	$password = $req->password;
+    	$remember_me = isset($request->rememberme)? true : false;
+
+
+    	if (Auth::attempt(['email' => $email, 'password' => $password], $remember_me)) 
+    	{
+    		echo "login successfull";
+    	}
+    	
+    }
+
+    public function postRegister(Request $req)
+    {
+    	//dd($req);
+    	if(User::where('email',$req->Email)->first())
+    	{
+    		return redirect()->route('getIndex')->with('fail', 'Email alread exist try with different email!');
+    	}
+    	else
+    	{
+    		$user = new User();
+
+	    	$user->email = $req->Email;
+	    	$user->password = bcrypt($req->password);
+
+	    	if($user->save())
+	    	{
+	    		return redirect()->route('getIndex')->with('success', 'You have successfully registered please login');
+	    	}
+	    	else
+	    	{
+	    		return redirect()->route('getIndex')->with('fail', 'Cannot register now please try after sometime');
+	    	}
+    	}
+    	
+
+    }
+
+    public function getDashboard()
+    {
+    	return view('urlshortner.dashboard');
+    }
+
+
 }

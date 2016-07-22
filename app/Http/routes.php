@@ -13,8 +13,11 @@
 
 Route::get('/', function () {
     return view('urlshortner.index');
-});
+})->name('getIndex');
+Route::get('/dashboard',['uses' => 'HomeController@getDashboard', 'as' => 'getDashboard']);
 
 Route::post('/ShortUrl',['uses' => 'HomeController@postShortUrl', 'as' => 'postShortUrl']);
 
-Route::post('/test', ['uses' => 'HomeController@test', 'as' => 'testUrl']);
+Route::get('/test', ['uses' => 'HomeController@test', 'as' => 'testUrl']);
+Route::post('/LoginAttempt',['uses' => 'HomeController@LoginAttempt','as' => 'LoginAttempt']);
+Route::post('/postRegister',['uses' => 'HomeController@postRegister', 'as' => 'postRegister']);
