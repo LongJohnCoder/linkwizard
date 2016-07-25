@@ -1,0 +1,5 @@
+V2:
+    1. Fixed Url Shortner small bugs, added some features
+    2. Added Login/Logout/Register functionality
+    3. Made Dashboard view
+    4. Added graphs with dynamic data such as ChartJS, Google Chart API (eoChart and pieChart)
