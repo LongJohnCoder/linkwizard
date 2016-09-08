@@ -2,7 +2,7 @@
 /*  bhoechie tab */
 div.bhoechie-tab-container{
   z-index: 10;
-  background-color: rgba(255,255,255, 1);
+  background-color: rgba(255,255,255,0.3);
   padding: 0 !important;
   border:1px solid #ddd;
   margin-top: 20px;
@@ -10,27 +10,25 @@ div.bhoechie-tab-container{
   box-shadow: 5px 5px 15px 2px #000;
   -moz-box-shadow: 5px 5px 15px 2px #000;
   overflow-x: hidden;
-    height: 680px;
+    height: 700px;
     overflow-y: scroll;
 }
 div.bhoechie-tab-menu{
   padding-right: 0;
   padding-left: 0;
   padding-bottom: 0;
-  background-color: #C7CED1;
 }
 div.bhoechie-tab-menu div.list-group{
     margin-bottom: 0;
     overflow-x: hidden;
-    height: 600px;
-    background-color: #C7CED1;
+    height: 700px;
     overflow-y: scroll;
 }
 div.bhoechie-tab-menu div.list-group>a{
     margin-bottom: 0;
     padding: 10px;
     font-size: 14px;
-    background-color: #C7CED1;
+    background-color: rgba(255,255,255,0.5);
     color: #000;
 }
 div.bhoechie-tab-menu div.list-group>a:first-child{
@@ -44,14 +42,14 @@ div.bhoechie-tab-menu div.list-group>a:last-child{
 div.bhoechie-tab-menu div.list-group>a.active{
   border: 1px solid #ddd;
   color: #ffffff;
-  background: #f9f9f9;
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#213a54+0,213a54+41,000000+100 */
+background: #213a54; /* Old browsers */
+background: -moz-linear-gradient(top,  #213a54 0%, #213a54 41%, #000000 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top,  #213a54 0%,#213a54 41%,#000000 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom,  #213a54 0%,#213a54 41%,#000000 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#213a54', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
 }
 
-.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
-    text-shadow: none;
-    background: #F7F0E4;
-    border:1px solid #000;
-}
 
 div.bhoechie-tab-content{
   padding: 10px 0 0;
@@ -62,38 +60,31 @@ div.bhoechie-tab div.bhoechie-tab-content:not(.active) {
 }
 
 .list-group-item span.date{
-  text-transform: uppercase;
+  text-transform: capitalize;
   display: block; 
-  font-size: 10px;
-  color: #34344c;
+  font-size: 13px;
 }
 
 .list-group-item span.title{
-  font-size: 12px;
-  margin-top: 0px;
-  color: #34344c;
-}
-
-.list-group-item.active span.title{
-  font-size: 16px;
-  color: #34344c;
+  text-transform: uppercase;
+  display: block;
+  color: #BBDBFF;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 1px #333;
 }
 
 .list-group-item span.link{
-  color: #EE6123;
   font-size: 13px;
+  color: #fff;
+  text-shadow: 1px 1px 1px #000;
 }
 
 .list-group-item span.count{
 float: right;
-font-size: 10px;
-margin: 0px;
-color: #7e7f80;
 }
 
 .list-group-item.active span.count{
-font-size: 12px;
-color: #34344c;
+text-shadow: 1px 1px 1px #000;
 }
 
 .list-group-item .count i{
@@ -114,17 +105,15 @@ color: #34344c;
     -webkit-box-shadow: inset 0 0 6px #000; 
 }
 
-.date {
+.date{
   text-transform: uppercase;
   display: block; 
-  font-size: 12px;
-  color: #34344c;
+  font-size: 20px;
 }
 
 .bhoechie-tab-content h1{
-  font-size: 20px;
-  margin-top: 0px;
-  color: #34344c;
+  text-transform: uppercase;
+  font-size: 14px;
 }
 
 .bhoechie-tab-content h2{
@@ -134,13 +123,15 @@ color: #34344c;
 
 .bhoechie-tab-content a{
     display: block;
-    color: #7e7f80;
-    font-size: 12px;
-    margin-top: -5px;
+    color: #ddd;
+    font-size: 20px;
+    text-shadow: 1px 1px 1px #000;
+    margin-bottom: 20px;
 }
 
 .bhoechie-tab-content a:hover{
-    text-decoration: underline;
+    text-shadow: none;
+    text-decoration: none;
 }
 
 .bhoechie-tab-content hr{
@@ -149,13 +140,14 @@ color: #34344c;
 }
 
 .bhoechie-tab-content a.link{
-    color: #EE6123;
-    font-size: 16px;
-    margin: 25px 0 30px;
+    color: #BBDBFF;
+    font-size: 22px;
+    text-shadow: 2px 2px 1px #333;
+    font-weight: bold;
 }
 
 .bhoechie-tab-content a.link:hover{
-  text-decoration: underline;
+  color: #fff;
 }
 
 .buttons a{
@@ -174,9 +166,9 @@ color: #34344c;
 }
 
 p.count{
-font-size: 10px;
-margin: 0px;
-color: #7e7f80; 
+text-shadow: 1px 1px 1px #000;
+font-size: 14px;
+margin: 0;
 }
 
 p.count i{

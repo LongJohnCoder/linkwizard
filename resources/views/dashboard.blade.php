@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" href="https://tier5.us/images/favicon.ico">
-        <title>Tier5 | URL Shortner | User Dashboard</title>
+        <title>Tier5 | URL Shortner</title>
         <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
         <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
         <meta name="author" content="Tier5 LLC" />
@@ -25,6 +25,7 @@
         <script src="https://code.highcharts.com/highcharts-3d.js"></script>
         <script src="https://code.highcharts.com/modules/exporting.js"></script>
         <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
         <!-- Facebook and Twitter integration -->
         <meta property="og:title" content=""/>
         <meta property="og:image" content=""/>
@@ -66,6 +67,9 @@
                         <div class="menu-icon">
                             <button id="tr5link" class="btn btn-danger">CREATE TR5LINK</button>
                         </div>
+                        {{-- <div class="menu-icon">
+                            <button id="tr5link" class="btn btn-info">CREATE CUSTOM LINK</button>
+                        </div>
                         <div class="search-part"> 
                             <form action="" class="search-form">
                                 <div class="form-group has-feedback">
@@ -73,7 +77,7 @@
                                     <span class="glyphicon glyphicon-search form-control-feedback"></span>
                                 </div>
                             </form>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -96,12 +100,33 @@
                 <div class="overlay-content">
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
+                            <label for="givenUrl">Paste An Actual URL Here</label>
                             <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
                             <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">Shorten Url</button>
                         </div>
                     </div>
                 </div>
             </div>
+            {{-- <div id="myNav2" class="sharebar">
+                <span id="cross2" class="closebtn"><i class="fa fa-times"></i></span>
+                <div class="overlay-content">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <a href="https://www.facebook.com/dialog/feed?app_id=1637007456611127&display=popup&amp;&link=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F&redirect_uri=http://urlshortner.dev/user/dashboard"><button id="fb-share" type="button" class="btn btn-primary btn-sm">Facebook</button></a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <button id="tw-share" type="button" class="btn btn-primary btn-sm">Twitter</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <button id="gplus-share" type="button" class="btn btn-primary btn-sm">Google +</button>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
         </header>
         <section class="hero">
             <section class="main-content">
@@ -116,39 +141,55 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bhoechie-tab-container">
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 bhoechie-tab-menu">
                                 <div class="list-group">
                                     @foreach ($urls as $url)
                                         <a href="#" class="list-group-item active">
-                                            <span class="date">{{ $url->created_at }}</span>
+                                            <span id="tab-date" class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</span>
                                             <span class="title">{{ $url->title }}</span>
-                                            <span class="link">{{ $url->actual_url }}</span>
+                                            <span class="link">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</span>
                                             <span class="count">{{ $url->count }}</span>
                                         </a>
                                     @endforeach
                                 </div>
                             </div>
-                            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
+                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 bhoechie-tab">
                                 @foreach ($urls as $key => $url)
                                     <div class="bhoechie-tab-content {{ $key == 0 ? 'active' : null }}">
                                         <p class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</p>
-                                        <h1 class="title">{{ $url->title }}</h1>
-                                        <h5><a href="http://{{ $url->actual_url }}">{{ $url->actual_url }}</a></h5>
-                                        <h3><a href="{{ route('getIndex') }}/{{ $url->shorten_suffix }}" class="link">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</a></h3>
-                                        <div class="buttons">
-                                            <a href="#">copy</a>
-                                            <a href="#">share</a>
-                                            <a href="#">edit</a>
+                                        <h1>{{ $url->title }}</h1>
+                                        <h5><a href="http://{{ $url->actual_url }}" target="_blank">{{ $url->actual_url }}</a></h5>
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                <h3><a href="{{ route('getIndex') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</a></h3>
+                                            </div>
+                                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                                <div class="buttons">
+                                                    <button id="clipboard{{ $key }}" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy"  data-clipboard-target="#copylink{{ $key }}">
+                                                        <i class='fa fa-clipboard'></i> copy
+                                                    </button>
+                                                    {{-- <button id="share-btn" class="btn btn-default btn-sm btngrpthree">
+                                                        <i class='fa fa-share'></i> share
+                                                    </button>
+                                                    <button id="share-btn" class="btn btn-default btn-sm btngrpthree">
+                                                        <i class='fa fa-pencil'></i> edit
+                                                    </button> --}}
+                                                </div>
+                                                <script>
+                                                    $('#clipboard{{ $key }}').on('click', function () {
+                                                        new Clipboard('#clipboard{{ $key }}');
+                                                    });
+                                                </script>
+                                            </div>
                                         </div>
-                                        <hr>
-                                        <p class="count">{{ $url->count }} <i class="fa fa-signal"></i></p>
-                                        <p class="count">TOTAL COUNTS</p>
+                                        <hr style="background: #000">
+                                        <p class="count"><i class="glyphicon glyphicon-stats"></i> {{ $url->count }} Total Counts</p>
                                         <div class="row" style="background-color: #ffffff">
-                                            <div class="col-sm-6">
-                                                <div id="chart_div{{ $key }}" style="width: 550px; height: 380px;"></div>
+                                            <div class="col-sm-4">
+                                                <div id="chart_div{{ $key }}" style="width: 350px; height: 250px;"></div>
                                             </div>
                                             <div class="col-sm-6">
-                                                <div id="regions_div{{ $key }}" style="width: 550px; height: 380px;"></div>
+                                                <div id="regions_div{{ $key }}" style="width: 450px; height: 250px;"></div>
                                             </div>
                                         </div>
                                         <script type="text/javascript">
@@ -168,7 +209,7 @@
                                                         google.charts.setOnLoadCallback(function () {
                                                             var data = google.visualization.arrayToDataTable(response.location);
                                                             var options = {
-                                                              title: 'My Daily Activities',
+                                                              title: 'Number of hits per country',
                                                               pieHole: 0.4,
                                                             };
                                                             var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('chart_div{{ $key }}'));
@@ -188,20 +229,32 @@
                 </div>
             </section>
         </section>
-       <script src="{{ URL::to('/').'/public/resources/js/jquery.sidebar.min.js'}}"></script>
+        <script src="{{ URL::to('/').'/public/resources/js/jquery.sidebar.min.js'}}"></script>
         <script>
             $(document).ready(function () {
                 $('#hamburger').on('click', function () {
-                    $('.sidebar.right').toggleClass('open', true);
+                    $('.sidebar.right').addClass('open', true);
+                    $('.sidebar.right').removeClass('close', true);
                 });
                 $('#cross').on('click', function () {
                     $('.sidebar.right').toggleClass('close', true);
+                    $('.sidebar.right').removeClass('open', true);
                 });
                 $('#tr5link').on('click', function () {
-                    $('.tr5link').toggleClass('open', true);
+                    $('.tr5link').addClass('open', true);
+                    $('.tr5link').removeClass('close', true);
                 });
                 $('#cross1').on('click', function () {
-                    $('.tr5link').toggleClass('close', true);
+                    $('.tr5link').addClass('close', true);
+                    $('.tr5link').removeClass('open', true);
+                });
+                $('#share-btn').on('click', function () {
+                    $('.sharebar').addClass('open', true);
+                    $('.sharebar').removeClass('close', true);
+                });
+                $('#cross2').on('click', function () {
+                    $('.sharebar').addClass('close', true);
+                    $('.sharebar').removeClass('open', true);
                 });
             });
         </script>
@@ -233,18 +286,19 @@
                                     if(response.status=="success") {
                                         console.log(response);
                                         var shortenUrl = response.url;
-                                        var UrlWithLink = "<a href="+shortenUrl+">"+shortenUrl+"</a>";
+                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink'><i class='fa fa-clipboard'></i> Copy</button>";
                                         swal({
                                             title: "Shorten Url:",
-                                            text: UrlWithLink,
+                                            text: displayHtml,
                                             type: "success",
                                             html: true
-                                        }); 
+                                        });
+                                        new Clipboard('#clipboardswal');
                                         HoldOn.close();
                                     } else {
                                         swal({
                                             title: "",
-                                            text: "Response Error",
+                                            text: "Please paste an actual URL",
                                             type: "warning",
                                             html: true
                                         }); 
@@ -253,6 +307,16 @@
                                 }, error: function(response) {
                                     console.log(response);
                                     HoldOn.close();
+                                }, statusCode: {
+                                    500: function() {
+                                        swal({
+                                            title: "",
+                                            text: "Access Forbidden, Please paste a valid URL!",
+                                            type: "error",
+                                            html: true
+                                        }); 
+                                        HoldOn.close();
+                                    }
                                 }
                             });
                         } else {
@@ -299,6 +363,7 @@
         });
         </script>
         <script>
+            var ctx = document.getElementById("myChart");
             dataset = {
                     labels: [
                         @foreach ($urls as $url)
@@ -306,7 +371,7 @@
                         @endforeach
                     ],
                     datasets: [{
-                        label: "No of clicks",
+                        label: "Number of counts per shortend url",
                         data: [
                             @foreach ($urls as $url)
                                 {{ $url->count }},
@@ -314,7 +379,7 @@
                         ],
                         backgroundColor: [
                         @foreach ($urls as $key => $url)
-                            'rgba({{ 255-($key*25) }}, {{ 127-($key*33) }}, {{ 63+($key++*22) }}, 0.2)',
+                            'rgba({{ 255-($key*25) }}, {{ 127-($key*33) }}, {{ 63+($key++*22) }}, 1)',
                         @endforeach
                     ],
                     borderColor: [
@@ -326,7 +391,9 @@
                     }]
             };
             Chart.defaults.global.defaultFontColor =  '#fff';
-            var myChart = new Chart(document.getElementById("myChart"), {
+            Chart.defaults.bar.hover.mode = 'label';
+            Chart.defaults.global.gridLinesColor = 'rgba(255, 255, 255, 1)';
+            var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: dataset,
                 options: {

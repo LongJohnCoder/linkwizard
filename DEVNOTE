@@ -3,3 +3,9 @@ V2:
     2. Added Login/Logout/Register functionality
     3. Made Dashboard view
     4. Added graphs with dynamic data such as ChartJS, Google Chart API (eoChart and pieChart)
+V2.1:
+    1. Added copy to clipboard
+    2. Modified dashboard UI
+    3. Fix fetch url info and added status on not working
+    4. Validated login and register form
+    5. Integrated reCaptcha plugin

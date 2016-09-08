@@ -11,8 +11,10 @@ use App\User;
 use Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
+use Exception;
 
 class HomeController extends Controller
 {
@@ -63,17 +65,22 @@ class HomeController extends Controller
      */
     public function postHitCountry(Request $request)
     {
-        $url = Url::find($request->url_id);
         $location[0][0] = 'Country';
         $location[0][1] = 'Clicks';
 
-        foreach ($url->countries as $key => $country) {
-            $count = CountryUrl::where('url_id', $url->id)
-                                ->where('country_id', $country->id)
-                                ->count();
+        $countries = DB::table('country_url')
+                ->join('countries', 'countries.id', '=', 'country_url.country_id')
+                ->selectRaw('countries.code AS `code`, count(country_url.country_id) AS `count`')
+                ->where('country_url.url_id', $request->url_id)
+                ->groupBy('country_url.country_id')
+                ->orderBy('count', 'DESC')
+                ->get();
+
+        foreach ($countries as $key => $country) {
             $location[++$key][0] = $country->code;
-            $location[$key][1] = $count;
+            $location[$key][1] = (int)$country->count;
         }
+
         return response()->json([
             'status' => 'success',
             'location' => $location
@@ -140,12 +147,13 @@ class HomeController extends Controller
      */
     private function getPageTitle($url) {
         $string = file_get_contents($url);
-        
         if(strlen($string) > 0) {
-            $string = trim(preg_replace('/\s+/', ' ', $string));
-            preg_match("/\<title\>(.*)\<\/title\>/i", $string, $title);
+            if (preg_match("/\<title\>(.*)\<\/title\>/i", (string)$string, $title)) {
+                return $title[1];
+            } else {
+                return null;
+            }
         }
-        return $title[1];
     }
 
     /**
@@ -177,7 +185,12 @@ class HomeController extends Controller
      */
     public function postLogin(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember_me)) {
+        $this->validate($request, [
+            'useremail' => 'required|email',
+            'passwordlogin' => 'required'
+        ]);
+
+        if (Auth::attempt(['email' => $request->useremail, 'password' => $request->passwordlogin], $request->remember)) {
             return redirect()->action('HomeController@getDashboard')
                     ->with('success', 'You are now logged in!');
         } else {
@@ -194,22 +207,26 @@ class HomeController extends Controller
      */
     public function postRegister(Request $request)
     {
-        if(User::where('email', $request->email)->first()) {
-            return redirect()->route('getIndex')->with('error', 'Email already exist, try with different email!');
-        } else {
-            $user = new User();
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->password = bcrypt($request->password);
-            $user->remember_token = $request->_token;
+        $this->validate($request, [
+            'name' => 'required|string|min:2',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required|min:8',
+            'g-recaptcha-response' => 'recaptcha'
+        ]);
+        
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->remember_token = $request->_token;
 
-            if($user->save() && Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-                return redirect()->action('HomeController@getDashboard')
-                        ->with('success', 'You have registered successfully!');
-            } else {
-                return redirect()->route('getIndex')
-                        ->with('error', 'Cannot register now, please try after sometime!');
-            }
+        if($user->save() && Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return redirect()->action('HomeController@getDashboard')
+                    ->with('success', 'You have registered successfully!');
+        } else {
+            return redirect()->route('getIndex')
+                    ->with('error', 'Cannot register now, please try after sometime!');
         }
     }
 

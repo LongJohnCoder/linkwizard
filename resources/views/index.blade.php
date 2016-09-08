@@ -99,12 +99,12 @@
                         </li>
                     @else
                     <li>
-                        <a href="#signin" data-toggle="modal" id="loginButton" data-target=".bs-modal-sm">
+                        <a href="#signin" data-toggle="modal" id="loginButton" data-target=".bs-modal-md">
                             <i class="fa fa-user"></i>Login
                         </a>
                     </li>
                     <li>
-                        <a href="#signup" data-toggle="modal" id="registerButton" data-target=".bs-modal-sm">
+                        <a href="#signup" data-toggle="modal" id="registerButton" data-target=".bs-modal-md">
                             <i class="fa fa-sign-in"></i>Register
                         </a>
                     </li>
@@ -118,8 +118,8 @@
             </nav>
         </div>
         <!-- Modal -->
-        <div aria-hidden="true" aria-labelledby="mySmallModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade bs-modal-sm in">
-            <div class="modal-dialog modal-sm">
+        <div aria-hidden="true" aria-labelledby="mySmallModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade bs-modal-md in">
+            <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <br />
                     <div class="bs-example bs-example-tabs">
@@ -132,7 +132,7 @@
                     <div class="modal-body">
                         <div class="tab-content" id="myTabContent">
                             <div id="why" class="tab-pane fade">
-                                <p>We need this information so that you can receive access to the site and its content. Rest assured your information will not be sold, traded, or given to anyone.</p>
+                                <p>By registering to our site you can track your list of shortend urls. Also you could monitor no of clicks, hits, and statistics of each and every single urls. Rest assured your information will not be sold, traded, or given to anyone.</p>
                                 <p> Please contact <a mailto:href="hello@tier5.us"></a>hello@tier5.us for any other inquiries.</p>
                             </div>
                             <div id="signin" class="tab-pane fade active in">
@@ -141,31 +141,35 @@
                                         <!-- Sign In Form -->
                                         <!-- Text input-->
                                         <div class="control-group">
-                                            <label for="userid" class="control-label">Email:</label>
+                                            <label for="useremail" class="control-label">Email:</label>
                                             <div class="controls">
-                                                <input type="email" placeholder="johndoe@company.io" class="form-control" name="email" id="userid" required="">
+                                                <input type="email" placeholder="johndoe@company.io" class="form-control" name="useremail" id="useremail" >
                                             </div>
+                                            @if($errors->any())
+                                                <div style="color:red">{{ $errors->first('useremail') }}</div>
+                                            @endif
                                         </div>
                                         <!-- Password input-->
                                         <div class="control-group">
-                                            <label for="passwordinput" class="control-label">Password:</label>
+                                            <label for="passwordlogin" class="control-label">Password:</label>
                                             <div class="controls">
-                                                <input type="password" placeholder="itsasecret" class="form-control" name="password" id="passwordinput" required="">
+                                                <input type="password" placeholder="itsasecret" class="form-control" name="passwordlogin" id="passwordlogin" >
                                             </div>
+                                            @if($errors->any())
+                                                <div style="color:red">{{ $errors->first('passwordlogin') }}</div>
+                                            @endif
                                         </div>
                                         <!-- Multiple Checkboxes (inline) -->
                                         <div class="control-group">
-                                            <label for="rememberme" class="control-label"></label>
                                             <div class="controls">
-                                                <label for="remember_me_login" class="checkbox inline">
-                                                    <input type="checkbox" value="true" id="remember_me_login" name="remember_me">
+                                                <label for="remember_me" class="checkbox inline">
+                                                    <input type="checkbox" value="true" id="remember_me" name="remember">
                                                     Remember me
                                                 </label>
                                             </div>
                                         </div>
                                         <!-- Button -->
                                         <div class="control-group">
-                                            <label for="signin" class="control-label"></label>
                                             <div class="controls">
                                                 <input type="hidden" value="{{ csrf_token() }}" name="_token">
                                                 <button class="btn btn-primary" name="signin" style="background:#284666; color: #fff;" type="submit" id="signin">Sign In</button>
@@ -182,48 +186,54 @@
                                         <div class="control-group">
                                             <label for="Name" class="control-label">Name:</label>
                                             <div class="controls">
-                                                <input type="text" required="" placeholder="John Doe" class="form-control" name="name" id="Name">
+                                                <input type="text"  placeholder="John Doe" class="form-control" name="name" id="Name">
                                             </div>
+                                            @if($errors->any())
+                                                <div style="color:red">{{ $errors->first('name') }}</div>
+                                            @endif
                                         </div>
                                         <!-- Text input-->
                                         <div class="control-group">
                                             <label for="Email" class="control-label">Email:</label>
                                             <div class="controls">
-                                                <input type="email" required="" placeholder="johndoe@company.io" class="form-control" name="email" id="Email">
+                                                <input type="email"  placeholder="johndoe@company.io" class="form-control" name="email" id="Email">
                                             </div>
+                                            @if($errors->any())
+                                                <div style="color:red">{{ $errors->first('email') }}</div>
+                                            @endif
                                         </div>
                                         <!-- Password input-->
                                         <div class="control-group">
                                             <label for="password" class="control-label">Password:</label>
                                             <div class="controls">
-                                                <input type="password" required="" placeholder="itsasecret" class="form-control" name="password" id="password">
+                                                <input type="password"  placeholder="itsasecret" class="form-control" name="password" id="password">
                                             </div>
+                                            @if($errors->any())
+                                                <div style="color:red">{{ $errors->first('password') }}</div>
+                                            @endif
                                         </div>
                                         <!-- Text input-->
                                         <div class="control-group">
-                                            <label for="reenterpassword" class="control-label">Re-Enter Password:</label>
+                                            <label for="password_confirmation" class="control-label">Confirm Password:</label>
                                             <div class="controls">
-                                                <input type="password" required="" placeholder="itsasecret" name="reenterpassword" class="form-control" id="reenterpassword">
+                                                <input type="password"  placeholder="itsasecret" name="password_confirmation" class="form-control" id="password_confirmation">
                                             </div>
+                                            @if($errors->any())
+                                                <div style="color:red">{{ $errors->first('password_confirmation') }}</div>
+                                            @endif
                                         </div>
                                         <!-- Multiple Radios (inline) -->
-                                        <br>
                                         <div class="control-group">
                                             <label for="humancheck" class="control-label">Humanity Check:</label>
                                             <div class="controls">
-                                                <label for="humancheck-0" class="radio inline">
-                                                    <input type="radio" required="" checked="checked" value="robot" id="humancheck" name="humancheck">
-                                                    I'm a Robot
-                                                </label>
-                                                <label for="humancheck-1" class="radio inline">
-                                                    <input type="radio" required="" value="human" id="humancheck" name="humancheck">
-                                                    I'm Human
-                                                </label>
+                                                {!! Recaptcha::render() !!}
                                             </div>
+                                            @if($errors->any())
+                                                <div style="color:red">{{ $errors->first('g-recaptcha-response') }}</div>
+                                            @endif
                                         </div>
                                         <!-- Button -->
                                         <div class="control-group">
-                                            <label for="confirmsignup" class="control-label"></label>
                                             <div class="controls">
                                                 <input type="hidden" value="{{ csrf_token() }}" name="_token">
                                                 <button class="btn btn-primary" type="submit" style="background:#284666; color: #fff;" id="confirmsignup">Sign Up</button>
@@ -246,6 +256,19 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
         <script src="{{ URL::to('/').'/public/resources/js/min/toucheffects-min.js'}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+        @if($errors->any())
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    swal({
+                        title: "Error",
+                        text: "Please provide accurate information.",
+                        type: "error",
+                        html: true
+                    });
+                }); 
+            </script>
+        @endif
         @if(Session::has('error'))
             <script type="text/javascript">
                 $(document).ready(function(){
@@ -295,11 +318,11 @@
                 $('#registerButton').click(function(){
                     $('.nav-toggle').click();
                     $('#myModal').modal('show');
-                    $('#signInTab').click(function (e) {
+                    $('#signUpTab').click(function (e) {
                         e.preventDefault()
                         $(this).tab('show')
                     });
-                    $('#signUpTab').click(function (e) {
+                    $('#signInTab').click(function (e) {
                         e.preventDefault()
                         $(this).tab('show')
                     });
@@ -333,18 +356,19 @@
                                     if(response.status=="success") {
                                         console.log(response);
                                         var shortenUrl = response.url;
-                                        var UrlWithLink = "<a href="+shortenUrl+">"+shortenUrl+"</a>";
+                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink'><i class='fa fa-clipboard'></i> Copy</button>";
                                         swal({
                                             title: "Shorten Url:",
-                                            text: UrlWithLink,
+                                            text: displayHtml,
                                             type: "success",
                                             html: true
-                                        }); 
+                                        });
+                                        new Clipboard('#clipboardswal');
                                         HoldOn.close();
                                     } else {
                                         swal({
                                             title: "",
-                                            text: "Response Error",
+                                            text: "Please paste an actual URL",
                                             type: "warning",
                                             html: true
                                         }); 
@@ -353,6 +377,16 @@
                                 }, error: function(response) {
                                     console.log(response);
                                     HoldOn.close();
+                                }, statusCode: {
+                                    500: function() {
+                                        swal({
+                                            title: "",
+                                            text: "Access Forbidden, Please paste a valid URL!",
+                                            type: "error",
+                                            html: true
+                                        }); 
+                                        HoldOn.close();
+                                    }
                                 }
                             });
                         } else {
