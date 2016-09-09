@@ -11,7 +11,7 @@
         <meta name="author" content="Tier5 LLC" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
         <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
         <link rel="stylesheet" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
@@ -49,6 +49,49 @@
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <!-- open/close -->
+        <script>
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId   : '1637007456611127',
+                    xfbml   : true,
+                    version : 'v2.7'
+                });
+            };
+
+            (function(d, s, id){
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+        <script >
+            window.___gcfg = {
+                lang: 'en-US',
+                parsetags: 'onload'
+            };
+        </script>
+        <script src="https://apis.google.com/js/client:platform.js" async defer></script>
+        <script>
+            window.twttr = (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0],
+                t = window.twttr || {};
+                if (d.getElementById(id)) return t;
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "https://platform.twitter.com/widgets.js";
+                fjs.parentNode.insertBefore(js, fjs);
+
+                t._e = [];
+                t.ready = function(f) {
+                    t._e.push(f);
+                };
+
+                return t;
+            }(document, "script", "twitter-wjs"));
+        </script>
+        <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
         <header>
             <div class="container-fluid">
                 <div class="row">
@@ -69,7 +112,7 @@
                             <button id="tr5link" class="btn btn-danger">CREATE TR5LINK</button>
                         </div>
                         {{-- <div class="menu-icon">
-                            <button id="tr5link" class="btn btn-info">CREATE CUSTOM LINK</button>
+                            <button id="customlink" class="btn btn-info">CREATE CUSTOM LINK</button>
                         </div>
                         <div class="search-part"> 
                             <form action="" class="search-form">
@@ -108,22 +151,16 @@
                     </div>
                 </div>
             </div>
-            {{-- <div id="myNav2" class="sharebar">
+            {{-- <div id="myNav2" class="tr5link">
                 <span id="cross2" class="closebtn"><i class="fa fa-times"></i></span>
                 <div class="overlay-content">
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
-                            <a href="https://www.facebook.com/dialog/feed?app_id=1637007456611127&display=popup&amp;&link=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F&redirect_uri=http://urlshortner.dev/user/dashboard"><button id="fb-share" type="button" class="btn btn-primary btn-sm">Facebook</button></a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <button id="tw-share" type="button" class="btn btn-primary btn-sm">Twitter</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <button id="gplus-share" type="button" class="btn btn-primary btn-sm">Google +</button>
+                            <label for="givenUrl">Paste An Actual URL Here</label>
+                            <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+                            <label for="customUrl">Paste An Actual URL Here</label>
+                            <input id="customUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+                            <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">Shorten Url</button>
                         </div>
                     </div>
                 </div>
@@ -169,12 +206,26 @@
                                                     <button id="clipboard{{ $key }}" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy"  data-clipboard-target="#copylink{{ $key }}">
                                                         <i class='fa fa-clipboard'></i> copy
                                                     </button>
-                                                    {{-- <button id="share-btn" class="btn btn-default btn-sm btngrpthree">
-                                                        <i class='fa fa-share'></i> share
-                                                    </button> --}}
                                                     <button id="edit-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree">
                                                         <i class='fa fa-pencil'></i> edit
                                                     </button>
+                                                    <button id="fb-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree">
+                                                        <i class='fa fa-facebook'></i> share
+                                                    </button>
+                                                    <button id="gp-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="1094910841675-1rtgjkoe9l9p5thbgus0s1vlf9j5rrjf.apps.googleusercontent.com" data-contenturl="{{ route('getIndex') }}/{{ $url->shorten_suffix }}" data-cookiepolicy="none" data-prefilltext="{{ $url->title }}" data-calltoactionlabel="SEND" data-calltoactionurl="{{ route('getIndex') }}/{{ $url->shorten_suffix }}">
+                                                        <i class='fa fa-google-plus'></i> share
+                                                    </button>
+                                                    <a href="https://twitter.com/intent/tweet?text={{ $url->title }} please visit {{ route('getIndex') }}/{{ $url->shorten_suffix }} to know more." style="border: none; padding: 0px; margin: 0px;">
+                                                        <button id="tw-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree">
+                                                            <i class='fa fa-twitter'></i> share
+                                                        </button>
+                                                    </a>
+                                                    <script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script>
+                                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ route('getIndex') }}/{{ $url->shorten_suffix }}&title={{ $url->title }}&summary={{ $url->title }}&source=LinkedIn" target="_blank" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no'); return false;" style="border: none; padding: 0px; margin: 0px;">
+                                                        <button id="tw-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree">
+                                                            <i class='fa fa-linkedin'></i> share
+                                                        </button>
+                                                    </a>
                                                 </div>
                                                 <script>
                                                     $(document).ready(function () {
@@ -186,6 +237,13 @@
                                                             $(".modal-body #urlId").val('{{ $url->id }}');
                                                             $('#myModal').modal('show');
                                                             editAction({{ $key }});
+                                                        });
+                                                        $('#fb-share-btn{{ $key }}').on('click', function () {
+                                                            FB.ui({
+                                                                method: 'feed',
+                                                                link: '{{ route('getIndex') }}/{{ $url->shorten_suffix }}',
+                                                                caption: '{{ $url->title }}',
+                                                            }, function(response){});
                                                         });
                                                     });
                                                 </script>
@@ -258,42 +316,42 @@
                             <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
                         </center>
                     </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+                </div>
+            </div>
+        </div>
         <script>
             function editAction(key) {
                 $('#editUrlTitle').on('click', function () {
-                	var id = $('.modal-body #urlId').val();
-                	var title = $('.modal-body #urlTitle').val();
-                	$.ajax({
-                	    type: 'POST',
-                	    url: '{{ route('postEditUrlInfo') }}',
-                	    data: {id: id, title: title, _token: "{{ csrf_token() }}"},
-                	    success: function(response) {
-                	        $('#myModal').modal('hide');
-                	        swal({
-                	            title: "Success",
-                	            text: "Successfully edited title",
-                	            type: "success",
-                	            html: true
-                	        });
-                	        $('#urlTitleHeading'+key).replaceWith('<h1 id="urlTitleHeading"'+key+'>'+response.url.title+'</div>');
-                	        $('#tab-title'+key).replaceWith('<span id="tab-title"'+key+' class="title">'+response.url.title+'</span>');
-                	        $(".modal-body #urlId").val(function() {
-							    return value.replace('*', response.url.title);
-							});
-                	    },
-                	    error: function(response) {
-                	        console.log(response);
-                	        swal({
-                	            title: "Oops!",
-                	            text: "Cannot edit this title",
-                	            type: "warning",
-                	            html: true
-                	        });
-                	    }
-                	});
+                    var id = $('.modal-body #urlId').val();
+                    var title = $('.modal-body #urlTitle').val();
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ route('postEditUrlInfo') }}',
+                        data: {id: id, title: title, _token: "{{ csrf_token() }}"},
+                        success: function(response) {
+                            $('#myModal').modal('hide');
+                            swal({
+                                title: "Success",
+                                text: "Successfully edited title",
+                                type: "success",
+                                html: true
+                            });
+                            $('#urlTitleHeading'+key).replaceWith('<h1 id="urlTitleHeading"'+key+'>'+response.url.title+'</div>');
+                            $('#tab-title'+key).replaceWith('<span id="tab-title"'+key+' class="title">'+response.url.title+'</span>');
+                            $(".modal-body #urlId").val(function() {
+                                return value.replace('*', response.url.title);
+                            });
+                        },
+                        error: function(response) {
+                            console.log(response);
+                            swal({
+                                title: "Oops!",
+                                text: "Cannot edit this title",
+                                type: "warning",
+                                html: true
+                            });
+                        }
+                    });
                 });
             }
         </script>
@@ -315,7 +373,7 @@
                     $('.tr5link').addClass('close', true);
                     $('.tr5link').removeClass('open', true);
                 });
-                $('#share-btn').on('click', function () {
+                $('#customlink').on('click', function () {
                     $('.sharebar').addClass('open', true);
                     $('.sharebar').removeClass('close', true);
                 });
