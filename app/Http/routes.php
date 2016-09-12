@@ -31,6 +31,16 @@ Route::post('/url/hitcountry', [
     'as' => 'postHitCountry'
 ]);
 
+Route::post('/url/fetchurlinfo', [
+    'uses' => 'HomeController@postFetchUrlInfo',
+    'as' => 'postFetchUrlInfo'
+]);
+
+Route::post('/url/editurlinfo', [
+    'uses' => 'HomeController@postEditUrlInfo',
+    'as' => 'postEditUrlInfo'
+]);
+
 Route::post('/url/short', [
     'uses' => 'HomeController@postShortUrlTier5',
     'as' => 'postShortUrlTier5'

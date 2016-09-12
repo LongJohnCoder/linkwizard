@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Country;
-use App\CountryUrl;
-use App\Events\MailEvent;
 use App\Http\Requests;
 use App\Url;
 use App\User;
-use Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
-use Exception;
+//use App\CountryUrl;
+//use App\Events\MailEvent;
+//use Event;
+//use Exception;
+//use Illuminate\Support\Facades\Input;
 
 class HomeController extends Controller
 {
@@ -51,7 +51,8 @@ class HomeController extends Controller
             $find->count = $find->count+1;
             $find->save();
 
-            return redirect('http://'.$search->actual_url);
+            return view('loader', ['url' => $search->actual_url]);
+            //return redirect('http://'.$search->actual_url);
         } else {
             abort(404);
         }
@@ -97,7 +98,7 @@ class HomeController extends Controller
     {
         $country = Country::where('code', $request->location['country_code'])->first();
         Session::put('country', $country);
-        
+
         return response()->json([
             'status' => 'success',
             'location' => $request->location
@@ -105,7 +106,43 @@ class HomeController extends Controller
     }
 
     /**
-     * Get actual long url on AJAJX call and convert it into an random string,
+     * Get an URL information on AJAX request
+     * 
+     * @param  Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postFetchUrlInfo(Request $request) {
+        $url = Url::find($request->id);
+
+        return response()->json([
+            'status' => "success",
+            'url' => $url
+        ]);
+    }
+
+    /**
+     * Get an URL information on AJAX request
+     * 
+     * @param  Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postEditUrlInfo(Request $request) {
+        $url = Url::find($request->id);
+
+        $url->title = $request->title;
+
+        if ($url->save()) {
+            return response()->json([
+                'status' => "success",
+                'url' => $url
+            ]);
+        } else {
+            return response()->json(['status' => "error"]);
+        }
+    }
+
+    /**
+     * Get actual long url on AJAX call and convert it into an random string,
      * save both actual and shorten url into the database and return status as
      * AJAX response.
      * 
@@ -128,8 +165,7 @@ class HomeController extends Controller
         $url->title = $this->getPageTitle($request->url);
         $url->user_id = $request->user_id;
 
-        if($url->save())
-        {
+        if($url->save()) {
             return response()->json([
                 'status' => "success",
                 'url' => url('/').'/'.$random_string

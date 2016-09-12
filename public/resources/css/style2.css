@@ -10,8 +10,8 @@ div.bhoechie-tab-container{
   box-shadow: 5px 5px 15px 2px #000;
   -moz-box-shadow: 5px 5px 15px 2px #000;
   overflow-x: hidden;
-    height: 680px;
-    overflow-y: scroll;
+  overflow-y: scroll;
+  height: 700px;
 }
 div.bhoechie-tab-menu{
   padding-right: 0;
@@ -55,6 +55,12 @@ div.bhoechie-tab-menu div.list-group>a.active{
 
 div.bhoechie-tab-content{
   padding: 10px 0 0;
+  height: 700px;
+}
+
+div.bhoechie-tab-content.active{
+  /*overflow-y: scroll !important;
+  overflow-x: hidden;*/
 }
 
 div.bhoechie-tab div.bhoechie-tab-content:not(.active) {

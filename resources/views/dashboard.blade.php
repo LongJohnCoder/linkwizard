@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
         <link rel="stylesheet" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
+        <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
         <script src="https://www.gstatic.com/charts/loader.js"></script> 
@@ -143,10 +144,10 @@
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bhoechie-tab-container">
                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 bhoechie-tab-menu">
                                 <div class="list-group">
-                                    @foreach ($urls as $url)
+                                    @foreach ($urls as $key => $url)
                                         <a href="#" class="list-group-item active">
-                                            <span id="tab-date" class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</span>
-                                            <span class="title">{{ $url->title }}</span>
+                                            <span id="tab-date{{ $key }}" class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</span>
+                                            <span id="tab-title{{ $key }}" class="title">{{ $url->title }}</span>
                                             <span class="link">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</span>
                                             <span class="count">{{ $url->count }}</span>
                                         </a>
@@ -157,7 +158,7 @@
                                 @foreach ($urls as $key => $url)
                                     <div class="bhoechie-tab-content {{ $key == 0 ? 'active' : null }}">
                                         <p class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</p>
-                                        <h1>{{ $url->title }}</h1>
+                                        <h1 id="urlTitleHeading{{ $key }}">{{ $url->title }}</h1>
                                         <h5><a href="http://{{ $url->actual_url }}" target="_blank">{{ $url->actual_url }}</a></h5>
                                         <div class="row">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
@@ -170,14 +171,22 @@
                                                     </button>
                                                     {{-- <button id="share-btn" class="btn btn-default btn-sm btngrpthree">
                                                         <i class='fa fa-share'></i> share
-                                                    </button>
-                                                    <button id="share-btn" class="btn btn-default btn-sm btngrpthree">
-                                                        <i class='fa fa-pencil'></i> edit
                                                     </button> --}}
+                                                    <button id="edit-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree">
+                                                        <i class='fa fa-pencil'></i> edit
+                                                    </button>
                                                 </div>
                                                 <script>
-                                                    $('#clipboard{{ $key }}').on('click', function () {
-                                                        new Clipboard('#clipboard{{ $key }}');
+                                                    $(document).ready(function () {
+                                                        $('#clipboard{{ $key }}').on('click', function () {
+                                                            new Clipboard('#clipboard{{ $key }}');
+                                                        });
+                                                        $('#edit-btn{{ $key }}').on('click', function () {
+                                                            $(".modal-body #urlTitle").val('{{ $url->title }}');
+                                                            $(".modal-body #urlId").val('{{ $url->id }}');
+                                                            $('#myModal').modal('show');
+                                                            editAction({{ $key }});
+                                                        });
                                                     });
                                                 </script>
                                             </div>
@@ -229,7 +238,65 @@
                 </div>
             </section>
         </section>
-        <script src="{{ URL::to('/').'/public/resources/js/jquery.sidebar.min.js'}}"></script>
+        <div class="modal fade bs-modal-sm in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form class="form-inline">
+                            <fieldset>
+                                <div class="control-group">
+                                    <label class="control-label" for="urlTitle">Title</label>
+                                    <input type="text" name="title" placeholder="Your URL Title" class="form-control input-mg" id="urlTitle" style="width: 80%" value="" />
+                                    <button type="button" class="btn btn-warning" id="editUrlTitle">Edit</button>
+                                    <input type="hidden" name="id" id="urlId" value="" />
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <center>
+                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+                        </center>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <script>
+            function editAction(key) {
+                $('#editUrlTitle').on('click', function () {
+                	var id = $('.modal-body #urlId').val();
+                	var title = $('.modal-body #urlTitle').val();
+                	$.ajax({
+                	    type: 'POST',
+                	    url: '{{ route('postEditUrlInfo') }}',
+                	    data: {id: id, title: title, _token: "{{ csrf_token() }}"},
+                	    success: function(response) {
+                	        $('#myModal').modal('hide');
+                	        swal({
+                	            title: "Success",
+                	            text: "Successfully edited title",
+                	            type: "success",
+                	            html: true
+                	        });
+                	        $('#urlTitleHeading'+key).replaceWith('<h1 id="urlTitleHeading"'+key+'>'+response.url.title+'</div>');
+                	        $('#tab-title'+key).replaceWith('<span id="tab-title"'+key+' class="title">'+response.url.title+'</span>');
+                	        $(".modal-body #urlId").val(function() {
+							    return value.replace('*', response.url.title);
+							});
+                	    },
+                	    error: function(response) {
+                	        console.log(response);
+                	        swal({
+                	            title: "Oops!",
+                	            text: "Cannot edit this title",
+                	            type: "warning",
+                	            html: true
+                	        });
+                	    }
+                	});
+                });
+            }
+        </script>
         <script>
             $(document).ready(function () {
                 $('#hamburger').on('click', function () {
@@ -263,7 +330,10 @@
         <script>
             $(document).ready(function () {
                 var options = {
-                    message:"Please wait a while"
+                    theme:"custom",
+                    content:'<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" class="center-block">',
+                    message:"Please wait a while",
+                    backgroundColor:"#212230"
                 };
                 
                 $('#swalbtn').click(function() {
@@ -292,6 +362,8 @@
                                             text: displayHtml,
                                             type: "success",
                                             html: true
+                                        }, function() {
+                                            window.location.reload();
                                         });
                                         new Clipboard('#clipboardswal');
                                         HoldOn.close();
@@ -340,7 +412,7 @@
                 });
                 
                 function ValidURL(str) {
-                    var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
+                    var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
                     var url = str;
                     if (!regexp.test(url)) {
                         return false;

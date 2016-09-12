@@ -301,39 +301,36 @@
                 $('#loginButton').click(function(){
                     $('.nav-toggle').click();
                     $('#myModal').modal('show');
-                    $('#signInTab').click(function (e) {
-                        e.preventDefault()
-                        $(this).tab('show')
+                    $('#signInTab').click(function () {
+                        $(this).tab('show');
                     });
-                    $('#signUpTab').click(function (e) {
-                        e.preventDefault()
-                        $(this).tab('show')
+                    $('#signUpTab').click(function () {
+                        $(this).tab('show');
                     });
-                    $('#whyUsTab').click(function (e) {
-                        e.preventDefault()
-                        $(this).tab('show')
+                    $('#whyUsTab').click(function () {
+                        $(this).tab('show');
                     });
                 });
             
                 $('#registerButton').click(function(){
                     $('.nav-toggle').click();
                     $('#myModal').modal('show');
-                    $('#signUpTab').click(function (e) {
-                        e.preventDefault()
-                        $(this).tab('show')
+                    $('#signUpTab').click(function () {
+                        $(this).tab('show');
                     });
-                    $('#signInTab').click(function (e) {
-                        e.preventDefault()
-                        $(this).tab('show')
+                    $('#signInTab').click(function () {
+                        $(this).tab('show');
                     });
-                    $('#whyUsTab').click(function (e) {
-                        e.preventDefault()
-                        $(this).tab('show')
+                    $('#whyUsTab').click(function () {
+                        $(this).tab('show');
                     });
                 });
                 
                 var options = {
-                    message:"Please wait a while"
+                    theme:"custom",
+                    content:'<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" class="center-block">',
+                    message:"Please wait a while",
+                    backgroundColor:"#212230"
                 };
                 
                 $('#swalbtn').click(function() {
@@ -410,7 +407,7 @@
                 });
                 
                 function ValidURL(str) {
-                    var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
+                    var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
                     var url = str;
                     if (!regexp.test(url)) {
                         return false;

@@ -9,3 +9,7 @@ V2.1:
     3. Fix fetch url info and added status on not working
     4. Validated login and register form
     5. Integrated reCaptcha plugin
+V2.2:
+    1. Added Loader
+    2. Added Status on errors
+    3. Added Edit option
