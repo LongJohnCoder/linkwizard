@@ -52,7 +52,6 @@ class HomeController extends Controller
             $find->save();
 
             return view('loader', ['url' => $search->actual_url]);
-            //return redirect('http://'.$search->actual_url);
         } else {
             abort(404);
         }

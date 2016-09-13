@@ -6,12 +6,13 @@ div.bhoechie-tab-container{
   padding: 0 !important;
   border:1px solid #ddd;
   margin-top: 20px;
+  margin-bottom: -57px;
   -webkit-box-shadow: 5px 5px 15px 2px #000;
   box-shadow: 5px 5px 15px 2px #000;
   -moz-box-shadow: 5px 5px 15px 2px #000;
   overflow-x: hidden;
-  overflow-y: scroll;
-  height: 700px;
+  overflow-y: hidden;
+  /*height: 700px;*/
 }
 div.bhoechie-tab-menu{
   padding-right: 0;
@@ -22,10 +23,25 @@ div.bhoechie-tab-menu{
 div.bhoechie-tab-menu div.list-group{
     margin-bottom: 0;
     overflow-x: hidden;
-    height: 600px;
+    height: 300px;
     background-color: #C7CED1;
     overflow-y: scroll;
 }
+
+@media only screen and (max-height: 900px) {
+  div.bhoechie-tab-menu div.list-group,
+  div.bhoechie-tab-content.active{
+    height: 425px;
+  }
+}
+
+@media only screen and (max-height: 700px) {
+  div.bhoechie-tab-menu div.list-group,
+  div.bhoechie-tab-content.active{
+    height: 300px;
+  }
+}
+
 div.bhoechie-tab-menu div.list-group>a{
     margin-bottom: 0;
     padding: 10px;
@@ -55,12 +71,13 @@ div.bhoechie-tab-menu div.list-group>a.active{
 
 div.bhoechie-tab-content{
   padding: 10px 0 0;
-  height: 700px;
+  height: 300px;
 }
 
 div.bhoechie-tab-content.active{
-  /*overflow-y: scroll !important;
-  overflow-x: hidden;*/
+  overflow-y: scroll !important;
+  overflow-x: hidden;
+  padding: 0px;
 }
 
 div.bhoechie-tab div.bhoechie-tab-content:not(.active) {

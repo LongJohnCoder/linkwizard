@@ -414,7 +414,7 @@
                                     if(response.status=="success") {
                                         console.log(response);
                                         var shortenUrl = response.url;
-                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink'><i class='fa fa-clipboard'></i> Copy</button>";
+                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
                                         swal({
                                             title: "Shorten Url:",
                                             text: displayHtml,
@@ -424,6 +424,9 @@
                                             window.location.reload();
                                         });
                                         new Clipboard('#clipboardswal');
+                                        $('#clipboardswal').on('click', function () {
+                                            window.location.reload();
+                                        });
                                         HoldOn.close();
                                     } else {
                                         swal({

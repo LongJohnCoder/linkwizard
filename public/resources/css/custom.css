@@ -102,7 +102,7 @@ padding: 3px 7px; cursor: pointer;}
                 height: 100%;
             }
             .bhoechie-tab {
-                min-height: 600px;
+                /*min-height: 600px;*/
                 overflow: initial;
             }
             .bhoechie-tab-menu {
