@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" href="https://tier5.us/images/favicon.ico">
-        <title>Tier5 | URL Shortner</title>
+        <title>Tier5 | URL Shortener</title>
         <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
         <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
         <meta name="author" content="Tier5 LLC" />
@@ -66,7 +66,7 @@
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
         </script>
-        <script >
+        <script>
             window.___gcfg = {
                 lang: 'en-US',
                 parsetags: 'onload'
@@ -91,6 +91,7 @@
                 return t;
             }(document, "script", "twitter-wjs"));
         </script>
+        <script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script>
         <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
         <header>
             <div class="container-fluid">
@@ -109,12 +110,12 @@
                             </span>
                         </div>
                         <div class="menu-icon">
-                            <button id="tr5link" class="btn btn-danger">CREATE TR5LINK</button>
+                            <button id="{{ (($subscription_status == null && $total_links < 10) || ($subscription_status == 'tr5Basic' && $total_links < 100)) ? 'tr5link' : 'tr5nomorelink' }}" class="btn btn-danger">CREATE TR5LINK</button>
                         </div>
-                        {{-- <div class="menu-icon">
-                            <button id="customlink" class="btn btn-info">CREATE CUSTOM LINK</button>
+                        <div class="menu-icon">
+                            <button id="customLink" class="btn btn-info">CREATE CUSTOM LINK</button>
                         </div>
-                        <div class="search-part"> 
+                        {{-- <div class="search-part"> 
                             <form action="" class="search-form">
                                 <div class="form-group has-feedback">
                                     <input type="text" class="form-control" name="search" id="search" placeholder="SEARCH" />
@@ -128,15 +129,16 @@
             <div id="myNav" class="sidebar right">
                 <span id="cross" class="closebtn"><i class="fa fa-times"></i></span>
                 <div class="overlay-content">
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <a href="{{ route('getLogout') }}">
-                                <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-sign-out"></i>Sign out</button>
-                            </a>
-                            <div class="profile-name">{{ $user->name }}</div>
-                            <div class="profile-email">{{ $user->email }}</div>
-                        </div>
-                    </div>
+                    <a href="{{ route('getLogout') }}">
+                        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-sign-out"></i>Sign out</button>
+                    </a>
+                    <div class="profile-name">{{ $user->name }}</div>
+                    <div class="profile-email">{{ $user->email }}</div>
+                    @if ($subscription_status == null)
+                    <a href="{{ route('getSubscribe') }}">
+                        <button type="button" class="btn btn-success btn-sm"><i class="fa fa-upgrade"></i>Upgrade</button>
+                    </a>
+                    @endif
                 </div>
             </div>
             <div id="myNav1" class="tr5link">
@@ -151,20 +153,23 @@
                     </div>
                 </div>
             </div>
-            {{-- <div id="myNav2" class="tr5link">
+            <div id="myNav1" class="sharebar">
                 <span id="cross2" class="closebtn"><i class="fa fa-times"></i></span>
                 <div class="overlay-content">
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
-                            <label for="givenUrl">Paste An Actual URL Here</label>
-                            <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
-                            <label for="customUrl">Paste An Actual URL Here</label>
-                            <input id="customUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
-                            <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">Shorten Url</button>
+                            <label for="givenActualUrl">Paste An Actual URL Here</label>
+                            <input id="givenActualUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+                            <label for="makeCustomUrl">Create Your Own Custom Link</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">tr5.io/</span>
+                                <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. tr5.io/MyLinK">
+                            </div>
+                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">Shorten Url</button>
                         </div>
                     </div>
                 </div>
-            </div> --}}
+            </div>
         </header>
         <section class="hero">
             <section class="main-content">
@@ -178,7 +183,7 @@
                 <div class="texture-overlay"></div>
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bhoechie-tab-container">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bhoechie-tab-container layout--wrapper">
                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 bhoechie-tab-menu">
                                 <div class="list-group">
                                     @foreach ($urls as $key => $url)
@@ -195,7 +200,7 @@
                                 @foreach ($urls as $key => $url)
                                     <div class="bhoechie-tab-content {{ $key == 0 ? 'active' : null }}">
                                         <p class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</p>
-                                        <h1 id="urlTitleHeading{{ $key }}">{{ $url->title }}</h1>
+                                        <h1 id="urlTitleHeading{{ $key }}">{{ $url->title }} {{-- <button><i class="fa fa-archive"></i></button> --}}</h1>
                                         <h5><a href="http://{{ $url->actual_url }}" target="_blank">{{ $url->actual_url }}</a></h5>
                                         <div class="row">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
@@ -220,7 +225,6 @@
                                                             <i class='fa fa-twitter'></i> share
                                                         </button>
                                                     </a>
-                                                    <script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script>
                                                     <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ route('getIndex') }}/{{ $url->shorten_suffix }}&title={{ $url->title }}&summary={{ $url->title }}&source=LinkedIn" target="_blank" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no'); return false;" style="border: none; padding: 0px; margin: 0px;">
                                                         <button id="tw-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree">
                                                             <i class='fa fa-linkedin'></i> share
@@ -240,9 +244,11 @@
                                                         });
                                                         $('#fb-share-btn{{ $key }}').on('click', function () {
                                                             FB.ui({
-                                                                method: 'feed',
-                                                                link: '{{ route('getIndex') }}/{{ $url->shorten_suffix }}',
+                                                                method: 'share',
+                                                                href: '{{ route('getIndex') }}/{{ $url->shorten_suffix }}',
                                                                 caption: '{{ $url->title }}',
+                                                                display: 'popup',
+                                                                source: 'http://urlshortner.dev/public/resources/img/company_logo.png'
                                                             }, function(response){});
                                                         });
                                                     });
@@ -251,7 +257,7 @@
                                         </div>
                                         <hr style="background: #000">
                                         <p class="count"><i class="glyphicon glyphicon-stats"></i> {{ $url->count }} Total Counts</p>
-                                        <div class="row" style="background-color: #ffffff">
+                                        <div class="row" style="background-color: #ffffff; height: 250px;">
                                             <div class="col-sm-4">
                                                 <div id="chart_div{{ $key }}" style="width: 350px; height: 250px;"></div>
                                             </div>
@@ -259,29 +265,88 @@
                                                 <div id="regions_div{{ $key }}" style="width: 450px; height: 250px;"></div>
                                             </div>
                                         </div>
+                                        @if ($subscription_status != null)
+                                        <div class="row" style="background-color: #ffffff">
+                                            <div class="col-sm-4">
+                                                <div id="platform_div{{ $key }}" style="width: 400px; height: 250px;"></div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div id="browser_div{{ $key }}" style="width: 400px; height: 250px;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="background-color: #ffffff">
+                                            <div class="col-sm-4">
+                                                <div id="referral_div{{ $key }}" style="width: 400px; height: 250px;"></div>
+                                            </div>
+                                            {{-- <div class="col-sm-6">
+                                                <div id="platform_div{{ $key }}" style="width: 400px; height: 250px;"></div>
+                                            </div> --}}
+                                        </div>
+                                        @endif
                                         <script type="text/javascript">
                                             {!! $key == 0 ? "google.charts.load('current', {'packages':['corechart']});" : null !!}
                                             $.ajax({
-                                                url: "{{ route('postHitCountry') }}",
+                                                url: "{{ route('postFetchAnalytics') }}",
                                                 type: 'POST',
                                                 data: {url_id: {{ $url->id }}, _token: "{{ csrf_token() }}"},
                                                 success: function (response) {
                                                     if (response.status == "success") {
                                                         google.charts.setOnLoadCallback(function () {
                                                             var data = google.visualization.arrayToDataTable(response.location);
-                                                            var options = { colorAxis: {colors: '#3366ff'}, background: 'rgba(255, 255, 255, 0.8)'  };
+                                                            var options = {
+                                                                colorAxis: {colors: '#3366ff'},
+                                                                background: 'rgba(255, 255, 255, 0.8)',
+                                                                width: 450,
+                                                                height: 250,
+                                                            };
                                                             var chart{{ $key }} = new google.visualization.GeoChart(document.getElementById('regions_div{{ $key }}'));
                                                             chart{{ $key }}.draw(data, options);
                                                         });
                                                         google.charts.setOnLoadCallback(function () {
                                                             var data = google.visualization.arrayToDataTable(response.location);
                                                             var options = {
-                                                              title: 'Number of hits per country',
-                                                              pieHole: 0.4,
+                                                                title: 'Number of hits per country',
+                                                                width: 350,
+                                                                height: 250,
                                                             };
                                                             var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('chart_div{{ $key }}'));
                                                             chart{{ $key }}.draw(data, options);
                                                         });
+                                                        @if ($subscription_status != null)
+                                                        google.charts.setOnLoadCallback(function () {
+                                                            var data = google.visualization.arrayToDataTable(response.platform);
+                                                            var options = {
+                                                                title: 'Platform Shares',
+                                                                pieHole: 0.7,
+                                                                width: 400,
+                                                                height: 250,
+                                                            };
+                                                            var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('platform_div{{ $key }}'));
+                                                            chart{{ $key }}.draw(data, options);
+                                                        });
+                                                        google.charts.setOnLoadCallback(function () {
+                                                            var data = google.visualization.arrayToDataTable(response.browser);
+                                                            var options = {
+                                                                title: 'Browser Stats',
+                                                                pieHole: 0.7,
+                                                                width: 400,
+                                                                height: 250,
+                                                            };
+                                                            var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('browser_div{{ $key }}'));
+                                                            chart{{ $key }}.draw(data, options);
+                                                        });
+                                                        google.charts.setOnLoadCallback(function () {
+                                                            var data = google.visualization.arrayToDataTable(response.referer);
+                                                            var options = {
+                                                                title: 'Referring Channels',
+                                                                pieHole: 0.7,
+                                                                width: 400,
+                                                                height: 250,
+                                                            };
+                                                            var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('referral_div{{ $key }}'));
+                                                            chart{{ $key }}.draw(data, options);
+                                                        });
+                                                        @endif
                                                     } else {
                                                      console.log('Response error!');
                                                     }
@@ -338,9 +403,7 @@
                             });
                             $('#urlTitleHeading'+key).replaceWith('<h1 id="urlTitleHeading"'+key+'>'+response.url.title+'</div>');
                             $('#tab-title'+key).replaceWith('<span id="tab-title"'+key+' class="title">'+response.url.title+'</span>');
-                            $(".modal-body #urlId").val(function() {
-                                return value.replace('*', response.url.title);
-                            });
+                            $(".modal-body #urlTitle").val(response.url.title);
                         },
                         error: function(response) {
                             console.log(response);
@@ -357,6 +420,7 @@
         </script>
         <script>
             $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
                 $('#hamburger').on('click', function () {
                     $('.sidebar.right').addClass('open', true);
                     $('.sidebar.right').removeClass('close', true);
@@ -373,13 +437,20 @@
                     $('.tr5link').addClass('close', true);
                     $('.tr5link').removeClass('open', true);
                 });
-                $('#customlink').on('click', function () {
+                $('#customLink').on('click', function () {
                     $('.sharebar').addClass('open', true);
                     $('.sharebar').removeClass('close', true);
                 });
                 $('#cross2').on('click', function () {
                     $('.sharebar').addClass('close', true);
                     $('.sharebar').removeClass('open', true);
+                });
+                $('#tr5nomorelink').on('click', function () {
+                    swal({
+                        type: 'warning',
+                        title: 'Notification',
+                        text: 'You have maximum shorten links. Please upgrade account to get hassle free services.'
+                    });
                 });
             });
         </script>
@@ -393,7 +464,83 @@
                     message:"Please wait a while",
                     backgroundColor:"#212230"
                 };
-                
+                $('#swalbtn1').click(function() {
+                    var actualUrl = $('#givenActualUrl').val();
+                    var customUrl = $('#makeCustomUrl').val();
+                    @if (Auth::user())
+                        var userId = {{ Auth::user()->id }};
+                    @else
+                        var userId = 0;
+                    @endif
+                    if (ValidURL(actualUrl)) {
+                        if (ValidCustomURL(customUrl)) {
+                            $.ajax({
+                                type: "POST",
+                                url: "{{ route('postCustomUrlTier5') }}",
+                                data: {
+                                    actual_url: actualUrl,
+                                    custom_url: customUrl,
+                                    user_id: userId,
+                                    _token: "{{ csrf_token() }}"
+                                }, success: function (response) {
+                                    if(response.status=="success") {
+                                        console.log(response);
+                                        var shortenUrl = response.url;
+                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
+                                        swal({
+                                            title: "Shorten Url:",
+                                            text: displayHtml,
+                                            type: "success",
+                                            html: true
+                                        }, function() {
+                                            window.location.reload();
+                                        });
+                                        new Clipboard('#clipboardswal');
+                                        $('#clipboardswal').on('click', function () {
+                                            window.location.reload();
+                                        });
+                                        HoldOn.close();
+                                    } else {
+                                        swal({
+                                            title: "",
+                                            text: "Please paste an actual URL",
+                                            type: "warning",
+                                            html: true
+                                        }); 
+                                        HoldOn.close();
+                                    }
+                                }, error: function(response) {
+                                    console.log(response);
+                                    HoldOn.close();
+                                }, statusCode: {
+                                    500: function() {
+                                        swal({
+                                            title: "",
+                                            text: "Access Forbidden, Please paste a valid URL!",
+                                            type: "error",
+                                            html: true
+                                        }); 
+                                        HoldOn.close();
+                                    }
+                                }
+                            });
+                        } else {
+                            swal({
+                                type: "warning",
+                                title: "",
+                                text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
+                                html: true
+                            });
+                        }
+                    } else {
+                        swal({
+                            type: "warning",
+                            title: "",
+                            text: "Please Enter An URL"
+                        });     
+                    }
+                });
+
                 $('#swalbtn').click(function() {
                     var url = $('#givenUrl').val();
                     var validUrl = ValidURL(url);
@@ -481,6 +628,16 @@
                         return true;
                     }
                 }
+
+                function ValidCustomURL(str) {
+                    var regexp = new RegExp("^[a-zA-Z0-9_]+$");
+                    var url = str;
+                    if (!regexp.test(url)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
             });
         </script>
         <script type="text/javascript">
@@ -537,27 +694,6 @@
                             }
                         }]
                     }
-                }
-            });
-        </script>
-        <script type="text/javascript">
-            $.ajax({
-                url: '//freegeoip.net/json/',
-                type: 'POST',
-                dataType: 'jsonp',
-                success: function (location) {
-                    $.ajax({
-                        type: 'POST',
-                        url: "{{ route('postStoreLocation') }}",
-                        data: {location: location, _token: "{{ csrf_token() }}"},
-                        success: function (response) {
-                            if (response.status == "success") {
-                                {{-- console.log(response.location.country_code); --}}
-                            } else {
-                                console.log('Response error!');
-                            }
-                        }
-                    });
                 }
             });
         </script>

@@ -25,4 +25,24 @@ class Url extends Model
     {
         return $this->belongsToMany('App\Country')->withTimestamps();
     }
+
+    /**
+     * Get all the platforms associated with an url.
+     * 
+     * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function platforms()
+    {
+        return $this->belongsToMany('App\Platform')->withTimestamps();
+    }
+
+    /**
+     * Get all the browsers associated with an url.
+     * 
+     * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function browsers()
+    {
+        return $this->belongsToMany('App\Browser')->withTimestamps();
+    }
 }

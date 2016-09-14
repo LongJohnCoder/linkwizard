@@ -21,19 +21,9 @@ Route::get('/{url}', [
     'as' => 'getRequestedUrl'
 ]);
 
-Route::post('/url/storelocation', [
-    'uses' => 'HomeController@postStoreLocation',
-    'as' => 'postStoreLocation'
-]);
-
-Route::post('/url/hitcountry', [
-    'uses' => 'HomeController@postHitCountry',
-    'as' => 'postHitCountry'
-]);
-
-Route::post('/url/fetchurlinfo', [
-    'uses' => 'HomeController@postFetchUrlInfo',
-    'as' => 'postFetchUrlInfo'
+Route::post('/url/fetchanalytics', [
+    'uses' => 'HomeController@postFetchAnalytics',
+    'as' => 'postFetchAnalytics'
 ]);
 
 Route::post('/url/editurlinfo', [
@@ -41,9 +31,19 @@ Route::post('/url/editurlinfo', [
     'as' => 'postEditUrlInfo'
 ]);
 
+Route::post('/url/userinfo', [
+    'uses' => 'HomeController@postUserInfo',
+    'as' => 'postUserInfo'
+]);
+
 Route::post('/url/short', [
     'uses' => 'HomeController@postShortUrlTier5',
     'as' => 'postShortUrlTier5'
+]);
+
+Route::post('/url/custom', [
+    'uses' => 'HomeController@postCustomUrlTier5',
+    'as' => 'postCustomUrlTier5'
 ]);
 
 Route::get('/user/login', [
@@ -69,4 +69,14 @@ Route::get('/user/logout', [
 Route::get('/user/dashboard', [
     'uses' => 'HomeController@getDashboard',
     'as' => 'getDashboard'
+]);
+
+Route::get('/user/subscribe', [
+    'uses' => 'HomeController@getSubscribe',
+    'as' => 'getSubscribe'
+]);
+
+Route::post('/user/subscription', [
+    'uses' => 'HomeController@postSubscription',
+    'as' => 'postSubscription'
 ]);

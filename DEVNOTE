@@ -16,3 +16,10 @@ V2.2:
 V2.3:
     1. Integrated social share viz. Facebook, Google+, Twitter and LinkedIn
     2. Some bug Fixed
+V2.4:
+    1. Create Browser, Platform table and implement stroing mechanism
+    2. Implement Referring Channel
+    3. Add HTML for Price Panels & Stripe Subscribe Forms
+    4. Integrate Stipe Subscription
+    5. Update each user views according to their subscription
+    6. Add Custom URL feature for Subscribed Users
