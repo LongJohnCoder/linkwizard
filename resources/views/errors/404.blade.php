@@ -1,48 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="robots" content="noindex,nofollow" />
-		<meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
-		<title>404 URL Not Found</title>
-		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,800&amp;subset=latin,latin-ext">
-		<link rel="stylesheet" type="text/css" media="all" href="https://cdn.travel.sygic.com/7272dd83d529/css/__v2/error.css">
-	</head>
-	<body>
-		<script type="text/javascript">
-			/* <![CDATA[ */
-			var _gaq=_gaq||[];
-			_gaq.push(
-				['_setAccount',"UA-48316513-1"]
-					,['_trackPageview',"http-error\/404\/?page=https:\/\/travel.sygic.com\/404&referer=http:\/\/www.bypeople.com\/atacama-404-page\/"]
-			);
 
-			(function(){
-				var ga=document.createElement('script');
-				ga.type='text/javascript';
-				ga.async=true;
-				ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';
-				var s=document.getElementsByTagName('script')[0];
-				s.parentNode.insertBefore(ga,s);
-			})();
-			/* ]]> */
-		</script>
-		<div class="stars"></div>
-		<div class="sun-moon">
-			<div class="sun"></div>
-			<div class="moon"></div>
-		</div>
-		<div id="js-hills" class="background hills"></div>
-		<div id="js-country" class="background country"></div>
-		<div id="js-foreground" class="background foreground"></div>
-		<div class="error-content">
-				Sorry, that url does not exists!<br>	
-		</div>
-		<a href="{{route('getIndex')}}" class="button">Go home</a>
-		<div class="code">
-			<span>4</span>
-			<span>0</span>
-			<span>4</span>
-		</div>
-	</body>
+<head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
+    <title>Tier5 | URL Shortener | 404 URL Not Found</title>
+    <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
+    <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
+    <meta name="author" content="Tier5 LLC" />
+    <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
+    <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
+    <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+    body {
+        font-family: 'Nunito';
+        text-align: center;
+        color: white;
+    }
+    
+    .button {
+        background-color: transparent;
+        /* Green */
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        -webkit-transition-duration: 0.4s;
+        /* Safari */
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+    
+    .button5 {
+        color: #00AEEF;
+        border: 2px solid #555555;
+    }
+    
+    .button5:hover {
+        background-color: #555555;
+        color: white;
+    }
+
+    </style>
+</head>
+
+<body>
+    <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <!-- open/close -->
+    <section class="hero">
+        <section class="main-content">
+            <object>
+                <embed src="{{ URL::to('/').'/public/resources/img/404.svg' }}" width="40%" height="40%" class="shadow">
+            </object>
+            <h2>URL Not Found</h2>
+            <br>
+            <a href="{{ route('getIndex') }}">
+                <button type="button" class="button button5">Go Home</button>
+            </a>
+        </section>
+    </section>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+    <script>
+    (function(b, o, i, l, e, r) {
+        b.GoogleAnalyticsObject = l;
+        b[l] || (b[l] =
+            function() {
+                (b[l].q = b[l].q || []).push(arguments)
+            });
+        b[l].l = +new Date;
+        e = o.createElement(i);
+        r = o.getElementsByTagName(i)[0];
+        e.src = '//www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e, r)
+    }(window, document, 'script', 'ga'));
+    ga('create', 'UA-XXXXX-X');
+    ga('send', 'pageview');
+
+    </script>
+</body>
+
 </html>
+

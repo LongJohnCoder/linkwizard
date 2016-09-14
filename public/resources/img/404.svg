@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1920 1200" enable-background="new 0 0 1920 1200" xml:space="preserve" class="shadow">
+
+
+<defs>
+	<style type="text/css">
+
+
+			.st0{fill:#4EC9F5;}
+	.st1{fill:none;stroke:#4EC9F5;stroke-width:21;stroke-miterlimit:10; }
+
+			.st1{
+
+				stroke-dasharray: 7000;
+				stroke-dashoffset:0;
+				-webkit-animation: dash 4s linear forwards;
+				-o-animation: dash 4s linear forwards;
+				-moz-animation: dash 4s linear forwards;
+				animation: dash 4s linear forwards;
+				
+
+
+
+			}
+
+			.shadow {
+   			 			-webkit-filter: drop-shadow( 5px 1px 5px #000 );
+           				 filter: drop-shadow( 5px 1px 5px #000 ); 
+					}	
+
+
+
+
+			<!--#logo:hover .st1{
+
+
+			 fill:#dcddde;
+			 opacity: 0.5;
+
+			} -->
+
+				@-webkit-keyframes dash{
+
+					from{
+
+						stroke-dashoffset: 7000;
+						} 
+						to 
+						{
+						stroke-dasoffset: 0;
+						}
+					}
+					@keyframes dash{
+
+					from{
+
+						stroke-dashoffset: 7000;
+						} 
+						to 
+						{
+						stroke-dasoffset: 0;
+						}
+					}
+					
+
+
+
+	</style>
+	</defs>
+
+<polygon class="st1" stroke="#00AEEF" stroke-width="15" stroke-miterlimit="10" points="120.65,137 120.65,406.6667 
+	135.4375,417.625 149.3333,410.3333 151.3333,411 151.3333,426.625 247.6667,454 500,457.3333 501,634 606,706 622,696.3333 
+	622,425.3333 609.3333,416 622,407.6667 622,135.3333 606,126 501.3333,196 501.1667,370.6667 493.6667,367.6667 250.1667,367.8333 
+	242.6667,370.3333 242.6667,196.5 138,126 "/>
+<polygon  class="st1"  stroke="#00AEEF" stroke-width="21" stroke-miterlimit="10" points="725.3333,209.6667 786.1667,168.8333 
+	795.5,177 797,176.1667 797,162.3333 850.1667,126 1101.6666,126 1154.5,161.1667 1154.5,175 1164.8334,167.8333 
+	1224.8334,208.1667 1224.8334,407.0417 1212.661,414.0707 1212.6875,418.6563 1224.8334,426.75 1224.8334,624 1164.375,664.875 
+	1157.375,659.5 1154.375,659.375 1154.625,672 1101.5,706.75 851.25,707.75 797,671.875 797.0313,657.3125 794.0938,657.3125 
+	785.7188,664.625 725.3333,623.3333 "/>
+<polygon class="st1"  stroke="#00AEEF" stroke-width="20" stroke-miterlimit="10" points="1328.1666,137 1328.1666,406.6667 
+	1342.9542,417.625 1356.85,410.3333 1358.85,411 1358.85,426.625 1455.1833,454 1707.5167,457.3333 1708.5167,634 1813.5167,706 
+	1829.5167,696.3333 1829.5167,425.3333 1816.85,416 1829.5167,407.6667 1829.5167,135.3333 1813.5167,126 1708.85,196 
+	1708.6833,370.6667 1701.1833,367.6667 1457.6833,367.8333 1450.1833,370.3333 1450.1833,196.5 1345.5167,126 "/>
+<polygon class="st1"  stroke="#00AEEF" stroke-width="20" stroke-miterlimit="10" points="846.3333,375.6667 846.3333,211 
+	1104.3334,211 1104.3334,375.6667 1208.25,414.75 1208.25,417.75 1105,451.25 1104.75,621.75 846.3333,621.75 846.3333,451.75 
+	743.75,418 743.75,416 "/>
+</svg>

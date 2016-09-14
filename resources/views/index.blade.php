@@ -9,7 +9,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" href="https://tier5.us/images/favicon.ico">
-        <title>Tier5 | URL Shortner</title>
+        <title>Tier5 | URL Shortener</title>
         <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
         <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
         <meta name="author" content="Tier5 LLC" />
@@ -414,27 +414,6 @@
                     } else {
                         return true;
                     }
-                }
-            });
-        </script>
-        <script type="text/javascript">
-            $.ajax({
-                url: '//freegeoip.net/json/',
-                type: 'POST',
-                dataType: 'jsonp',
-                success: function (location) {
-                    $.ajax({
-                        type: 'POST',
-                        url: "{{ route('postStoreLocation') }}",
-                        data: {location: location, _token: "{{ csrf_token() }}"},
-                        /*success: function (response) {
-                            if(response.status == "success") {
-                                console.log(response.location);
-                            } else {
-                                console.log('Response error!');
-                            }
-                        }*/
-                    });
                 }
             });
         </script>
