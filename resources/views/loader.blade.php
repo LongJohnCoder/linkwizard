@@ -1,5 +1,7 @@
 <?php
 
+$user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
+
 if (isset($_SERVER['HTTP_REFERER'])) {
     $referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
 } else {

@@ -112,8 +112,9 @@
                         <div class="menu-icon">
                             <button id="{{ (($subscription_status == null && $total_links < 10) || ($subscription_status == 'tr5Basic' && $total_links < 100) || ($subscription_status == 'tr5Advanced')) ? 'tr5link' : 'noTr5Link' }}" class="btn btn-danger">CREATE TR5LINK</button>
                         </div>
+                        @if ($subscription_status != null)
                         <div class="menu-icon">
-                            <button id="{{ (($subscription_status == null && $total_links < 10) || ($subscription_status == 'tr5Basic' && $total_links < 100) || ($subscription_status == 'tr5Advanced')) ? 'customLink' : 'noCustomLink' }}" class="btn btn-info">CREATE CUSTOM LINK</button>
+                            <button id="{{ (($subscription_status == 'tr5Basic' && $total_links < 100) || ($subscription_status == 'tr5Advanced')) ? 'customLink' : 'noCustomLink' }}" class="btn btn-info">CREATE CUSTOM LINK</button>
                         </div>
                         {{-- <div class="search-part"> 
                             <form action="" class="search-form">
@@ -123,6 +124,7 @@
                                 </div>
                             </form>
                         </div> --}}
+                        @endif
                     </div>
                 </div>
             </div>
