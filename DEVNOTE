@@ -28,3 +28,6 @@ V2.4.1:
     2. Made internal changes.
 V2.4.2:
     1. Fix Custom URL Button status for Subscribed Users
+V2.5:
+    1. Added client side validation on login and register form.
+    2. Changed tier5 static logo to animated on redirecting page.

@@ -61,7 +61,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     $(document).ready(function() {
         var options = {
             theme: "custom",
-            content: '<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" class="center-block">',
+            content: '<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}" class="center-block">',
             message: "Redirecting...",
             backgroundColor: "#212230"
         };
@@ -70,7 +70,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
         setTimeout(function() {
             window.location.href = 'http://' + '{{ $url->actual_url }}';
             HoldOn.close();
-        }, 1000);
+        }, 5000);
     });
 
     </script>
