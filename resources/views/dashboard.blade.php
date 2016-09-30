@@ -16,17 +16,19 @@
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
         <link rel="stylesheet" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
-        <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css">
+        <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
+        <link rel="stylesheet" href="{{ URL('/') }}/public/resources/css/bootstrap-wysiwyg.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
         <script src="https://www.gstatic.com/charts/loader.js"></script> 
         <script src="https://www.google.com/jsapi"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.min.js"></script>
-        <script src="https://code.highcharts.com/highcharts.js"></script>
-        <script src="https://code.highcharts.com/highcharts-3d.js"></script>
-        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0-rc.2/Chart.bundle.min.js"></script> --}}
+        <script src="{{ URL::to('/').'/public/resources/js/highcharts.js' }}"></script>
+        <script src="{{ URL::to('/').'/public/resources/js/highchart-data.js' }}"></script>
+        <script src="{{ URL::to('/').'/public/resources/js/highchart-drilldown.js' }}"></script>
         <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+        <script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
         <!-- Facebook and Twitter integration -->
         <meta property="og:title" content=""/>
         <meta property="og:image" content=""/>
@@ -110,11 +112,11 @@
                             </span>
                         </div>
                         <div class="menu-icon">
-                            <button id="{{ (($subscription_status == null && $total_links < 10) || ($subscription_status == 'tr5Basic' && $total_links < 100) || ($subscription_status == 'tr5Advanced')) ? 'tr5link' : 'noTr5Link' }}" class="btn btn-danger">CREATE TR5LINK</button>
+                            <button id="{{ (($limit->plan_code == 'tr5Free' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Basic' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Advanced' && $total_links < $limit->limits)) ? 'tr5link' : 'noTr5Link' }}" class="btn btn-danger">CREATE TR5LINK</button>
                         </div>
                         @if ($subscription_status != null)
                         <div class="menu-icon">
-                            <button id="{{ (($subscription_status == 'tr5Basic' && $total_links < 100) || ($subscription_status == 'tr5Advanced')) ? 'customLink' : 'noCustomLink' }}" class="btn btn-info">CREATE CUSTOM LINK</button>
+                            <button id="{{ (($limit->plan_code == 'tr5Basic' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Advanced' && ((strtolower($limit->limits) == 'unlimited') ?: ($total_links < $limit->limits)))) ? 'customLink' : 'noCustomLink' }}" class="btn btn-info">CREATE CUSTOM LINK</button>
                         </div>
                         {{-- <div class="search-part"> 
                             <form action="" class="search-form">
@@ -124,6 +126,11 @@
                                 </div>
                             </form>
                         </div> --}}
+                        @endif
+                        @if ($user->is_admin == 1)
+                        <div class="menu-icon">
+                            <a href="{{ route('getAdminDashboard') }}"><button id="" class="btn btn-warning">ADMIN DASHBOARD</button></a>
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -177,12 +184,11 @@
             <section class="main-content">
                 <div class="row">
                     <div class="col-lg-12">
-                        <canvas id="myChart" height="50px"></canvas>
+                        <div id="columnChart" style="min-width: 310px; height: 165px; margin: 0 auto"></div>
                     </div>
                 </div>
             </section>
             <section class="main-content">
-                <div class="texture-overlay"></div>
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bhoechie-tab-container layout--wrapper">
@@ -232,6 +238,11 @@
                                                             <i class='fa fa-linkedin'></i> share
                                                         </button>
                                                     </a>
+                                                    {{-- @if ($url->is_custom == 1) --}}
+                                                    <button id="addBrand{{ $key }}" class="btn btn-default btn-sm btngrpthree">
+                                                        <i class="fa fa-bullhorn"></i> create brand
+                                                    </button>
+                                                    {{-- @endif --}}
                                                 </div>
                                                 <script>
                                                     $(document).ready(function () {
@@ -239,8 +250,8 @@
                                                             new Clipboard('#clipboard{{ $key }}');
                                                         });
                                                         $('#edit-btn{{ $key }}').on('click', function () {
-                                                            $(".modal-body #urlTitle").val('{{ $url->title }}');
-                                                            $(".modal-body #urlId").val('{{ $url->id }}');
+                                                            $("#editModalBody #urlTitle").val('{{ $url->title }}');
+                                                            $("#editModalBody #urlId").val('{{ $url->id }}');
                                                             $('#myModal').modal('show');
                                                             editAction({{ $key }});
                                                         });
@@ -253,11 +264,15 @@
                                                                 source: 'http://urlshortner.dev/public/resources/img/company_logo.png'
                                                             }, function(response){});
                                                         });
+                                                        $('#addBrand{{ $key }}').on('click', function () {
+                                                            $("#uploadModalBody #urlId").val('{{ $url->id }}');
+                                                            $('#myModal1').modal('show');
+                                                        });
                                                     });
                                                 </script>
                                             </div>
                                         </div>
-                                        <hr style="background: #000">
+                                        <hr style="background: #00f">
                                         <p class="count"><i class="glyphicon glyphicon-stats"></i> {{ $url->count }} Total Counts</p>
                                         <div class="row" style="background-color: #ffffff; height: 250px;">
                                             <div class="col-sm-4">
@@ -293,6 +308,7 @@
                                                 data: {url_id: {{ $url->id }}, _token: "{{ csrf_token() }}"},
                                                 success: function (response) {
                                                     if (response.status == "success") {
+                                                        console.log(response);
                                                         google.charts.setOnLoadCallback(function () {
                                                             var data = google.visualization.arrayToDataTable(response.location);
                                                             var options = {
@@ -363,11 +379,12 @@
                 </div>
             </section>
         </section>
+        @if (count($urls) > 0)
         <div class="modal fade bs-modal-sm in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-md" role="document">
                 <div class="modal-content">
-                    <div class="modal-body">
-                        <form class="form-inline">
+                    <div class="modal-body" id="editModalBody">
+                        <form class="form-inline" method="post">
                             <fieldset>
                                 <div class="control-group">
                                     <label class="control-label" for="urlTitle">Title</label>
@@ -386,6 +403,57 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade bs-modal-lg in" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3>Manage Redirecting Page For Your Custom Url</h3>
+                    </div>
+                    <div class="modal-body" id="uploadModalBody">
+                        <form class="form" role="form" action="{{ route('postBrandLogo') }}" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                            <input type="hidden" name="url_id" value="{{ $url->id }}" id="urlId" />
+                            <div class="form-group">
+                                <label for="brandLogo">Upload brand logo</label>
+                                <input type="file" id="brandLogo" name="brandLogo" class="form-control input-md" style="padding: 0px 0px 34px 0px;" value="{{ $url->brand_logo }}" />
+                            </div>
+                            <div class="form-group">
+                                <label for="redirectingTime">Set redirecting time (in seconds)</label>
+<<<<<<< HEAD
+                                <input type="number" min="0" max="60" id="redirectingTime" name="redirectingTime" class="form-control input-md" value="{{ $url->redirecting_time }}" />
+=======
+                                <input type="number" min="0" max="60" id="redirectingTime" name="redirectingTime" class="form-control input-md" value="{{ $url->redirecting_time/1000 }}" />
+>>>>>>> brand
+                            </div>
+                            <div class="form-group">
+                                <label for="redirectingTextTemplate">Set redirecting text template</label>
+                                <textarea id="redirectingTextTemplate" name="redirectingTextTemplate" class="form-control input-md">"{{ $url->redirecting_text_template }}</textarea>
+                            </div>
+                            <hr />
+                            <button type="submit" class="btn btn-default btn-md pull-right">Submit</button>
+                        </form>
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+<<<<<<< HEAD
+        <script>
+            $(document).ready(function () {
+                $('#redirectingTextTemplate').wysiwyg();
+            });
+        </script>
+=======
+        {{-- <script>
+            $(document).ready(function () {
+                $('#redirectingTextTemplate').wysiwyg();
+            });
+        </script> --}}
+        @endif
+>>>>>>> brand
         <script>
             function editAction(key) {
                 $('#editUrlTitle').on('click', function () {
@@ -662,51 +730,141 @@
         });
         </script>
         <script>
-            var ctx = document.getElementById("myChart");
-            dataset = {
-                    labels: [
-                        @foreach ($urls as $url)
-                            '{{ route('getIndex') }}/{{ $url->shorten_suffix }}',
-                        @endforeach
-                    ],
-                    datasets: [{
-                        label: "Number of counts per shortend url",
-                        data: [
-                            @foreach ($urls as $url)
-                                {{ $url->count }},
-                            @endforeach
-                        ],
-                        backgroundColor: [
-                        @foreach ($urls as $key => $url)
-                            'rgba({{ 255-($key*25) }}, {{ 127-($key*33) }}, {{ 63+($key++*22) }}, 1)',
-                        @endforeach
-                    ],
-                    borderColor: [
-                        @foreach ($urls as $key => $url)
-                            'rgba({{ 255-($key*3) }}, {{ 127-($key*17) }}, {{ 63+($key*25) }}, 1)',
-                        @endforeach
-                    ],
-                    borderWidth: 1
-                    }]
-            };
-            Chart.defaults.global.defaultFontColor =  '#fff';
-            Chart.defaults.bar.hover.mode = 'label';
-            Chart.defaults.global.gridLinesColor = 'rgba(255, 255, 255, 1)';
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: dataset,
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero:true
+            $.ajax({
+                type: 'post',
+                url: '{{ route('postFetchChartData') }}',
+                data: {'user_id': '{{ $user->id }}', '_token': '{{ csrf_token() }}'},
+                success: function(response) {
+                    var chartDataStack = [];
+                    $('#columnChart').highcharts({
+                        chart: {
+                            type: 'column',
+                            backgroundColor: 'rgba(255, 255, 255, 0)'
+                        },
+                        title: {
+                            text: null
+                        },
+                        xAxis: {
+                            type: 'category',
+                            labels: {
+                                style: {
+                                    fontWeight: 'bold',
+                                    color: '#fff'
+                                }
                             }
-                        }]
+                        },
+                        yAxis: {
+                            labels: {
+                                enabled: false
+                            },
+                            title: {
+                                text: null
+                            },
+                            gridLineWidth: 0,
+                            minorGridLineWidth: 0
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            series: {
+                                borderWidth: 0,
+                                dataLabels: {
+                                    enabled: false,
+                                    format: '{point.y:.1f}%'
+                                },
+                                events:{
+                                    click: function (event) {
+                                        var pointName = event.point.name;
+                                        if (pointName.search('{{ env("APP_URL") }}')) {
+                                            pushChartDataStack(pointName);
+                                        } else {
+                                            chartDataStack = [];
+                                            chartDataStack.push(pointName);
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#fff',
+                            borderWidth: 2,
+                            borderRadius: 5,
+                            borderColor: '{point.color}',
+                            headerFormat: null,
+                            pointFormat: '<span style="color:{point.color}">{point.name}</span><br/><span style="color:{point.color}">\u25A0</span> Total clicks: <b>{point.y:.0f}</b>'
+                        },
+                        series: [{
+                            name: 'URLs',
+                            colorByPoint: true,
+                            //pointWidth: 50,
+                            data: response.urls,    //dataset for all urls and counts
+                        }],
+                        drilldown: {
+                            activeAxisLabelStyle: {
+                                textDecoration: 'none',
+                                fontStyle: 'italic',
+                                color: '#54BDDC'
+                            },
+                            activeDataLabelStyle: {
+                                textDecoration: 'none',
+                                fontStyle: 'italic',
+                                color: '#fff'
+                            },
+                            drillUpButton: {
+                                relativeTo: 'spacingBox',
+                                position: {
+                                    y: 0,
+                                    x: 0
+                                },
+                                theme: {
+                                    fill: 'white',
+                                    'stroke-width': 1,
+                                    stroke: 'silver',
+                                    r: 0,
+                                    states: {
+                                        hover: {
+                                            color: '#fff',
+                                            stroke: '#039',
+                                            fill: '#2AABD2'
+                                        },
+                                        select: {
+                                            color: '#fff',
+                                            stroke: '#039',
+                                            fill: '#bada55'
+                                        }
+                                    }
+                                }
+                            },
+                            series: [
+                            @foreach ($urls as $key => $url)
+                            {
+                                name: '{{ env('APP_URL') }}/{{ $url->shorten_suffix }}',
+                                id: '{{ env('APP_URL') }}/{{ $url->shorten_suffix }}',
+                                data: response.urlStat[{{ $key }}]
+                            },
+                            @endforeach
+                            ]
+                        }
+                    });
+                    function pushChartDataStack(data) {
+                        chartDataStack.push(data);
+                        date = new Date(chartDataStack.pop());
+                        month = date.getMonth()+1;
+                        isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
+                        window.location.href = 'http://'+chartDataStack[0]+"/"+isoDate+"/analytics";
+                    }
+                },
+                error: function(response) {
+                    console.log(response);
+                },
+                statusCode: {
+                    500: function(response) {
+                        console.log(response);
                     }
                 }
             });
         </script>
-        <script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
         @if(Session::has('success'))
             <script type="text/javascript">
                 $(document).ready(function(){
@@ -714,6 +872,18 @@
                         title: "Success",
                         text: "{{Session::get('success')}}",
                         type: "success",
+                        html: true
+                    }); 
+                });
+            </script>
+        @endif
+        @if ($errors->any())
+            <script>
+                $(document).ready(function(){
+                    swal({
+                        title: "Error",
+                        text: "{{ $errors->first('brandLogo') }}",
+                        type: "error",
                         html: true
                     }); 
                 });

@@ -16,7 +16,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow" />
     <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
-    <title>Tier5 | URL Shortener | 303 Redirecting...</title>
+    <title>Tier5 | URL Shortener | 301 Redirecting...</title>
     <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
     <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
     <meta name="author" content="Tier5 LLC" />
@@ -59,10 +59,15 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     </script>
     <script>
     $(document).ready(function() {
+        @if ($url->is_custom == 1)
+            var uploadedPath = "{{ $url->uploaded_path }}";
+        @else
+            var uploadedPath = "{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}";
+        @endif
         var options = {
             theme: "custom",
-            content: '<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}" class="center-block">',
-            message: "Redirecting...",
+            content: '<div><img style="margin: auto;" src='+uploadedPath+' class="center-block" /></div><br />',
+            message: "{{ $url->redirecting_text_template }}",
             backgroundColor: "#212230"
         };
 
@@ -70,7 +75,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
         setTimeout(function() {
             window.location.href = 'http://' + '{{ $url->actual_url }}';
             HoldOn.close();
-        }, 5000);
+        }, {{ $url->redirecting_time }});
     });
 
     </script>

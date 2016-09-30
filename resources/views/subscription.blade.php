@@ -146,7 +146,7 @@
                         <button class="btn btn-default" type="submit" disabled="disabled">Subsribed</button>
                     </div>
                     <div id="basicTier" class="package {{ $subscription_status == 'tr5Basic' ? 'brilliant' : null }}">
-                        <div class="name">Basic</div>
+                        <div class="name">Advanced</div>
                         <div class="price">$10</div>
                         <div class="trial">Upto 100 Shorten Links</div>
                         <hr>
@@ -175,7 +175,7 @@
                         @endif
                     </div>
                     <div id="advancedTier" class="package {{ $subscription_status == 'tr5Advanced' ? 'brilliant' : null }} no-margin-right">
-                        <div class="name">Advanced</div>
+                        <div class="name">Pro</div>
                         <div class="price">$20</div>
                         <div class="trial">Unlimited Shorten Links</div>
                         <hr>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Browser;
 use App\Country;
 use App\Http\Requests;
+use App\Limit;
 use App\LinkLimit;
 use App\Platform;
 use App\Referer;
@@ -54,7 +55,211 @@ class HomeController extends Controller
     }
 
     /**
-     * Return country list and total clicks from a country of a shorten url
+     * Return URL data for chart
+     * 
+     * @param  Request $request
+     * @return Illuminate\Http\Response
+     */
+    public function postFetchChartData(Request $request)
+    {
+        $urls = Url::where('user_id', $request->user_id)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+        foreach ($urls as $key => $url) {
+            $URLs[$key]['name'] = env('APP_URL')."/".$url->shorten_suffix;
+            $URLs[$key]['y'] = (int)$url->count;
+            $URLs[$key]['drilldown'] = env('APP_URL')."/".$url->shorten_suffix;
+
+            $start_date = DB::table('referer_url')
+                ->selectRaw('min(created_at) as `min`')
+                ->where('url_id', $url->id)
+                ->first()->min;
+            $end_date = DB::table('referer_url')
+                ->selectRaw('max(created_at) as `max`')
+                ->where('url_id', $url->id)
+                ->first()->max;
+            $alldates = DB::table('referer_url')
+                ->select('created_at')
+                ->where('url_id', $url->id)
+                ->whereBetween('created_at', [$start_date, $end_date])
+                ->get();
+            $date = [];
+            foreach ($alldates as $index => $eachdate) {
+                $date[$index] = date('Y-m-d', strtotime($eachdate->created_at));
+            }
+            $dates = array_unique($date);
+            $index = 0;
+            foreach ($dates as $date) {
+                $URLstat[$key][$index][0] = date('M d, Y', strtotime($date));
+                $URLstat[$key][$index][1] = (int)DB::table('referer_url')
+                        ->selectRaw('count(url_id) as `clicks`')
+                        ->where([
+                            ['url_id', $url->id],
+                            ['created_at', 'like', $date.'%']
+                        ])
+                        ->first()->clicks;
+                $index++;
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'user_id' => $request->user_id,
+            'urls' => $URLs,
+            'urlStat' => $URLstat
+        ]);
+    }
+
+    /**
+     * Get Advanced Analytics for a particualr URL
+     * 
+     * @param  Request $request
+     * @param  string  $url
+     * @return Illuminate\Http\Response
+     */
+    public function getAnalytics(Request $request, $url) {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $url = Url::where('shorten_suffix', $url)->first();
+            $start_date = DB::table('referer_url')
+                ->selectRaw('min(created_at) as `min`')
+                ->where('url_id', $url->id)
+                ->first()->min;
+            $end_date = DB::table('referer_url')
+                ->selectRaw('max(created_at) as `max`')
+                ->where('url_id', $url->id)
+                ->first()->max;
+            $alldates = DB::table('referer_url')
+                ->select('created_at')
+                ->where('url_id', $url->id)
+                ->whereBetween('created_at', [$start_date, $end_date])
+                ->get();
+            foreach ($alldates as $key => $eachdate) {
+                $date[$key] = date('Y-m-d', strtotime($eachdate->created_at));
+            }
+            $dates = array_unique($date);
+            foreach ($dates as $key => $date) {
+                $clicks[$key] = DB::table('referer_url')
+                        ->selectRaw('count(url_id) as `clicks`')
+                        ->where([
+                            ['url_id', $url->id],
+                            ['created_at', 'like', $date.'%']
+                        ])
+                        ->first()->clicks;
+            }
+            return view('analytics', ['user' => $user, 'url' => $url, 'clicks' => $clicks, 'dates' => $dates]);
+        } else {
+            return redirect()->action('HomeController@getIndex');
+        }
+    }
+
+    /**
+     * Get Advanced Analytics by Date for a particualr URL
+     * 
+     * @param  Request $request
+     * @param  string  $url
+     * @param  string  $date
+     * @return Illuminate\Http\Response
+     */
+    public function getAnalyticsByDate(Request $request, $url, $date)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $date = date('Y-m-d', strtotime($date));
+            $url = Url::where('shorten_suffix', $url)
+                        ->where('created_at', 'like', $date.'%')
+                        ->first();
+            return view('analytics', ['user' => $user, 'url' => $url, 'date' => $date]);
+        } else {
+            return redirect()->action('HomeController@getIndex');
+        }
+    }
+
+    public function postAnalyticsByDate(Request $request)
+    {
+        $location[0][0] = 'Country';
+        $location[0][1] = 'Clicks';
+
+        $countries = DB::table('country_url')
+                ->join('countries', 'countries.id', '=', 'country_url.country_id')
+                ->selectRaw('countries.code AS `code`, count(country_url.country_id) AS `count`')
+                ->where('country_url.url_id', $request->url_id)
+                ->where('country_url.created_at', 'like', $request->date.'%')
+                ->groupBy('country_url.country_id')
+                ->orderBy('count', 'DESC')
+                ->get();
+
+        foreach ($countries as $key => $country) {
+            $location[++$key][0] = $country->code;
+            $location[$key][1] = (int)$country->count;
+        }
+
+        $operating_system[0][0] = 'Platform';
+        $operating_system[0][1] = 'Clicks';
+
+        $platforms = DB::table('platform_url')
+                ->join('platforms', 'platforms.id', '=', 'platform_url.platform_id')
+                ->selectRaw('platforms.name, count(platform_url.platform_id) AS `count`')
+                ->where('platform_url.url_id', $request->url_id)
+                ->where('platform_url.created_at', 'like', $request->date.'%')
+                ->groupBy('platform_url.platform_id')
+                ->orderBy('count', 'DESC')
+                ->get();
+
+        foreach ($platforms as $key => $platform) {
+            $operating_system[++$key][0] = $platform->name;
+            $operating_system[$key][1] = (int)$platform->count;
+        }
+
+        $web_browser[0][0] = 'Browser';
+        $web_browser[0][1] = 'Clicks';
+
+        $browsers = DB::table('browser_url')
+                ->join('browsers', 'browsers.id', '=', 'browser_url.browser_id')
+                ->selectRaw('browsers.name, count(browser_url.browser_id) AS `count`')
+                ->where('browser_url.url_id', $request->url_id)
+                ->where('browser_url.created_at', 'like', $request->date.'%')
+                ->groupBy('browser_url.browser_id')
+                ->orderBy('count', 'DESC')
+                ->get();
+
+        foreach ($browsers as $key => $browser) {
+            $web_browser[++$key][0] = $browser->name;
+            $web_browser[$key][1] = (int)$browser->count;
+        }
+
+        $referring_channel[0][0] = 'Referer';
+        $referring_channel[0][1] = 'Clicks';
+
+        $referers = DB::table('referer_url')
+                ->join('referers', 'referers.id', '=', 'referer_url.referer_id')
+                ->selectRaw('referers.name, count(referer_url.referer_id) AS `count`')
+                ->where('referer_url.url_id', $request->url_id)
+                ->where('referer_url.created_at', 'like', $request->date.'%')
+                ->groupBy('referer_url.referer_id')
+                ->orderBy('count', 'DESC')
+                ->get();
+
+        foreach ($referers as $key => $referer) {
+            if ($referer->name == null) {
+                $referring_channel[++$key][0] = 'Dark Traffic';
+            } else {
+                $referring_channel[++$key][0] = $referer->name;
+            }
+            $referring_channel[$key][1] = (int)$referer->count;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'location' => $location,
+            'platform' => $operating_system,
+            'browser' => $web_browser,
+            'referer' => $referring_channel
+        ]);
+    }
+
+    /**
+     * Return analytics data
      * 
      * @param  Request $request
      * @return \Illuminate\Http\Response
@@ -295,6 +500,7 @@ class HomeController extends Controller
         $url->shorten_suffix = $request->custom_url;
         $url->title = $this->getPageTitle($request->actual_url);
         $url->user_id = $request->user_id;
+        $url->is_custom = 1;
 
         if($url->save()) {
             return response()->json([
@@ -358,8 +564,7 @@ class HomeController extends Controller
         ]);
 
         if (Auth::attempt(['email' => $request->useremail, 'password' => $request->passwordlogin], $request->remember)) {
-            return redirect()->action('HomeController@getDashboard')
-                    ->with('success', 'You are now logged in!');
+            return redirect()->action('HomeController@getDashboard');
         } else {
             return redirect()->action('HomeController@getIndex')
                     ->with('error', 'Login unsucessful, cannot matches any credential!');
@@ -445,20 +650,72 @@ class HomeController extends Controller
 
             if ($user->subscribed('main', 'tr5Advanced')) {
                 $subscription_status = 'tr5Advanced';
+                $limit = Limit::where('plan_code', 'tr5Advanced')->first();
             } elseif ($user->subscribed('main', 'tr5Basic')) {
                 $subscription_status = 'tr5Basic';
+                $limit = Limit::where('plan_code', 'tr5Basic')->first();
             } else {
                 $subscription_status = false;
+                $limit = Limit::where('plan_code', 'tr5free')->first();
             }
 
             return view('dashboard', [
                 'user' => $user,
                 'urls' => $urls,
                 'subscription_status' => $subscription_status,
+                'limit' => $limit,
                 'total_links' => $total_links
             ]);
         } else {
             return redirect()->action('HomeController@getIndex');
+        }
+    }
+
+    /**
+     * Get Brand for registered user.
+     * 
+     * @return Illuminate\Http\Response
+     */
+    public function getBrand()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if (($user->subscribed('main', 'tr5Basic')) || ($user->subscribed('main', 'tr5Advanced'))) {
+                return view('brand', ['user' => $user]);
+            } else {
+                return redirect()->action('HomeController@getDashboard');
+            }
+        }
+    }
+
+    /**
+     * Post a brand logo
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function postBrandLogo(Request $request)
+    {
+        $this->validate($request, [
+            'brandLogo' => 'image|dimensions:min_width=64px,min_height=64px,max_width:512px,max_height:512px,ratio:1:1',
+            'redirectingTime' => 'numeric'
+        ]);
+
+        $url = Url::find($request->url_id);
+
+        if($request->hasFile('brandLogo')) {
+            $upload_path = 'uploads/brand_images';
+            $image_name = $request->brandLogo->getClientOriginalName();
+            $request->brandLogo->move($upload_path, $image_name);
+            $url->uploaded_path = $upload_path."/".$image_name;
+        }
+        $url->redirecting_time = $request->redirectingTime*1000;
+        $url->redirecting_text_template = $request->redirectingTextTemplate;
+        if ($url->save()) {
+            return redirect()->back()
+                    ->with('success', "Upload successful.");
+        } else {
+            return redirect()->back()
+                    ->with('error', "Please try again later.");
         }
     }
 
@@ -524,6 +781,44 @@ class HomeController extends Controller
                     ->with('success', 'Subscription is completed.');
         } catch (Exception $e) {
             return back()->with('success', $e->getMessage());
+        }
+    }
+
+    /**
+     * Get Brand for registered user.
+     * 
+     * @return Illuminate\Http\Response
+     */
+    public function getAdminDashboard()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->is_admin == 1) {
+                $limits = Limit::all();
+                return view('admin', ['user' => $user, 'limits' => $limits]);
+            } else {
+                return redirect()->action('HomeController@getDashboard');
+            }
+        }
+    }
+
+    /**
+     * Post Package Limit
+     * 
+     * @param  Request $request
+     * @return Illuminate\Http\Response
+     */
+    public function postPackageLimit(Request $request)
+    {
+        $limit = Limit::find($request->id);
+        if ($request->has('plan_name')) {
+            $limit->plan_name =  $request->plan_name;
+        }
+        $limit->limits = $request->limits;
+        if ($limit->save()) {
+            return redirect()->back()->with('success', 'Updated!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update!');
         }
     }
 }
