@@ -112,7 +112,9 @@
                             </span>
                         </div>
                         <div class="menu-icon">
+                            @if(count($limit) > 0)
                             <button id="{{ (($limit->plan_code == 'tr5Free' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Basic' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Advanced' && $total_links < $limit->limits)) ? 'tr5link' : 'noTr5Link' }}" class="btn btn-danger">CREATE TR5LINK</button>
+                            @endif
                         </div>
                         @if ($subscription_status != null)
                         <div class="menu-icon">

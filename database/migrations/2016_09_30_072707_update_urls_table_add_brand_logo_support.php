@@ -22,7 +22,7 @@ class UpdateUrlsTableAddBrandLogoSupport extends Migration
             $table->integer('redirecting_time')
                 ->default('5000')
                 ->after('uploaded_path');
-            $table->integer('redirecting_text_template')
+            $table->string('redirecting_text_template')
                 ->default('Redirecting...')
                 ->after('uploaded_path');
         });

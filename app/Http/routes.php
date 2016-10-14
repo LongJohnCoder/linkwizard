@@ -11,7 +11,7 @@
 |
 */
 
-Route::group(['domain' => env('APP_URL')], function () {
+Route::group(['domain' => url()], function () {
     Route::get('/', [
         'uses' => 'HomeController@getIndex',
         'as' => 'getIndex'
@@ -113,7 +113,7 @@ Route::group(['domain' => env('APP_URL')], function () {
     ]);
 });
 
-Route::group(['domain' => '{subdomain}.urlshortner.dev'] , function () {
+Route::group(['domain' => '{subdomain}.url()'] , function () {
     Route::get('/', function ($subdomain) {
         return $subdomain;
     });

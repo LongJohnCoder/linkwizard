@@ -36,4 +36,6 @@ V2.6:
     2. Added url advanced analytics by date
 V2.6.1:
     1. Fixed HighChartJs Drilldown and redirection issues.
+V2.6.2:
+    1. Fixed Server routing issue(404), migration(redirecting_text) and dashboard limit(when null).
 
