@@ -769,7 +769,6 @@
                                     click: function (event) {
                                         var pointName = event.point.name;
                                         if (pointName.search('{{ url('/') }}')) {
-                                            //console.log(pointName);
                                             pushChartDataStack(pointName);
                                             console.log(pointName);
                                         } else {
@@ -843,7 +842,6 @@
                         }
                     });
                     function pushChartDataStack(data) {
-                        console.log('hi');
                         chartDataStack.push(data);
                         date = new Date(chartDataStack.pop());
                         month = date.getMonth()+1;
