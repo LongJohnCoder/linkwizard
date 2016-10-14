@@ -66,9 +66,9 @@ class HomeController extends Controller
                     ->orderBy('id', 'DESC')
                     ->get();
         foreach ($urls as $key => $url) {
-            $URLs[$key]['name'] = env('APP_URL')."/".$url->shorten_suffix;
+            $URLs[$key]['name'] = url('/')."/".$url->shorten_suffix;
             $URLs[$key]['y'] = (int)$url->count;
-            $URLs[$key]['drilldown'] = env('APP_URL')."/".$url->shorten_suffix;
+            $URLs[$key]['drilldown'] = url('/')."/".$url->shorten_suffix;
 
             $start_date = DB::table('referer_url')
                 ->selectRaw('min(created_at) as `min`')

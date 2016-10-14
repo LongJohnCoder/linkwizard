@@ -32,5 +32,8 @@ V2.5:
     1. Added client side validation on login and register form.
     2. Changed tier5 static logo to animated on redirecting page.
 V2.6:
-    1. Chnaged graph form ChartJS to HighChartJs
+    1. Changed graph form ChartJS to HighChartJs
     2. Added url advanced analytics by date
+V2.6.1:
+    1. Fixed HighChartJs Drilldown and redirection issues.
+

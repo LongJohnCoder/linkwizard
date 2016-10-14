@@ -422,11 +422,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="redirectingTime">Set redirecting time (in seconds)</label>
-<<<<<<< HEAD
-                                <input type="number" min="0" max="60" id="redirectingTime" name="redirectingTime" class="form-control input-md" value="{{ $url->redirecting_time }}" />
-=======
                                 <input type="number" min="0" max="60" id="redirectingTime" name="redirectingTime" class="form-control input-md" value="{{ $url->redirecting_time/1000 }}" />
->>>>>>> brand
                             </div>
                             <div class="form-group">
                                 <label for="redirectingTextTemplate">Set redirecting text template</label>
@@ -440,20 +436,12 @@
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
-        <script>
-            $(document).ready(function () {
-                $('#redirectingTextTemplate').wysiwyg();
-            });
-        </script>
-=======
         {{-- <script>
             $(document).ready(function () {
                 $('#redirectingTextTemplate').wysiwyg();
             });
         </script> --}}
         @endif
->>>>>>> brand
         <script>
             function editAction(key) {
                 $('#editUrlTitle').on('click', function () {
@@ -776,9 +764,12 @@
                                 events:{
                                     click: function (event) {
                                         var pointName = event.point.name;
-                                        if (pointName.search('{{ env("APP_URL") }}')) {
+                                        if (pointName.search('{{ url('/') }}')) {
+                                            //console.log(pointName);
                                             pushChartDataStack(pointName);
+                                            console.log(pointName);
                                         } else {
+                                            console.log(pointName);
                                             chartDataStack = [];
                                             chartDataStack.push(pointName);
                                         }
@@ -839,8 +830,8 @@
                             series: [
                             @foreach ($urls as $key => $url)
                             {
-                                name: '{{ env('APP_URL') }}/{{ $url->shorten_suffix }}',
-                                id: '{{ env('APP_URL') }}/{{ $url->shorten_suffix }}',
+                                name: '{{ url('/') }}/{{ $url->shorten_suffix }}',
+                                id: '{{ url('/') }}/{{ $url->shorten_suffix }}',
                                 data: response.urlStat[{{ $key }}]
                             },
                             @endforeach
@@ -848,11 +839,12 @@
                         }
                     });
                     function pushChartDataStack(data) {
+                        console.log('hi');
                         chartDataStack.push(data);
                         date = new Date(chartDataStack.pop());
                         month = date.getMonth()+1;
                         isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
-                        window.location.href = 'http://'+chartDataStack[0]+"/"+isoDate+"/analytics";
+                        window.location.href = chartDataStack[0]+"/"+isoDate+"/analytics";
                     }
                 },
                 error: function(response) {
