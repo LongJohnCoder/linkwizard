@@ -166,10 +166,25 @@ class HomeController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
             $date = date('Y-m-d', strtotime($date));
-            $url = Url::where('shorten_suffix', $url)
-                        ->where('created_at', 'like', $date.'%')
-                        ->first();
-            return view('analytics', ['user' => $user, 'url' => $url, 'date' => $date]);
+            $url = DB::table('urls')
+                    ->join('country_url', 'urls.id', '=', 'country_url.url_id')
+                    ->join('browser_url', 'urls.id', '=', 'browser_url.url_id')
+                    ->join('platform_url', 'urls.id', '=', 'platform_url.url_id')
+                    ->join('referer_url', 'urls.id', '=', 'referer_url.url_id')
+                    ->selectRaw('distinct(urls.id) as url_id')
+                    ->where('country_url.created_at', 'like', $date.'%')
+                    ->where('browser_url.created_at', 'like', $date.'%')
+                    ->where('platform_url.created_at', 'like', $date.'%')
+                    ->where('referer_url.created_at', 'like', $date.'%')
+                    ->where('urls.shorten_suffix', $url)
+                    ->first();
+            if ($url) {
+                $url = Url::find($url->url_id);
+                return view('analytics', ['user' => $user, 'url' => $url, 'date' => $date]);
+            } else {
+                return redirect()->action('HomeController@getDashboard')
+                                ->with('error', 'Sorry, for this inconvenience. There is no analytical records founds on '.date('M d, Y', strtotime($date)));
+            }
         } else {
             return redirect()->action('HomeController@getIndex');
         }

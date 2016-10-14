@@ -11,7 +11,7 @@
 |
 */
 
-Route::group(['domain' => url()], function () {
+Route::group(['domain' => $_SERVER['SERVER_NAME']], function () {
     Route::get('/', [
         'uses' => 'HomeController@getIndex',
         'as' => 'getIndex'
@@ -113,7 +113,7 @@ Route::group(['domain' => url()], function () {
     ]);
 });
 
-Route::group(['domain' => '{subdomain}.url()'] , function () {
+Route::group(['domain' => '{subdomain}'.$_SERVER['SERVER_NAME']] , function () {
     Route::get('/', function ($subdomain) {
         return $subdomain;
     });

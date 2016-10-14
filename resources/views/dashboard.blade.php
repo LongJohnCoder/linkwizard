@@ -118,7 +118,9 @@
                         </div>
                         @if ($subscription_status != null)
                         <div class="menu-icon">
+                             @if(count($limit) > 0)
                             <button id="{{ (($limit->plan_code == 'tr5Basic' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Advanced' && ((strtolower($limit->limits) == 'unlimited') ?: ($total_links < $limit->limits)))) ? 'customLink' : 'noCustomLink' }}" class="btn btn-info">CREATE CUSTOM LINK</button>
+                            @endif
                         </div>
                         {{-- <div class="search-part"> 
                             <form action="" class="search-form">
@@ -866,6 +868,18 @@
                         title: "Success",
                         text: "{{Session::get('success')}}",
                         type: "success",
+                        html: true
+                    }); 
+                });
+            </script>
+        @endif
+        @if(Session::has('error'))
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    swal({
+                        title: "Error",
+                        text: "{{Session::get('error')}}",
+                        type: "error",
                         html: true
                     }); 
                 });
