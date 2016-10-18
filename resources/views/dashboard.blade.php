@@ -30,15 +30,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
         <script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
         <!-- Facebook and Twitter integration -->
-        <meta property="og:title" content=""/>
-        <meta property="og:image" content=""/>
-        <meta property="og:url" content=""/>
-        <meta property="og:site_name" content=""/>
-        <meta property="og:description" content=""/>
-        <meta name="twitter:title" content="" />
-        <meta name="twitter:image" content="" />
-        <meta name="twitter:url" content="" />
-        <meta name="twitter:card" content="" />
+        <meta property="og:title" content="" />
+        <meta property="og:image" content="" />
+        <meta property="og:url" content="" />
+        <meta property="og:site_name" content="" />
+        <meta property="og:description" content="" />
+        <meta name="twitter:title" content=""  />
+        <meta name="twitter:image" content=""  />
+        <meta name="twitter:url" content=""  />
+        <meta name="twitter:card" content=""  />
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -121,43 +121,57 @@
                         </div>
                         <div class="menu-icon">
                             @if(count($limit) > 0)
-                            <button id="{{ (($limit->plan_code == 'tr5Free' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Basic' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Advanced' && $total_links < $limit->limits)) ? 'tr5link' : 'noTr5Link' }}" class="btn btn-danger">CREATE TR5LINK</button>
+                                <button id="{{ (($limit->plan_code == 'tr5Free' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Basic' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Advanced' && $total_links < $limit->limits)) ? 'tr5link' : 'noTr5Link' }}" class="btn btn-danger">
+                                    CREATE TR5LINK
+                                </button>
                             @endif
                         </div>
                         @if ($subscription_status != null)
-                        <div class="menu-icon">
-                             @if(count($limit) > 0)
-                            <button id="{{ (($limit->plan_code == 'tr5Basic' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Advanced' && ((strtolower($limit->limits) == 'unlimited') ?: ($total_links < $limit->limits)))) ? 'customLink' : 'noCustomLink' }}" class="btn btn-info">CREATE CUSTOM LINK</button>
-                            @endif
-                        </div>
-                        {{-- <div class="search-part"> 
-                            <form action="" class="search-form">
-                                <div class="form-group has-feedback">
-                                    <input type="text" class="form-control" name="search" id="search" placeholder="SEARCH" />
-                                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                                </div>
-                            </form>
-                        </div> --}}
+                            <div class="menu-icon">
+                                 @if(count($limit) > 0)
+                                    <button id="{{ (($limit->plan_code == 'tr5Basic' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Advanced' && ((strtolower($limit->limits) == 'unlimited') ?: ($total_links < $limit->limits)))) ? 'customLink' : 'noCustomLink' }}" class="btn btn-info">
+                                        CREATE CUSTOM LINK
+                                    </button>
+                                @endif
+                            </div>
+                            {{-- <div class="search-part"> 
+                                <form action="" class="search-form">
+                                    <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" name="search" id="search" placeholder="SEARCH" />
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </form>
+                            </div> --}}
                         @endif
                         @if ($user->is_admin == 1)
-                        <div class="menu-icon">
-                            <a href="{{ route('getAdminDashboard') }}"><button id="" class="btn btn-warning">ADMIN DASHBOARD</button></a>
-                        </div>
+                            <div class="menu-icon">
+                                <a href="{{ route('getAdminDashboard') }}">
+                                    <button id="" class="btn btn-warning">
+                                        ADMIN DASHBOARD
+                                    </button>
+                                </a>
+                            </div>
                         @endif
                     </div>
                 </div>
             </div>
             <div id="myNav" class="sidebar right">
-                <span id="cross" class="closebtn"><i class="fa fa-times"></i></span>
+                <span id="cross" class="closebtn">
+                    <i class="fa fa-times"></i>
+                </span>
                 <div class="overlay-content">
                     <a href="{{ route('getLogout') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-sign-out"></i> Sign out</button>
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fa fa-sign-out"></i> Sign out
+                        </button>
                     </a>
                     <div class="profile-name">{{ $user->name }}</div>
                     <div class="profile-email">{{ $user->email }}</div>
                     @if ($subscription_status != 'tr5Advanced')
                     <a href="{{ route('getSubscribe') }}">
-                        <button type="button" class="btn btn-success btn-sm"><i class="fa fa-upgrade"></i> Upgrade</button>
+                        <button type="button" class="btn btn-success btn-sm">
+                            <i class="fa fa-upgrade"></i> Upgrade
+                        </button>
                     </a>
                     @endif
                 </div>
@@ -169,7 +183,9 @@
                         <div class="col-md-12 col-sm-12">
                             <label for="givenUrl">Paste An Actual URL Here</label>
                             <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
-                            <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">Shorten Url</button>
+                            <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
+                                Shorten Url
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -183,10 +199,12 @@
                             <input id="givenActualUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
                             <label for="makeCustomUrl">Create Your Own Custom Link</label>
                             <div class="input-group">
-                                <span class="input-group-addon">tr5.io/</span>
+                                <span class="input-group-addon">{{ env('APP_URL') }}/</span>
                                 <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. tr5.io/MyLinK">
                             </div>
-                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">Shorten Url</button>
+                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
+                                Shorten Url
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -219,9 +237,17 @@
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 bhoechie-tab">
                                 @foreach ($urls as $key => $url)
                                     <div class="bhoechie-tab-content {{ $key == 0 ? 'active' : null }}">
-                                        <p class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</p>
-                                        <h1 id="urlTitleHeading{{ $key }}">{{ $url->title }} {{-- <button><i class="fa fa-archive"></i></button> --}}</h1>
-                                        <h5><a href="http://{{ $url->actual_url }}" target="_blank">{{ $url->actual_url }}</a></h5>
+                                        <p class="date">
+                                            {{ date('M d, Y', strtotime($url->created_at)) }}
+                                        </p>
+                                        <h1 id="urlTitleHeading{{ $key }}">
+                                            {{ $url->title }} {{-- <button><i class="fa fa-archive"></i></button> --}}
+                                        </h1>
+                                        <h5>
+                                            <a href="http://{{ $url->actual_url }}" target="_blank">
+                                                {{ $url->actual_url }}
+                                            </a>
+                                        </h5>
                                         <div class="row">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                                                 @if (isset($url->subdomain))
@@ -346,8 +372,7 @@
                                                 type: 'POST',
                                                 data: {url_id: {{ $url->id }}, _token: "{{ csrf_token() }}"},
                                                 success: function (response) {
-                                                if (response.status == "success") {
-                                                    console.log(response);
+                                                    if (response.status == "success") {
                                                         google.charts.setOnLoadCallback(function () {
                                                             var data = google.visualization.arrayToDataTable(response.location);
                                                             var options = {
@@ -428,7 +453,9 @@
                                 <div class="control-group">
                                     <label class="control-label" for="urlTitle">Title</label>
                                     <input type="text" name="title" placeholder="Your URL Title" class="form-control input-mg" id="urlTitle" style="width: 80%" value="" />
-                                    <button type="button" class="btn btn-warning" id="editUrlTitle">Edit</button>
+                                    <button type="button" class="btn btn-warning" id="editUrlTitle">
+                                        Edit
+                                    </button>
                                     <input type="hidden" name="id" id="urlId" value="" />
                                 </div>
                             </fieldset>
@@ -436,7 +463,9 @@
                     </div>
                     <div class="modal-footer">
                         <center>
-                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">
+                                Close
+                            </button>
                         </center>
                     </div>
                 </div>
@@ -449,7 +478,9 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" id="subdomainModalLabel">Manage Redirecting Page Template For Your Custom Url</h4>
+                        <h4 class="modal-title" id="subdomainModalLabel">
+                            Manage Redirecting Page Template For Your Custom Url
+                        </h4>
                     </div>
                     <div class="modal-body" id="uploadModalBody">
                         <form class="form" role="form" action="{{ route('postBrandLogo') }}" method="post" enctype="multipart/form-data">
@@ -468,7 +499,9 @@
                                 <textarea id="redirectingTextTemplate" name="redirectingTextTemplate" class="form-control input-md">"{{ $url->redirecting_text_template }}</textarea>
                             </div>
                             <hr />
-                            <button type="submit" class="btn btn-default btn-md pull-right">Submit</button>
+                            <button type="submit" class="btn btn-default btn-md pull-right">
+                                Submit
+                            </button>
                         </form>
                         <br />
                     </div>
@@ -482,15 +515,21 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h4 class="modal-title" id="subdomainModalLabel">Create Your Own Brand Link</h4>
+                        <h4 class="modal-title" id="subdomainModalLabel">
+                            Create Your Own Brand Link
+                        </h4>
                     </div>
                     <div class="modal-body" id="subdomainModalBody">
-                        <p>You may want to customize url like following:</p>
+                        <p>
+                            You may want to customize url like following:
+                        </p>
                         <ul class="list-unstyled">
                             <li>yourbrand.tr5.io/abcdef (as a subdomain)</li>
                             <li>tr5.io/yourbrand/abcdef (as a subdirectory)</li>
                         </ul>
-                        <p id="subdomainWarning" style="color: red; display: none;"><strong>Warning:</strong> Brand name can not be changed later. This action will not be undone!</p>
+                        <p id="subdomainWarning" style="color: red; display: none;">
+                            <strong>Warning:</strong> Brand name can not be changed later. This action will not be undone!
+                        </p>
                         <form class="form" role="form" action="{{ route('postBrandLink') }}" method="post">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                             <input type="hidden" name="url_id" value="{{ $url->id }}" id="urlId" />
@@ -562,7 +601,6 @@
                             $(".modal-body #urlTitle").val(response.url.title);
                         },
                         error: function(response) {
-                            console.log(response);
                             swal({
                                 title: "Oops!",
                                 text: "Cannot edit this title",
@@ -647,7 +685,6 @@
                                     _token: "{{ csrf_token() }}"
                                 }, success: function (response) {
                                     if(response.status=="success") {
-                                        console.log(response);
                                         var shortenUrl = response.url;
                                         var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
                                         swal({
@@ -665,7 +702,7 @@
                                         HoldOn.close();
                                     } else {
                                         swal({
-                                            title: "",
+                                            title: null,
                                             text: "Please paste an actual URL",
                                             type: "warning",
                                             html: true
@@ -673,12 +710,12 @@
                                         HoldOn.close();
                                     }
                                 }, error: function(response) {
-                                    console.log(response);
+                                    console.log('Response error!');
                                     HoldOn.close();
                                 }, statusCode: {
                                     500: function() {
                                         swal({
-                                            title: "",
+                                            title: null,
                                             text: "Access Forbidden, Please paste a valid URL!",
                                             type: "error",
                                             html: true
@@ -690,7 +727,7 @@
                         } else {
                             swal({
                                 type: "warning",
-                                title: "",
+                                title: null,
                                 text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
                                 html: true
                             });
@@ -698,7 +735,7 @@
                     } else {
                         swal({
                             type: "warning",
-                            title: "",
+                            title: null,
                             text: "Please Enter An URL"
                         });     
                     }
@@ -715,14 +752,12 @@
                     if(url) {
                         if(validUrl) {
                             HoldOn.open(options);
-                            console.log(url);
                             $.ajax({
                                 type: 'POST',
                                 url: "{{ route('postShortUrlTier5') }}",
                                 data: {url: url, user_id: userId, _token: "{{ csrf_token() }}"},
                                 success: function (response) {
                                     if(response.status=="success") {
-                                        console.log(response);
                                         var shortenUrl = response.url;
                                         var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
                                         swal({
@@ -740,7 +775,7 @@
                                         HoldOn.close();
                                     } else {
                                         swal({
-                                            title: "",
+                                            title: null,
                                             text: "Please paste an actual URL",
                                             type: "warning",
                                             html: true
@@ -748,12 +783,12 @@
                                         HoldOn.close();
                                     }
                                 }, error: function(response) {
-                                    console.log(response);
+                                    console.log('Response error!');
                                     HoldOn.close();
                                 }, statusCode: {
                                     500: function() {
                                         swal({
-                                            title: "",
+                                            title: null,
                                             text: "Access Forbidden, Please paste a valid URL!",
                                             type: "error",
                                             html: true
@@ -765,7 +800,7 @@
                         } else {
                             var errorMsg="Enter A Valid URL";
                             swal({
-                                title: "",
+                                title: null,
                                 text: errorMsg,
                                 type: "error",
                                 html: true
@@ -774,7 +809,7 @@
                     } else {
                         var errorMsg="Please Enter An URL";
                         swal({
-                            title: "",
+                            title: null,
                             text: errorMsg,
                             type: "warning",
                             html: true
@@ -864,9 +899,7 @@
                                         var pointName = event.point.name;
                                         if (pointName.search('{{ url('/') }}')) {
                                             pushChartDataStack(pointName);
-                                            console.log(pointName);
                                         } else {
-                                            console.log(pointName);
                                             chartDataStack = [];
                                             chartDataStack.push(pointName);
                                         }
@@ -944,11 +977,11 @@
                     }
                 },
                 error: function(response) {
-                    console.log(response);
+                    console.log('Response error!');
                 },
                 statusCode: {
                     500: function(response) {
-                        console.log(response);
+                        console.log('500 Internal server error!');
                     }
                 }
             });

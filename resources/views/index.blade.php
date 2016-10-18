@@ -18,15 +18,15 @@
     <meta name="author" content="Tier5 LLC" />
     <!-- Bootstrap -->
     <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
-    <link href="{{ URL::to('/').'/public/resources/css/bootstrap.min.css'}}" rel="stylesheet">
-    <link href="{{ URL::to('/').'/public/resources/css/jquery.fancybox.css'}}" rel="stylesheet">
-    <link href="{{ URL::to('/').'/public/resources/css/animate.css'}}" rel="stylesheet">
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
-    <link href="{{ URL::to('/').'/public/resources/css/styles.css'}}" rel="stylesheet">
-    <link href="{{ URL::to('/').'/public/resources/css/queries.css'}}" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css">
-    <link rel="stylesheet" type="text/css" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css">
+    <link href="{{ URL::to('/').'/public/resources/css/bootstrap.min.css'}}" rel="stylesheet" />
+    <link href="{{ URL::to('/').'/public/resources/css/jquery.fancybox.css'}}" rel="stylesheet" />
+    <link href="{{ URL::to('/').'/public/resources/css/animate.css'}}" rel="stylesheet" />
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css' />
+    <link href="{{ URL::to('/').'/public/resources/css/styles.css'}}" rel="stylesheet" />
+    <link href="{{ URL::to('/').'/public/resources/css/queries.css'}}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
+    <link rel="stylesheet" type="text/css" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
     <!-- Facebook and Twitter integration -->
     <meta property="og:title" content="" />
     <meta property="og:image" content="" />
@@ -502,7 +502,6 @@
             if (url) {
                 if (validUrl) {
                     HoldOn.open(options);
-                    console.log(url);
                     $.ajax({
                         type: 'POST',
                         url: "{{ route('postShortUrlTier5') }}",
@@ -513,7 +512,6 @@
                         },
                         success: function(response) {
                             if (response.status == "success") {
-                                console.log(response);
                                 var shortenUrl = response.url;
                                 var displayHtml = "<a href=" + shortenUrl + " target='_blank' id='newshortlink'>" + shortenUrl + "</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink'><i class='fa fa-clipboard'></i> Copy</button>";
                                 swal({
@@ -526,7 +524,7 @@
                                 HoldOn.close();
                             } else {
                                 swal({
-                                    title: "",
+                                    title: null,
                                     text: "Please paste an actual URL",
                                     type: "warning",
                                     html: true
@@ -535,13 +533,14 @@
                             }
                         },
                         error: function(response) {
-                            console.log(response);
+                            console.log('Response error!');
                             HoldOn.close();
                         },
                         statusCode: {
                             500: function() {
+                                console.log('500 internal server error!');
                                 swal({
-                                    title: "",
+                                    title: null,
                                     text: "Access Forbidden, Please paste a valid URL!",
                                     type: "error",
                                     html: true
@@ -553,7 +552,7 @@
                 } else {
                     var errorMsg = "Enter A Valid URL";
                     swal({
-                        title: "",
+                        title: null,
                         text: errorMsg,
                         type: "error",
                         html: true
@@ -562,7 +561,7 @@
             } else {
                 var errorMsg = "Please Enter An URL";
                 swal({
-                    title: "",
+                    title: null,
                     text: errorMsg,
                     type: "warning",
                     html: true

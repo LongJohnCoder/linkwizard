@@ -98,14 +98,9 @@
                 <section class="main-content">
                     <div class="row">
                         <div class="col-lg-12">
-                            <canvas id="barChart" style="min-width: 310px; height: 165px; margin: 0 auto"></canvas>
-                        </div>
-                    </div>
-                    {{-- <div class="row">
-                        <div class="col-lg-12">
                             <div id="columnChart" style="min-width: 310px; height: 165px; margin: 0 auto"></div>
                         </div>
-                    </div> --}}
+                    </div>
                 </section>
             </div>
         </section>
@@ -145,7 +140,6 @@
                                             data: {url_id: {{ $url->id }}, date: '{{ $date }}', _token: "{{ csrf_token() }}"},
                                             success: function (response) {
                                                 if (response.status == "success") {
-                                                    console.log(response);
                                                     google.charts.setOnLoadCallback(function () {
                                                         var data = google.visualization.arrayToDataTable(response.location);
                                                         var options = {
@@ -228,296 +222,82 @@
 
     </script>
     <script>
-    $(function() {
-        Highcharts.Tick.prototype.drillable = function() {};
-        Highcharts.setOptions({
-            lang: {
-                drillUpText: '<< Back to {series.name}'
-            }
-        });
-        $('#columnChart').highcharts({
-            chart: {
-                type: 'column',
-                backgroundColor: 'rgba(255, 255, 255, 0)'
+        $.ajax({
+            type: 'post',
+            url: '{{ route('postFetchChartDataByDate') }}',
+            data: {
+                "user_id": {{ $user->id }},
+                "url_id": {{ $url->id }},
+                "date": "{{ $date }}",
+                "_token": "{{ csrf_token() }}"
             },
-            title: {
-                text: ''
-            },
-            xAxis: {
-                type: 'category'
-            },
-            yAxis: {
-                labels: {
-                    enabled: false
-                },
-                title: {
-                    text: null
-                },
-                gridLineWidth: 0,
-                minorGridLineWidth: 0
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                series: {
-                    borderWidth: 0,
-                    dataLabels: {
-                        enabled: false,
-                        format: '{point.y:.1f}%'
-                    }
-                }
-            },
-
-            tooltip: {
-                backgroundColor: '#fff',
-                borderWidth: 1,
-                borderRadius: 10,
-                borderColor: '#AAA',
-                headerFormat: null,
-                pointFormat: '<span style="color:{point.color}">{point.name}</span><br/>Total clicks: <b>{point.y:.0f}</b>'
-            },
-
-            series: [{
-                name: 'URLs',
-                colorByPoint: true,
-                pointWidth: 28,
-                data: [{
-                    name: 'TWRP3x',
-                    y: 56.33,
-                    drilldown: 'TWRP3x'
-                }, {
-                    name: 'Chrome',
-                    y: 24.03,
-                    drilldown: 'Chrome'
-                }, {
-                    name: 'Firefox',
-                    y: 10.38,
-                    drilldown: 'Firefox'
-                }, {
-                    name: 'Safari',
-                    y: 4.77,
-                    drilldown: 'Safari'
-                }, {
-                    name: 'Opera',
-                    y: 0.91,
-                    drilldown: 'Opera'
-                }, {
-                    name: 'Proprietary or Undetectable',
-                    y: 0.2,
-                    drilldown: null
-                }]
-            }],
-            drilldown: {
-                drillUpButton: {
-                    relativeTo: 'spacingBox',
-                    position: {
-                        y: 0,
-                        x: 0
+            success: function(response) {
+                console.log(response);
+                $('#columnChart').highcharts({
+                    chart: {
+                        type: 'column',
+                        backgroundColor: 'rgba(255, 255, 255, 0)'
                     },
-                    theme: {
-                        fill: 'white',
-                        'stroke-width': 1,
-                        stroke: 'silver',
-                        r: 0,
-                        states: {
-                            hover: {
-                                fill: '#bada55'
-                            },
-                            select: {
-                                stroke: '#039',
-                                fill: '#bada55'
+                    title: {
+                        text: null
+                    },
+                    xAxis: {
+                        type: 'category',
+                        labels: {
+                            style: {
+                                fontWeight: 'bold',
+                                color: '#fff'
                             }
                         }
-                    }
+                    },
+                    yAxis: {
+                        labels: {
+                            enabled: false
+                        },
+                        title: {
+                            text: null
+                        },
+                        gridLineWidth: 0,
+                        minorGridLineWidth: 0
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: false,
+                                format: '{point.y:.1f}%'
+                            }
+                        }
+                    },
 
-                },
-                series: [{
-                    name: 'TWRP3x',
-                    id: 'TWRP3x',
-                    data: [
-                        [
-                            'Sep 9, 2016',
-                            24.13
-                        ],
-                        [
-                            'Sep 15, 2016',
-                            17.2
-                        ],
-                        [
-                            'Sep 21, 2016',
-                            8.11
-                        ],
-                        [
-                            'Sep 29, 2016',
-                            5.33
-                        ],
-                        [
-                            'Oct 03, 2016',
-                            1.06
-                        ],
-                        [
-                            'Oct 06, 2016',
-                            0.5
-                        ]
-                    ]
-                }, {
-                    name: 'Chrome',
-                    id: 'Chrome',
-                    data: [
-                        [
-                            'v40.0',
-                            5
-                        ],
-                        [
-                            'v41.0',
-                            4.32
-                        ],
-                        [
-                            'v42.0',
-                            3.68
-                        ],
-                        [
-                            'v39.0',
-                            2.96
-                        ],
-                        [
-                            'v36.0',
-                            2.53
-                        ],
-                        [
-                            'v43.0',
-                            1.45
-                        ],
-                        [
-                            'v31.0',
-                            1.24
-                        ],
-                        [
-                            'v35.0',
-                            0.85
-                        ],
-                        [
-                            'v38.0',
-                            0.6
-                        ],
-                        [
-                            'v32.0',
-                            0.55
-                        ],
-                        [
-                            'v37.0',
-                            0.38
-                        ],
-                        [
-                            'v33.0',
-                            0.19
-                        ],
-                        [
-                            'v34.0',
-                            0.14
-                        ],
-                        [
-                            'v30.0',
-                            0.14
-                        ]
-                    ]
-                }, {
-                    name: 'Firefox',
-                    id: 'Firefox',
-                    data: [
-                        [
-                            'v35',
-                            2.76
-                        ],
-                        [
-                            'v36',
-                            2.32
-                        ],
-                        [
-                            'v37',
-                            2.31
-                        ],
-                        [
-                            'v34',
-                            1.27
-                        ],
-                        [
-                            'v38',
-                            1.02
-                        ],
-                        [
-                            'v31',
-                            0.33
-                        ],
-                        [
-                            'v33',
-                            0.22
-                        ],
-                        [
-                            'v32',
-                            0.15
-                        ]
-                    ]
-                }, {
-                    name: 'Safari',
-                    id: 'Safari',
-                    data: [
-                        [
-                            'v8.0',
-                            2.56
-                        ],
-                        [
-                            'v7.1',
-                            0.77
-                        ],
-                        [
-                            'v5.1',
-                            0.42
-                        ],
-                        [
-                            'v5.0',
-                            0.3
-                        ],
-                        [
-                            'v6.1',
-                            0.29
-                        ],
-                        [
-                            'v7.0',
-                            0.26
-                        ],
-                        [
-                            'v6.2',
-                            0.17
-                        ]
-                    ]
-                }, {
-                    name: 'Opera',
-                    id: 'Opera',
-                    data: [
-                        [
-                            'v12.x',
-                            0.34
-                        ],
-                        [
-                            'v28',
-                            0.24
-                        ],
-                        [
-                            'v27',
-                            0.17
-                        ],
-                        [
-                            'v29',
-                            0.16
-                        ]
-                    ]
-                }]
+                    tooltip: {
+                        backgroundColor: '#fff',
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        borderColor: '#AAA',
+                        headerFormat: null,
+                        pointFormat: '<span style="color:{point.color}">{point.name}</span><br/>Total clicks: <b>{point.y:.0f}</b>'
+                    },
+                    series: [{
+                        name: 'URLs',
+                        colorByPoint: true,
+                        //pointWidth: 28,
+                        data: response.chartData
+                    }],
+                });
+            },
+            error: function(response) {
+                console.log('Response error!');
+            },
+            statusCode: {
+                500: function(response) {
+                    console.log('500 Internal server error!');
+                }
             }
         });
-    });
-
     </script>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
     <script>

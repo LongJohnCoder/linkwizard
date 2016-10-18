@@ -56,6 +56,11 @@ Route::group(['domain' => $domain], function () {
                 'as' => 'postFetchChartData',
             ]);
 
+            Route::any('fetchchartdatabydate', [
+                'uses' => 'HomeController@postFetchChartDataByDate',
+                'as' => 'postFetchChartDataByDate',
+            ]);
+
             Route::post('editurlinfo', [
                 'uses' => 'HomeController@postEditUrlInfo',
                 'as' => 'postEditUrlInfo',

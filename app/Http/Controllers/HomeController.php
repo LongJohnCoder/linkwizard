@@ -8,6 +8,7 @@ use App\Limit;
 use App\LinkLimit;
 use App\Platform;
 use App\Referer;
+use App\RefererUrl;
 use App\Subdomain;
 use App\Url;
 use App\User;
@@ -109,6 +110,48 @@ class HomeController extends Controller
             'user_id' => $request->user_id,
             'urls' => $URLs,
             'urlStat' => $URLstat,
+        ]);
+    }
+
+    /**
+     * Return URL data by date for chart.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function postFetchChartDataByDate(Request $request)
+    {
+        //dd($request->request);
+        $chartData = [];
+        $key = 0;
+        for ($count = 0; $count < 24; $count = $count+2) {
+            if ($count < 10) {
+                $prefix = 0;
+            } else {
+                $prefix = null;
+            }
+            $countNext = (int)$count + 2;
+            $chartData[$key]['name'] = date('h:i A', strtotime($prefix.$count.':00:00')).' - '.date('h:i A', strtotime($prefix.$countNext.':00:00'));
+            $clicks = DB::table('referer_url')
+                        ->selectRaw('count(url_id) as clicks')
+                        ->where('url_id', $request->url_id)
+                        ->whereBetween('created_at', [
+                            $request->date.' '.$prefix.$count.':00:00',
+                            $request->date.' '.$prefix.$countNext.':00:00'
+                        ])
+                        ->first();
+            if ($clicks) {
+                $chartData[$key]['y'] = (int)$clicks->clicks;
+            } else {
+                $chartData[$key]['y'] = 0;
+            }
+            $key++;
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'chartData' => $chartData,
         ]);
     }
 
