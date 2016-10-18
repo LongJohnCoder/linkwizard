@@ -45,4 +45,14 @@ class Url extends Model
     {
         return $this->belongsToMany('App\Browser')->withTimestamps();
     }
+
+    /**
+     * Get the subdomain associated with an url.
+     * 
+     * @return Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function subdomain()
+    {
+        return $this->hasOne('App\Subdomain');
+    }
 }

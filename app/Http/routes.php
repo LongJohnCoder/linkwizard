@@ -11,110 +11,130 @@
 |
 */
 
-Route::group(['domain' => $_SERVER['SERVER_NAME']], function () {
+$domain = env('APP_URL');
+
+Route::group(['domain' => $domain], function () {
     Route::get('/', [
         'uses' => 'HomeController@getIndex',
-        'as' => 'getIndex'
+        'as' => 'getIndex',
     ]);
 
     Route::get('/{url}', [
         'uses' => 'HomeController@getRequestedUrl',
-        'as' => 'getRequestedUrl'
+        'as' => 'getRequestedUrl',
     ]);
 
-    Route::post('/url/fetchanalytics', [
-        'uses' => 'HomeController@postFetchAnalytics',
-        'as' => 'postFetchAnalytics'
-    ]);
-
-    Route::any('/url/fetchchartdata', [
-        'uses' => 'HomeController@postFetchChartData',
-        'as' => 'postFetchChartData'
-    ]);
-
-    Route::post('/url/editurlinfo', [
-        'uses' => 'HomeController@postEditUrlInfo',
-        'as' => 'postEditUrlInfo'
-    ]);
-
-    Route::post('/url/userinfo', [
-        'uses' => 'HomeController@postUserInfo',
-        'as' => 'postUserInfo'
-    ]);
-
-    Route::post('/url/short', [
-        'uses' => 'HomeController@postShortUrlTier5',
-        'as' => 'postShortUrlTier5'
-    ]);
-
-    Route::post('/url/custom', [
-        'uses' => 'HomeController@postCustomUrlTier5',
-        'as' => 'postCustomUrlTier5'
-    ]);
-
-    Route::get('/{url}/analytics', [
-        'uses' => 'HomeController@getAnalytics',
-        'as' => 'getAnalytics'
+    Route::get('/{subdirectory}/{url}', [
+        'uses' => 'HomeController@getRequestedSubdirectoryUrl',
+        'as' => 'getRequestedSubdirectoryUrl',
     ]);
 
     Route::get('/{url}/{date}/analytics', [
         'uses' => 'HomeController@getAnalyticsByDate',
-        'as' => 'getAnalyticsByDate'
+        'as' => 'getAnalyticsByDate',
     ]);
 
-    Route::post('/analytics-by-date', [
-        'uses' => 'HomeController@postAnalyticsByDate',
-        'as' => 'postAnalyticsByDate'
-    ]);
+    Route::group(['prefix' => 'app'], function () {
+        Route::group(['prefix' => 'url'], function() {
+            Route::post('short', [
+                'uses' => 'HomeController@postShortUrlTier5',
+                'as' => 'postShortUrlTier5',
+            ]);
 
-    Route::post('/user/register', [
-        'uses' => 'HomeController@postRegister',
-        'as' => 'postRegister'
-    ]);
+            Route::post('custom', [
+                'uses' => 'HomeController@postCustomUrlTier5',
+                'as' => 'postCustomUrlTier5',
+            ]);
 
-    Route::post('/user/login', [
-        'uses' => 'HomeController@postLogin',
-        'as' => 'postLogin'
-    ]);
+            Route::post('fetchanalytics', [
+                'uses' => 'HomeController@postFetchAnalytics',
+                'as' => 'postFetchAnalytics',
+            ]);
 
-    Route::get('/user/logout', [
-        'uses'=>'HomeController@getLogout',
-        'as'=>'getLogout'
-    ]);
+            Route::any('fetchchartdata', [
+                'uses' => 'HomeController@postFetchChartData',
+                'as' => 'postFetchChartData',
+            ]);
 
-    Route::get('/user/dashboard', [
-        'uses' => 'HomeController@getDashboard',
-        'as' => 'getDashboard'
-    ]);
+            Route::post('editurlinfo', [
+                'uses' => 'HomeController@postEditUrlInfo',
+                'as' => 'postEditUrlInfo',
+            ]);
 
-    Route::post('/user/brand-logo', [
-        'uses' => 'HomeController@postBrandLogo',
-        'as' => 'postBrandLogo'
-    ]);
+            Route::post('userinfo', [
+                'uses' => 'HomeController@postUserInfo',
+                'as' => 'postUserInfo',
+            ]);
 
-    Route::get('/user/subscribe', [
-        'uses' => 'HomeController@getSubscribe',
-        'as' => 'getSubscribe'
-    ]);
+            Route::post('analytics-by-date', [
+                'uses' => 'HomeController@postAnalyticsByDate',
+                'as' => 'postAnalyticsByDate',
+            ]);
+        });
 
-    Route::post('/user/subscription', [
-        'uses' => 'HomeController@postSubscription',
-        'as' => 'postSubscription'
-    ]);
+        Route::group(['prefix' => 'user'], function () {
+            Route::post('register', [
+                'uses' => 'HomeController@postRegister',
+                'as' => 'postRegister',
+            ]);
 
-    Route::get('/admin/dashboard', [
-        'uses' => 'HomeController@getAdminDashboard',
-        'as' => 'getAdminDashboard'
-    ]);
+            Route::post('login', [
+                'uses' => 'HomeController@postLogin',
+                'as' => 'postLogin',
+            ]);
 
-    Route::post('/admin/package-limit', [
-        'uses' => 'HomeController@postPackageLimit',
-        'as' => 'postPackageLimit'
-    ]);
+            Route::get('logout', [
+                'uses' => 'HomeController@getLogout',
+                'as' => 'getLogout',
+            ]);
+
+            Route::get('dashboard', [
+                'uses' => 'HomeController@getDashboard',
+                'as' => 'getDashboard',
+            ]);
+
+            Route::get('subscribe', [
+                'uses' => 'HomeController@getSubscribe',
+                'as' => 'getSubscribe',
+            ]);
+
+            Route::post('subscription', [
+                'uses' => 'HomeController@postSubscription',
+                'as' => 'postSubscription',
+            ]);
+
+            Route::post('brand-logo', [
+                'uses' => 'HomeController@postBrandLogo',
+                'as' => 'postBrandLogo',
+            ]);
+
+            Route::post('brand-link', [
+                'uses' => 'HomeController@postBrandLink',
+                'as' => 'postBrandLink',
+            ]);
+        });
+
+        Route::group(['prefix' => 'admin'], function () {
+            Route::get('dashboard', [
+                'uses' => 'HomeController@getAdminDashboard',
+                'as' => 'getAdminDashboard',
+            ]);
+
+            Route::post('package-limit', [
+                'uses' => 'HomeController@postPackageLimit',
+                'as' => 'postPackageLimit',
+            ]);
+        });
+    });
 });
 
-Route::group(['domain' => '{subdomain}'.$_SERVER['SERVER_NAME']] , function () {
+Route::group(['domain' => '{subdomain}.'.$domain], function () {
     Route::get('/', function ($subdomain) {
-        return $subdomain;
+        return redirect()->route('getIndex');
     });
+
+    Route::get('/{url}', [
+        'uses' => 'HomeController@getRequestedSubdomainUrl',
+        'as' => 'getRequestedSubdomainUrl',
+    ]);
 });

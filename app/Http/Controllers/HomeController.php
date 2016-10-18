@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Browser;
 use App\Country;
-use App\Http\Requests;
 use App\Limit;
 use App\LinkLimit;
 use App\Platform;
 use App\Referer;
+use App\Subdomain;
 use App\Url;
 use App\User;
 use Illuminate\Http\Request;
@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Session;
 class HomeController extends Controller
 {
     /**
-     * Get Application index page
-     * 
+     * Get Application index page.
+     *
      * @return \Illuminate\Http\Response
      */
     public function getIndex()
@@ -34,9 +34,10 @@ class HomeController extends Controller
 
     /**
      * Get requested url and serach for the actual url. If found redirect to
-     * actual url else show 404
-     * 
-     * @param  string $url
+     * actual url else show 404.
+     *
+     * @param string $url
+     *
      * @return \Illuminate\Http\Response
      */
     public function getRequestedUrl($url)
@@ -45,7 +46,7 @@ class HomeController extends Controller
 
         if ($search) {
             $find = Url::find($search->id);
-            $find->count = $find->count+1;
+            $find->count = $find->count + 1;
             $find->save();
 
             return view('loader', ['url' => $search]);
@@ -55,9 +56,10 @@ class HomeController extends Controller
     }
 
     /**
-     * Return URL data for chart
-     * 
-     * @param  Request $request
+     * Return URL data for chart.
+     *
+     * @param Request $request
+     *
      * @return Illuminate\Http\Response
      */
     public function postFetchChartData(Request $request)
@@ -66,9 +68,9 @@ class HomeController extends Controller
                     ->orderBy('id', 'DESC')
                     ->get();
         foreach ($urls as $key => $url) {
-            $URLs[$key]['name'] = url('/')."/".$url->shorten_suffix;
-            $URLs[$key]['y'] = (int)$url->count;
-            $URLs[$key]['drilldown'] = url('/')."/".$url->shorten_suffix;
+            $URLs[$key]['name'] = url('/').'/'.$url->shorten_suffix;
+            $URLs[$key]['y'] = (int) $url->count;
+            $URLs[$key]['drilldown'] = url('/').'/'.$url->shorten_suffix;
 
             $start_date = DB::table('referer_url')
                 ->selectRaw('min(created_at) as `min`')
@@ -91,14 +93,14 @@ class HomeController extends Controller
             $index = 0;
             foreach ($dates as $date) {
                 $URLstat[$key][$index][0] = date('M d, Y', strtotime($date));
-                $URLstat[$key][$index][1] = (int)DB::table('referer_url')
+                $URLstat[$key][$index][1] = (int) DB::table('referer_url')
                         ->selectRaw('count(url_id) as `clicks`')
                         ->where([
                             ['url_id', $url->id],
-                            ['created_at', 'like', $date.'%']
+                            ['created_at', 'like', $date.'%'],
                         ])
                         ->first()->clicks;
-                $index++;
+                ++$index;
             }
         }
 
@@ -106,59 +108,17 @@ class HomeController extends Controller
             'status' => 'success',
             'user_id' => $request->user_id,
             'urls' => $URLs,
-            'urlStat' => $URLstat
+            'urlStat' => $URLstat,
         ]);
     }
 
     /**
-     * Get Advanced Analytics for a particualr URL
-     * 
-     * @param  Request $request
-     * @param  string  $url
-     * @return Illuminate\Http\Response
-     */
-    public function getAnalytics(Request $request, $url) {
-        if (Auth::check()) {
-            $user = Auth::user();
-            $url = Url::where('shorten_suffix', $url)->first();
-            $start_date = DB::table('referer_url')
-                ->selectRaw('min(created_at) as `min`')
-                ->where('url_id', $url->id)
-                ->first()->min;
-            $end_date = DB::table('referer_url')
-                ->selectRaw('max(created_at) as `max`')
-                ->where('url_id', $url->id)
-                ->first()->max;
-            $alldates = DB::table('referer_url')
-                ->select('created_at')
-                ->where('url_id', $url->id)
-                ->whereBetween('created_at', [$start_date, $end_date])
-                ->get();
-            foreach ($alldates as $key => $eachdate) {
-                $date[$key] = date('Y-m-d', strtotime($eachdate->created_at));
-            }
-            $dates = array_unique($date);
-            foreach ($dates as $key => $date) {
-                $clicks[$key] = DB::table('referer_url')
-                        ->selectRaw('count(url_id) as `clicks`')
-                        ->where([
-                            ['url_id', $url->id],
-                            ['created_at', 'like', $date.'%']
-                        ])
-                        ->first()->clicks;
-            }
-            return view('analytics', ['user' => $user, 'url' => $url, 'clicks' => $clicks, 'dates' => $dates]);
-        } else {
-            return redirect()->action('HomeController@getIndex');
-        }
-    }
-
-    /**
-     * Get Advanced Analytics by Date for a particualr URL
-     * 
-     * @param  Request $request
-     * @param  string  $url
-     * @param  string  $date
+     * Get Advanced Analytics by Date for a particualr URL.
+     *
+     * @param Request $request
+     * @param string  $url
+     * @param string  $date
+     *
      * @return Illuminate\Http\Response
      */
     public function getAnalyticsByDate(Request $request, $url, $date)
@@ -180,6 +140,7 @@ class HomeController extends Controller
                     ->first();
             if ($url) {
                 $url = Url::find($url->url_id);
+
                 return view('analytics', ['user' => $user, 'url' => $url, 'date' => $date]);
             } else {
                 return redirect()->action('HomeController@getDashboard')
@@ -190,6 +151,13 @@ class HomeController extends Controller
         }
     }
 
+    /**
+     * Get Advanced Analytics by Date for a particualr URL using AJAX.
+     * 
+     * @param  Request $request
+     * 
+     * @return Illuminate\Http\Response
+     */
     public function postAnalyticsByDate(Request $request)
     {
         $location[0][0] = 'Country';
@@ -206,7 +174,7 @@ class HomeController extends Controller
 
         foreach ($countries as $key => $country) {
             $location[++$key][0] = $country->code;
-            $location[$key][1] = (int)$country->count;
+            $location[$key][1] = (int) $country->count;
         }
 
         $operating_system[0][0] = 'Platform';
@@ -223,7 +191,7 @@ class HomeController extends Controller
 
         foreach ($platforms as $key => $platform) {
             $operating_system[++$key][0] = $platform->name;
-            $operating_system[$key][1] = (int)$platform->count;
+            $operating_system[$key][1] = (int) $platform->count;
         }
 
         $web_browser[0][0] = 'Browser';
@@ -240,7 +208,7 @@ class HomeController extends Controller
 
         foreach ($browsers as $key => $browser) {
             $web_browser[++$key][0] = $browser->name;
-            $web_browser[$key][1] = (int)$browser->count;
+            $web_browser[$key][1] = (int) $browser->count;
         }
 
         $referring_channel[0][0] = 'Referer';
@@ -261,7 +229,7 @@ class HomeController extends Controller
             } else {
                 $referring_channel[++$key][0] = $referer->name;
             }
-            $referring_channel[$key][1] = (int)$referer->count;
+            $referring_channel[$key][1] = (int) $referer->count;
         }
 
         return response()->json([
@@ -269,14 +237,15 @@ class HomeController extends Controller
             'location' => $location,
             'platform' => $operating_system,
             'browser' => $web_browser,
-            'referer' => $referring_channel
+            'referer' => $referring_channel,
         ]);
     }
 
     /**
-     * Return analytics data
-     * 
-     * @param  Request $request
+     * Return analytics data.
+     *
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function postFetchAnalytics(Request $request)
@@ -294,7 +263,7 @@ class HomeController extends Controller
 
         foreach ($countries as $key => $country) {
             $location[++$key][0] = $country->code;
-            $location[$key][1] = (int)$country->count;
+            $location[$key][1] = (int) $country->count;
         }
 
         $operating_system[0][0] = 'Platform';
@@ -310,7 +279,7 @@ class HomeController extends Controller
 
         foreach ($platforms as $key => $platform) {
             $operating_system[++$key][0] = $platform->name;
-            $operating_system[$key][1] = (int)$platform->count;
+            $operating_system[$key][1] = (int) $platform->count;
         }
 
         $web_browser[0][0] = 'Browser';
@@ -326,7 +295,7 @@ class HomeController extends Controller
 
         foreach ($browsers as $key => $browser) {
             $web_browser[++$key][0] = $browser->name;
-            $web_browser[$key][1] = (int)$browser->count;
+            $web_browser[$key][1] = (int) $browser->count;
         }
 
         $referring_channel[0][0] = 'Referer';
@@ -346,7 +315,7 @@ class HomeController extends Controller
             } else {
                 $referring_channel[++$key][0] = $referer->name;
             }
-            $referring_channel[$key][1] = (int)$referer->count;
+            $referring_channel[$key][1] = (int) $referer->count;
         }
 
         return response()->json([
@@ -354,66 +323,68 @@ class HomeController extends Controller
             'location' => $location,
             'platform' => $operating_system,
             'browser' => $web_browser,
-            'referer' => $referring_channel
+            'referer' => $referring_channel,
         ]);
     }
 
     /**
-     * Get an User Agent and country Information on AJAX request
-     * 
-     * @param  Request $request
+     * Get an User Agent and country Information on AJAX request.
+     *
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
-    public function postUserInfo(Request $request) {
+    public function postUserInfo(Request $request)
+    {
         $status = 'error';
 
         $country = Country::where('code', $request->country['country_code'])->first();
         if ($country) {
             $country->urls()->attach($request->url);
             global $status;
-            $status = "success";
+            $status = 'success';
         } else {
             global $status;
-            $status = "error";
+            $status = 'error';
         }
 
         $platform = Platform::where('name', $request->platform)->first();
         if ($platform) {
             $platform->urls()->attach($request->url);
             global $status;
-            $status = "success";
+            $status = 'success';
         } else {
             $platform = new Platform();
             $platform->name = $request->platform;
             $platform->save();
             $platform->urls()->attach($request->url);
-            
+
             if ($platform) {
                 global $status;
-                $status = "success";
+                $status = 'success';
             } else {
                 global $status;
-                $status = "error";
+                $status = 'error';
             }
         }
-        
+
         $browser = Browser::where('name', $request->browser)->first();
         if ($browser) {
             $browser->urls()->attach($request->url);
             global $status;
-            $status = "success";
+            $status = 'success';
         } else {
             $browser = new Browser();
             $browser->name = $request->browser;
             $browser->save();
             $browser->urls()->attach($request->url);
-            
+
             if ($browser) {
                 global $status;
-                $status = "success";
+                $status = 'success';
             } else {
                 global $status;
-                $status = "error";
+                $status = 'error';
             }
         }
 
@@ -421,19 +392,19 @@ class HomeController extends Controller
         if ($referer) {
             $referer->urls()->attach($request->url);
             global $status;
-            $status = "success";
+            $status = 'success';
         } else {
             $referer = new Referer();
             $referer->name = $request->referer;
             $referer->save();
             $referer->urls()->attach($request->url);
-            
+
             if ($referer) {
                 global $status;
-                $status = "success";
+                $status = 'success';
             } else {
                 global $status;
-                $status = "error";
+                $status = 'error';
             }
         }
 
@@ -441,23 +412,25 @@ class HomeController extends Controller
     }
 
     /**
-     * Get an URL information on AJAX request
-     * 
-     * @param  Request $request
+     * Get an URL information on AJAX request.
+     *
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
-    public function postEditUrlInfo(Request $request) {
+    public function postEditUrlInfo(Request $request)
+    {
         $url = Url::find($request->id);
 
         $url->title = $request->title;
 
         if ($url->save()) {
             return response()->json([
-                'status' => "success",
-                'url' => $url
+                'status' => 'success',
+                'url' => $url,
             ]);
         } else {
-            return response()->json(['status' => "error"]);
+            return response()->json(['status' => 'error']);
         }
     }
 
@@ -465,16 +438,17 @@ class HomeController extends Controller
      * Get actual long url on AJAX call and convert it into an random string,
      * save both actual and shorten url into the database and return status as
      * AJAX response.
-     * 
-     * @param  Request $request
+     *
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function postShortUrlTier5(Request $request)
     {
-        if (starts_with($request->url, "https://")) {
-            $actual_url = str_replace("https://", null ,$request->url);
+        if (starts_with($request->url, 'https://')) {
+            $actual_url = str_replace('https://', null, $request->url);
         } else {
-            $actual_url = str_replace("http://", null ,$request->url);
+            $actual_url = str_replace('http://', null, $request->url);
         }
 
         $random_string = $this->randomString();
@@ -485,29 +459,30 @@ class HomeController extends Controller
         $url->title = $this->getPageTitle($request->url);
         $url->user_id = $request->user_id;
 
-        if($url->save()) {
+        if ($url->save()) {
             return response()->json([
-                'status' => "success",
-                'url' => url('/').'/'.$random_string
+                'status' => 'success',
+                'url' => url('/').'/'.$random_string,
             ]);
         } else {
-            return response()->json(['status' => "error"]);
+            return response()->json(['status' => 'error']);
         }
     }
 
     /**
      * Get actual long url and custom short url on AJAX call and return status as
      * AJAX response.
-     * 
-     * @param  Request $request
+     *
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function postCustomUrlTier5(Request $request)
     {
-        if (starts_with($request->actual_url, "https://")) {
-            $actual_url = str_replace("https://", null ,$request->actual_url);
+        if (starts_with($request->actual_url, 'https://')) {
+            $actual_url = str_replace('https://', null, $request->actual_url);
         } else {
-            $actual_url = str_replace("http://", null ,$request->actual_url);
+            $actual_url = str_replace('http://', null, $request->actual_url);
         }
 
         $url = new Url();
@@ -517,26 +492,28 @@ class HomeController extends Controller
         $url->user_id = $request->user_id;
         $url->is_custom = 1;
 
-        if($url->save()) {
+        if ($url->save()) {
             return response()->json([
-                'status' => "success",
-                'url' => url('/').'/'.$request->custom_url
+                'status' => 'success',
+                'url' => url('/').'/'.$request->custom_url,
             ]);
         } else {
-            return response()->json(['status' => "error"]);
+            return response()->json(['status' => 'error']);
         }
     }
 
     /**
-     * Fetch the title of an actual url
-     * 
-     * @param  string $url
+     * Fetch the title of an actual url.
+     *
+     * @param string $url
+     *
      * @return \Illuminate\Http\Response
      */
-    private function getPageTitle($url) {
+    private function getPageTitle($url)
+    {
         $string = file_get_contents($url);
         if (strlen($string) > 0) {
-            if (preg_match("/\<title\>(.*)\<\/title\>/i", (string)$string, $title)) {
+            if (preg_match("/\<title\>(.*)\<\/title\>/i", (string) $string, $title)) {
                 return $title[1];
             } else {
                 return null;
@@ -545,7 +522,7 @@ class HomeController extends Controller
     }
 
     /**
-     * URL suffix random string generator
+     * URL suffix random string generator.
      *
      * @return string
      */
@@ -554,7 +531,7 @@ class HomeController extends Controller
         $character_set = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $random_string = null;
 
-        for ($i = 0; $i < 6; $i++) {
+        for ($i = 0; $i < 6; ++$i) {
             $random_string = $random_string.$character_set[rand(0, strlen($character_set))];
         }
 
@@ -566,16 +543,17 @@ class HomeController extends Controller
     }
 
     /**
-     * Attempt login a regstered user
-     * 
-     * @param  Request $request
+     * Attempt login a regstered user.
+     *
+     * @param Request $request
+     *
      * @return Illuminate\Http\Response
      */
     public function postLogin(Request $request)
     {
         $this->validate($request, [
             'useremail' => 'required|email',
-            'passwordlogin' => 'required'
+            'passwordlogin' => 'required',
         ]);
 
         if (Auth::attempt(['email' => $request->useremail, 'password' => $request->passwordlogin], $request->remember)) {
@@ -587,9 +565,10 @@ class HomeController extends Controller
     }
 
     /**
-     * Attempt sign up a new user
-     * 
-     * @param  Request $request
+     * Attempt sign up a new user.
+     *
+     * @param Request $request
+     *
      * @return Illuminate\Http\Response
      */
     public function postRegister(Request $request)
@@ -599,9 +578,9 @@ class HomeController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8|confirmed',
             'password_confirmation' => 'required|min:8',
-            'g-recaptcha-response' => 'recaptcha'
+            'g-recaptcha-response' => 'recaptcha',
         ]);
-        
+
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
@@ -625,36 +604,39 @@ class HomeController extends Controller
 
     /**
      * Logout a logged in user.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function getLogout()
     {
         Auth::logout();
         Session::flush();
+
         return redirect()->action('HomeController@getIndex');
     }
 
     /**
      * Get Dashboard access for resgistered user.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function getDashboard()
     {
         if (Auth::check()) {
             $user = Auth::user();
+
             $urls = Url::where('user_id', $user->id)
-                ->orderBy('id', 'DESC')
-                ->get();
+                    ->orderBy('id', 'DESC')
+                    ->get();
 
             $count = DB::table('urls')
                 ->selectRaw('count(user_id) AS `count`')
                 ->where('user_id', $user->id)
                 ->groupBy('user_id')
                 ->get();
+
             $total_links = null;
-            if($count) {
+            if ($count) {
                 $total_links = $count[0]->count;
                 $limit = LinkLimit::where('user_id', $user->id)->first();
                 if ($limit) {
@@ -679,7 +661,7 @@ class HomeController extends Controller
                 'urls' => $urls,
                 'subscription_status' => $subscription_status,
                 'limit' => $limit,
-                'total_links' => $total_links
+                'total_links' => $total_links,
             ]);
         } else {
             return redirect()->action('HomeController@getIndex');
@@ -687,24 +669,7 @@ class HomeController extends Controller
     }
 
     /**
-     * Get Brand for registered user.
-     * 
-     * @return Illuminate\Http\Response
-     */
-    public function getBrand()
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
-            if (($user->subscribed('main', 'tr5Basic')) || ($user->subscribed('main', 'tr5Advanced'))) {
-                return view('brand', ['user' => $user]);
-            } else {
-                return redirect()->action('HomeController@getDashboard');
-            }
-        }
-    }
-
-    /**
-     * Post a brand logo
+     * Post a brand logo.
      *
      * @return Illuminate\Http\Response
      */
@@ -712,31 +677,66 @@ class HomeController extends Controller
     {
         $this->validate($request, [
             'brandLogo' => 'image|dimensions:min_width=64px,min_height=64px,max_width:512px,max_height:512px,ratio:1:1',
-            'redirectingTime' => 'numeric'
+            'redirectingTime' => 'numeric',
         ]);
 
         $url = Url::find($request->url_id);
 
-        if($request->hasFile('brandLogo')) {
+        if ($request->hasFile('brandLogo')) {
             $upload_path = 'uploads/brand_images';
             $image_name = $request->brandLogo->getClientOriginalName();
             $request->brandLogo->move($upload_path, $image_name);
-            $url->uploaded_path = $upload_path."/".$image_name;
+            $url->uploaded_path = $upload_path.'/'.$image_name;
         }
-        $url->redirecting_time = $request->redirectingTime*1000;
+        $url->redirecting_time = $request->redirectingTime * 1000;
         $url->redirecting_text_template = $request->redirectingTextTemplate;
         if ($url->save()) {
             return redirect()->back()
-                    ->with('success', "Upload successful.");
+                    ->with('success', 'Upload successful.');
         } else {
             return redirect()->back()
-                    ->with('error', "Please try again later.");
+                    ->with('error', 'Please try again later.');
+        }
+    }
+
+    /**
+     * Post a brand logo.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function postBrandLink(Request $request)
+    {
+        if (Auth::check()) {
+            $this->validate($request, [
+                'name' => 'required|unique:subdomains',
+                'type' => 'required',
+            ]);
+
+            $user = Auth::user();
+
+            $subdomain = new Subdomain();
+            $subdomain->name = strtolower($request->name);
+            $subdomain->user_id = $user->id;
+            $subdomain->url_id = $request->url_id;
+            $subdomain->type = $request->type;
+
+            if ($subdomain->save()) {
+                return redirect()->back()
+                        ->with('success', ucfirst($request->type).' created successfully');
+            } else {
+                return redirect()->back()
+                        ->with('error', 'Can not create subdomain right now. Please try again later!');
+            }
+        } else {
+            return redirect()->action('HomeController@getIndex');
         }
     }
 
     /**
      * Get Subscription form for registered user.
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function getSubscribe()
@@ -747,15 +747,17 @@ class HomeController extends Controller
                 return redirect()->action('HomeController@getDashboard');
             } elseif ($user->subscribed('main', 'tr5Basic')) {
                 $subscription_status = 'tr5Basic';
+
                 return view('subscription', [
                         'user' => $user,
-                        'subscription_status' => $subscription_status
+                        'subscription_status' => $subscription_status,
                     ]);
             } else {
                 $subscription_status = null;
+
                 return view('subscription', [
                         'user' => $user,
-                        'subscription_status' => $subscription_status
+                        'subscription_status' => $subscription_status,
                     ]);
             }
         } else {
@@ -766,7 +768,8 @@ class HomeController extends Controller
     /**
      * Get Subscription details from Stripe about a registered user.
      *
-     * @param  Request $request
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function postSubscription(Request $request)
@@ -775,7 +778,7 @@ class HomeController extends Controller
         try {
             $user->newSubscription('main', $request->plan)
                     ->create($request->stripeToken_, [
-                        'email' => $user->email
+                        'email' => $user->email,
                     ]);
 
             $limit = LinkLimit::where('user_id', $user->id)->first();
@@ -801,7 +804,7 @@ class HomeController extends Controller
 
     /**
      * Get Brand for registered user.
-     * 
+     *
      * @return Illuminate\Http\Response
      */
     public function getAdminDashboard()
@@ -810,6 +813,7 @@ class HomeController extends Controller
             $user = Auth::user();
             if ($user->is_admin == 1) {
                 $limits = Limit::all();
+
                 return view('admin', ['user' => $user, 'limits' => $limits]);
             } else {
                 return redirect()->action('HomeController@getDashboard');
@@ -818,22 +822,77 @@ class HomeController extends Controller
     }
 
     /**
-     * Post Package Limit
-     * 
-     * @param  Request $request
+     * Post Package Limit.
+     *
+     * @param Request $request
+     *
      * @return Illuminate\Http\Response
      */
     public function postPackageLimit(Request $request)
     {
         $limit = Limit::find($request->id);
         if ($request->has('plan_name')) {
-            $limit->plan_name =  $request->plan_name;
+            $limit->plan_name = $request->plan_name;
         }
         $limit->limits = $request->limits;
         if ($limit->save()) {
             return redirect()->back()->with('success', 'Updated!');
         } else {
             return redirect()->back()->with('error', 'Failed to update!');
+        }
+    }
+
+    /**
+     * Get requested brand subdomain url and serach for the actual url.
+     * If found redirect to actual url else show 404.
+     * 
+     * @param  string $subdomain
+     * @param  string $url
+     * 
+     * @return Illuminate\Http\Response
+     */
+    public function getRequestedSubdomainUrl($subdomain, $url)
+    {
+        $redirectUrl = Url::where('shorten_suffix', $url)->first();
+        if ($redirectUrl) {
+            $subDomain = Subdomain::where('name', $subdomain)
+                            ->where('type', 'subdomain')
+                            ->where('url_id', $redirectUrl->id)
+                            ->first();
+            if ($subDomain) {
+                echo $this->getRequestedUrl($url);
+            } else {
+                abort(404);
+            }
+        } else {
+            abort(404);
+        }
+    }
+
+    /**
+     * Get requested url branf subdirectory and serach for the actual url.
+     * If found redirect to actual url else show 404.
+     * 
+     * @param  string $subdirectory
+     * @param  string $url
+     * 
+     * @return Illuminate\Http\Response
+     */
+    public function getRequestedSubdirectoryUrl($subdirectory, $url)
+    {
+        $redirectUrl = Url::where('shorten_suffix', $url)->first();
+        if ($redirectUrl) {
+            $subDirectory = Subdomain::where('name', $subdirectory)
+                            ->where('type', 'subdirectory')
+                            ->where('url_id', $redirectUrl->id)
+                            ->first();
+            if ($subDirectory) {
+                echo $this->getRequestedUrl($url);
+            } else {
+                abort(404);
+            }
+        } else {
+            abort(404);
         }
     }
 }

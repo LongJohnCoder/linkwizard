@@ -51,6 +51,7 @@
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <!-- open/close -->
+        <!-- Facebook API -->
         <script>
             window.fbAsyncInit = function() {
                 FB.init({
@@ -68,6 +69,8 @@
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
         </script>
+        <!-- /Facebook API -->
+        <!-- Google API -->
         <script>
             window.___gcfg = {
                 lang: 'en-US',
@@ -75,6 +78,8 @@
             };
         </script>
         <script src="https://apis.google.com/js/client:platform.js" async defer></script>
+        <!-- /Google API -->
+        <!-- Twitter API -->
         <script>
             window.twttr = (function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0],
@@ -93,8 +98,11 @@
                 return t;
             }(document, "script", "twitter-wjs"));
         </script>
-        <script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script>
         <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
+        <!-- /Twitter API -->
+        <!-- LinkedIn API -->
+        <script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script>
+        <!-- /LinkedIn API -->
         <header>
             <div class="container-fluid">
                 <div class="row">
@@ -143,13 +151,13 @@
                 <span id="cross" class="closebtn"><i class="fa fa-times"></i></span>
                 <div class="overlay-content">
                     <a href="{{ route('getLogout') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-sign-out"></i>Sign out</button>
+                        <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-sign-out"></i> Sign out</button>
                     </a>
                     <div class="profile-name">{{ $user->name }}</div>
                     <div class="profile-email">{{ $user->email }}</div>
                     @if ($subscription_status != 'tr5Advanced')
                     <a href="{{ route('getSubscribe') }}">
-                        <button type="button" class="btn btn-success btn-sm"><i class="fa fa-upgrade"></i>Upgrade</button>
+                        <button type="button" class="btn btn-success btn-sm"><i class="fa fa-upgrade"></i> Upgrade</button>
                     </a>
                     @endif
                 </div>
@@ -216,7 +224,25 @@
                                         <h5><a href="http://{{ $url->actual_url }}" target="_blank">{{ $url->actual_url }}</a></h5>
                                         <div class="row">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-                                                <h3><a href="{{ route('getIndex') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</a></h3>
+                                                @if (isset($url->subdomain))
+                                                    <h3>
+                                                        @if($url->subdomain->type == 'subdomain')
+                                                            <a href="http://{{ $url->subdomain->name }}.{{ env('APP_URL') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                                                http://{{ $url->subdomain->name }}.{{ env('APP_URL') }}/{{ $url->shorten_suffix }}
+                                                            </a>
+                                                        @elseif($url->subdomain->type == 'subdirectory')
+                                                            <a href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                                                {{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}
+                                                            </a>
+                                                        @endif
+                                                    </h3>
+                                                @else
+                                                    <h3>
+                                                        <a href="{{ route('getIndex') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                                            {{ route('getIndex') }}/{{ $url->shorten_suffix }}
+                                                        </a>
+                                                    </h3>
+                                                @endif
                                             </div>
                                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                                 <div class="buttons">
@@ -242,11 +268,16 @@
                                                             <i class='fa fa-linkedin'></i> share
                                                         </button>
                                                     </a>
-                                                    {{-- @if ($url->is_custom == 1) --}}
-                                                    <button id="addBrand{{ $key }}" class="btn btn-default btn-sm btngrpthree">
-                                                        <i class="fa fa-bullhorn"></i> create brand
-                                                    </button>
-                                                    {{-- @endif --}}
+                                                    @if ($subscription_status != null)
+                                                        <button id="addBrand{{ $key }}" class="btn btn-default btn-sm btngrpthree">
+                                                            <i class="fa fa-bullhorn"></i> create brand
+                                                        </button>
+                                                        @if (!isset($url->subdomain))
+                                                            <button id="brandLink{{ $key }}" class="btn btn-default btn-sm btngrpthree">
+                                                                <i class="fa fa-anchor"></i> Brand Link
+                                                            </button>
+                                                        @endif
+                                                    @endif
                                                 </div>
                                                 <script>
                                                     $(document).ready(function () {
@@ -271,6 +302,10 @@
                                                         $('#addBrand{{ $key }}').on('click', function () {
                                                             $("#uploadModalBody #urlId").val('{{ $url->id }}');
                                                             $('#myModal1').modal('show');
+                                                        });
+                                                        $('#brandLink{{ $key }}').on('click', function () {
+                                                            $("#subdomainModalBody #urlId").val('{{ $url->id }}');
+                                                            $('#subdomainModal').modal('show');
                                                         });
                                                     });
                                                 </script>
@@ -311,8 +346,8 @@
                                                 type: 'POST',
                                                 data: {url_id: {{ $url->id }}, _token: "{{ csrf_token() }}"},
                                                 success: function (response) {
-                                                    if (response.status == "success") {
-                                                        console.log(response);
+                                                if (response.status == "success") {
+                                                    console.log(response);
                                                         google.charts.setOnLoadCallback(function () {
                                                             var data = google.visualization.arrayToDataTable(response.location);
                                                             var options = {
@@ -414,7 +449,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h3>Manage Redirecting Page For Your Custom Url</h3>
+                        <h4 class="modal-title" id="subdomainModalLabel">Manage Redirecting Page Template For Your Custom Url</h4>
                     </div>
                     <div class="modal-body" id="uploadModalBody">
                         <form class="form" role="form" action="{{ route('postBrandLogo') }}" method="post" enctype="multipart/form-data">
@@ -436,6 +471,65 @@
                             <button type="submit" class="btn btn-default btn-md pull-right">Submit</button>
                         </form>
                         <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade bs-modal-md" id="subdomainModal" tabindex="-1" role="dialog" aria-labelledby="subdomainModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="subdomainModalLabel">Create Your Own Brand Link</h4>
+                    </div>
+                    <div class="modal-body" id="subdomainModalBody">
+                        <p>You may want to customize url like following:</p>
+                        <ul class="list-unstyled">
+                            <li>yourbrand.tr5.io/abcdef (as a subdomain)</li>
+                            <li>tr5.io/yourbrand/abcdef (as a subdirectory)</li>
+                        </ul>
+                        <p id="subdomainWarning" style="color: red; display: none;"><strong>Warning:</strong> Brand name can not be changed later. This action will not be undone!</p>
+                        <form class="form" role="form" action="{{ route('postBrandLink') }}" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                            <input type="hidden" name="url_id" value="{{ $url->id }}" id="urlId" />
+                            <div class="form-group">
+                                <label for="subdomainBrand"></label>
+                                <input type="text" name="name" id="subdomainBrand" class="form-control" placeholder="Enter your brand name here" />
+                            </div>
+                            <div class="form-group">
+                                <label for="">I want a</label>
+                                <input type="radio" id="" name="type" value="subdomain" /> Subdomain
+                                <input type="radio" id="" name="type" value="subdirectory" /> Subdirectory
+                            </div>
+                            <hr />
+                            <button type="submit" class="btn btn-default btn-md pull-right">Submit</button>
+                        </form>
+                        <br />
+                        <script>
+                            $(document).ready(function () {
+                                $('#subdomainBrand').on('blur', function () {
+                                    nameRegex = new RegExp('^([a-z]){2,}$');
+                                    nameInput = $(this).val();
+                                    if (nameInput == null) {
+                                        $(this).focus();
+                                        $(this).parent().append("<span id='subdomainAlert' style='color: red'>Subdomain should not be blank.</span>");
+                                        return false;
+                                    } else if (!nameRegex.test(nameInput)) {
+                                        $(this).focus();
+                                        $(this).parent().append("<span id='subdomainAlert' style='color: red'>Subdomain should be in lowercase.</span>");
+                                        return false;
+                                    } else {
+                                        return true;
+                                    }
+                                });
+                                $('#subdomainBrand').on('focus', function () {
+                                    $('#subdomainAlert').remove('#subAlert');
+                                    $('#subdomainWarning').css('display', 'block');
+                                });
+                            });
+                        </script>
                     </div>
                 </div>
             </div>
@@ -769,7 +863,6 @@
                                     click: function (event) {
                                         var pointName = event.point.name;
                                         if (pointName.search('{{ url('/') }}')) {
-                                            //console.log(pointName);
                                             pushChartDataStack(pointName);
                                             console.log(pointName);
                                         } else {
@@ -889,7 +982,7 @@
                 $(document).ready(function(){
                     swal({
                         title: "Error",
-                        text: "{{ $errors->first('brandLogo') }}",
+                        text: "@foreach ($errors->all() as $error){{ $error }}<br/>@endforeach",
                         type: "error",
                         html: true
                     }); 
