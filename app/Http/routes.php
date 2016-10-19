@@ -11,9 +11,7 @@
 |
 */
 
-$domain = env('APP_URL');
-
-Route::group(['domain' => $domain], function () {
+Route::group(['domain' => env('APP_URL')], function () {
     Route::get('/', [
         'uses' => 'HomeController@getIndex',
         'as' => 'getIndex',
@@ -29,13 +27,18 @@ Route::group(['domain' => $domain], function () {
         'as' => 'getRequestedSubdirectoryUrl',
     ]);
 
-    Route::get('/{url}/{date}/analytics', [
+    Route::get('/{url}/date/{date}/analytics', [
         'uses' => 'HomeController@getAnalyticsByDate',
         'as' => 'getAnalyticsByDate',
     ]);
 
+    Route::get('/{url}/country/{country}/analytics', [
+        'uses' => 'HomeController@getAnalyticsByCountry',
+        'as' => 'getAnalyticsByCountry',
+    ]);
+
     Route::group(['prefix' => 'app'], function () {
-        Route::group(['prefix' => 'url'], function() {
+        Route::group(['prefix' => 'url'], function () {
             Route::post('short', [
                 'uses' => 'HomeController@postShortUrlTier5',
                 'as' => 'postShortUrlTier5',
@@ -51,6 +54,16 @@ Route::group(['domain' => $domain], function () {
                 'as' => 'postFetchAnalytics',
             ]);
 
+            Route::post('fetchanalyticsbydate', [
+                'uses' => 'HomeController@postAnalyticsByDate',
+                'as' => 'postAnalyticsByDate',
+            ]);
+
+            Route::post('fetchanalyticsbycountry', [
+                'uses' => 'HomeController@postAnalyticsByCountry',
+                'as' => 'postAnalyticsByCountry',
+            ]);
+
             Route::any('fetchchartdata', [
                 'uses' => 'HomeController@postFetchChartData',
                 'as' => 'postFetchChartData',
@@ -61,6 +74,11 @@ Route::group(['domain' => $domain], function () {
                 'as' => 'postFetchChartDataByDate',
             ]);
 
+            Route::any('fetchchartdatabycountry', [
+                'uses' => 'HomeController@postFetchChartDataByCountry',
+                'as' => 'postFetchChartDataByCountry',
+            ]);
+
             Route::post('editurlinfo', [
                 'uses' => 'HomeController@postEditUrlInfo',
                 'as' => 'postEditUrlInfo',
@@ -69,11 +87,6 @@ Route::group(['domain' => $domain], function () {
             Route::post('userinfo', [
                 'uses' => 'HomeController@postUserInfo',
                 'as' => 'postUserInfo',
-            ]);
-
-            Route::post('analytics-by-date', [
-                'uses' => 'HomeController@postAnalyticsByDate',
-                'as' => 'postAnalyticsByDate',
             ]);
         });
 
@@ -133,7 +146,7 @@ Route::group(['domain' => $domain], function () {
     });
 });
 
-Route::group(['domain' => '{subdomain}.'.$domain], function () {
+Route::group(['domain' => '{subdomain}.'.env('APP_URL')], function () {
     Route::get('/', function ($subdomain) {
         return redirect()->route('getIndex');
     });

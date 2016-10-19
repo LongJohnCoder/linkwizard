@@ -119,13 +119,13 @@
                                 <i class="fa fa-bars"></i>
                             </span>
                         </div>
-                        <div class="menu-icon">
-                            @if(count($limit) > 0)
+                        @if(count($limit) > 0)
+                            <div class="menu-icon">
                                 <button id="{{ (($limit->plan_code == 'tr5Free' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Basic' && $total_links < $limit->limits) || ($limit->plan_code == 'tr5Advanced' && $total_links < $limit->limits)) ? 'tr5link' : 'noTr5Link' }}" class="btn btn-danger">
                                     CREATE TR5LINK
                                 </button>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                         @if ($subscription_status != null)
                             <div class="menu-icon">
                                  @if(count($limit) > 0)
@@ -228,7 +228,15 @@
                                         <a href="#" class="list-group-item active">
                                             <span id="tab-date{{ $key }}" class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</span>
                                             <span id="tab-title{{ $key }}" class="title">{{ $url->title }}</span>
-                                            <span class="link">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</span>
+                                            @if (isset($url->subdomain))
+                                                @if($url->subdomain->type == 'subdomain')
+                                                    <span class="link">http://{{ $url->subdomain->name }}.{{ env('APP_URL') }}/{{ $url->shorten_suffix }}</span>
+                                                @elseif($url->subdomain->type == 'subdirectory')
+                                                    <span class="link">{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}</span>
+                                                @endif
+                                            @else
+                                                <span class="link">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</span>
+                                            @endif
                                             <span class="count">{{ $url->count }}</span>
                                         </a>
                                     @endforeach
@@ -366,7 +374,7 @@
                                         </div>
                                         @endif
                                         <script type="text/javascript">
-                                            {!! $key == 0 ? "google.charts.load('current', {'packages':['corechart']});" : null !!}
+                                            {!! $key == 0 ? "google.charts.load('current', {'packages':['corechart', 'geochart']});" : null !!}
                                             $.ajax({
                                                 url: "{{ route('postFetchAnalytics') }}",
                                                 type: 'POST',
@@ -383,6 +391,11 @@
                                                             };
                                                             var chart{{ $key }} = new google.visualization.GeoChart(document.getElementById('regions_div{{ $key }}'));
                                                             chart{{ $key }}.draw(data, options);
+                                                            google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
+                                                                var selectionIdx = chart{{ $key }}.getSelection()[0].row;
+                                                                var countryName = data.getValue(selectionIdx, 0);
+                                                                window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
+                                                            });
                                                         });
                                                         google.charts.setOnLoadCallback(function () {
                                                             var data = google.visualization.arrayToDataTable(response.location);
@@ -973,7 +986,7 @@
                         date = new Date(chartDataStack.pop());
                         month = date.getMonth()+1;
                         isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
-                        window.location.href = chartDataStack[0]+"/"+isoDate+"/analytics";
+                        window.location.href = chartDataStack[0]+"/date/"+isoDate+"/analytics";
                     }
                 },
                 error: function(response) {

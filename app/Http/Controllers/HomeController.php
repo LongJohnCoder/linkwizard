@@ -8,7 +8,6 @@ use App\Limit;
 use App\LinkLimit;
 use App\Platform;
 use App\Referer;
-use App\RefererUrl;
 use App\Subdomain;
 use App\Url;
 use App\User;
@@ -122,33 +121,61 @@ class HomeController extends Controller
      */
     public function postFetchChartDataByDate(Request $request)
     {
-        //dd($request->request);
         $chartData = [];
         $key = 0;
-        for ($count = 0; $count < 24; $count = $count+2) {
+        for ($count = 0; $count < 24; $count = $count + 2) {
             if ($count < 10) {
                 $prefix = 0;
             } else {
                 $prefix = null;
             }
-            $countNext = (int)$count + 2;
+            $countNext = (int) $count + 2;
             $chartData[$key]['name'] = date('h:i A', strtotime($prefix.$count.':00:00')).' - '.date('h:i A', strtotime($prefix.$countNext.':00:00'));
             $clicks = DB::table('referer_url')
                         ->selectRaw('count(url_id) as clicks')
                         ->where('url_id', $request->url_id)
                         ->whereBetween('created_at', [
                             $request->date.' '.$prefix.$count.':00:00',
-                            $request->date.' '.$prefix.$countNext.':00:00'
+                            $request->date.' '.$prefix.$countNext.':00:00',
                         ])
                         ->first();
             if ($clicks) {
-                $chartData[$key]['y'] = (int)$clicks->clicks;
+                $chartData[$key]['y'] = (int) $clicks->clicks;
             } else {
                 $chartData[$key]['y'] = 0;
             }
-            $key++;
+            ++$key;
         }
-        
+
+        return response()->json([
+            'status' => 'success',
+            'chartData' => $chartData,
+        ]);
+    }
+
+    /**
+     * Return URL data by country for chart.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function postFetchChartDataByCountry(Request $request)
+    {
+        $clicks = DB::table('country_url')
+                        ->selectRaw('country_url.created_at, count(country_url.created_at) as clicks')
+                        ->join('countries', 'countries.id', '=', 'country_url.country_id')
+                        ->where('country_url.url_id', $request->url_id)
+                        ->where('country_url.country_id', $request->country_id)
+                        ->groupBy('country_url.created_at')
+                        ->get();
+        $chartData = [];
+
+        foreach ($clicks as $key => $click) {
+            $chartData[$key]['name'] = $click->created_at;
+            $chartData[$key]['y'] = (int) $click->clicks;
+        }
+
         return response()->json([
             'status' => 'success',
             'chartData' => $chartData,
@@ -158,13 +185,12 @@ class HomeController extends Controller
     /**
      * Get Advanced Analytics by Date for a particualr URL.
      *
-     * @param Request $request
      * @param string  $url
      * @param string  $date
      *
      * @return Illuminate\Http\Response
      */
-    public function getAnalyticsByDate(Request $request, $url, $date)
+    public function getAnalyticsByDate($url, $date)
     {
         if (Auth::check()) {
             $user = Auth::user();
@@ -184,10 +210,47 @@ class HomeController extends Controller
             if ($url) {
                 $url = Url::find($url->url_id);
 
-                return view('analytics', ['user' => $user, 'url' => $url, 'date' => $date]);
+                return view('analytics.date', ['user' => $user, 'url' => $url, 'date' => $date]);
             } else {
                 return redirect()->action('HomeController@getDashboard')
-                                ->with('error', 'Sorry, for this inconvenience. There is no analytical records founds on '.date('M d, Y', strtotime($date)));
+                            ->with('error', 'Sorry, for this inconvenience. There is no analytical records founds on '.date('M d, Y', strtotime($date)));
+            }
+        } else {
+            return redirect()->action('HomeController@getIndex');
+        }
+    }
+
+    /**
+     * Get Advanced Analytics by Date for a particualr URL.
+     *
+     * @param string  $url
+     * @param string  $date
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function getAnalyticsByCountry($url, $country_code)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $country = Country::where('code', $country_code)->first();
+
+            $url = DB::table('urls')
+                    ->join('country_url', 'urls.id', '=', 'country_url.url_id')
+                    ->join('browser_url', 'urls.id', '=', 'browser_url.url_id')
+                    ->join('platform_url', 'urls.id', '=', 'platform_url.url_id')
+                    ->join('referer_url', 'urls.id', '=', 'referer_url.url_id')
+                    ->join('countries', 'countries.id', '=', 'country_url.country_id')
+                    ->selectRaw('distinct(urls.id) as url_id')
+                    ->where('countries.code', $country_code)
+                    ->where('urls.shorten_suffix', $url)
+                    ->first();
+            if ($url) {
+                $url = Url::find($url->url_id);
+
+                return view('analytics.country', ['user' => $user, 'url' => $url, 'country' => $country]);
+            } else {
+                return redirect()->action('HomeController@getDashboard')
+                            ->with('error', 'Sorry, for this inconvenience. There is no analytical records founds on '.$country_code);
             }
         } else {
             return redirect()->action('HomeController@getIndex');
@@ -196,9 +259,9 @@ class HomeController extends Controller
 
     /**
      * Get Advanced Analytics by Date for a particualr URL using AJAX.
-     * 
-     * @param  Request $request
-     * 
+     *
+     * @param Request $request
+     *
      * @return Illuminate\Http\Response
      */
     public function postAnalyticsByDate(Request $request)
@@ -278,6 +341,81 @@ class HomeController extends Controller
         return response()->json([
             'status' => 'success',
             'location' => $location,
+            'platform' => $operating_system,
+            'browser' => $web_browser,
+            'referer' => $referring_channel,
+        ]);
+    }
+
+    /**
+     * Get Advanced Analytics by Country for a particualr URL using AJAX.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function postAnalyticsByCountry(Request $request)
+    {
+        $operating_system[0][0] = 'Platform';
+        $operating_system[0][1] = 'Clicks';
+
+        $platforms = DB::table('platform_url')
+                ->join('platforms', 'platforms.id', '=', 'platform_url.platform_id')
+                ->join('country_url', 'country_url.url_id', '=', 'platform_url.url_id')
+                ->selectRaw('platforms.name, count(platform_url.platform_id) as `count`')
+                ->where('platform_url.url_id', $request->url_id)
+                ->where('country_url.country_id', $request->country_id)
+                ->groupBy('platform_url.platform_id')
+                ->orderBy('count', 'DESC')
+                ->get();
+
+        foreach ($platforms as $key => $platform) {
+            $operating_system[++$key][0] = $platform->name;
+            $operating_system[$key][1] = sqrt($platform->count);
+        }
+
+        $web_browser[0][0] = 'Browser';
+        $web_browser[0][1] = 'Clicks';
+
+        $browsers = DB::table('browser_url')
+                ->join('browsers', 'browsers.id', '=', 'browser_url.browser_id')
+                ->join('country_url', 'country_url.url_id', '=', 'browser_url.url_id')
+                ->selectRaw('browsers.name, count(browser_url.browser_id) as `count`')
+                ->where('browser_url.url_id', $request->url_id)
+                ->where('country_url.country_id', $request->country_id)
+                ->groupBy('browser_url.browser_id')
+                ->orderBy('count', 'DESC')
+                ->get();
+
+        foreach ($browsers as $key => $browser) {
+            $web_browser[++$key][0] = $browser->name;
+            $web_browser[$key][1] = sqrt($browser->count);
+        }
+
+        $referring_channel[0][0] = 'Referer';
+        $referring_channel[0][1] = 'Clicks';
+
+        $referers = DB::table('referer_url')
+                ->join('referers', 'referers.id', '=', 'referer_url.referer_id')
+                ->join('country_url', 'country_url.url_id', '=', 'referer_url.url_id')
+                ->selectRaw('referers.name, count(referer_url.referer_id) as `count`')
+                ->where('referer_url.url_id', $request->url_id)
+                ->where('country_url.country_id', $request->country_id)
+                ->groupBy('referer_url.referer_id')
+                ->orderBy('count', 'DESC')
+                ->get();
+
+        foreach ($referers as $key => $referer) {
+            if ($referer->name == null) {
+                $referring_channel[++$key][0] = 'Dark Traffic';
+            } else {
+                $referring_channel[++$key][0] = $referer->name;
+            }
+            $referring_channel[$key][1] = sqrt($referer->count);
+        }
+
+        return response()->json([
+            'status' => 'success',
             'platform' => $operating_system,
             'browser' => $web_browser,
             'referer' => $referring_channel,
@@ -666,7 +804,7 @@ class HomeController extends Controller
     public function getDashboard()
     {
         if (Auth::check()) {
-            $user = Auth::user();
+            $user = User::find(1);
 
             $urls = Url::where('user_id', $user->id)
                     ->orderBy('id', 'DESC')
@@ -888,10 +1026,10 @@ class HomeController extends Controller
     /**
      * Get requested brand subdomain url and serach for the actual url.
      * If found redirect to actual url else show 404.
-     * 
-     * @param  string $subdomain
-     * @param  string $url
-     * 
+     *
+     * @param string $subdomain
+     * @param string $url
+     *
      * @return Illuminate\Http\Response
      */
     public function getRequestedSubdomainUrl($subdomain, $url)
@@ -915,10 +1053,10 @@ class HomeController extends Controller
     /**
      * Get requested url branf subdirectory and serach for the actual url.
      * If found redirect to actual url else show 404.
-     * 
-     * @param  string $subdirectory
-     * @param  string $url
-     * 
+     *
+     * @param string $subdirectory
+     * @param string $url
+     *
      * @return Illuminate\Http\Response
      */
     public function getRequestedSubdirectoryUrl($subdirectory, $url)

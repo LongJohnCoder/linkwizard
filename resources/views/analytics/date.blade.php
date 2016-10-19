@@ -127,13 +127,13 @@
                                             <div id="browser_div" style="width: 400px; height: 250px;"></div>
                                         </div>
                                     </div>
-                                    <div class="row" style="background-color: #ffffff">
+                                    <div class="row" style="background-color: #fff">
                                         <div class="col-sm-4">
                                             <div id="referral_div" style="width: 400px; height: 250px;"></div>
                                         </div>
                                     </div>
                                     <script type="text/javascript">
-                                        google.charts.load('current', {'packages':['corechart']});
+                                        google.charts.load('current', {'packages':['corechart', 'geochart']});
                                         $.ajax({
                                             url: "{{ route('postAnalyticsByDate') }}",
                                             type: 'POST',
@@ -150,6 +150,11 @@
                                                         };
                                                         var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
                                                         chart.draw(data, options);
+                                                        /*google.visualization.events.addListener(chart, 'select', function() {
+                                                            var selectionIdx = chart.getSelection()[0].row;
+                                                            var countryName = data.getValue(selectionIdx, 0);
+                                                            window.location.href = '{{-- route('getIndex') --}}/{{-- $url->shorten_suffix --}}/country/' + countryName + '/analytics';
+                                                        });*/
                                                     });
                                                     google.charts.setOnLoadCallback(function () {
                                                         var data = google.visualization.arrayToDataTable(response.location);
@@ -232,7 +237,6 @@
                 "_token": "{{ csrf_token() }}"
             },
             success: function(response) {
-                console.log(response);
                 $('#columnChart').highcharts({
                     chart: {
                         type: 'column',
