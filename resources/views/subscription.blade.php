@@ -127,7 +127,7 @@
                     <div id="freeTier" class="package {{ $subscription_status == null ? 'brilliant' : null }}">
                         <div class="name">Free</div>
                         <div class="price">$0</div>
-                        <div class="trial">Only 10 Shorten Links</div>
+                        <div class="trial">Upto 10 Shorten Links</div>
                         <hr>
                         <ul>
                             <li>

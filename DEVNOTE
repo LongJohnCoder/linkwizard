@@ -40,3 +40,6 @@ V2.6.2:
     1. Fixed Server routing issue(404), migration(redirecting_text) and dashboard limit(when null).
 V2.6.3:
     1. Fixed analyticsByDate null issue (Old dates have no advanced analytics)
+V2.6.4:
+    1. Add time frame graph on by date anlytics page
+    2. Add Subdomain & Subdirectory Links

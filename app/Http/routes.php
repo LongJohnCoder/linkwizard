@@ -69,6 +69,11 @@ Route::group(['domain' => env('APP_URL')], function () {
                 'as' => 'postFetchChartData',
             ]);
 
+            Route::any('postchartdatafilterdaterange', [
+                'uses' => 'HomeController@postChartDataFilterDateRange',
+                'as' => 'postChartDataFilterDateRange',
+            ]);
+
             Route::any('fetchchartdatabydate', [
                 'uses' => 'HomeController@postFetchChartDataByDate',
                 'as' => 'postFetchChartDataByDate',
@@ -87,6 +92,11 @@ Route::group(['domain' => env('APP_URL')], function () {
             Route::post('userinfo', [
                 'uses' => 'HomeController@postUserInfo',
                 'as' => 'postUserInfo',
+            ]);
+
+            Route::post('analytics-by-date', [
+                'uses' => 'HomeController@postAnalyticsByDate',
+                'as' => 'postAnalyticsByDate',
             ]);
         });
 

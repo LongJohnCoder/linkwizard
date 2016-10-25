@@ -8,6 +8,7 @@ use App\Limit;
 use App\LinkLimit;
 use App\Platform;
 use App\Referer;
+use App\RefererUrl;
 use App\Subdomain;
 use App\Url;
 use App\User;
@@ -91,6 +92,7 @@ class HomeController extends Controller
             }
             $dates = array_unique($date);
             $index = 0;
+            $URLstat[$key] = [];
             foreach ($dates as $date) {
                 $URLstat[$key][$index][0] = date('M d, Y', strtotime($date));
                 $URLstat[$key][$index][1] = (int) DB::table('referer_url')
@@ -109,6 +111,45 @@ class HomeController extends Controller
             'user_id' => $request->user_id,
             'urls' => $URLs,
             'urlStat' => $URLstat,
+        ]);
+    }
+
+    /**
+     * Return URL data for chart filtered by date range.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function postChartDataFilterDateRange(Request $request)
+    {
+        $urls = Url::where('user_id', $request->user_id)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+
+        $start_date = new \DateTime($request->start_date);
+        $end_date = new \DateTime($request->end_date);
+
+        $date_range = new \DatePeriod($start_date, new \DateInterval('P1D'), $end_date);
+
+        $chartData = [];
+        foreach ($date_range as $key => $date) {
+            $chartData[$key]['name'] = $date->format('M d');
+            /*$urls = DB::table('referer_url')
+                    ->selectRaw('distinct(url_id), count(url_id) as clicks')
+                    ->where('created_at', 'like', $date->format('Y-m-d').'%')
+                    ->get();*/
+            $urls = \App\RefererUrl::where('created_at', 'like', $date->format('Y-m-d').'%')->get();
+            if ($urls) {
+                $chartData[$key]['y'] = $urls->count();
+            } else {
+                $chartData[$key]['y'] = 0;
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'chartData' => $chartData,
         ]);
     }
 
@@ -154,6 +195,11 @@ class HomeController extends Controller
     }
 
     /**
+     * Get Advanced Analytics by Date for a particualr URL.
+     *
+     * @param Request $request
+     * @param string  $url
+     * @param string  $date
      * Return URL data by country for chart.
      *
      * @param Request $request
@@ -172,7 +218,7 @@ class HomeController extends Controller
         $chartData = [];
 
         foreach ($clicks as $key => $click) {
-            $chartData[$key]['name'] = $click->created_at;
+            $chartData[$key]['name'] = date('M d, Y h:i:s A', strtotime($click->created_at));
             $chartData[$key]['y'] = (int) $click->clicks;
         }
 
@@ -759,7 +805,7 @@ class HomeController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8|confirmed',
             'password_confirmation' => 'required|min:8',
-            'g-recaptcha-response' => 'recaptcha',
+            //'g-recaptcha-response' => 'recaptcha',
         ]);
 
         $user = new User();
@@ -801,10 +847,10 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getDashboard()
+    public function getDashboard(Request $request)
     {
         if (Auth::check()) {
-            $user = User::find(1);
+            $user = Auth::user();
 
             $urls = Url::where('user_id', $user->id)
                     ->orderBy('id', 'DESC')
@@ -837,12 +883,20 @@ class HomeController extends Controller
                 $limit = Limit::where('plan_code', 'tr5free')->first();
             }
 
+            $filter = [];
+            if (isset($request->from) and isset($request->to)) {
+                $filter['type'] = 'date';
+                $filter['start'] = $request->from;
+                $filter['end'] = date('Y-M-d', strtotime('+1 day', strtotime($request->to)));
+            }
+
             return view('dashboard', [
                 'user' => $user,
                 'urls' => $urls,
                 'subscription_status' => $subscription_status,
                 'limit' => $limit,
                 'total_links' => $total_links,
+                'filter' => $filter,
             ]);
         } else {
             return redirect()->action('HomeController@getIndex');
@@ -1026,6 +1080,10 @@ class HomeController extends Controller
     /**
      * Get requested brand subdomain url and serach for the actual url.
      * If found redirect to actual url else show 404.
+     * 
+     * @param  string $subdomain
+     * @param  string $url
+     * 
      *
      * @param string $subdomain
      * @param string $url

@@ -17,7 +17,7 @@
         <link rel="stylesheet" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
         <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
-        <link rel="stylesheet" href="{{ URL('/') }}/public/resources/css/bootstrap-wysiwyg.css" />
+        <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
         <script src="https://www.gstatic.com/charts/loader.js"></script> 
@@ -212,6 +212,13 @@
         </header>
         <section class="hero">
             <section class="main-content">
+                @if (count($urls) > 0)
+                <div class="dateRangeButton" style="margin-right: 10px; margin-top: -28px; position: relative" data-toggle="modal" data-target="#datePickerModal">
+                    <button class="btn btn-primary btn-sm pull-right">
+                        {{ date('M d', strtotime('-1 month')) .' - '. date('M d') }}
+                    </button>
+                </div>
+                @endif
                 <div class="row">
                     <div class="col-lg-12">
                         <div id="columnChart" style="min-width: 310px; height: 165px; margin: 0 auto"></div>
@@ -252,8 +259,8 @@
                                             {{ $url->title }} {{-- <button><i class="fa fa-archive"></i></button> --}}
                                         </h1>
                                         <h5>
-                                            <a href="http://{{ $url->actual_url }}" target="_blank">
-                                                {{ $url->actual_url }}
+                                            <a href="{{ $url->protocol }}://{{ $url->actual_url }}" target="_blank">
+                                                {{ $url->protocol }}://{{ $url->actual_url }}
                                             </a>
                                         </h5>
                                         <div class="row">
@@ -391,11 +398,13 @@
                                                             };
                                                             var chart{{ $key }} = new google.visualization.GeoChart(document.getElementById('regions_div{{ $key }}'));
                                                             chart{{ $key }}.draw(data, options);
+                                                            @if ($subscription_status != null)
                                                             google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
                                                                 var selectionIdx = chart{{ $key }}.getSelection()[0].row;
                                                                 var countryName = data.getValue(selectionIdx, 0);
                                                                 window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
                                                             });
+                                                            @endif
                                                         });
                                                         google.charts.setOnLoadCallback(function () {
                                                             var data = google.visualization.arrayToDataTable(response.location);
@@ -406,6 +415,13 @@
                                                             };
                                                             var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('chart_div{{ $key }}'));
                                                             chart{{ $key }}.draw(data, options);
+                                                            @if ($subscription_status != null)
+                                                            google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
+                                                                var selectionIdx = chart{{ $key }}.getSelection()[0].row;
+                                                                var countryName = data.getValue(selectionIdx, 0);
+                                                                window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
+                                                            });
+                                                            @endif
                                                         });
                                                         @if ($subscription_status != null)
                                                         google.charts.setOnLoadCallback(function () {
@@ -586,11 +602,36 @@
                 </div>
             </div>
         </div>
-        {{-- <script>
-            $(document).ready(function () {
-                $('#redirectingTextTemplate').wysiwyg();
-            });
-        </script> --}}
+        <div class="modal fade" id="datePickerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Select date range</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('getDashboard') }}" method="get" role="form" class="form" id="datePickerForm">
+                            <div class="form-group">
+                                <div class="input-daterange input-group" id="datepicker">
+                                    <input type="text" class="input-sm form-control" name="from" id="datePickerFrom" />
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" class="input-sm form-control" name="to" id="datePickerTo" />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary pull-right">Apply</button>
+                            <br />
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <center>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
         @endif
         <script>
             function editAction(key) {
@@ -864,6 +905,85 @@
         });
         </script>
         <script>
+            @if (isset($filter) and $filter != null) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('postChartDataFilterDateRange') }}",
+                    data: {
+                        "user_id": {{ $user->id }},
+                        "start_date": "{{ $filter['start'] }}",
+                        "end_date": "{{ $filter['end'] }}",
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        $('#columnChart').highcharts({
+                            chart: {
+                                type: 'column',
+                                backgroundColor: 'rgba(255, 255, 255, 0)'
+                            },
+                            title: {
+                                text: null
+                            },
+                            xAxis: {
+                                type: 'category',
+                                labels: {
+                                    style: {
+                                        fontWeight: 'bold',
+                                        color: '#fff'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                labels: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: null
+                                },
+                                gridLineWidth: 0,
+                                minorGridLineWidth: 0
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            plotOptions: {
+                                series: {
+                                    borderWidth: 0,
+                                    dataLabels: {
+                                        enabled: false,
+                                        format: '{point.y:.1f}%'
+                                    }
+                                }
+                            },
+
+                            tooltip: {
+                                backgroundColor: '#fff',
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                borderColor: '#AAA',
+                                headerFormat: null,
+                                pointFormat: '<span style="color:{point.color}">{point.name}</span><br/>Total clicks: <b>{point.y:.0f}</b>'
+                            },
+                            series: [{
+                                name: 'URLs',
+                                colorByPoint: true,
+                                //pointWidth: 28,
+                                data: response.chartData
+                            }],
+                        });
+                    },
+                    error: function(response) {
+                        console.log('Response error!');
+                    },
+                    statusCode: {
+                        500: function(response) {
+                            console.log('500 Internal server error!');
+                        }
+                    }
+                });
+            }
+            @else
             $.ajax({
                 type: 'post',
                 url: '{{ route('postFetchChartData') }}',
@@ -981,6 +1101,7 @@
                             ]
                         }
                     });
+                    @if ($subscription_status != null)
                     function pushChartDataStack(data) {
                         chartDataStack.push(data);
                         date = new Date(chartDataStack.pop());
@@ -988,6 +1109,7 @@
                         isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
                         window.location.href = chartDataStack[0]+"/date/"+isoDate+"/analytics";
                     }
+                    @endif
                 },
                 error: function(response) {
                     console.log('Response error!');
@@ -998,6 +1120,7 @@
                     }
                 }
             });
+            @endif
         </script>
         @if(Session::has('success'))
             <script type="text/javascript">
@@ -1035,6 +1158,36 @@
                 });
             </script>
         @endif
+        <script src="{{ URL('/')}}/public/resources/js/bootstrap-datepicker.min.js"></script>
+        <script>
+            $('.input-daterange').datepicker({
+                format: 'yyyy-mm-dd',
+                calendarWeeks: true,
+                autoclose: true,
+                todayHighlight: true,
+                toggleActive: true,
+                clearBtn: true
+            });
+        </script>
+        <script>
+            $(document).ready(function () {
+                $('#datePickerFrom').on('blur', function () {
+                    alert('Hi');
+                    var from = $(this).val();
+                    if (from == null) {
+                        $(this).focus();
+                        $(this).parent().append('<p style="color: red">Start date can not be null.</p>');
+                    }
+                });
+                $('#datePickerTo').on('blur', function () {
+                    var to = $(this).val();
+                    if (to ===null) {
+                        $(this).focus();
+                        $(this).parent().append('<p style="color: #f00">End cate can not be null.</p>');
+                    }
+                });
+            });
+        </script>
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=

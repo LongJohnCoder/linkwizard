@@ -59,10 +59,10 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     </script>
     <script>
     $(document).ready(function() {
-        @if ($url->is_custom == 1)
-            var uploadedPath = "{{ $url->uploaded_path }}";
-        @else
+        @if ($url->uploaded_path == null)
             var uploadedPath = "{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}";
+        @else
+            var uploadedPath = "{{ $url->uploaded_path }}";
         @endif
         var options = {
             theme: "custom",
