@@ -171,7 +171,11 @@ class HomeController extends Controller
                 $prefix = null;
             }
             $countNext = (int) $count + 2;
-            $chartData[$key]['name'] = date('h:i A', strtotime($prefix.$count.':00:00')).' - '.date('h:i A', strtotime($prefix.$countNext.':00:00'));
+            if ($countNext == 10) {
+                $chartData[$key]['name'] = date('h:i A', strtotime($prefix.$count.':00:00')).' - 10:00 AM';
+            } else {
+                $chartData[$key]['name'] = date('h:i A', strtotime($prefix.$count.':00:00')).' - '.date('h:i A', strtotime($prefix.$countNext.':00:00'));
+            }
             $clicks = DB::table('referer_url')
                         ->selectRaw('count(url_id) as clicks')
                         ->where('url_id', $request->url_id)
