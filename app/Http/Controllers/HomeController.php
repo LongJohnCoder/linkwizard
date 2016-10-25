@@ -678,14 +678,17 @@ class HomeController extends Controller
     {
         if (starts_with($request->url, 'https://')) {
             $actual_url = str_replace('https://', null, $request->url);
+            $protocol = 'https';
         } else {
             $actual_url = str_replace('http://', null, $request->url);
+            $protocol = 'http';
         }
 
         $random_string = $this->randomString();
 
         $url = new Url();
         $url->actual_url = $actual_url;
+        $url->protocol = $protocol;
         $url->shorten_suffix = $random_string;
         $url->title = $this->getPageTitle($request->url);
         $url->user_id = $request->user_id;

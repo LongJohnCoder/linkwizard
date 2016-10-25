@@ -73,7 +73,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
         HoldOn.open(options);
         setTimeout(function() {
-            window.location.href = 'http://' + '{{ $url->actual_url }}';
+            window.location.href = '{{ $url->protocol }}://' + '{{ $url->actual_url }}';
             HoldOn.close();
         }, {{ $url->redirecting_time }});
     });
