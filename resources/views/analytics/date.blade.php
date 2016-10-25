@@ -170,7 +170,7 @@
                                                         var data = google.visualization.arrayToDataTable(response.platform);
                                                         var options = {
                                                             title: 'Platform Shares',
-                                                            pieHole: 0.7,
+                                                            pieHole: 0.4,
                                                             width: 400,
                                                             height: 250,
                                                         };
@@ -181,7 +181,7 @@
                                                         var data = google.visualization.arrayToDataTable(response.browser);
                                                         var options = {
                                                             title: 'Browser Stats',
-                                                            pieHole: 0.7,
+                                                            pieHole: 0.4,
                                                             width: 400,
                                                             height: 250,
                                                         };
@@ -192,7 +192,7 @@
                                                         var data = google.visualization.arrayToDataTable(response.referer);
                                                         var options = {
                                                             title: 'Referring Channels',
-                                                            pieHole: 0.7,
+                                                            pieHole: 0.4,
                                                             width: 400,
                                                             height: 250,
                                                         };
