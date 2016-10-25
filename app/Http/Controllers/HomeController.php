@@ -1141,4 +1141,25 @@ class HomeController extends Controller
             abort(404);
         }
     }
+
+    /**
+     * Check a email is available or not from sign up page
+     * 
+     * @param  Request $response
+     * @return \Illuminate\Http\Response
+     */
+    public function postEmailCheck(Request $response)
+    {
+        $user = User::where('email', $response->email)->first();
+        if ($user) {
+            $exist = true;
+        } else {
+            $exist = false;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'exist' => $exist,
+        ]);
+    }
 }

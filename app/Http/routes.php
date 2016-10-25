@@ -140,6 +140,11 @@ Route::group(['domain' => env('APP_URL')], function () {
                 'uses' => 'HomeController@postBrandLink',
                 'as' => 'postBrandLink',
             ]);
+
+            Route::post('email-check', [
+                'uses' => 'HomeController@postEmailCheck',
+                'as' => 'postEmailCheck'
+            ]);
         });
 
         Route::group(['prefix' => 'admin'], function () {
