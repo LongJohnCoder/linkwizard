@@ -367,10 +367,6 @@
                 $(this).focus();
                 $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Password field should not be blank.</span>");
                 return false;
-            } else if (passwordInput.length < 6) {
-                $(this).focus();
-                $(this).parent().append("<span id='passwordloginValidation' style='color: red'>Password should be six characters long.</span>");
-                return false;
             } else {
                 return true;
             }
@@ -385,11 +381,11 @@
             nameInput = $(this).val();
             if (nameInput == null) {
                 $(this).focus();
-                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Name field should not be blank.</span>");
+                $(this).parent().append("<span id='NameValidation' style='color: red'>Name field should not be blank.</span>");
                 return false;
             } else if (!nameRegex.test(nameInput)) {
                 $(this).focus();
-                $(this).parent().append("<span id='NameValidation' style='color: red'>Please enter a valid name.</span>");
+                $(this).parent().append("<span id='NameValidation' style='color: red'>Please enter a valid name. Name should contain letters and space.</span>");
                 return false;
             } else {
                 return true;
@@ -405,13 +401,36 @@
             emailRegex = new RegExp('^([a-zA-Z0-9-_\.])+@([a-z0-9]+[\.]+[a-z]{2,}([\.]*[a-z]){0,2})?$');
             if (emailInput == null) {
                 $(this).focus();
-                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Email field should not be blank.</span>");
+                $(this).parent().append("<span id='EmailValidation' style='color: red'>Email field should not be blank.</span>");
                 return false;
             } else if (!emailRegex.test(emailInput)) {
                 $(this).focus();
                 $(this).parent().append("<span id='EmailValidation' style='color: red'>Please enter a valid email address.</span>");
                 return false;
             } else {
+                $.ajax({
+                    type: 'post',
+                    url: '{{ route('postEmailCheck') }}',
+                    data: {
+                        email: emailInput,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function (response) {
+                        if(response.exist) {
+                            $('#Email').focus();
+                            $('#Email').parent().append("<span id='EmailValidation' style='color: red'>This email is already registered.</span>");
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    },
+                    error: function (response) {
+                        console.log('Response error!');
+                    },
+                    statusCode: function (response) {
+                        console.log('Internal server error!');
+                    }
+                });
                 return true;
             }
         });
@@ -425,7 +444,7 @@
             passwordInput = $(this).val();
             if (passwordInput == null) {
                 $(this).focus();
-                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Password field should not be blank.</span>");
+                $(this).parent().append("<span id='passwordValidation' style='color: red'>Password field should not be blank.</span>");
                 return false;
             } else if (!passwordRegex.test(passwordInput)) {
                 $(this).focus();
@@ -469,7 +488,7 @@
             humancheckInput = $(this).val();
             if (humancheckInput == null) {
                 $(this).focus();
-                $(this).parent().append("<span id='humancheckValidation' style='color: red'>Confirm password field should not be blank.</span>");
+                $(this).parent().append("<span id='humancheckValidation' style='color: red'>Prove that you are not a robot!</span>");
                 return false;
             }  else {
                 return true;
