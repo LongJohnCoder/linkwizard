@@ -625,6 +625,16 @@
     ga('send', 'pageview');
 
     </script>
+    <script>
+        $(document).ready(function(){
+            $("#registerButton").click(function(){
+               $("#signUpTab").click(); 
+            });
+            $("#loginButton").click(function(){
+               $("#signInTab").click(); 
+            });
+        });
+    </script>
 </body>
 
 </html>

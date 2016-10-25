@@ -517,7 +517,7 @@ Navigation
     position: absolute;
     top: 0;
     right: 15px;
-    z-index: 999999;
+    z-index: 1;
     padding: 10px 35px 16px 0px;
     cursor: pointer;
 }
