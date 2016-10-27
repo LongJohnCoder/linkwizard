@@ -168,10 +168,10 @@
                                     <div class="control-group">
                                         <label for="passwordlogin" class="control-label">Password:</label>
                                         <div class="controls">
-                                            <input type="password" placeholder="itsasecret" class="form-control" name="loginemail" id="passwordlogin">
+                                            <input type="password" placeholder="itsasecret" class="form-control" name="loginpassword" id="passwordlogin">
                                         </div>
                                         @if($errors->any())
-                                        <div id="passwordloginValidation" style="color:red">{{ $errors->first('loginemail') }}</div>
+                                        <div id="passwordloginValidation" style="color:red">{{ $errors->first('loginpassword') }}</div>
                                         @endif
                                     </div>
                                     <!-- Multiple Checkboxes (inline) -->
@@ -186,7 +186,7 @@
                                     <div class="control-group">
                                         <div class="controls">
                                             <input type="hidden" value="{{ csrf_token() }}" name="_token">
-                                            <button class="btn btn-primary" name="signin" style="background:#284666; color: #fff;" type="submit" id="signinButton">Sign In</button>
+                                            <button class="btn btn-primary" style="background:#284666; color: #fff;" type="submit" id="signinButton">Sign In</button>
                                         </div>
                                     </div>
                                 </fieldset>
