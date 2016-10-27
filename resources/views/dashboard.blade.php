@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/png" href="https://tier5.us/images/favicon.ico">
+        <link rel="icon" type="image/png" href="{{ URL::to('/').'/public/resources/img/favicon.ico' }}">
         <title>Tier5 | URL Shortener</title>
         <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
         <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
@@ -252,8 +252,9 @@
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 bhoechie-tab">
                                 @foreach ($urls as $key => $url)
                                     <div class="bhoechie-tab-content {{ $key == 0 ? 'active' : null }}">
-                                        <p class="date">
-                                            {{ date('M d, Y', strtotime($url->created_at)) }}
+                                        <p class="date" style="text-transform: none;">
+                                            <span style="text-transform: uppercase;">{{ date('M d, Y', strtotime($url->created_at)) }}</span>
+                                            <a href="#" class="pull-right" style="margin: 10px 20px 0px 0px; text-decoration: none; border-bottom: 1px dashed;" data-toggle="tooltip" data-placement="bottom" title="All clicks data are reported in UTC to provide consistence data acrosss different timezones.">DATA IN UTC</a>
                                         </p>
                                         <h1 id="urlTitleHeading{{ $key }}">
                                             {{ $url->title }} {{-- <button><i class="fa fa-archive"></i></button> --}}
@@ -618,9 +619,9 @@
                         <form action="{{ route('getDashboard') }}" method="get" role="form" class="form" id="datePickerForm">
                             <div class="form-group">
                                 <div class="input-daterange input-group" id="datepicker">
-                                    <input type="text" class="input-sm form-control" name="from" id="datePickerFrom" />
+                                    <input type="text" class="input-sm form-control" name="from" id="datePickerFrom" required />
                                     <span class="input-group-addon">to</span>
-                                    <input type="text" class="input-sm form-control" name="to" id="datePickerTo" />
+                                    <input type="text" class="input-sm form-control" name="to" id="datePickerTo" required />
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary pull-right">Apply</button>
@@ -1169,13 +1170,14 @@
                 autoclose: true,
                 todayHighlight: true,
                 toggleActive: true,
-                clearBtn: true
+                clearBtn: true,
+                startDate: '-1m',
+                endDate: '+0d'
             });
         </script>
         <script>
             $(document).ready(function () {
                 $('#datePickerFrom').on('blur', function () {
-                    alert('Hi');
                     var from = $(this).val();
                     if (from == null) {
                         $(this).focus();

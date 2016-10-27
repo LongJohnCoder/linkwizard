@@ -11,7 +11,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="https://tier5.us/images/favicon.ico">
+    <link rel="icon" type="image/png" href="{{ URL::to('/').'/public/resources/img/favicon.ico' }}">
     <title>Tier5 | URL Shortener</title>
     <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
     <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
@@ -158,20 +158,20 @@
                                     <div class="control-group">
                                         <label for="useremail" class="control-label">Email:</label>
                                         <div class="controls">
-                                            <input type="email" placeholder="johndoe@company.io" class="form-control" name="useremail" id="useremail">
+                                            <input type="email" placeholder="johndoe@company.io" class="form-control" name="loginemail" id="useremail" value="{{ old('loginemail') }}">
                                         </div>
                                         @if($errors->any())
-                                        <div id="useremailValidation" style="color:red">{{ $errors->first('useremail') }}</div>
+                                        <div id="useremailValidation" style="color:red">{{ $errors->first('loginemail') }}</div>
                                         @endif
                                     </div>
                                     <!-- Password input-->
                                     <div class="control-group">
                                         <label for="passwordlogin" class="control-label">Password:</label>
                                         <div class="controls">
-                                            <input type="password" placeholder="itsasecret" class="form-control" name="passwordlogin" id="passwordlogin">
+                                            <input type="password" placeholder="itsasecret" class="form-control" name="loginemail" id="passwordlogin">
                                         </div>
                                         @if($errors->any())
-                                        <div id="passwordloginValidation" style="color:red">{{ $errors->first('passwordlogin') }}</div>
+                                        <div id="passwordloginValidation" style="color:red">{{ $errors->first('loginemail') }}</div>
                                         @endif
                                     </div>
                                     <!-- Multiple Checkboxes (inline) -->
@@ -193,14 +193,14 @@
                             </form>
                         </div>
                         <div id="signup" class="tab-pane fade">
-                            <form method="post" action="{{ route('postRegister') }}">
+                            <form method="post" action="{{ route('postRegister') }}" onsubmit="return validateHumanity();">
                                 <fieldset>
                                     <!-- Sign Up Form -->
                                     <!-- Text input-->
                                     <div class="control-group">
                                         <label for="Name" class="control-label">Name:</label>
                                         <div class="controls">
-                                            <input type="text" placeholder="John Doe" class="form-control" name="name" id="Name">
+                                            <input type="text" placeholder="John Doe" class="form-control" name="name" id="Name" value="{{ old('name') }}">
                                         </div>
                                         @if($errors->any())
                                         <div id="NameValidation" style="color:red">{{ $errors->first('name') }}</div>
@@ -210,7 +210,7 @@
                                     <div class="control-group">
                                         <label for="Email" class="control-label">Email:</label>
                                         <div class="controls">
-                                            <input type="email" placeholder="johndoe@company.io" class="form-control" name="email" id="Email">
+                                            <input type="email" placeholder="johndoe@company.io" class="form-control" name="email" id="Email" value="{{ old('email') }}">
                                         </div>
                                         @if($errors->any())
                                         <div id="EmailValidation" style="color:red">{{ $errors->first('email') }}</div>
@@ -239,7 +239,7 @@
                                     <!-- Multiple Radios (inline) -->
                                     <div class="control-group">
                                         <label for="humancheck" class="control-label">Humanity Check:</label>
-                                        <div class="controls">
+                                        <div class="controls" id="reCAPTCHA_div">
                                             {!! Recaptcha::render() !!}
                                         </div>
                                         @if($errors->any())
@@ -311,7 +311,8 @@
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     </div>
     @endif
-    <script type="text/javascript">
+    <script src="https://www.google.com/recaptcha/api.js?onload=onReturnCallback&render=explicit" async defer></script>
+    <script>
     $(document).ready(function() {
         $('#loginButton').click(function() {
             $('.nav-toggle').click();
@@ -343,68 +344,78 @@
 
         $('#useremail').on('blur', function() {
             emailInput = $(this).val();
-            emailRegex = new RegExp('^([a-zA-Z0-9-_\.])+@([a-z0-9]+[\.]+[a-z]{2,}([\.]*[a-z]){0,2})?$');
-            if (emailInput == null) {
+            emailRegex = new RegExp('^([a-zA-Z0-9-_\.])+@([a-z0-9]+[\.]+[a-z]{2,}([\.]*[a-z]){0,2}){1}$');
+            if (emailInput.length === 0) {
                 $(this).focus();
-                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Email field should not be blank.</span>");
+                $('#useremailValidation').remove('#useremailValidation');
+                $(this).parent().append("<span id='useremailValidation' style='color: red'>Email field should not be blank.</span>");
                 return false;
             } else if (!emailRegex.test(emailInput)) {
                 $(this).focus();
+                $('#useremailValidation').remove('#useremailValidation');
                 $(this).parent().append("<span id='useremailValidation' style='color: red'>Please enter a valid email address.</span>");
                 return false;
             } else {
+                $('#useremailValidation').remove('#useremailValidation');
                 return true;
             }
         });
 
-        $('#useremail').on('focus', function() {
+        $('#useremail').on('keypress', function() {
             $('#useremailValidation').remove('#useremailValidation');
         });
 
         $('#passwordlogin').on('blur', function() {
             passwordInput = $(this).val();
-            if (passwordInput == null) {
+            if (passwordInput.length === 0) {
                 $(this).focus();
-                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Password field should not be blank.</span>");
+                $('#passwordloginValidation').remove('#passwordloginValidation');
+                $(this).parent().append("<span id='passwordloginValidation' style='color: red'>Password field should not be blank.</span>");
                 return false;
             } else {
+                $('#passwordloginValidation').remove('#passwordloginValidation');
                 return true;
             }
         });
 
-        $('#passwordlogin').on('focus', function() {
+        $('#passwordlogin').on('keypress', function() {
             $('#passwordloginValidation').remove('#passwordloginValidation');
         });
 
         $('#Name').on('blur', function(e) {
             nameRegex = new RegExp('^([a-zA-Z\. ]){2,}$');
             nameInput = $(this).val();
-            if (nameInput == null) {
+            if (nameInput.length === 0) {
                 $(this).focus();
+                $('#NameValidation').remove('#NameValidation');
                 $(this).parent().append("<span id='NameValidation' style='color: red'>Name field should not be blank.</span>");
                 return false;
             } else if (!nameRegex.test(nameInput)) {
                 $(this).focus();
+                $('#NameValidation').remove('#NameValidation');
                 $(this).parent().append("<span id='NameValidation' style='color: red'>Please enter a valid name. Name should contain letters and space.</span>");
                 return false;
             } else {
+                $('#NameValidation').remove('#NameValidation');
                 return true;
             }
         });
 
-        $('#Name').on('focus', function() {
+        $('#Name').on('keypress', function () {
             $('#NameValidation').remove('#NameValidation');
         });
 
         $('#Email').on('blur', function () {
             emailInput = $(this).val();
-            emailRegex = new RegExp('^([a-zA-Z0-9-_\.])+@([a-z0-9]+[\.]+[a-z]{2,}([\.]*[a-z]){0,2})?$');
-            if (emailInput == null) {
+            emailRegex = new RegExp('^([a-zA-Z0-9-_\.])+@([a-z0-9]+[\.]+[a-z]{2,}([\.]*[a-z]){0,2}){1}$');
+            if (emailInput.length === 0) {
                 $(this).focus();
+                $('#EmailValidation').remove('#EmailValidation');
                 $(this).parent().append("<span id='EmailValidation' style='color: red'>Email field should not be blank.</span>");
                 return false;
             } else if (!emailRegex.test(emailInput)) {
                 $(this).focus();
+                $('#EmailValidation').remove('#EmailValidation');
                 $(this).parent().append("<span id='EmailValidation' style='color: red'>Please enter a valid email address.</span>");
                 return false;
             } else {
@@ -418,9 +429,11 @@
                     success: function (response) {
                         if(response.exist) {
                             $('#Email').focus();
+                            $('#EmailValidation').remove('#EmailValidation');
                             $('#Email').parent().append("<span id='EmailValidation' style='color: red'>This email is already registered.</span>");
                             return false;
                         } else {
+                            $('#EmailValidation').remove('#EmailValidation');
                             return true;
                         }
                     },
@@ -431,73 +444,82 @@
                         console.log('Internal server error!');
                     }
                 });
+                $('#EmailValidation').remove('#EmailValidation');
                 return true;
             }
         });
 
-        $('#Email').on('focus', function() {
+        $('#Email').on('keypress', function () {
             $('#EmailValidation').remove('#EmailValidation');
         });
 
-        $('#password').on('blur', function() {
+        $('#password').on('keyup', function() {
             passwordRegex =  new RegExp('(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#%^&*_+\-=?\.]).{8,}');
             passwordInput = $(this).val();
-            if (passwordInput == null) {
+            if (passwordInput.length === 0) {
                 $(this).focus();
+                $('#passwordValidation').remove('#passwordValidation');
                 $(this).parent().append("<span id='passwordValidation' style='color: red'>Password field should not be blank.</span>");
                 return false;
             } else if (!passwordRegex.test(passwordInput)) {
                 $(this).focus();
+                $('#passwordValidation').remove('#passwordValidation');
                 $(this).parent().append("<span id='passwordValidation' style='color: red'>Password should be atleast eight characters long and contain one lowercase, one uppercase, one numeric and one special character.</span>");
                 return false;
             } else {
+                $('#passwordValidation').remove('#passwordValidation');
                 return true;
             }
         });
 
-        $('#password').on('focus', function() {
+        /*$('#password').on('keypress', function () {
             $('#passwordValidation').remove('#passwordValidation');
-        });
+        });*/
 
-        $('#password_confirmation').on('blur', function() {
+        $('#password_confirmation').on('keyup', function() {
             password_confirmationRegex =  new RegExp('(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#%^&*_+\-=?\.]).{8,}');
             password_confirmationInput = $(this).val();
             passwordInput = $('#password').val();
-            if (password_confirmationInput == null) {
+            if (password_confirmationInput.length === 0) {
                 $(this).focus();
+                $('#password_confirmationValidation').remove('#password_confirmationValidation');
                 $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Confirm password field should not be blank.</span>");
                 return false;
             } else if (!password_confirmationRegex.test(password_confirmationInput)) {
                 $(this).focus();
+                $('#password_confirmationValidation').remove('#password_confirmationValidation');
                 $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Password should be atleast eight characters long and contain one lowercase, one uppercase, one numeric and one special character.</span>");
                 return false;
             } else if (passwordInput !== password_confirmationInput) {
                 $(this).focus();
+                $('#password_confirmationValidation').remove('#password_confirmationValidation');
                 $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Password and confirm password should match.</span>");
                 return false;
             } else {
+                $('#password_confirmationValidation').remove('#password_confirmationValidation');
                 return true;
             }
         });
 
-        $('#password_confirmation').on('focus', function() {
+        /*$('#password_confirmation').on('keypress', function () {
             $('#password_confirmationValidation').remove('#password_confirmationValidation');
-        });
+        });*/
 
-        $('#humancheck').on('click', function () {
-            humancheckInput = $(this).val();
-            if (humancheckInput == null) {
-                $(this).focus();
-                $(this).parent().append("<span id='humancheckValidation' style='color: red'>Prove that you are not a robot!</span>");
+        var onReturnCallback = function() {
+            alert("grecaptcha is ready!");
+        };
+        function validateHumanity() {
+            submit.preventDefault();
+            var captcha_response = grecaptcha.getResponse();
+            alert(captcha_response);
+            if(captcha_response.length == 0) {
+                $('#reCAPTCHA_div').parent().append("<span id='humancheckValidation' style='color: red'>Prove that you are not a robot!</span>");
                 return false;
-            }  else {
+            } else {
+                $('#humancheckValidation').remove('#humancheckValidation');
                 return true;
             }
-        });
-
-        $('#humancheck').on('focus', function () {
-            $('#humancheckValidation').remmove('#humancheckValidation');
-        });
+        }
 
         var options = {
             theme: "custom",

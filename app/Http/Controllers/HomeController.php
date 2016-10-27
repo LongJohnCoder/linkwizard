@@ -139,7 +139,7 @@ class HomeController extends Controller
                     ->selectRaw('distinct(url_id), count(url_id) as clicks')
                     ->where('created_at', 'like', $date->format('Y-m-d').'%')
                     ->get();*/
-            $urls = \App\RefererUrl::where('created_at', 'like', $date->format('Y-m-d').'%')->get();
+            $urls = RefererUrl::where('created_at', 'like', $date->format('Y-m-d').'%')->get();
             if ($urls) {
                 $chartData[$key]['y'] = $urls->count();
             } else {
@@ -786,11 +786,11 @@ class HomeController extends Controller
     public function postLogin(Request $request)
     {
         $this->validate($request, [
-            'useremail' => 'required|email',
-            'passwordlogin' => 'required',
+            'loginemail' => 'required|email',
+            'loginpassword' => 'required',
         ]);
 
-        if (Auth::attempt(['email' => $request->useremail, 'password' => $request->passwordlogin], $request->remember)) {
+        if (Auth::attempt(['email' => $request->loginemail, 'password' => $request->loginpassword], $request->remember)) {
             return redirect()->action('HomeController@getDashboard');
         } else {
             return redirect()->action('HomeController@getIndex')
