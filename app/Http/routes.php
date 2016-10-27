@@ -11,7 +11,7 @@
 |
 */
 
-Route::group(['domain' => env('APP_URL')], function () {
+Route::group(['domain' => env('APP_HOST')], function () {
     Route::get('/', [
         'uses' => 'HomeController@getIndex',
         'as' => 'getIndex',
@@ -143,7 +143,7 @@ Route::group(['domain' => env('APP_URL')], function () {
 
             Route::post('email-check', [
                 'uses' => 'HomeController@postEmailCheck',
-                'as' => 'postEmailCheck'
+                'as' => 'postEmailCheck',
             ]);
         });
 
@@ -161,7 +161,7 @@ Route::group(['domain' => env('APP_URL')], function () {
     });
 });
 
-Route::group(['domain' => '{subdomain}.'.env('APP_URL')], function () {
+Route::group(['domain' => '{subdomain}.'.env('APP_HOST')], function () {
     Route::get('/', function ($subdomain) {
         return redirect()->route('getIndex');
     });

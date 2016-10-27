@@ -133,13 +133,31 @@ class HomeController extends Controller
         $date_range = new \DatePeriod($start_date, new \DateInterval('P1D'), $end_date);
 
         $chartData = [];
+        $stat = [];
         foreach ($date_range as $key => $date) {
             $chartData[$key]['name'] = $date->format('M d');
-            /*$urls = DB::table('referer_url')
-                    ->selectRaw('distinct(url_id), count(url_id) as clicks')
-                    ->where('created_at', 'like', $date->format('Y-m-d').'%')
-                    ->get();*/
-            $urls = RefererUrl::where('created_at', 'like', $date->format('Y-m-d').'%')->get();
+            $urls = DB::table('referer_url')
+                            ->selectRaw('distinct(url_id) as id')
+                            ->where('referer_url.created_at', 'like', '2016-10-17 %')
+                            ->get();
+            foreach ($urls as $index => $url) {
+                $stat = DB::table('referer_url')
+                            ->selectRaw('urls.shorten_suffix, count(referer_url.url_id) as clicks')
+                            ->join('urls', 'urls.id', '=', 'referer_url.url_id')
+                            ->where('referer_url.url_id', $url->id)
+                            ->where('referer_url.created_at', 'like', $date->format('Y-m-d').' %')
+                            ->groupBy('referer_url.url_id')
+                            ->first();
+                if ($stat) {
+                    $statData[$key][$index][0] = env('APP_URL').'/'.$stat->shorten_suffix;
+                    $statData[$key][$index][1] = (int) $stat->clicks;
+                } else {
+                    $statData[$key][$index][0] = 0;
+                    $statData[$key][$index][1] = 0;
+                }
+            }
+            $chartData[$key]['drilldown'] = $date->format('M d');
+            $urls = RefererUrl::where('created_at', 'like', $date->format('Y-m-d').' %')->get();
             if ($urls) {
                 $chartData[$key]['y'] = $urls->count();
             } else {
@@ -150,6 +168,7 @@ class HomeController extends Controller
         return response()->json([
             'status' => 'success',
             'chartData' => $chartData,
+            'statData' => $statData,
         ]);
     }
 
@@ -891,10 +910,19 @@ class HomeController extends Controller
             }
 
             $filter = [];
+            $dates = [];
             if (isset($request->from) and isset($request->to)) {
                 $filter['type'] = 'date';
                 $filter['start'] = $request->from;
                 $filter['end'] = date('Y-M-d', strtotime('+1 day', strtotime($request->to)));
+                $start_date = new \DateTime($request->from);
+                $end_date = new \DateTime($request->to);
+
+                $date_range = new \DatePeriod($start_date, new \DateInterval('P1D'), $end_date);
+
+                foreach ($date_range as $key => $date) {
+                    $dates[$key] = $date->format('M d');
+                }
             }
 
             return view('dashboard', [
@@ -904,6 +932,7 @@ class HomeController extends Controller
                 'limit' => $limit,
                 'total_links' => $total_links,
                 'filter' => $filter,
+                'dates' => $dates,
             ]);
         } else {
             return redirect()->action('HomeController@getIndex');

@@ -199,7 +199,7 @@
                             <input id="givenActualUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
                             <label for="makeCustomUrl">Create Your Own Custom Link</label>
                             <div class="input-group">
-                                <span class="input-group-addon">{{ env('APP_URL') }}/</span>
+                                <span class="input-group-addon">{{ env('APP_HOST') }}/</span>
                                 <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. tr5.io/MyLinK">
                             </div>
                             <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
@@ -237,7 +237,7 @@
                                             <span id="tab-title{{ $key }}" class="title">{{ $url->title }}</span>
                                             @if (isset($url->subdomain))
                                                 @if($url->subdomain->type == 'subdomain')
-                                                    <span class="link">http://{{ $url->subdomain->name }}.{{ env('APP_URL') }}/{{ $url->shorten_suffix }}</span>
+                                                    <span class="link">http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}</span>
                                                 @elseif($url->subdomain->type == 'subdirectory')
                                                     <span class="link">{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}</span>
                                                 @endif
@@ -269,8 +269,8 @@
                                                 @if (isset($url->subdomain))
                                                     <h3>
                                                         @if($url->subdomain->type == 'subdomain')
-                                                            <a href="http://{{ $url->subdomain->name }}.{{ env('APP_URL') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                                                http://{{ $url->subdomain->name }}.{{ env('APP_URL') }}/{{ $url->shorten_suffix }}
+                                                            <a href="http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                                                http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}
                                                             </a>
                                                         @elseif($url->subdomain->type == 'subdirectory')
                                                             <a href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
@@ -921,6 +921,7 @@
                     },
                     success: function(response) {
                         console.log(response);
+                        var chartDataStack = [];
                         $('#columnChart').highcharts({
                             chart: {
                                 type: 'column',
@@ -975,6 +976,52 @@
                                 //pointWidth: 28,
                                 data: response.chartData
                             }],
+                            drilldown: {
+                                activeAxisLabelStyle: {
+                                    textDecoration: 'none',
+                                    fontStyle: 'italic',
+                                    color: '#54BDDC'
+                                },
+                                activeDataLabelStyle: {
+                                    textDecoration: 'none',
+                                    fontStyle: 'italic',
+                                    color: '#fff'
+                                },
+                                drillUpButton: {
+                                    relativeTo: 'spacingBox',
+                                    position: {
+                                        y: 0,
+                                        x: 0
+                                    },
+                                    theme: {
+                                        fill: 'white',
+                                        'stroke-width': 1,
+                                        stroke: 'silver',
+                                        r: 0,
+                                        states: {
+                                            hover: {
+                                                color: '#fff',
+                                                stroke: '#039',
+                                                fill: '#2AABD2'
+                                            },
+                                            select: {
+                                                color: '#fff',
+                                                stroke: '#039',
+                                                fill: '#bada55'
+                                            }
+                                        }
+                                    }
+                                },
+                                series: [
+                                @foreach ($dates as $key => $date)
+                                {
+                                    name: '{{ $date }}',
+                                    id: '{{ $date }}',
+                                    data: response.statData[{{ $key }}]
+                                },
+                                @endforeach
+                                ]
+                            }
                         });
                     },
                     error: function(response) {
@@ -1171,7 +1218,7 @@
                 todayHighlight: true,
                 toggleActive: true,
                 clearBtn: true,
-                startDate: '-1m',
+                //startDate: '-1m',
                 endDate: '+0d'
             });
         </script>
