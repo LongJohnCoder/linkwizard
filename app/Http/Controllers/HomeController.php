@@ -123,10 +123,6 @@ class HomeController extends Controller
      */
     public function postChartDataFilterDateRange(Request $request)
     {
-        $urls = Url::where('user_id', $request->user_id)
-                    ->orderBy('id', 'DESC')
-                    ->get();
-
         $start_date = new \DateTime($request->start_date);
         $end_date = new \DateTime($request->end_date);
 
@@ -139,13 +135,16 @@ class HomeController extends Controller
             $chartData[$key]['name'] = $date->format('M d');
             $urls = DB::table('referer_url')
                             ->selectRaw('distinct(url_id) as id')
+                            ->join('urls', 'urls.id', '=', 'referer_url.url_id')
                             ->where('referer_url.created_at', 'like', $date->format('Y-m-d').' %')
+                            ->where('urls.user_id', $request->user_id)
                             ->get();
             foreach ($urls as $index => $url) {
                 $stat = DB::table('referer_url')
                             ->selectRaw('urls.shorten_suffix, count(referer_url.url_id) as clicks')
                             ->join('urls', 'urls.id', '=', 'referer_url.url_id')
                             ->where('referer_url.url_id', $url->id)
+                            ->where('urls.user_id', $request->user_id)
                             ->where('referer_url.created_at', 'like', $date->format('Y-m-d').' %')
                             ->groupBy('referer_url.url_id')
                             ->first();
@@ -158,9 +157,15 @@ class HomeController extends Controller
                 }
             }
             $chartData[$key]['drilldown'] = $date->format('M d');
-            $urls = RefererUrl::where('created_at', 'like', $date->format('Y-m-d').' %')->get();
-            if ($urls) {
-                $chartData[$key]['y'] = $urls->count();
+            //$urls = RefererUrl::where('created_at', 'like', $date->format('Y-m-d').' %')->get();
+            $clicks = DB::table('referer_url')
+                            ->selectRaw('count(url_id) as count')
+                            ->join('urls', 'urls.id', '=', 'referer_url.url_id')
+                            ->where('referer_url.created_at', 'like', $date->format('Y-m-d').' %')
+                            ->where('urls.user_id', $request->user_id)
+                            ->first();
+            if ($clicks) {
+                $chartData[$key]['y'] = (int) $clicks->count;
             } else {
                 $chartData[$key]['y'] = 0;
             }
