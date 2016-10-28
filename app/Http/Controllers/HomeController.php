@@ -134,11 +134,12 @@ class HomeController extends Controller
 
         $chartData = [];
         $stat = [];
+        $statData = [];
         foreach ($date_range as $key => $date) {
             $chartData[$key]['name'] = $date->format('M d');
             $urls = DB::table('referer_url')
                             ->selectRaw('distinct(url_id) as id')
-                            ->where('referer_url.created_at', 'like', '2016-10-17 %')
+                            ->where('referer_url.created_at', 'like', $date->format('Y-m-d').' %')
                             ->get();
             foreach ($urls as $index => $url) {
                 $stat = DB::table('referer_url')
