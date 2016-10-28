@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
         <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
         <script src="https://www.gstatic.com/charts/loader.js"></script> 
@@ -29,6 +30,7 @@
         <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
         <script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
         <!-- Facebook and Twitter integration -->
         <meta property="og:title" content="" />
         <meta property="og:image" content="" />
@@ -342,7 +344,10 @@
                                                             }, function(response){});
                                                         });
                                                         $('#addBrand{{ $key }}').on('click', function () {
-                                                            $("#uploadModalBody #urlId").val('{{ $url->id }}');
+                                                            $("#uploadModalBody #urlId").val({{ $url->id }});
+                                                            $("#uploadModalBody #brandLogo").val("{{-- $url->uploaded_path --}}");
+                                                            $("#uploadModalBody #redirectingTime").val('{{ $url->redirecting_time/1000 }}');
+                                                            initSummernote('{!! $url->  redirecting_text_template !!}');
                                                             $('#myModal1').modal('show');
                                                         });
                                                         $('#brandLink{{ $key }}').on('click', function () {
@@ -521,15 +526,15 @@
                             <input type="hidden" name="url_id" value="{{ $url->id }}" id="urlId" />
                             <div class="form-group">
                                 <label for="brandLogo">Upload brand logo</label>
-                                <input type="file" id="brandLogo" name="brandLogo" class="form-control input-md" style="padding: 0px 0px 34px 0px;" value="{{ $url->brand_logo }}" />
+                                <input type="file" id="brandLogo" name="brandLogo" class="form-control input-md" style="padding: 0px 0px 34px 0px;" value="" />
                             </div>
                             <div class="form-group">
                                 <label for="redirectingTime">Set redirecting time (in seconds)</label>
-                                <input type="number" min="0" max="60" id="redirectingTime" name="redirectingTime" class="form-control input-md" value="{{ $url->redirecting_time/1000 }}" />
+                                <input type="number" min="0" max="60" id="redirectingTime" name="redirectingTime" class="form-control input-md" value="" />
                             </div>
                             <div class="form-group">
                                 <label for="redirectingTextTemplate">Set redirecting text template</label>
-                                <textarea id="redirectingTextTemplate" name="redirectingTextTemplate" class="form-control input-md">"{{ $url->redirecting_text_template }}</textarea>
+                                <textarea id="redirectingTextTemplate" name="redirectingTextTemplate" class="form-control input-md"></textarea>
                             </div>
                             <hr />
                             <button type="submit" class="btn btn-default btn-md pull-right">
@@ -1209,6 +1214,25 @@
                 });
             </script>
         @endif
+        <script>
+            function initSummernote(preloadText) {
+                $('#redirectingTextTemplate').summernote({
+                    height: 100,
+                    minHeight: null,
+                    maxHeight: null,
+                    focus: true,
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['height', ['height']],
+                        ['insert', ['link']],
+                        ['misc', ['undo', 'redo', 'codeview']]
+                    ]
+                });
+                $('#redirectingTextTemplate').summernote('code', preloadText);
+            }
+        </script>
         <script src="{{ URL('/')}}/public/resources/js/bootstrap-datepicker.min.js"></script>
         <script>
             $('.input-daterange').datepicker({

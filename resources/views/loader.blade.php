@@ -16,7 +16,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow" />
     <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
-    <title>Tier5 | URL Shortener | 301 Redirecting...</title>
+    <title>Tier5 | URL Shortener | Redirecting...</title>
     <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
     <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
     <meta name="author" content="Tier5 LLC" />
@@ -62,12 +62,12 @@ if (isset($_SERVER['HTTP_REFERER'])) {
         @if ($url->uploaded_path == null)
             var uploadedPath = "{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}";
         @else
-            var uploadedPath = "{{ $url->uploaded_path }}";
+            var uploadedPath = "/{{ $url->uploaded_path }}";
         @endif
         var options = {
             theme: "custom",
             content: '<div><img style="margin: auto;" src='+uploadedPath+' class="center-block" /></div><br />',
-            message: "{{ $url->redirecting_text_template }}",
+            message: '{!! $url->redirecting_text_template !!}',
             backgroundColor: "#212230"
         };
 
