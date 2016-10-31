@@ -16,10 +16,27 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow" />
     <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
-    <title>Tier5 | URL Shortener | Redirecting to {{ $url->protocol }}://{{ $url->actual_url }}</title>
+    <title>Tier5 | URL Shortener</title>
     <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
     <meta name="keywords" content="Tier5 URL Shortener, Tr5.io, Tier5" />
     <meta name="author" content="Tier5 LLC" />
+    <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
+    <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
+    <meta name="author" content="Tier5 LLC" />
+    <meta property="og:title" content="Tier5 URL Shortener" />
+    @if ($url->uploaded_path == null)
+    <meta property="og:image" content="{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}" />
+    <meta property="twitter:image" content="{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}" />
+    @else
+    <meta property="og:image" content="/{{ $url->uploaded_path }}" />
+    <meta property="twitter:image" content="/{{ $url->uploaded_path }}" />
+    @endif
+    <meta property="og:url" content="tr5.io" />
+    <meta property="og:site_name" content="Tr5.io" />
+    <meta property="og:description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
+    <meta name="twitter:title" content="Tr5.io"  />
+    <meta name="twitter:url" content="tr5.io"  />
+    <meta name="twitter:card" content="summary"  />
     <meta property="og:url" content="tr5.io" />
     <meta property="al:web:url" content="{{ $url->protocol }}://{{ $url->actual_url }}" />
     <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
