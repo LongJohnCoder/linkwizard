@@ -110,7 +110,10 @@
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bhoechie-tab-container layout--wrapper">
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bhoechie-tab">
                                 <div class="bhoechie-tab-content active">
-                                    <p class="date">Advanced Analytics on {{ date('M d, Y', strtotime($date)) }}</p>
+                                    <p class="date"  style="text-transform: none;">
+                                        <span style="text-transform: uppercase;">Advanced Analytics on {{ date('M d, Y', strtotime($date)) }}</span>
+                                        <a href="#" class="pull-right" style="margin: 10px 20px 0px 0px; text-decoration: none; border-bottom: 1px dashed;" data-toggle="tooltip" data-placement="bottom" title="All clicks data are reported in UTC to provide consistence data acrosss different timezones.">DATA IN UTC</a>
+                                    </p>
                                     <div class="row" style="background-color: #ffffff; height: 250px;">
                                         <div class="col-sm-4">
                                             <div id="chart_div" style="width: 350px; height: 250px;"></div>
@@ -215,6 +218,7 @@
     <!-- JavaScripts -->
     <script>
     $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
         $('#hamburger').on('click', function() {
             $('.sidebar.right').addClass('open', true);
             $('.sidebar.right').removeClass('close', true);
