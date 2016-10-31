@@ -168,6 +168,11 @@
                                                         };
                                                         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
                                                         chart.draw(data, options);
+                                                        google.visualization.events.addListener(chart, 'select', function() {
+                                                            var selectionIdx = chart.getSelection()[0].row;
+                                                            var countryName = data.getValue(selectionIdx, 0);
+                                                            window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
+                                                        });
                                                     });
                                                     google.charts.setOnLoadCallback(function () {
                                                         var data = google.visualization.arrayToDataTable(response.platform);

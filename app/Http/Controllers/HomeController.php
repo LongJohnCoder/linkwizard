@@ -239,16 +239,16 @@ class HomeController extends Controller
     public function postFetchChartDataByCountry(Request $request)
     {
         $clicks = DB::table('country_url')
-                        ->selectRaw('country_url.created_at, count(country_url.created_at) as clicks')
+                        ->selectRaw('substr(country_url.created_at, 1, 11) as date, count(country_url.created_at) as clicks')
                         ->join('countries', 'countries.id', '=', 'country_url.country_id')
                         ->where('country_url.url_id', $request->url_id)
                         ->where('country_url.country_id', $request->country_id)
-                        ->groupBy('country_url.created_at')
+                        ->groupBy('date')
                         ->get();
         $chartData = [];
 
         foreach ($clicks as $key => $click) {
-            $chartData[$key]['name'] = date('M d, Y h:i:s A', strtotime($click->created_at));
+            $chartData[$key]['name'] = date('M d, Y', strtotime($click->date));
             $chartData[$key]['y'] = (int) $click->clicks;
         }
 
