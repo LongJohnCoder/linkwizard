@@ -153,11 +153,13 @@
                                                         };
                                                         var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
                                                         chart.draw(data, options);
-                                                        /*google.visualization.events.addListener(chart, 'select', function() {
-                                                            var selectionIdx = chart.getSelection()[0].row;
-                                                            var countryName = data.getValue(selectionIdx, 0);
-                                                            window.location.href = '{{-- route('getIndex') --}}/{{-- $url->shorten_suffix --}}/country/' + countryName + '/analytics';
-                                                        });*/
+                                                        @if ($subscription_status != null)
+                                                            google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
+                                                                var selectionIdx = chart{{ $key }}.getSelection()[0].row;
+                                                                var countryName = data.getValue(selectionIdx, 0);
+                                                                window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
+                                                            });
+                                                        @endif
                                                     });
                                                     google.charts.setOnLoadCallback(function () {
                                                         var data = google.visualization.arrayToDataTable(response.location);
