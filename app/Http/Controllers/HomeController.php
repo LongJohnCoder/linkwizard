@@ -149,7 +149,7 @@ class HomeController extends Controller
                             ->groupBy('referer_url.url_id')
                             ->first();
                 if ($stat) {
-                    $statData[$key][$index][0] = env('APP_URL').'/'.$stat->shorten_suffix;
+                    $statData[$key][$index][0] = url('/').'/'.$stat->shorten_suffix;
                     $statData[$key][$index][1] = (int) $stat->clicks;
                 } else {
                     $statData[$key][$index][0] = 0;
@@ -169,6 +169,7 @@ class HomeController extends Controller
             } else {
                 $chartData[$key]['y'] = 0;
             }
+            $chartData[$key]['year'] = $date->format('Y');
         }
 
         return response()->json([

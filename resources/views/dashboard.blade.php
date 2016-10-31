@@ -215,8 +215,15 @@
         <section class="hero">
             <section class="main-content">
                 @if (count($urls) > 0)
-                <div class="dateRangeButton" style="margin-right: 10px; margin-top: -28px; position: relative" data-toggle="modal" data-target="#datePickerModal">
-                    <button class="btn btn-primary btn-sm pull-right">
+                <div class="row">
+                    @if (isset($filter) and $filter != null)
+                        <a href="{{ route('getDashboard') }}">
+                            <button class="btn btn-default btn-sm pull-left" style="margin-left: 30px; margin-top: -28px; position: relative">
+                                Clear Filter
+                            </button>
+                        </a>
+                    @endif
+                    <button class="btn btn-primary btn-sm pull-right dateRangeButton" style="margin-right: 30px; margin-top: -28px; position: relative" data-toggle="modal" data-target="#datePickerModal">
                         {{ date('M d', strtotime('-1 month')) .' - '. date('M d') }}
                     </button>
                 </div>
@@ -925,7 +932,6 @@
                         "_token": "{{ csrf_token() }}"
                     },
                     success: function(response) {
-                        console.log(response);
                         var chartDataStack = [];
                         $('#columnChart').highcharts({
                             chart: {
@@ -963,10 +969,21 @@
                                     dataLabels: {
                                         enabled: false,
                                         format: '{point.y:.1f}%'
+                                    },
+                                    events:{
+                                        click: function (event) {
+                                            var pointName = event.point.name;
+                                            if (pointName.search('{{ url('/') }}')) {
+                                                var pointData = event.point.year+' '+pointName;
+                                                chartDataStack = [];
+                                                chartDataStack.push(pointData);
+                                            } else {
+                                                pushChartDataStack(pointName);
+                                            }
+                                        }
                                     }
                                 }
                             },
-
                             tooltip: {
                                 backgroundColor: '#fff',
                                 borderWidth: 1,
@@ -1028,6 +1045,13 @@
                                 ]
                             }
                         });
+                        @if ($subscription_status != null)
+                            function pushChartDataStack(url) {
+                                date = new Date(chartDataStack.pop());
+                                nextDate = new Date(date.setDate(date.getDate()+1)).toISOString().slice(0, 10);
+                                window.location.href = url+"/date/"+nextDate+"/analytics";
+                            }
+                        @endif
                     },
                     error: function(response) {
                         console.log('Response error!');
