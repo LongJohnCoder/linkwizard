@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" href="{{ URL::to('/').'/public/resources/img/favicon.ico' }}">
         <title>Tier5 | URL Shortener</title>
-        <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
+        <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
         <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
         <meta name="author" content="Tier5 LLC" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
@@ -32,15 +32,15 @@
         <script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
         <!-- Facebook and Twitter integration -->
-        <meta property="og:title" content="" />
-        <meta property="og:image" content="" />
-        <meta property="og:url" content="" />
-        <meta property="og:site_name" content="" />
-        <meta property="og:description" content="" />
-        <meta name="twitter:title" content=""  />
-        <meta name="twitter:image" content=""  />
-        <meta name="twitter:url" content=""  />
-        <meta name="twitter:card" content=""  />
+        <meta property="og:title" content="Tier5 URL Shortener" />
+        <meta property="og:image" content="{{ URL('/')}}/public/resources/img/company_logo.png" />
+        <meta property="og:url" content="tr5.io" />
+        <meta property="og:site_name" content="Tr5.io" />
+        <meta property="og:description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
+        <meta name="twitter:title" content="Tr5.io"  />
+        <meta name="twitter:image" content="{{ URL('/')}}/public/resources/img/company_logo.png"  />
+        <meta name="twitter:url" content="tr5.io"  />
+        <meta name="twitter:card" content="summary"  />
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
