@@ -28,8 +28,8 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     <meta property="og:image" content="{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}" />
     <meta property="twitter:image" content="{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}" />
     @else
-    <meta property="og:image" content="/{{ $url->uploaded_path }}" />
-    <meta property="twitter:image" content="/{{ $url->uploaded_path }}" />
+    <meta property="og:image" content="{{ URL::to('/') }}/{{ $url->uploaded_path }}" />
+    <meta property="twitter:image" content="{{ URL::to('/')}}/{{ $url->uploaded_path }}" />
     @endif
     <meta property="og:url" content="tr5.io" />
     <meta property="og:site_name" content="Tr5.io" />
