@@ -16,10 +16,11 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow" />
     <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
-    <title>Tier5 | URL Shortener | Redirecting...</title>
-    <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
-    <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
+    <title>Tier5 | URL Shortener | Redirecting to {{ $url->protocol }}://{{ $url->actual_url }}</title>
+    <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
+    <meta name="keywords" content="Tier5 URL Shortener, Tr5.io, Tier5" />
     <meta name="author" content="Tier5 LLC" />
+    <meta property="og:url" content="{{ $url->protocol }}://{{ $url->actual_url }}" />
     <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
     <link rel="stylesheet" type="text/css" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
     <style type="text/css">
