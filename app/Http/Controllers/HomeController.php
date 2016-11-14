@@ -238,6 +238,8 @@ class HomeController extends Controller
      */
     public function postFetchChartDataByCountry(Request $request)
     {
+        $url = Url::find($request->url_id);
+
         $clicks = DB::table('country_url')
                         ->selectRaw('substr(country_url.created_at, 1, 11) as date, count(country_url.created_at) as clicks')
                         ->join('countries', 'countries.id', '=', 'country_url.country_id')
@@ -255,6 +257,7 @@ class HomeController extends Controller
         return response()->json([
             'status' => 'success',
             'chartData' => $chartData,
+            'url' => $url,
         ]);
     }
 

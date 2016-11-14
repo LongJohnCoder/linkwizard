@@ -205,6 +205,7 @@
                 "_token": "{{ csrf_token() }}"
             },
             success: function(response) {
+                //var chartDataStack = [];
                 $('#columnChart').highcharts({
                     chart: {
                         type: 'column',
@@ -241,6 +242,12 @@
                             dataLabels: {
                                 enabled: false,
                                 format: '{point.y:.1f}%'
+                            },
+                            events:{
+                                click: function (event) {
+                                    //var pointName = event.point.name;
+                                    pushChartDataStack(event.point.name, response.url.shorten_suffix);
+                                }
                             }
                         }
                     },
@@ -260,6 +267,13 @@
                         data: response.chartData
                     }],
                 });
+                function pushChartDataStack(data, url) {
+                    //chartDataStack.push(data);
+                    date = new Date(data);
+                    month = date.getMonth()+1;
+                    isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
+                    window.location.href = "{{ url('/') }}/"+url+"/date/"+isoDate+"/analytics";
+                }
             },
             error: function(response) {
                 console.log('Response error!');
