@@ -29,7 +29,7 @@ class HomeController extends Controller
         if (Auth::check()) {
             return redirect()->action('HomeController@getDashboard');
         } else {
-            return view('index');
+            return view('index1');
         }
     }
 
@@ -705,6 +705,7 @@ class HomeController extends Controller
      */
     public function postShortUrlTier5(Request $request)
     {
+
         if (starts_with($request->url, 'https://')) {
             $actual_url = str_replace('https://', null, $request->url);
             $protocol = 'https';
