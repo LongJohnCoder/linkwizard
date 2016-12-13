@@ -1023,26 +1023,33 @@ class HomeController extends Controller
      */
     public function getSubscribe()
     {
-        if (Auth::check()) {
+        if (Auth::check()) 
+        {
             $user = Auth::user();
-            if ($user->subscribed('main', 'tr5Advanced')) {
+            if ($user->subscribed('main', 'tr5Advanced')) 
+            {
                 return redirect()->action('HomeController@getDashboard');
-            } elseif ($user->subscribed('main', 'tr5Basic')) {
+            } 
+            elseif ($user->subscribed('main', 'tr5Basic')) 
+            {
                 $subscription_status = 'tr5Basic';
 
-                return view('subscription', [
+                return view('subscription2', [
                         'user' => $user,
                         'subscription_status' => $subscription_status,
                     ]);
-            } else {
+            } 
+            else 
+            {
                 $subscription_status = null;
-
-                return view('subscription', [
+                return view('subscription2', [
                         'user' => $user,
                         'subscription_status' => $subscription_status,
                     ]);
             }
-        } else {
+        } 
+        else 
+        {
             return redirect()->action('HomeController@getIndex');
         }
     }
@@ -1056,6 +1063,7 @@ class HomeController extends Controller
      */
     public function postSubscription(Request $request)
     {
+
         $user = Auth::user();
         try {
             $user->newSubscription('main', $request->plan)
@@ -1080,7 +1088,7 @@ class HomeController extends Controller
             return redirect()->route('getDashboard')
                     ->with('success', 'Subscription is completed.');
         } catch (Exception $e) {
-            return back()->with('success', $e->getMessage());
+            return back()->with('success ..', $e->getMessage());
         }
     }
 
