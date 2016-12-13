@@ -29,9 +29,31 @@ class HomeController extends Controller
         if (Auth::check()) {
             return redirect()->action('HomeController@getDashboard');
         } else {
+            Session::put('login_error' , 'incorect username or password');
             return view('index1');
         }
     }
+
+    public function blog()
+    {
+        return view('top_menu.blog');   
+    }
+
+    public function pricing()
+    {
+        return view('top_menu.pricing');   
+    }
+
+    public function features()
+    {
+        return view('top_menu.features');   
+    }
+
+    public function about()
+    {
+        return view('top_menu.about');   
+    }    
+
 
     /**
      * Get requested url and serach for the actual url. If found redirect to

@@ -9,22 +9,30 @@
               </a>
             </div>
             <ul>
-            	<li><a href="#">about</a></li>
-            	<li><a href="#">features</a></li>
-            	<li><a href="#">pricing</a></li>
-            	<li><a href="#">blog</a></li> 
+            	<li><a href="/about">about</a></li>
+            	<li><a href="/features">features</a></li>
+            	<li><a href="/pricing">pricing</a></li>
+            	<li><a href="/blog">blog</a></li> 
+                @if(!\Auth::check())
             	<li class="login"><a href="#"  data-toggle="modal" data-target="#login">login</a></li>
             	<li class="signup"><a href="#" data-toggle="modal" data-target="#signup" >signup</a></li>
+                @else
+
+                @endif
             </ul>
         </div>
         <div class="desktop-menu">
             <ul>
-            	<li><a href="#">about</a></li>
-            	<li><a href="#">features</a></li>
-            	<li><a href="#">pricing</a></li>
-            	<li><a href="#">blog</a></li>
+            	<li><a href="/about">about</a></li>
+            	<li><a href="/features">features</a></li>
+            	<li><a href="/pricing">pricing</a></li>
+            	<li><a href="/blog">blog</a></li>
+                @if(!\Auth::check())
             	<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
             	<li class="signup"><a href="#" data-toggle="modal" data-target="#signup">signup</a></li>
+                @else
+
+                @endif
             </ul>
         </div>
 	</div>

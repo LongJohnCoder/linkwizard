@@ -9,10 +9,21 @@
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="{{url('/')}}/public/fonts/font-awesome/css/font-awesome.min.css">
-<link rel="stylesheet" href="{{url('/')}}/public/resources/css/creditCardTypeDetector.css">
 
 <script src="{{url('/')}}/public/js/jquery.min.js"></script>
 <script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
+
+<script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
+<link href="{{ URL::to('/').'/public/resources/css/bootstrap.min.css'}}" rel="stylesheet" />
+<link href="{{ URL::to('/').'/public/resources/css/jquery.fancybox.css'}}" rel="stylesheet" />
+<link href="{{ URL::to('/').'/public/resources/css/animate.css'}}" rel="stylesheet" />
+<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css' />
+<link href="{{ URL::to('/').'/public/resources/css/styles.css'}}" rel="stylesheet" />
+<link href="{{ URL::to('/').'/public/resources/css/queries.css'}}" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
 </head>
 <body>
 <!-- Header Start -->
@@ -25,12 +36,17 @@
 				</div>
 			</div>
 			@include('registration.customheader')
-
 		</div>
 	</div>
 </header>
 <!-- Header End -->
 <!-- Main Content Start -->
+
+@include('registration.customsignup')
+<!-- sign up modal end -->
+<!-- login modal start -->
+@include('registration.customlogin')
+<!-- login modal end -->
 <section class="main-content pricing">
 	<div class="first-section">
 		<div class="container">
@@ -43,7 +59,7 @@
 			</div>
 			<div class="row">
 				<div class="col-md-4">
-					<div id="freeTier" class="planbox">
+					<div class="planbox">
 						<h2>free</h2>
 						<div class="value">
 							$<span> 0 / </span>month per user
@@ -61,7 +77,7 @@
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div id="basicTier" class="planbox">
+					<div class="planbox advanced">
 						<h2>advanced</h2>
 						<div class="value">
 							$<span> 10 / </span>month per user
@@ -75,16 +91,11 @@
 							<li><span>custom</span> links</li>
 							<li><span>business</span> hour support</li>
 						</ul>
-
-						@if ($subscription_status == 'tr5Basic')
-                            <a href="#">Subscribed</a>
-                        @else
-                        	<a href="#" id="basicButton">Subscribe now</a>
-                        @endif
+						<a href="#">Subscribe now</a>
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div id="advancedTier" class="planbox">
+					<div class="planbox">
 						<h2>pro</h2>
 						<div class="value">
 							$<span> 20 / </span>month per user
@@ -98,17 +109,12 @@
 							<li><span>custom</span> links</li>
 							<li><span>27 X 7</span> hour support</li>
 						</ul>
-						@if ($subscription_status == 'tr5Advanced')
-                            <a href="#">Subscribed</a>
-                        @else
-                        	<a href="#" id="advancedButton">Subscribe now</a>
-                        @endif
+						<a href="#">Subscribe now</a>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	@include('stripe.stripe')
 	<div class="customplan text-center">
 		<div class="container">
 			<div class="row">
@@ -177,109 +183,13 @@
 	</div>
 </footer>
 </body>
-<script src="http://parsleyjs.org/dist/parsley.js "></script>
-<script type="text/javascript " src="https://js.stripe.com/v2/ "></script>
-<script src="{{url('/')}}/public/resources/js/jquery.creditCardTypeDetector.js "></script>
-
-  <script>
-    Stripe.setPublishableKey("{{ env('STRIPE_PUBLISHABLE_SECRET') }}");
-    $(function() {
-        $('#payment-form').submit(function(event) {
-            var $form = $(this);
-            var $btn = $('#submitBtn').button('loading');
-            $form.parsley().subscribe('parsley:form:validate', function(formInstance) {
-                formInstance.submitEvent.preventDefault();
-                console.log('Submit disabled!');
-                return false;
-            });
-            $form.find('#submitBtn').prop('disabled', true);
-            Stripe.card.createToken($form, stripeResponseHandler);
-            return false;
-        });
-    });
-
-    function stripeResponseHandler(status, response) {
-        var $form = $('#payment-form');
-        if (response.error) {
-            $form.find('.payment-errors').text(response.error.message);
-            $form.find('.payment-errors').addClass('alert alert-danger');
-            $form.find('#submitBtn').prop('disabled', false);
-            $('#submitBtn').button('reset');
-        } else {
-            var token = response.id;
-            $form.append($('<input type="hidden " name="stripeToken " />').val(token));
-            $form.get(0).submit();
-            $('#stripeModal').modal('hide');
-        }
-    };
-
-    </script>
-
 <script type="text/javascript">
 	$(document).ready(function() {
 	    $(".menu-icon").click(function(){
 	    	$(this).toggleClass("close");
 	    	$('.mobile-menu ul').slideToggle(500);
 	    });
-
-	    //credit card type detector
-	    $('#checkout_card_number').creditCardTypeDetector({
-            'credit_card_logos': '.card_logos'
-        });
-        // from previous
-
-	    var user_plan = '{{$subscription_status}}';
-
-	    if(user_plan == 'tr5Advanced')
-	    {
-	    	$('#advancedTier').addClass("advanced");
-	    }
-	    else if(user_plan == 'tr5Basic')
-	    {
-	    	$('#basicTier').addClass("advanced");
-	    }
-	    else
-	    {
-	    	$('#freeTier').addClass("advanced");
-	    }
-
-	    $('#basicButton').on('click', function() {
-            $('#stripeModal').modal('show');
-            $('#money').text('$10');
-            $('#plan').val('tr5Basic');
-        });
-        $('#advancedButton').on('click', function() {
-            $('#stripeModal').modal('show');
-            $('#money').text('$20');
-            $('#plan').val('tr5Advanced');
-        });
-
-        
-	    window.ParsleyConfig = {
-	        errorsWrapper: '<div></div>',
-	        errorTemplate: '<div class="alert alert-danger parsley " role="alert "></div>',
-	        errorClass: 'has-error',
-	        successClass: 'has-success'
-	    };
-    	
 	});
 </script>
-
-<script>
-    (function(b, o, i, l, e, r) {
-        b.GoogleAnalyticsObject = l;
-        b[l] || (b[l] =
-            function() {
-                (b[l].q = b[l].q || []).push(arguments)
-            });
-        b[l].l = +new Date;
-        e = o.createElement(i);
-        r = o.getElementsByTagName(i)[0];
-        e.src = '//www.google-analytics.com/analytics.js';
-        r.parentNode.insertBefore(e, r)
-    }(window, document, 'script', 'ga'));
-    ga('create', 'UA-XXXXX-X');
-    ga('send', 'pageview');
-
-</script>
+@include('loginjs')
 </html>

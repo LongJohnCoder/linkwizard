@@ -16,7 +16,12 @@ Route::group(['domain' => env('APP_HOST')], function () {
         'uses' => 'HomeController@getIndex',
         'as' => 'getIndex',
     ]);
-
+    
+    Route::get('/blog' , 'HomeController@blog');
+    Route::get('/pricing' , 'HomeController@pricing');
+    Route::get('/features' , 'HomeController@features');
+    Route::get('/about' , 'HomeController@about');
+    
     Route::get('/{url}', [
         'uses' => 'HomeController@getRequestedUrl',
         'as' => 'getRequestedUrl',
