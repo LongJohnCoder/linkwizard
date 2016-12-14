@@ -915,6 +915,8 @@ class HomeController extends Controller
                     ->orderBy('id', 'DESC')
                     ->get();
 
+            $count_url = $urls->count();
+
             $count = DB::table('urls')
                 ->selectRaw('count(user_id) AS `count`')
                 ->where('user_id', $user->id)
@@ -957,8 +959,8 @@ class HomeController extends Controller
                     $dates[$key] = $date->format('M d');
                 }
             }
-
-            return view('dashboard', [
+            return view('dashboard2', [
+                'count_url' => $count_url,
                 'user' => $user,
                 'urls' => $urls,
                 'subscription_status' => $subscription_status,
@@ -971,7 +973,6 @@ class HomeController extends Controller
             return redirect()->action('HomeController@getIndex');
         }
     }
-
     /**
      * Post a brand logo.
      *
