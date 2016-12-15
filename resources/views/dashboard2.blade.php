@@ -108,6 +108,7 @@
 </head>
 <body>
 <!-- Header Start -->
+
 <header>
 	<div class="container-fluid">
 		<div class="row">
@@ -116,26 +117,83 @@
 					<img src="{{url('/')}}/public/images/logo.png" class="img-responsive">
 				</div>
 			</div>
+
 			<div class="col-md-6">
 				<div class="top-right">
+					@if(count($limit) > 0)
 					<div class="createlink">
-						<a href="#">Create tier5 link</a>
+						<a href="javascript:void(0)" id="basic" ">Create tier5 link</a>
 					</div>
+					@endif
+					@if ($subscription_status != null)
+						 @if(count($limit) > 0)
+						 	<div class="createlink">
+						 		<a href="javascript:void(0)" id="advanced" style="background-color:red">Create Custom link</a>
+						 	</div>
+						 @endif
+					@endif
+					@if ($user->is_admin == 1)
+                        <div class="menu-icon">
+                            <a href="{{ route('getAdminDashboard') }}">
+                                <button id="" class="btn btn-warning">
+                                    ADMIN DASHBOARD
+                                </button>
+                            </a>
+                        </div>
+                    @endif
 					<div class="hamburg-menu">
-	                  <a href="#" class="menu-icon" style="display: block;">
+	                  <a href="#" id="menu-icon" class="menu-icon" style="display: block;">
 	                    <div class="span bar top" style="background-color: #fff;"></div>
 	                    <div class="span bar middle" style="background-color: #fff;"></div>
 	                    <div class="span bar bottom" style="background-color: #fff;"></div>
 	                  </a>
 	                </div>
-	                <div class="userdetails">
+	                <div id="userdetails" class="userdetails">
 	                	<div>
 		                	<a href="{{ route('getLogout') }}" class="signout"><i class="fa fa-sign-out"></i> Sign out</a>
-		                	<p>{{ $user->name }}</p>
-		                	<p>{{ $user->email }}</p>
-		                	<a href="{{ route('getSubscribe') }}" class="upgrade"><i class="fa fa-sign-out"></i> Upgrade</a>
+		                	<p style="color:white">{{ $user->name }}</p>
+		                	<p style="color:white">{{ $user->email }}</p>
+		                	@if ($subscription_status != 'tr5Advanced')
+		                		<a href="{{ route('getSubscribe') }}" class="upgrade"><i class="fa fa-sign-out"></i> Upgrade</a>
+		                	@endif
 	                	</div>
 	                </div>
+
+	                <div id="myNav1" class="userdetails">
+	                	<a href="#" id="cross1" class="closebtn"><i class="fa fa-times" style="color:white"></i></a>
+		                <div class="overlay-content">
+		                    <div class="row">
+		                        <div class="col-md-12 col-sm-12">
+		                            <label for="givenUrl">Paste An Actual URL Here</label>
+		                            <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+		                            <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
+		                                Shorten Url
+		                            </button>
+		                        </div>
+		                    </div>
+		                </div>
+	                </div>
+
+	                <div id="myNav2" class="userdetails">
+		                <a href="#" id="cross2" class="closebtn"><i class="fa fa-times" style="color:white"></i></a>
+		                <div class="overlay-content">
+		                    <div class="row">
+		                        <div class="col-md-12 col-sm-12">
+		                            <label for="givenActualUrl">Paste An Actual URL Here</label>
+		                            <input id="givenActualUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+		                            <label for="makeCustomUrl">Create Your Own Custom Link</label>
+		                            <div class="input-group">
+		                                <span class="input-group-addon">{{ env('APP_HOST') }}/</span>
+		                                <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. tr5.io/MyLinK">
+		                            </div>
+		                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
+		                                Shorten Url
+		                            </button>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+
 				</div>
 			</div>
 		</div>
@@ -704,9 +762,49 @@
 <div class="clear"></div>
 
 <script type="text/javascript">
+
 	$(document).ready(function() {
 
 
+		$("#menu-icon").click(function(){
+	    	$(this).toggleClass("close");
+	    	$('#myNav1').hide(100);
+	    	$('#userdetails').slideToggle(500);
+	    });
+
+	    $("#basic").click(function(){
+	    	$('#menu-icon').hide();
+	    	$('#userdetails').hide();
+	    	$('#myNav1').slideToggle(500);
+	    });
+
+	    $("#cross1").click(function(){
+	    	$('#userdetails').hide();
+	    	$('#myNav1').hide();
+	    	$('#myNav2').hide();
+	    	
+	    	$('#menu-icon').slideToggle(500);
+	    });
+
+	    $("#advanced").click(function(){
+	    	$('#cross1').hide();
+	    	$('#menu-icon').hide();
+	    	$('#userdetails').hide();
+	    	$('#myNav1').hide();
+	    	$('#myNav2').slideToggle(500);
+	    });
+
+	    $("#cross2").click(function(){
+	    	$('#userdetails').hide();
+	    	$('#myNav1').hide();
+	    	$('#myNav2').hide()
+	    	
+	    	$('#menu-icon').slideToggle(500);
+	    });
+
+
+
+		
 		$('[data-toggle="tooltip"]').tooltip();
         $('#hamburger').on('click', function () {
             $('.sidebar.right').addClass('open', true);
@@ -720,10 +818,7 @@
             $('.tr5link').addClass('open', true);
             $('.tr5link').removeClass('close', true);
         });
-        $('#cross1').on('click', function () {
-            $('.tr5link').addClass('close', true);
-            $('.tr5link').removeClass('open', true);
-        });
+        
         $('#customLink').on('click', function () {
             $('.sharebar').addClass('open', true);
             $('.sharebar').removeClass('close', true);
@@ -747,10 +842,7 @@
             });
         });
 
-	    $(".menu-icon").click(function(){
-	    	$(this).toggleClass("close");
-	    	$('.userdetails').slideToggle(500);
-	    });
+	    
 	});
 </script>
 <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
@@ -778,7 +870,7 @@
                     message:"Please wait a while",
                     backgroundColor:"#212230"
                 };
-                $('#swalbtn1').click(function(){
+	        $('#swalbtn1').click(function(){
 
                 	var actualUrl = $('#givenActualUrl').val();
                     var customUrl = $('#makeCustomUrl').val();
@@ -862,7 +954,30 @@
 
                 }); 
                 
+
+                
+                function ValidURL(str) {
+                    var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
+                    var url = str;
+                    if (!regexp.test(url)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+
+                function ValidCustomURL(str) {
+                    var regexp = new RegExp("^[a-zA-Z0-9_]+$");
+                    var url = str;
+                    if (!regexp.test(url)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+
                 $('#swalbtn').click(function() {
+                	alert(1);
                     var url = $('#givenUrl').val();
                     var validUrl = ValidURL(url);
                     @if (Auth::user())
@@ -937,26 +1052,8 @@
                         });     
                     }
                 });
-                
-                function ValidURL(str) {
-                    var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
-                    var url = str;
-                    if (!regexp.test(url)) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
 
-                function ValidCustomURL(str) {
-                    var regexp = new RegExp("^[a-zA-Z0-9_]+$");
-                    var url = str;
-                    if (!regexp.test(url)) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
+            });
             
         </script>
         <script type="text/javascript">

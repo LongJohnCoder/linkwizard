@@ -296,7 +296,7 @@
                                                 @endif
                                             </div>
 
-                                            
+
                                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                                 <div class="buttons">
                                                     <button id="clipboard{{ $key }}" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy"  data-clipboard-target="#copylink{{ $key }}">
