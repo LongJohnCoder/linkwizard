@@ -164,7 +164,7 @@
 		                <div class="overlay-content">
 		                    <div class="row">
 		                        <div class="col-md-12 col-sm-12">
-		                            <label for="givenUrl">Paste An Actual URL Here</label>
+		                            <label for="givenUrl" style="color:white">Paste An Actual URL Here</label>
 		                            <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
 		                            <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
 		                                Shorten Url
@@ -179,12 +179,14 @@
 		                <div class="overlay-content">
 		                    <div class="row">
 		                        <div class="col-md-12 col-sm-12">
-		                            <label for="givenActualUrl">Paste An Actual URL Here</label>
-		                            <input id="givenActualUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
-		                            <label for="makeCustomUrl">Create Your Own Custom Link</label>
+		                            <label for="givenActualUrl" style="color:white;">Paste An Actual URL Here</label>
+		                            <input id="givenActualUrl" style="width:280px" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+		                            <br>
+		                            <br>
+		                            <label for="makeCustomUrl" style="color:white">Create Your Own Custom Link</label>
 		                            <div class="input-group">
 		                                <span class="input-group-addon">{{ env('APP_HOST') }}/</span>
-		                                <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. tr5.io/MyLinK">
+		                                <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. MyLinK">
 		                            </div>
 		                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
 		                                Shorten Url
@@ -773,7 +775,7 @@
 	    });
 
 	    $("#basic").click(function(){
-	    	$('#menu-icon').hide();
+	    	$('#menu-icon').slideToggle(500);
 	    	$('#userdetails').hide();
 	    	$('#myNav1').slideToggle(500);
 	    });
@@ -787,8 +789,8 @@
 	    });
 
 	    $("#advanced").click(function(){
-	    	$('#cross1').hide();
-	    	$('#menu-icon').hide();
+	    	
+	    	$('#menu-icon').slideToggle(500);
 	    	$('#userdetails').hide();
 	    	$('#myNav1').hide();
 	    	$('#myNav2').slideToggle(500);
