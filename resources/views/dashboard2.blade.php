@@ -372,6 +372,25 @@
                                     </div>
                                     <script>
                                         $(document).ready(function () {
+
+                                        	function initSummernote(preloadText) {
+							                $('#redirectingTextTemplate').summernote({
+							                    height: 100,
+							                    minHeight: null,
+							                    maxHeight: null,
+							                    focus: true,
+							                    toolbar: [
+							                        ['style', ['bold', 'italic', 'underline']],
+							                        ['fontsize', ['fontsize']],
+							                        ['color', ['color']],
+							                        ['height', ['height']],
+							                        ['insert', ['link']],
+							                        ['misc', ['undo', 'redo', 'codeview']]
+							                    ]
+							                });
+							                $('#redirectingTextTemplate').summernote('code', preloadText);
+            }
+                                        	
                                             $('#clipboard{{ $key }}').on('click', function () {
                                                 new Clipboard('#clipboard{{ $key }}');
                                             });
@@ -391,13 +410,11 @@
                                                 }, function(response){});
                                             });
                                             $('#addBrand{{ $key }}').on('click', function () {
-                                            	alert(1);//-------------------------------------------------------------------------------------
-                                                $("#uploadModalBody #urlId").val({{ $url->id }});
-                                                $("#uploadModalBody #brandLogo").val("{{-- $url->uploaded_path --}}");
-                                                $("#uploadModalBody #redirectingTime").val('{{ $url->redirecting_time/1000 }}');
-                                                initSummernote('{!! $url->  redirecting_text_template !!}');
-                                                $('#myModal1').modal('show');
-                                            });
+	                                            $("#urlId").val('{{ $url->id }}');
+	                                            $("#redirectingTime").val('{{ $url->redirecting_time/1000 }}');
+	                                            initSummernote('{!! $url->  redirecting_text_template !!}');
+	                                            $('#myModal1').modal('show');
+	                                        });
                                             $('#brandLink{{ $key }}').on('click', function () {
                                                 $("#subdomainModalBody #urlId").val('{{ $url->id }}');
                                                 $('#subdomainModal').modal('show');
@@ -979,7 +996,6 @@
                 }
 
                 $('#swalbtn').click(function() {
-                	alert(1);
                     var url = $('#givenUrl').val();
                     var validUrl = ValidURL(url);
                     @if (Auth::user())
@@ -1389,23 +1405,7 @@
             </script>
         @endif
         <script>
-            function initSummernote(preloadText) {
-                $('#redirectingTextTemplate').summernote({
-                    height: 100,
-                    minHeight: null,
-                    maxHeight: null,
-                    focus: true,
-                    toolbar: [
-                        ['style', ['bold', 'italic', 'underline']],
-                        ['fontsize', ['fontsize']],
-                        ['color', ['color']],
-                        ['height', ['height']],
-                        ['insert', ['link']],
-                        ['misc', ['undo', 'redo', 'codeview']]
-                    ]
-                });
-                $('#redirectingTextTemplate').summernote('code', preloadText);
-            }
+            
         </script>
         <script src="{{ URL('/')}}/public/resources/js/bootstrap-datepicker.min.js"></script>
         <script>
