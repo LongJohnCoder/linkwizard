@@ -2,7 +2,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       	 <div class="modal-header">
-        	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        	<button type="button" id="signup_btn" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
          </div>
 	     <div class="modal-body">
 	        <h1>sign up</h1>
@@ -51,7 +51,7 @@
 	        	</div>
 
 	        	<p>Already have an account?</p>
-	        	<a href="#">sign in</a>
+	        	<a href="#" data-toggle="modal" id="login1" data-target="#login">sign in</a>
 	        </form>
 	    </div>
     </div>

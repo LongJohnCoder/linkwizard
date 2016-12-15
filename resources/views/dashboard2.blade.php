@@ -36,7 +36,6 @@
 <script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
 
-<script src="{{url('/')}}/public/js/jquery.min.js"></script>
 <script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
 
 
@@ -240,7 +239,7 @@
 				<div class="col-md-6">
 					<div class="tot-counts">
 						<img src="{{url('/')}}/public/images/barcount.jpg" class="img-responsive">
-						<div class="count"><span>5</span>total counts</div> <!-- ?count -->
+						<div class="count"><span>{{$count_url}}</span>total counts</div> <!-- ?count -->
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -431,20 +430,20 @@
 	                		 <div class="col-md-6 col-sm-6"></div>
 	                	</div>
 	                	<div class="row">
-	                		<div class="col-md-4 col-sm-4">
-	                		 	<div class="tot-clicks">
-	                		 		<h2>Total Clicks 2 (100%)</h2>
-	                		 		<div class="tot-clicks-body">
-	                		 			<div id="chart_div{{ $key }}" style="width: 350px; height: 250px;"></div>
-	                		 		</div>
-	                		 	</div>
-	                		</div>
-	                		<div class="col-md-8 col-sm-8">
+	                		<div class="col-md-12 col-sm-12">
 	                		 	<div class="tot-clicks">
 		                		 	<h2>Number of hits per country</h2>
 		                		 	<div class="tot-clicks-body">
 		                		 		<div id="regions_div{{ $key }}" style="width: 450px; height: 250px;"></div>
 		                		 	</div>
+	                		 	</div>
+	                		</div>
+	                		<div class="col-md-6 col-sm-4">
+	                		 	<div class="tot-clicks">
+	                		 		<h2>Total Clicks 2 (100%)</h2>
+	                		 		<div class="tot-clicks-body">
+	                		 			<div id="chart_div{{ $key }}" style="width: 350px; height: 250px;"></div>
+	                		 		</div>
 	                		 	</div>
 	                		</div>
 	                		@if ($subscription_status != null)
@@ -476,7 +475,6 @@
 		                		 		</div>
 		                		 	</div>
 		                		</div>
-
                         	@endif
 
                         	<!-- charts and graphs script here -->
@@ -493,7 +491,7 @@
                                                     var options = {
                                                         colorAxis: {colors: '#3366ff'},
                                                         background: 'rgba(255, 255, 255, 0.8)',
-                                                        width: 450,
+                                                        width: 650,
                                                         height: 250,
                                                     };
                                                     var chart{{ $key }} = new google.visualization.GeoChart(document.getElementById('regions_div{{ $key }}'));
@@ -793,14 +791,14 @@
 
 	    $("#basic").click(function(){
 	    	$('#menu-icon').slideToggle(500);
-	    	$('#userdetails').hide();
+	    	$('#userdetails').hide(500);
 	    	$('#myNav1').slideToggle(500);
 	    });
 
 	    $("#cross1").click(function(){
 	    	$('#userdetails').hide();
-	    	$('#myNav1').hide();
-	    	$('#myNav2').hide();
+	    	$('#myNav1').hide(500);
+	    	$('#myNav2').hide(500);
 	    	
 	    	$('#menu-icon').slideToggle(500);
 	    });
@@ -808,15 +806,15 @@
 	    $("#advanced").click(function(){
 	    	
 	    	$('#menu-icon').slideToggle(500);
-	    	$('#userdetails').hide();
-	    	$('#myNav1').hide();
+	    	$('#userdetails').hide(500);
+	    	$('#myNav1').hide(500);
 	    	$('#myNav2').slideToggle(500);
 	    });
 
 	    $("#cross2").click(function(){
 	    	$('#userdetails').hide();
-	    	$('#myNav1').hide();
-	    	$('#myNav2').hide()
+	    	$('#myNav1').hide(500);
+	    	$('#myNav2').hide(500)
 	    	
 	    	$('#menu-icon').slideToggle(500);
 	    });
@@ -1239,7 +1237,7 @@
                     $('#columnChart').highcharts({
                         chart: {
                             type: 'column',
-                            backgroundColor: 'rgba(255,0,255,0.3)'
+                            backgroundColor: 'rgba(49, 83, 105, 1)'
                         },
                         title: {
                             text: null
@@ -1304,7 +1302,7 @@
                             activeAxisLabelStyle: {
                                 textDecoration: 'none',
                                 fontStyle: 'italic',
-                                color: '#54BDDC'
+                                color: '#ffffff'
                             },
                             activeDataLabelStyle: {
                                 textDecoration: 'none',

@@ -32,7 +32,7 @@
 		<div class="row">
 			<div class="col-md-4 col-sm-6 col-xs-6">
 				<div class="logo">
-					<img src="{{url('/')}}/public/images/logo.png" class="img-responsive">
+					<img id="tier5_us" src="{{url('/')}}/public/images/logo.png" class="img-responsive">
 				</div>
 			</div>
 			@include('registration.customheader')

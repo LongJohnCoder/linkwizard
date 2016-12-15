@@ -55,7 +55,7 @@
                 <div class="col-md-4 col-sm-4">
                     <div class="logo">
                         <a href="{{ route('getIndex') }}">
-                            <img src="{{ URL('/')}}/public/resources/img/company_logo.png" alt="img" />
+                            <img id="tier5_us" src="{{ URL('/')}}/public/resources/img/company_logo.png" alt="img" />
                         </a>
                     </div>
                 </div>

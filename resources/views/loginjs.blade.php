@@ -8,8 +8,20 @@
 
 <script type="text/javascript">
 
-
     $(document).ready(function() {
+
+        $("#tier5_us").click(function(){
+            window.location.href = "http://tier5.us";
+        });
+
+        $("#login1").click(function(){
+            $("#signup_btn").click();
+        });
+        $("#signup1").click(function(){
+            $("#login_btn").click();
+        });
+        
+
         $(".menu-icon").click(function(){
             $(this).toggleClass("close");
             $('.mobile-menu ul').slideToggle(500);
