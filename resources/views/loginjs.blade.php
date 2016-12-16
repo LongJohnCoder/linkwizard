@@ -214,7 +214,8 @@
             message: "Please wait a while",
             backgroundColor: "#212230"
         };
-        $('#swalbtn').click(function() {
+        $('#swalbtn').click(function(e) {
+            e.preventDefault();
             var url = $('#givenUrl').val();
             var validUrl = ValidURL(url);
             @if(Auth::user())

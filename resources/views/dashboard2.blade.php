@@ -52,23 +52,9 @@
 <meta name="twitter:card" content="summary"  />
 
 
-<script>
-    window.fbAsyncInit = function() {
-        FB.init({
-            appId   : '1637007456611127',
-            xfbml   : true,
-            version : 'v2.7'
-        });
-    };
+<script src="//connect.facebook.net/en_US/sdk/debug.js"></script>
+<script src="{{ URL::to('/').'/public/js/fb_share.js'}}"></script>
 
-    (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-</script>
 <!-- /Facebook API -->
 <!-- Google API -->
 <script>
@@ -400,13 +386,7 @@
                                                 editAction({{ $key }});
                                             });
                                             $('#fb-share-btn{{ $key }}').on('click', function () {
-                                                FB.ui({
-                                                    method: 'share',
-                                                    href: '{{ route('getIndex') }}/{{ $url->shorten_suffix }}',
-                                                    caption: '{{ $url->title }}',
-                                                    display: 'popup',
-                                                    source: 'http://urlshortner.dev/public/resources/img/company_logo.png'
-                                                }, function(response){});
+                                                fb_share('{{ route('getIndex') }}/{{ $url->shorten_suffix }}' , '{{url('/')}}');
                                             });
                                             $('#addBrand{{ $key }}').on('click', function () {
 	                                            $("#urlId").val('{{ $url->id }}');
