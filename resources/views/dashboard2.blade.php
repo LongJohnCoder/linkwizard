@@ -97,13 +97,13 @@
 <header>
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-4">
 				<div class="logo">
 					<img src="{{url('/')}}/public/images/logo.png" class="img-responsive">
 				</div>
 			</div>
 
-			<div class="col-md-6">
+			<div class="col-md-8">
 				<div class="top-right">
 					@if(count($limit) > 0)
 					<div class="createlink">
@@ -117,15 +117,6 @@
 						 	</div>
 						 @endif
 					@endif
-					@if ($user->is_admin == 1)
-                        <div class="menu-icon">
-                            <a href="{{ route('getAdminDashboard') }}">
-                                <button id="" class="btn btn-warning">
-                                    ADMIN DASHBOARD
-                                </button>
-                            </a>
-                        </div>
-                    @endif
 					<div class="hamburg-menu">
 	                  <a href="#" id="menu-icon" class="menu-icon" style="display: block;">
 	                    <div class="span bar top" style="background-color: #fff;"></div>
@@ -143,6 +134,18 @@
 		                	@endif
 	                	</div>
 	                </div>
+
+	                @if ($user->is_admin == 1)
+		                <div class="overlay-content">
+		                	<div class="menu-icon">
+	                            <a href="{{ route('getAdminDashboard') }}">
+	                                <button style="width:180px" id="" class="btn btn-warning">
+	                                    ADMIN DASHBOARD
+	                                </button>
+	                            </a>
+	                        </div>
+		                </div>
+                    @endif
 
 	                <div id="myNav1" class="userdetails">
 	                	<a href="#" id="cross1" class="closebtn"><i class="fa fa-times" style="color:white"></i></a>
@@ -181,6 +184,34 @@
 		                </div>
 		            </div>
 
+
+
+
+		            <div class="top-menu">
+						<div class="mobile-menu">
+							<div class="hamburg-menu">
+				              <a href="#" class="menu-icon" style="display: block;">
+				                <div class="span bar top" style="background-color: #fff;"></div>
+				                <div class="span bar middle" style="background-color: #fff;"></div>
+				                <div class="span bar bottom" style="background-color: #fff;"></div>
+				              </a>
+				            </div>
+				            <ul>
+				            	<li><a href="/about">about</a></li>
+				            	<li><a href="/features">features</a></li>
+				            	<li><a href="/pricing">pricing</a></li>
+				            	<li><a href="/blog">blog</a></li>
+				            </ul>
+				        </div>
+				        <div class="desktop-menu">
+				            <ul>
+				            	<li><a href="/about">about</a></li>
+				            	<li><a href="/features">features</a></li>
+				            	<li><a href="/pricing">pricing</a></li>
+				            	<li><a href="/blog">blog</a></li>
+				            </ul>
+				        </div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -765,37 +796,46 @@
 
 		$("#menu-icon").click(function(){
 	    	$(this).toggleClass("close");
-	    	$('#myNav1').hide(100);
+	    	$('#myNav1').hide();
+	    	$('#myNav2').hide();
 	    	$('#userdetails').slideToggle(500);
 	    });
 
 	    $("#basic").click(function(){
-	    	$('#menu-icon').slideToggle(500);
-	    	$('#userdetails').hide(500);
-	    	$('#myNav1').slideToggle(500);
+
+	    	$('#cross2').click();
+	    	$("#cross1").show();
+	    	if($('#userdetails').css('display') == 'block')
+	    	{
+	    		$('#menu-icon').toggleClass("close");
+	    		$('#userdetails').slideToggle(500);
+	    	}
+	    	$('#myNav1').show(500);
+	    	$('#myNav2').hide();
 	    });
 
 	    $("#cross1").click(function(){
-	    	$('#userdetails').hide();
-	    	$('#myNav1').hide(500);
-	    	$('#myNav2').hide(500);
-	    	
+	    	$('#myNav1').hide();
+	    	$("#cross1").hide();
 	    	$('#menu-icon').slideToggle(500);
 	    });
 
 	    $("#advanced").click(function(){
 	    	
-	    	$('#menu-icon').slideToggle(500);
-	    	$('#userdetails').hide(500);
-	    	$('#myNav1').hide(500);
-	    	$('#myNav2').slideToggle(500);
+	    	$('#cross1').click();
+	    	$("#cross2").show();
+	    	if($('#userdetails').css('display') == 'block')
+	    	{
+	    		$('#menu-icon').toggleClass("close");
+	    		$('#userdetails').slideToggle(500);
+	    	}
+	    	$('#myNav1').hide();
+	    	$('#myNav2').show(500);
 	    });
 
 	    $("#cross2").click(function(){
-	    	$('#userdetails').hide();
-	    	$('#myNav1').hide(500);
-	    	$('#myNav2').hide(500)
-	    	
+	    	$("#cross2").hide();
+	    	$('#myNav2').hide();
 	    	$('#menu-icon').slideToggle(500);
 	    });
 

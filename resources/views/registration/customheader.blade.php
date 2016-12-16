@@ -12,12 +12,12 @@
             	<li><a href="/about">about</a></li>
             	<li><a href="/features">features</a></li>
             	<li><a href="/pricing">pricing</a></li>
-            	<li><a href="/blog">blog</a></li> 
+            	<li><a href="/blog">blog</a></li>
                 @if(!\Auth::check())
             	<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
             	<li class="signup"><a href="#" data-toggle="modal" data-target="#signup" >signup</a></li>
                 @else
-
+                    <li><a href="/app/user/dashboard">My Dashboard</a></li>
                 @endif
             </ul>
         </div>
@@ -31,7 +31,7 @@
             	<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
             	<li class="signup"><a href="#" data-toggle="modal" data-target="#signup">signup</a></li>
                 @else
-
+                    <li><a href="/app/user/dashboard">My Dashboard</a></li>
                 @endif
             </ul>
         </div>
