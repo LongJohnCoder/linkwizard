@@ -265,9 +265,16 @@
 					</div>
 				</div>
 				<div class="col-md-6">
-					<div class="datelink dateRangeButton" data-toggle="modal" data-target="#datePickerModal">
+					<div class="datelink dateRangeButton">
 						<a href="#">{{ date('M d', strtotime('-1 month')) .' - '. date('M d') }}</a>
 					</div>
+					<script type="text/javascript">
+						$(document).ready(function(){
+							$('.datelink a').click(function(){
+								$('#datePickerModal').modal('show');
+							});
+						});
+					</script>
 				</div>
 			</div>
 		</div>
@@ -410,7 +417,7 @@
 							                    ]
 							                });
 							                $('#redirectingTextTemplate').summernote('code', preloadText);
-            }
+            								}
                                         	
                                             $('#clipboard{{ $key }}').on('click', function () {
                                                 new Clipboard('#clipboard{{ $key }}');
@@ -721,7 +728,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="datePickerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <!-- <div class="modal fade" id="datePickerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -750,7 +757,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         @endif
 
          <script>
