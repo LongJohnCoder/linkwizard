@@ -808,7 +808,6 @@ class HomeController extends Controller
     private function getPageTitle($url)
     {
         $string = file_get_contents($url);
-        return $string;
         if (strlen($string) > 0) {
             if (preg_match("/\<title\>(.*)\<\/title\>/i", (string) $string, $title)) {
                 return $title[1];
@@ -817,6 +816,9 @@ class HomeController extends Controller
             }
         }
     }
+    // https://www.google.co.in/search?client=ubuntu&channel=fs&q=google&ie=utf-8&oe=utf-8&gfe_rd=cr&ei=Dd5XWLrMAdL08weqgq_ACw
+
+
 
     /**
      * URL suffix random string generator.
