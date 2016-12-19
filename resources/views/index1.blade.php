@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="X-UA-Compatible Content-Security-Policy" content="IE=edge upgrade-insecure-requests">
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Branding</title>
 
