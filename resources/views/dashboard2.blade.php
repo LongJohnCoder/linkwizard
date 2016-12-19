@@ -121,19 +121,19 @@
 			<div class="col-md-6">
 				<div class="top-right">
 					@if(count($limit) > 0)
-					<div class="createlink">
-						<a href="javascript:void(0)" id="basic" ">Create tier5 link</a>
+					<div class="createlink openpop">
+						<a href="javascript:void(0)" id="basic">Create tier5 link</a>
 					</div>
 					@endif
 					@if ($subscription_status != null)
 						 @if(count($limit) > 0)
-						 	<div class="createlink">
+						 	<div class="createlink openpop">
 						 		<a href="javascript:void(0)" id="advanced" style="background-color:red">Create Custom link</a>
 						 	</div>
 						 @endif
 					@endif
 					@if ($user->is_admin == 1)
-                        <div class="menu-icon">
+                        <div class="menu-icon openpop">
                             <a href="{{ route('getAdminDashboard') }}">
                                 <button id="" class="btn btn-warning">
                                     ADMIN DASHBOARD
@@ -142,7 +142,7 @@
                         </div>
                     @endif
 					<div class="hamburg-menu">
-	                  <a href="#" id="menu-icon" class="menu-icon" style="display: block;">
+	                  <a href="#" id="menu-icon" class="menu-icon">
 	                    <div class="span bar top" style="background-color: #fff;"></div>
 	                    <div class="span bar middle" style="background-color: #fff;"></div>
 	                    <div class="span bar bottom" style="background-color: #fff;"></div>
@@ -160,39 +160,35 @@
 	                </div>
 
 	                <div id="myNav1" class="userdetails">
-	                	<a href="#" id="cross1" class="closebtn"><i class="fa fa-times" style="color:white"></i></a>
+	                	<!-- <a href="#" id="cross1" class="closebtn"><i class="fa fa-times" style="color:white"></i></a> -->
 		                <div class="overlay-content">
-		                    <div class="row">
-		                        <div class="col-md-12 col-sm-12">
-		                            <label for="givenUrl" style="color:white">Paste An Actual URL Here</label>
-		                            <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
-		                            <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
-		                                Shorten Url
-		                            </button>
-		                        </div>
-		                    </div>
+	                        <div class="col-md-12 col-sm-12">
+	                            <label for="givenUrl" style="color:white">Paste An Actual URL Here</label>
+	                            <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+	                            <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
+	                                Shorten Url
+	                            </button>
+	                        </div>
 		                </div>
 	                </div>
 
 	                <div id="myNav2" class="userdetails">
-		                <a href="#" id="cross2" class="closebtn"><i class="fa fa-times" style="color:white"></i></a>
+		                <!-- <a href="#" id="cross2" class="closebtn"><i class="fa fa-times" style="color:white"></i></a> -->
 		                <div class="overlay-content">
-		                    <div class="row">
-		                        <div class="col-md-12 col-sm-12">
-		                            <label for="givenActualUrl" style="color:white;">Paste An Actual URL Here</label>
-		                            <input id="givenActualUrl" style="width:280px" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
-		                            <br>
-		                            <br>
-		                            <label for="makeCustomUrl" style="color:white">Create Your Own Custom Link</label>
-		                            <div class="input-group">
-		                                <span class="input-group-addon">{{ env('APP_HOST') }}/</span>
-		                                <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. MyLinK">
-		                            </div>
-		                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
-		                                Shorten Url
-		                            </button>
-		                        </div>
-		                    </div>
+	                        <div class="col-md-12 col-sm-12">
+	                            <label for="givenActualUrl" style="color:white;">Paste An Actual URL Here</label>
+	                            <input id="givenActualUrl" style="width:280px" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+	                            <br>
+	                            <br>
+	                            <label for="makeCustomUrl" style="color:white">Create Your Own Custom Link</label>
+	                            <div class="input-group">
+	                                <span class="input-group-addon">{{ env('APP_HOST') }}/</span>
+	                                <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. MyLinK">
+	                            </div>
+	                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
+	                                Shorten Url
+	                            </button>
+	                        </div>
 		                </div>
 		            </div>
 
@@ -622,7 +618,7 @@
                             <input type="hidden" name="url_id" value="{{ $url->id }}" id="urlId" />
                             <div class="form-group">
                                 <label for="brandLogo">Upload brand logo</label>
-                                <input type="file" id="brandLogo1" name="brandLogo" class="form-control input-md" style="padding: 0px 0px 34px 0px;" value="" />
+                                <input type="file" id="brandLogo1" name="brandLogo" class="form-control input-md" value="" />
                             </div>
                             <div class="form-group">
                                 <label for="redirectingTime">Set redirecting time (in seconds)</label>
@@ -784,45 +780,55 @@
 
 	$(document).ready(function() {
 
-
-		$("#menu-icon").click(function(){
-	    	$(this).toggleClass("close");
-	    	$('#myNav1').hide(100);
+		$(this).on('click', '.menu-icon', function(){
+	    	$(this).addClass("close");
 	    	$('#userdetails').slideToggle(500);
+	    	$('#myNav1').hide();
+	    	$('#myNav2').hide();
 	    });
 
 	    $("#basic").click(function(){
-	    	$('#menu-icon').slideToggle(500);
-	    	$('#userdetails').hide();
+	    	$('.menu-icon').addClass("close");
 	    	$('#myNav1').slideToggle(500);
-	    });
-
-	    $("#cross1").click(function(){
-	    	$('#userdetails').hide();
-	    	$('#myNav1').hide();
 	    	$('#myNav2').hide();
-	    	
-	    	$('#menu-icon').slideToggle(500);
+	    	$('#userdetails').hide();
 	    });
 
 	    $("#advanced").click(function(){
-	    	
-	    	$('#menu-icon').slideToggle(500);
-	    	$('#userdetails').hide();
-	    	$('#myNav1').hide();
+	    	$('.menu-icon').addClass("close");
 	    	$('#myNav2').slideToggle(500);
-	    });
-
-	    $("#cross2").click(function(){
-	    	$('#userdetails').hide();
 	    	$('#myNav1').hide();
-	    	$('#myNav2').hide()
-	    	
-	    	$('#menu-icon').slideToggle(500);
+	    	$('#userdetails').hide();
 	    });
 
+	    $(this).on('click', '.close', function(){
+        	$('.userdetails').hide();
+        	$(this).removeClass("close");
+        });
 
+	    // $("#cross1").click(function(){
+	    // 	$('#userdetails').hide();
+	    // 	$('#myNav1').hide();
+	    // 	$('#myNav2').hide();
+	    	
+	    // 	$('#menu-icon').slideToggle(500);
+	    // });
 
+	    // $("#advanced").click(function(){
+	    	
+	    // 	$('#menu-icon').slideToggle(500);
+	    // 	$('#userdetails').hide();
+	    // 	$('#myNav1').hide();
+	    // 	$('#myNav2').slideToggle(500);
+	    // });
+
+	    // $("#cross2").click(function(){
+	    // 	$('#userdetails').hide();
+	    // 	$('#myNav1').hide();
+	    // 	$('#myNav2').hide()
+	    	
+	    // 	$('#menu-icon').slideToggle(500);
+	    // });
 		
 		$('[data-toggle="tooltip"]').tooltip();
         $('#hamburger').on('click', function () {
