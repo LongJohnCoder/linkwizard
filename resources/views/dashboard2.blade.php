@@ -15,14 +15,14 @@
 <meta name="author" content="Tier5 LLC" />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-<link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+<link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
 
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
 <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script> 
@@ -34,7 +34,7 @@
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
 
-<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
@@ -299,7 +299,7 @@
 				                 	<p>{{ $url->title }}</p>
 				                 	@if (isset($url->subdomain))
 						                @if($url->subdomain->type == 'subdomain')
-						                    <a class="link" href=http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}>http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}</a>
+						                    <a class="link" href=https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}>https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}</a>
 
 						                @elseif($url->subdomain->type == 'subdirectory')
 												<a class="link" href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}">{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}</a>
@@ -311,7 +311,6 @@
 				                 		{{$url->count}}<img src="{{url('/')}}/public/images/bar2.png" class="img-responsive">
 				                 	</div>
 			                 	</div>
-			                
 			                </li>
 			                @endforeach
 		                </ul>
@@ -333,7 +332,7 @@
 	                		 	@if (isset($url->subdomain))
                                     <h3>
                                         @if($url->subdomain->type == 'subdomain')
-  											<a href="http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+  											<a href="https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
                                                 http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}
                                             </a>
                                         @elseif($url->subdomain->type == 'subdirectory')
@@ -892,7 +891,7 @@
 		$(".list-group ul li").click(function(){
 			$(this).addClass("active");
 			$(".list-group ul li").not($(this)).removeClass("active");
-
+			$(window).scrollTop(500);
 			var index = $(this).index();
 		        $("div.tab-content").removeClass("active");
 		        $("div.tab-content").eq(index).addClass("active");
