@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
 <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
-<link rel="stylesheet" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
+
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
 <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
@@ -33,8 +33,11 @@
 <script src="{{ URL::to('/').'/public/resources/js/highchart-drilldown.js' }}"></script>
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
-<script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
+
 <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 
 <script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
 
