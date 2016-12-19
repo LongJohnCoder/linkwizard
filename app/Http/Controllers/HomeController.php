@@ -24,6 +24,14 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function test(Request $request)
+    {
+        $a = $this->getPageTitle($request->url);
+        return \Response::json(array('url'=>$a));
+
+    }
+
     public function getIndex()
     {
         if (Auth::check()) {
@@ -742,9 +750,10 @@ class HomeController extends Controller
         $url->actual_url = $actual_url;
         $url->protocol = $protocol;
         $url->shorten_suffix = $random_string;
-        $url->title = $this->getPageTitle($request->url);
-        $url->user_id = $request->user_id;
 
+        $_url = $this->getPageTitle($request->url);
+        $url->title = $_url;
+        $url->user_id = $request->user_id;
         if ($url->save()) {
             return response()->json([
                 'status' => 'success',
@@ -770,14 +779,15 @@ class HomeController extends Controller
         } else {
             $actual_url = str_replace('http://', null, $request->actual_url);
         }
-
         $url = new Url();
         $url->actual_url = $actual_url;
         $url->shorten_suffix = $request->custom_url;
-        $url->title = $this->getPageTitle($request->actual_url);
+
+        $_url = $this->getPageTitle($request->actual_url);
+        $url->title = $_url;
+
         $url->user_id = $request->user_id;
         $url->is_custom = 1;
-
         if ($url->save()) {
             return response()->json([
                 'status' => 'success',
@@ -798,6 +808,7 @@ class HomeController extends Controller
     private function getPageTitle($url)
     {
         $string = file_get_contents($url);
+        return $string;
         if (strlen($string) > 0) {
             if (preg_match("/\<title\>(.*)\<\/title\>/i", (string) $string, $title)) {
                 return $title[1];

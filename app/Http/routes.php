@@ -12,6 +12,13 @@
 */
 
 Route::group(['domain' => env('APP_HOST')], function () {
+
+
+    Route::get('test' , function(){
+        return view('test');
+    });
+    Route::post('/test' , 'HomeController@test');
+
     Route::get('/', [
         'uses' => 'HomeController@getIndex',
         'as' => 'getIndex',
