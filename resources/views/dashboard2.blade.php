@@ -117,15 +117,6 @@
 						 	</div>
 						 @endif
 					@endif
-					@if ($user->is_admin == 1)
-                        <div class="menu-icon openpop">
-                            <a href="{{ route('getAdminDashboard') }}">
-                                <button id="" class="btn btn-warning">
-                                    ADMIN DASHBOARD
-                                </button>
-                            </a>
-                        </div>
-                    @endif
 					<div class="hamburg-menu">
 	                  <a href="#" id="menu-icon" class="menu-icon">
 	                    <div class="span bar top" style="background-color: #fff;"></div>
@@ -143,18 +134,6 @@
 		                	@endif
 	                	</div>
 	                </div>
-
-	                @if ($user->is_admin == 1)
-		                <div class="overlay-content">
-		                	<div class="menu-icon">
-	                            <a href="{{ route('getAdminDashboard') }}">
-	                                <button style="width:180px" id="" class="btn btn-warning">
-	                                    ADMIN DASHBOARD
-	                                </button>
-	                            </a>
-	                        </div>
-		                </div>
-                    @endif
 
 	                <div id="myNav1" class="userdetails">
 	                	<!-- <a href="#" id="cross1" class="closebtn"><i class="fa fa-times" style="color:white"></i></a> -->
@@ -206,6 +185,9 @@
 				            	<li><a href="/features">features</a></li>
 				            	<li><a href="/pricing">pricing</a></li>
 				            	<li><a href="/blog">blog</a></li>
+				            	@if ($user->is_admin == 1)
+		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
+                    			@endif
 				            </ul>
 				        </div>
 				        <div class="desktop-menu">
@@ -214,6 +196,10 @@
 				            	<li><a href="/features">features</a></li>
 				            	<li><a href="/pricing">pricing</a></li>
 				            	<li><a href="/blog">blog</a></li>
+				            	@if ($user->is_admin == 1)
+		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
+                    			@endif
+				            	
 				            </ul>
 				        </div>
 					</div>
