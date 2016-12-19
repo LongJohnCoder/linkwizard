@@ -353,6 +353,7 @@ header.brandingheader {
     font-size: 20px;
     padding: 15px 20px;
     border-radius: 3px;
+    text-decoration: none;
 }
 
 .mobile-menu{
@@ -437,6 +438,12 @@ header.brandingheader {
   -webkit-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
+
+#myNav1 .hamburg-menu, #myNav2 .hamburg-menu{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+} 
 
 .top-menu{
     padding: 25px 0 0;
@@ -1578,6 +1585,24 @@ display:none;
     padding: 8px 35px;
     margin-bottom: 20px;
     box-shadow: 1px 1px 10px 2px #ccc;
+}
+
+#subdomainModalBody.modal-body input[type='radio']{
+    width: auto;
+    height: auto;
+    margin-left: 20px;
+} 
+
+#subdomainModalBody.modal-body .btn{
+    margin-top: 0;
+}
+
+.modal-body#uploadModalBody input{
+    font-size: 14px;
+}
+
+#uploadModalBody.modal-body .btn{
+    margin-top: 0;
 }
 
 footer{
