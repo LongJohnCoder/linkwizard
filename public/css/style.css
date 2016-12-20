@@ -1060,6 +1060,11 @@ a.tot-count{
     margin: 0;
 }
 
+.item-box{
+    overflow: hidden;
+    padding: 80px 0 0;
+}
+
 .testimonial .carousel-inner{
     box-shadow: 0 0 10px 0 #ccc;
     overflow: visible;
@@ -1075,8 +1080,8 @@ a.tot-count{
 .carousel-control:focus {
     color: #31708f;
 }
-.carousel-control.left,
-.carousel-control.right {
+a.carousel-control.left,
+a.carousel-control.right {
     background-image: none;
     top: 50%;
     font-size: 50px;
@@ -1097,10 +1102,10 @@ a.tot-count{
     color: #fff;
 }
 
-.carousel-control.left {
+a.carousel-control.left {
     left: 0;
 }
-.carousel-control.right {
+a.carousel-control.right {
     left: 100%;
 }
 
@@ -1603,6 +1608,25 @@ display:none;
 
 #uploadModalBody.modal-body .btn{
     margin-top: 0;
+}
+
+#editUrlTitle.btn-warning{
+    margin: 20px auto 0;
+    display: block;
+    background: #2D6A8A;
+    text-transform: uppercase;
+    font-size: 20px;
+    padding: 7px 10px;
+    border: none;
+}
+
+.form-inline .form-control#urlTitle{
+    width: 80%;
+    font-size: 18px;
+    border-radius: 0;
+    border: 1px solid #ccc;
+    margin-left: 10px;
+    box-shadow: inset 1px 0 10px 0 #ccc;
 }
 
 footer{

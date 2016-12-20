@@ -605,11 +605,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <center>
-                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">
-                                Close
-                            </button>
-                        </center>
+                        <button type="button" class="btn-primary btn-sm" data-dismiss="modal">Close </button>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge" /> -->
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Branding</title>
@@ -122,20 +123,22 @@
             </div>
         </div>
     </div>
-    <div class="videosection">
-        <div class="container-fluid">
-            <div class="row">
+    <div class="container">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="videosection">
                 <img src="{{url('/')}}/public/images/vdo-img.jpg" class="img-responsive">
                 <div class="video-container">
                     <iframe class="video" width="560" height="313" src="https://www.youtube.com/embed/vaf13ZhmFb8?enablejsapi=1&amp;version=3&amp;playerapiid=ytplayer&amp;rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" marginwidth="0" marginheight="0" hspace="0" vspace="0" scrolling="no" allowfullscreen allowscriptaccess="always"></iframe>
                 </div>
             </div>
         </div>
+        <div class="col-md-3"></div>
     </div>
     <div class="benefit text-center">
         <div class="container">
             <div class="row">
-                <h1>LInk Management Benefits</h1>
+                <h1>Link Management Benefits</h1>
                 <p>Ready to start! simple attractive and easy to use copy</p>
             </div>
             <div class="row">
@@ -170,6 +173,7 @@
                 <div class="col-md-8">
                     <h2>our client say</h2>
                     <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <div class="item-box">
                         <div class="carousel-inner text-center">
                             <div class="item active">
                                 <div class="row">
@@ -189,9 +193,9 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="thumbnail adjust1">
-                                            <img class="img-responsive" src="{{url('/')}}/public/images/testimonial.jpg">
+                                            <img class="img-responsive" src="{{url('/')}}/public/images/testimonial2.jpg">
                                             <div class="caption">
-                                                <h3>Selina  Flense</h3>
+                                                <h3>Sara</h3>
                                                 <span>San Fransisco</span>
                                                 <p>Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Donec id elit non mi porta gravida at eget metus. Curabitur blandit tempus porttitor.</p>
                                             </div>
@@ -200,6 +204,7 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
                         <!-- Controls -->
                         <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
                         <a class="right carousel-control" href="#carousel-example-generic" data-slide="next"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
