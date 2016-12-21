@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pricing</title>
 
@@ -177,7 +179,7 @@
 	</div>
 </footer>
 </body>
-<script src="http://parsleyjs.org/dist/parsley.js "></script>
+<script src="{{url('/')}}/public/js/parsley.js "></script>
 <script type="text/javascript " src="https://js.stripe.com/v2/ "></script>
 <script src="{{url('/')}}/public/resources/js/jquery.creditCardTypeDetector.js "></script>
 

@@ -83,8 +83,8 @@ div.bhoechie-tab-content {
 }
 
 div.bhoechie-tab-content.active {
-    overflow-y: scroll !important;
-    overflow-x: hidden;
+   /* overflow-y: scroll !important;
+    overflow-x: hidden;*/
     padding: 0px;
 }
 
