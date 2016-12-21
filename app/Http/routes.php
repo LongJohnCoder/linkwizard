@@ -14,6 +14,9 @@
 Route::group(['domain' => env('APP_HOST')], function () {
 
 
+    Route::post('/check_custom' , 'HomeController@check_custom');
+
+
     Route::get('test' , function(){
         return view('test');
     });

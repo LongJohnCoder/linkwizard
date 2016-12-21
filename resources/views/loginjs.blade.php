@@ -10,6 +10,24 @@
 
     $(document).ready(function() {
 
+        @if(\Session::has('login_err'))
+           swal({
+                title: "Login Incomplete",
+                text: "{{\Session::get('login_err')}}",
+                type: "warning",
+                html: true
+            });
+        @endif
+
+        @if(\Session::has('registration_err'))
+           swal({
+                title: "Registration Incomplete",
+                text: "{{\Session::get('registration_err')}}",
+                type: "warning",
+                html: true
+            });
+        @endif
+
         $("#tier5_us").click(function(){
             window.location.href = "http://tier5.us";
         });
@@ -26,6 +44,7 @@
             $(this).toggleClass("close");
             $('.mobile-menu ul').slideToggle(500);
         });
+
 
         // previous functions here
 

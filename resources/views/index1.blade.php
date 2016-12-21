@@ -30,9 +30,10 @@
 
 
 </head>
+
+        
 <body>
 <!-- Header Start -->
-
 <header class="brandingheader">
     <div class="layer"></div>
     <div class="container-fluid">
@@ -65,7 +66,6 @@
         </div>
     </div>
 </header>
-
 @include('registration.customsignup')
 <!-- sign up modal end -->
 <!-- login modal start -->

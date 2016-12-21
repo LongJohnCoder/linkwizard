@@ -167,6 +167,8 @@
 	                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
 	                                Shorten Url
 	                            </button>
+	                            <br>
+	                            <span id="err_cust" style="color:red; display:none;" >You have seleced this custom shortend link earlier. Please try with a different name</span>
 	                        </div>
 		                </div>
 		            </div>
@@ -814,6 +816,8 @@
 
 	$(document).ready(function() {
 
+
+
 		$(this).on('click', '.menu-icon', function(){
 	    	$(this).addClass("close");
 	    	$('#userdetails').slideToggle(500);
@@ -914,79 +918,96 @@
                     @else
                         var userId = 0;
                     @endif
-                    if (ValidURL(actualUrl)) 
-                    {
-                        if (ValidCustomURL(customUrl)) 
-                        {
-                            $.ajax({
-                                type: "POST",
-                                url: "{{ route('postCustomUrlTier5') }}",
-                                data: {
-                                    actual_url: actualUrl,
-                                    custom_url: customUrl,
-                                    user_id: userId,
-                                    _token: "{{ csrf_token() }}"
-                                }, success: function (response) {
-                                    if(response.status=="success") {
-                                        var shortenUrl = response.url;
-                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
-                                        swal({
-                                            title: "Shorten Url:",
-                                            text: displayHtml,
-                                            type: "success",
-                                            html: true
-                                        }, function() {
-                                            window.location.reload();
-                                        });
-                                        new Clipboard('#clipboardswal');
-                                        $('#clipboardswal').on('click', function () {
-                                            window.location.reload();
-                                        });
-                                        HoldOn.close();
-                                    } else {
-                                        swal({
-                                            title: null,
-                                            text: "Please paste an actual URL",
-                                            type: "warning",
-                                            html: true
-                                        }); 
-                                        HoldOn.close();
-                                    }
-                                }, error: function(response) {
-                                    console.log('Response error!');
-                                    HoldOn.close();
-                                }, statusCode: {
-                                    500: function() {
-                                        swal({
-                                            title: null,
-                                            text: "Access Forbidden, Please paste a valid URL!",
-                                            type: "error",
-                                            html: true
-                                        }); 
-                                        HoldOn.close();
-                                    }
-                                }
-                            });
-                        } 
-                        else 
-                        {
-                            swal({
-                                type: "warning",
-                                title: null,
-                                text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
-                                html: true
-                            });
-                        }
-                    } 
-                    else 
-                    {
-                        swal({
-                            type: "warning",
-                            title: null,
-                            text: "Please Enter An URL"
-                        	});     
-                    }
 
+                    $.ajax({
+	                    type:"POST",
+	                    url:"/check_custom",
+	                    data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
+	                    success:function(response){
+	                    	console.log(response);
+	                    	if(response == 1)
+	                    	{
+	                    		if (ValidURL(actualUrl)) 
+			                    {
+			                        if (ValidCustomURL(customUrl)) 
+			                        {
+			                            $.ajax({
+			                                type: "POST",
+			                                url: "{{ route('postCustomUrlTier5') }}",
+			                                data: {
+			                                    actual_url: actualUrl,
+			                                    custom_url: customUrl,
+			                                    user_id: userId,
+			                                    _token: "{{ csrf_token() }}"
+			                                }, success: function (response) {
+			                                    if(response.status=="success") {
+			                                        var shortenUrl = response.url;
+			                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
+			                                        swal({
+			                                            title: "Shorten Url:",
+			                                            text: displayHtml,
+			                                            type: "success",
+			                                            html: true
+			                                        }, function() {
+			                                            window.location.reload();
+			                                        });
+			                                        new Clipboard('#clipboardswal');
+			                                        $('#clipboardswal').on('click', function () {
+			                                            window.location.reload();
+			                                        });
+			                                        HoldOn.close();
+			                                    } else {
+			                                        swal({
+			                                            title: null,
+			                                            text: "Please paste an actual URL",
+			                                            type: "warning",
+			                                            html: true
+			                                        }); 
+			                                        HoldOn.close();
+			                                    }
+			                                }, error: function(response) {
+			                                    console.log('Response error!');
+			                                    HoldOn.close();
+			                                }, statusCode: {
+			                                    500: function() {
+			                                        swal({
+			                                            title: null,
+			                                            text: "Access Forbidden, Please paste a valid URL!",
+			                                            type: "error",
+			                                            html: true
+			                                        }); 
+			                                        HoldOn.close();
+			                                    }
+			                                }
+			                            });
+			                        } 
+			                        else 
+			                        {
+			                            swal({
+			                                type: "warning",
+			                                title: null,
+			                                text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
+			                                html: true
+			                            });
+			                        }
+			                    } 
+			                    else 
+			                    {
+			                        swal({
+			                            type: "warning",
+			                            title: null,
+			                            text: "Please Enter An URL"
+			                        	});     
+			                    }
+	                    	}
+	                    	else
+	                    	{
+	                    		$("#err_cust").show();
+	                    		//url already used by this user
+	                    	}
+
+	                    }
+	                });
                 }); 
                 
 

@@ -25,11 +25,20 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function check_custom(Request $request)
+    {
+        
+        $url = Url::where('shorten_suffix' , $request->custom_url)->where('user_id' , \Auth::user()->id)->first();
+        if($url == null)
+            return 1;
+
+        return 0;
+    }
+
     public function test(Request $request)
     {
         $a = $this->getPageTitle($request->url);
         return \Response::json(array('url'=>$a));
-
     }
 
     public function getIndex()
@@ -850,11 +859,12 @@ class HomeController extends Controller
      */
     public function postLogin(Request $request)
     {
+
         $this->validate($request, [
             'loginemail' => 'required|email',
             'loginpassword' => 'required',
         ]);
-
+        Session::flash('login_err' , 'Incorrect Username or Password');
         if (Auth::attempt(['email' => $request->loginemail, 'password' => $request->loginpassword], $request->remember)) {
             return redirect()->action('HomeController@getDashboard');
         } else {
@@ -872,7 +882,8 @@ class HomeController extends Controller
      */
     public function postRegister(Request $request)
     {
-        $this->validate($request, [
+
+        $v = \Validator::make($request->all(), [
             'name' => 'required|string|min:2',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8|confirmed',
@@ -880,25 +891,37 @@ class HomeController extends Controller
             //'g-recaptcha-response' => 'recaptcha',
         ]);
 
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->remember_token = $request->_token;
-
-        if ($user->save() && Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $limit = new LinkLimit();
-            $limit->user_id = $user->id;
-            $limit->limit_of_links = 10;
-            $number_of_links = 0;
-            $limit->save();
-
-            return redirect()->action('HomeController@getDashboard')
-                    ->with('success', 'You have registered successfully!');
-        } else {
-            return redirect()->route('getIndex')
-                    ->with('error', 'Cannot register now, please try after sometime!');
+        if($v->fails())
+        {
+            \Session::flash('registration_err' , 'Please follow the registration rules and try again..!!');
+            return redirect()->route('getIndex');
         }
+        else
+        {
+
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = bcrypt($request->password);
+            $user->remember_token = $request->_token;
+
+            if ($user->save() && Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                $limit = new LinkLimit();
+                $limit->user_id = $user->id;
+                $limit->limit_of_links = 10;
+                $number_of_links = 0;
+                $limit->save();
+
+                return redirect()->action('HomeController@getDashboard')
+                        ->with('success', 'You have registered successfully!');
+            } else {
+                
+                return redirect()->action('HomeController@getDashboard')
+                        ->with('success', 'You have not registered successfully.. try again'); 
+            }
+        }
+
+        
     }
 
     /**
@@ -1099,7 +1122,7 @@ class HomeController extends Controller
      */
     public function postSubscription(Request $request)
     {
-        
+
         $user = Auth::user();
         try {
             $user->newSubscription('main', $request->plan)
