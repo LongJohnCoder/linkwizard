@@ -1099,7 +1099,7 @@ class HomeController extends Controller
      */
     public function postSubscription(Request $request)
     {
-
+        
         $user = Auth::user();
         try {
             $user->newSubscription('main', $request->plan)

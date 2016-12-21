@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> -->
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pricing</title>
+<title>Subscription</title>
 
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
@@ -33,6 +33,7 @@
 </header>
 <!-- Header End -->
 <!-- Main Content Start -->
+
 <section class="main-content pricing">
 	<div class="first-section">
 		<div class="container">
@@ -179,9 +180,10 @@
 	</div>
 </footer>
 </body>
-<script src="{{url('/')}}/public/js/parsley.js "></script>
+
 <script type="text/javascript " src="https://js.stripe.com/v2/ "></script>
 <script src="{{url('/')}}/public/resources/js/jquery.creditCardTypeDetector.js "></script>
+<script src="{{url('/')}}/public/js/parsley.js "></script>
 
   <script>
     Stripe.setPublishableKey("{{ env('STRIPE_PUBLISHABLE_SECRET') }}");
@@ -277,7 +279,7 @@
         b[l].l = +new Date;
         e = o.createElement(i);
         r = o.getElementsByTagName(i)[0];
-        e.src = '//www.google-analytics.com/analytics.js';
+        e.src = '{{url('/')}}/public/js/google_analytics.js';
         r.parentNode.insertBefore(e, r)
     }(window, document, 'script', 'ga'));
     ga('create', 'UA-XXXXX-X');
