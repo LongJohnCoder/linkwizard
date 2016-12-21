@@ -23,7 +23,7 @@
 	        	</div>
 
 
-	        	<div class="remember">
+	        	<div class="remember" style="display:none">
 	        		<label class="control control--checkbox">Remember Me
 						<input type="checkbox" id="remember_me" name="remember" checked="checked" value="true">
 						<div class="control__indicator"></div>

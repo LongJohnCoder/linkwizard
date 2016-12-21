@@ -291,8 +291,8 @@
 		              		@foreach ($urls as $key => $url)
 			                <li class="active">
 			                
-			                	<div class="check">
-			                 		<input type="checkbox" name="">
+			                	<div class="col-sm-1">
+			                 		
 			                 	</div>
 			                 	<div class="tab-cont">
 				                 	<div class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</div>
@@ -451,7 +451,7 @@
 	                		</div>
 	                		<div class="col-md-6 col-sm-4">
 	                		 	<div class="tot-clicks">
-	                		 		<h2>Total Clicks 2 (100%)</h2>
+	                		 		<h2>Total Clicks {{ $url->count }} (100%)</h2>
 	                		 		<div class="tot-clicks-body">
 	                		 			<div id="chart_div{{ $key }}" style="width: 350px; height: 250px;"></div>
 	                		 		</div>

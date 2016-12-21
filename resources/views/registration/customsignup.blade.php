@@ -40,7 +40,7 @@
 		        	<label class="passwrd">confirm password</label>
 	        	</div>
 
-	        	<div class="form-group"> 
+	        	<div class="form-group" style="display:none"> 
 	        		<label for="humancheck" class="control-label">Humanity Check:</label>
 	        		<img src="{{url('/')}}/public/images/captcha.jpg" class="img-responsive">
 	        	</div>

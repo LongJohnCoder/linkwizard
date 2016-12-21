@@ -219,11 +219,7 @@
             var url = $('#givenUrl').val();
             var validUrl = ValidURL(url);
             @if(Auth::user())
-            var userId = {
-                {
-                    Auth::user() - > id
-                }
-            };
+            var userId = '{{\Auth::user()-> id}}';
             @else
             var userId = 0;
             @endif
