@@ -4,11 +4,16 @@ div.bhoechie-tab-container {
     z-index: 10;
     background-color: rgba(255, 255, 255, 1);
     padding: 0 !important;
-    border: 1px solid #ddd;
+    /*border: 1px solid #ddd;*/
     margin-top: 20px;
     margin-bottom: -61px;
     overflow-x: hidden;
     overflow-y: hidden;
+}
+
+div.bhoechie-tab-content{
+    height: 100% !important;
+    overflow: hidden !important;
 }
 
 div.bhoechie-tab-menu {
