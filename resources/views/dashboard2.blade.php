@@ -781,9 +781,34 @@
 
 </section>
 
-
-
-<div class="clear"></div>
+<footer>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="footer-menu">
+					<ul>
+						<li><a href="#">About</a></li>
+						<li><a href="#">Features</a></li>
+						<li><a href="#">Blog</a></li>
+						<li><a href="#">FAQ</a></li>
+						<li><a href="#">Terms</a></li>
+						<li><a href="#">Contact</a></li>
+						<li><a href="#">Partners</a></li>
+						<li><a href="#">Privacy</a></li>
+					</ul>
+				</div>
+				<div class="social-icon">
+					<a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+					<a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+					<a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+				</div>
+				<div class="copyright">
+					<p>© All Rights Reserved to Tier5 LLC. </p>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
 
 <script type="text/javascript">
 
@@ -815,30 +840,6 @@
         	$(this).removeClass("close");
         });
 
-	    // $("#cross1").click(function(){
-	    // 	$('#userdetails').hide();
-	    // 	$('#myNav1').hide();
-	    // 	$('#myNav2').hide();
-	    	
-	    // 	$('#menu-icon').slideToggle(500);
-	    // });
-
-	    // $("#advanced").click(function(){
-	    	
-	    // 	$('#menu-icon').slideToggle(500);
-	    // 	$('#userdetails').hide();
-	    // 	$('#myNav1').hide();
-	    // 	$('#myNav2').slideToggle(500);
-	    // });
-
-	    // $("#cross2").click(function(){
-	    // 	$('#userdetails').hide();
-	    // 	$('#myNav1').hide();
-	    // 	$('#myNav2').hide()
-	    	
-	    // 	$('#menu-icon').slideToggle(500);
-	    // });
-		
 		$('[data-toggle="tooltip"]').tooltip();
         $('#hamburger').on('click', function () {
             $('.sidebar.right').addClass('open', true);
