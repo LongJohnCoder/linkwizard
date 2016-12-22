@@ -33,6 +33,11 @@
 </header>
 <!-- Header End -->
 <!-- Main Content Start -->
+@if(\Session::has('plan'))
+	<div>
+		<h4 style="color:green"> select your plan and complete your subscription here  </h4>
+	</div>
+@endif
 
 <section class="main-content pricing">
 	<div class="first-section">
@@ -70,7 +75,7 @@
 							$<span> 10 / </span>month per user
 						</div>
 						<div class="shortenlink">
-							Upto 10 shorten links
+							Upto 100 shorten links
 						</div>
 						<ul class="offers">
 							<li><span>100</span> shorten links</li>
@@ -93,13 +98,13 @@
 							$<span> 20 / </span>month per user
 						</div>
 						<div class="shortenlink">
-							Upto 10 shorten links
+							Unlimited shorten links
 						</div>
 						<ul class="offers">
 							<li><span>unlimited</span> shorten links</li>
 							<li><span>advanced</span> analytics</li>
 							<li><span>custom</span> links</li>
-							<li><span>27 X 7</span> hour support</li>
+							<li><span>24 X 7</span> hour support</li>
 						</ul>
 						@if ($subscription_status == 'tr5Advanced')
                             <a href="#">Subscribed</a>

@@ -818,8 +818,6 @@
 
 	$(document).ready(function() {
 
-
-
 		$(this).on('click', '.menu-icon', function(){
 	    	$(this).addClass("close");
 	    	$('#userdetails').slideToggle(500);
@@ -1494,6 +1492,28 @@
             r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
             ga('create','UA-XXXXX-X');ga('send','pageview');
         </script>
+
+        @if(\Session::has('plan'))
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var plan = "{{\Session::get('plan')}}";
+				var url = "{{url('/')}}/app/user/subscribe";
+				window.location.replace(url);
+			});
+		</script>
+		@endif
+		@if(\Session::has('adv'))
+		<script type="text/javascript">
+			$(document).ready(function(){
+				swal({
+                        title: "Nothing to upgrade",
+                        text: "{{Session::get('adv')}}",
+                        type: "info",
+                        html: true
+                    }); 
+			});
+		</script>
+		@endif
 
 
 </body>

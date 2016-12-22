@@ -33,6 +33,7 @@
 
 
 	        	<div class="form-group text-center"> 
+	        		<input type="hidden" name="__plan" id="_plan" value="">
 	        		<input type="hidden" value="{{ csrf_token() }}" name="_token">
 		        	<input type="submit" value="sign in" id="signinButton">
 	        	</div>

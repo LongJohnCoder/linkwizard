@@ -46,6 +46,7 @@
 	        	</div>
 
 	        	<div class="form-group text-center"> 
+	        		<input type="hidden" name="_plan" id="_plan" value="">
 	        		<input type="hidden" value="{{ csrf_token() }}" name="_token">
 		        	<input type="submit" id="confirmsignup" value="sign up">
 	        	</div>

@@ -57,7 +57,43 @@ class HomeController extends Controller
 
     public function pricing()
     {
-        return view('top_menu.pricing');   
+
+        if (Auth::check()) 
+        {
+            $user = Auth::user();
+            if ($user->subscribed('main', 'tr5Advanced')) 
+            {
+                $subscription_status = 'tr5Advanced';
+                return view('top_menu.pricing', [
+                        'user' => $user,
+                        'subscription_status' => $subscription_status,
+                    ]);
+            } 
+            elseif ($user->subscribed('main', 'tr5Basic')) 
+            {
+                $subscription_status = 'tr5Basic';
+
+                return view('top_menu.pricing', [
+                        'user' => $user,
+                        'subscription_status' => $subscription_status,
+                    ]);
+            } 
+            else 
+            {
+                $subscription_status = null;
+                return view('top_menu.pricing', [
+                        'user' => $user,
+                        'subscription_status' => $subscription_status,
+                    ]);
+            }
+        } 
+        else 
+        {
+            return view('top_menu.pricing' , [
+                        'user' => null,
+                        'subscription_status' => -1,
+                    ]);   
+        }   
     }
 
     public function features()
@@ -859,10 +895,14 @@ class HomeController extends Controller
     public function postLogin(Request $request)
     {
 
+        
         $this->validate($request, [
             'loginemail' => 'required|email',
             'loginpassword' => 'required',
         ]);
+
+        if(isset($request->__plan)) \Session::flash('planin' , $request->_plan);
+
         Session::flash('login_err' , 'Incorrect Username or Password');
         if (Auth::attempt(['email' => $request->loginemail, 'password' => $request->loginpassword], $request->remember)) {
             return redirect()->action('HomeController@getDashboard');
@@ -881,7 +921,6 @@ class HomeController extends Controller
      */
     public function postRegister(Request $request)
     {
-
         $v = \Validator::make($request->all(), [
             'name' => 'required|string|min:2',
             'email' => 'required|email|unique:users',
@@ -897,7 +936,8 @@ class HomeController extends Controller
         }
         else
         {
-
+            if(isset($request->_plan))
+                \Session::put('plan' , $request->_plan);
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
@@ -911,7 +951,7 @@ class HomeController extends Controller
                 $number_of_links = 0;
                 $limit->save();
 
-                return redirect()->action('HomeController@getDashboard')
+                return redirect()->action('HomeController@getDashboard' )
                         ->with('success', 'You have registered successfully!');
             } else {
                 
@@ -945,7 +985,6 @@ class HomeController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
-
             $urls = Url::where('user_id', $user->id)
                     ->orderBy('id', 'DESC')
                     ->get();
@@ -994,6 +1033,7 @@ class HomeController extends Controller
                     $dates[$key] = $date->format('M d');
                 }
             }
+
             return view('dashboard2', [
                 'count_url' => $count_url,
                 'user' => $user,
@@ -1003,6 +1043,7 @@ class HomeController extends Controller
                 'total_links' => $total_links,
                 'filter' => $filter,
                 'dates' => $dates,
+                '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
             ]);
         } else {
             return redirect()->action('HomeController@getIndex');
@@ -1084,12 +1125,19 @@ class HomeController extends Controller
         if (Auth::check()) 
         {
             $user = Auth::user();
+            if(Session::has('plan'))
+            {
+                Session::put('plan' , null);
+            }
             if ($user->subscribed('main', 'tr5Advanced')) 
             {
+
+                
                 return redirect()->action('HomeController@getDashboard');
             } 
             elseif ($user->subscribed('main', 'tr5Basic')) 
             {
+
                 $subscription_status = 'tr5Basic';
 
                 return view('subscription2', [

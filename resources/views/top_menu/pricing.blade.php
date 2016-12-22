@@ -1,3 +1,6 @@
+@if(\Auth::check())
+	@include('subscription2')
+@else
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,7 +62,7 @@
 			</div>
 			<div class="row">
 				<div class="col-md-4">
-					<div class="planbox">
+					<div class="planbox" id="noPlan">
 						<h2>free</h2>
 						<div class="value">
 							$<span> 0 / </span>month per user
@@ -73,17 +76,17 @@
 							<li><span>no</span> custom links</li>
 							<li><span>no</span> support</li>
 						</ul>
-						<a href="#">Subscribed</a>
+							<a href="#" data-toggle="modal" data-target="#signup" id="new_noplan">Subscribe now</a>
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div class="planbox advanced">
+					<div class="planbox" id="basicTier"> 
 						<h2>advanced</h2>
 						<div class="value">
 							$<span> 10 / </span>month per user
 						</div>
 						<div class="shortenlink">
-							Upto 10 shorten links
+							Upto 100 shorten links
 						</div>
 						<ul class="offers">
 							<li><span>100</span> shorten links</li>
@@ -91,25 +94,26 @@
 							<li><span>custom</span> links</li>
 							<li><span>business</span> hour support</li>
 						</ul>
-						<a href="#">Subscribe now</a>
+						
+							<a href="#" data-toggle="modal" data-target="#signup" id="new_tr5Basic">Subscribe now</a>
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div class="planbox">
+					<div class="planbox" id="advancedTier">
 						<h2>pro</h2>
 						<div class="value">
 							$<span> 20 / </span>month per user
 						</div>
 						<div class="shortenlink">
-							Upto 10 shorten links
+							Unlimited shorten links
 						</div>
 						<ul class="offers">
 							<li><span>unlimited</span> shorten links</li>
 							<li><span>advanced</span> analytics</li>
 							<li><span>custom</span> links</li>
-							<li><span>27 X 7</span> hour support</li>
+							<li><span>24 X 7</span> hour support</li>
 						</ul>
-						<a href="#">Subscribe now</a>
+							<a href="#" data-toggle="modal" data-target="#signup" id="new_tr5Advanced">Subscribe now</a>
 					</div>
 				</div>
 			</div>
@@ -190,6 +194,39 @@
 	    	$('.mobile-menu ul').slideToggle(500);
 	    });
 	});
+
+	$('#noPlan').mouseover(function(){
+		$('#noPlan').addClass('advanced');
+	});
+	$('#noPlan').mouseout(function(){
+		$('#noPlan').removeClass('advanced');
+	});
+	$('#basicTier').mouseover(function(){
+		$('#basicTier').addClass('advanced');
+	});
+	$('#basicTier').mouseout(function(){
+		$('#basicTier').removeClass('advanced');
+	});
+	$('#advancedTier').mouseover(function(){
+		$('#advancedTier').addClass('advanced');
+	});
+	$('#advancedTier').mouseout(function(){
+		$('#advancedTier').removeClass('advanced');
+	});
+
+	$('#new_noplan').click(function(){
+		$('#_plan').val(0);
+		$('#__plan').val(0);
+	});
+	$('#new_tr5Basic').click(function(){
+		$('#_plan').val(1);
+		$('#__plan').val(1);
+	});
+	$('#new_tr5Advanced').click(function(){
+		$('#_plan').val(2);
+		$('#__plan').val(2);
+	});
 </script>
 @include('loginjs')
 </html>
+@endif
