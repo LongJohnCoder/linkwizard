@@ -935,7 +935,7 @@ class HomeController extends Controller
         }
         else
         {
-            if(isset($request->_plan))
+            if(isset($request->_plan) && $request->_plan != "")
                 \Session::put('plan' , $request->_plan);
             $user = new User();
             $user->name = $request->name;
