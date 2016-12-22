@@ -24,7 +24,16 @@
                             </div>
                             <div class="form-group form-group-sm" id="cvc-group">
                                 <label for="">CVC</label>
-                                <input class="form-control input-sm" required="required" data-stripe="cvc" data-parsley-type="number" data-parsley-trigger="change focusout" minlength="3" maxlength="4" data-parsley-class-handler="#cvc-group" type="text" placeholder="YYY / ZZZZ">
+                                <table>
+                                    <tr>
+                                        <td>
+                                                <input id="cvc_number" class="form-control input-sm" style="width:150px" required="required" data-stripe="cvc" data-parsley-type="number" data-parsley-trigger="change focusout" minlength="3" maxlength="4" data-parsley-class-handler="#cvc-group" type="PASSWORD" placeholder="YYY / ZZZZ">            
+                                        </td>
+                                        <td>
+                                                <button class="btn" style="width:100px" id="show_hide">show</button>
+                                        </td>
+                                    </tr>
+                                </table>            
                             </div>
                             <div class="row">
                                 <div class="form-group form-group-sm" id="exp-group">
@@ -50,4 +59,20 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#show_hide').click(function(){
+                    if($('#show_hide').text() == 'show')
+                    {
+                        $('#show_hide').text('hide');
+                        $('#cvc_number').attr('type' , 'text');
+                    }
+                    else
+                    {
+                        $('#show_hide').text('show');
+                        $('#cvc_number').attr('type' , 'PASSWORD');
+                    }
+                });
+            });
+        </script>
     </div>
