@@ -399,7 +399,6 @@ class HomeController extends Controller
                     ->first();
             if ($url) {
                 $url = Url::find($url->url_id);
-
                 return view('analytics.country', ['user' => $user, 'url' => $url, 'country' => $country]);
             } else {
                 return redirect()->action('HomeController@getDashboard')
