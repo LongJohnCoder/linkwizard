@@ -24,7 +24,6 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function check_custom(Request $request)
     {
         

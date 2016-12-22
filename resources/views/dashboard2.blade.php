@@ -58,6 +58,7 @@
 <script src="//connect.facebook.net/en_US/sdk/debug.js"></script>
 <script src="{{ URL::to('/').'/public/js/fb_share.js'}}"></script>
 
+
 <!-- /Facebook API -->
 <!-- Google API -->
 <script>
@@ -233,18 +234,19 @@
                             <input type="text" class="input-sm form-control" name="to" id="datePickerTo" required />
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary pull-right">Apply</button>
+                    <button type="submit" id="date_form" class="btn btn-primary pull-right">Apply</button>
                     <br />
                 </form>
             </div>
             <div class="modal-footer">
                 <center>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="close_date_modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </center>
             </div>
         </div>
     </div>
 </div>
+
 <section class="banner">
 	<div class="container">
 		<div class="row">
@@ -257,7 +259,7 @@
 				</div>
 				<div class="col-md-6">
 					<div class="datelink dateRangeButton">
-						<a href="#">{{ date('M d', strtotime('-1 month')) .' - '. date('M d') }}</a>
+						<a id="date_range" href="#">{{ date('M d', strtotime('-1 month')) .' - '. date('M d') }}</a>
 					</div>
 					<script type="text/javascript">
 						$(document).ready(function(){
@@ -1124,7 +1126,9 @@
         });
         </script>
         <script>
+        $(document).ready(function(){
             @if (isset($filter) and $filter != null) {
+
                 $.ajax({
                     type: "POST",
                     url: "{{ route('postChartDataFilterDateRange') }}",
@@ -1135,6 +1139,11 @@
                         "_token": "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                    	var date_from = "{{ date( 'M d'  , strtotime($filter['start'])) }}";
+                    	var date_to   = "{{ date( 'M d'  , (strtotime($filter['end']))-86400) }}";
+
+                    	$('#date_range').text(date_from+ ' - ' +date_to);
+
                         var chartDataStack = [];
                         $('#columnChart').highcharts({
                             chart: {
@@ -1404,6 +1413,7 @@
                 }
             });
             @endif
+        });
         </script>
         @if(Session::has('success'))
             <script type="text/javascript">
