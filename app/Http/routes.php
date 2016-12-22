@@ -184,3 +184,6 @@ Route::group(['domain' => '{subdomain}.'.env('APP_HOST')], function () {
         'as' => 'getRequestedSubdomainUrl',
     ]);
 });
+
+
+
