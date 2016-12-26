@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
 <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" />
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script> 
@@ -34,7 +34,7 @@
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
@@ -57,6 +57,9 @@
 
 <script src="//connect.facebook.net/en_US/sdk/debug.js"></script>
 <script src="{{ URL::to('/').'/public/js/fb_share.js'}}"></script>
+
+
+
 
 
 <!-- /Facebook API -->
@@ -93,6 +96,10 @@
 <!-- LinkedIn API -->
 <script src="//platform.linkedin.com/in.js" type="text/javascript"> lang: en_US</script>
 <!-- /LinkedIn API -->
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" />
 
 </head>
 <body>
@@ -162,7 +169,7 @@
 	                            <br>
 	                            <label for="makeCustomUrl" style="color:white">Create Your Own Custom Link</label>
 	                            <div class="input-group">
-	                                <span class="input-group-addon">{{ env('APP_HOST') }}/</span>
+	                                <span class="input-group-addon">{{ env('APP_HOST') }}/{{\Auth::user()->id}}_</span>
 	                                <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. MyLinK">
 	                            </div>
 	                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
@@ -173,8 +180,6 @@
 	                        </div>
 		                </div>
 		            </div>
-
-
 
 
 		            <div class="top-menu">
@@ -927,6 +932,7 @@
 	                    	console.log(response);
 	                    	if(response == 1)
 	                    	{
+	                    		console.log(response);
 	                    		if (ValidURL(actualUrl)) 
 			                    {
 			                        if (ValidCustomURL(customUrl)) 

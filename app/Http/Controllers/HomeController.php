@@ -26,11 +26,11 @@ class HomeController extends Controller
      */
     public function check_custom(Request $request)
     {
-        
-        $url = Url::where('shorten_suffix' , $request->custom_url)->where('user_id' , \Auth::user()->id)->first();
+        $uid =  \Auth::user()->id;
+        $cust_url = trim($request->custom_url);
+        $url = Url::where('shorten_suffix' , $uid.'_'.$cust_url)->where('user_id' , $uid)->first();
         if($url == null)
             return 1;
-
         return 0;
     }
 
@@ -787,7 +787,7 @@ class HomeController extends Controller
             $protocol = 'http';
         }
 
-        $random_string = $this->randomString();
+        $random_string = $request->user_id . '_' .$this->randomString();
 
         $url = new Url();
         $url->actual_url = $actual_url;
@@ -824,7 +824,7 @@ class HomeController extends Controller
         }
         $url = new Url();
         $url->actual_url = $actual_url;
-        $url->shorten_suffix = $request->custom_url;
+        $url->shorten_suffix = $request->user_id.'_'.$request->custom_url;
 
         $_url = $this->getPageTitle($request->actual_url);
         $url->title = $_url;
@@ -834,7 +834,7 @@ class HomeController extends Controller
         if ($url->save()) {
             return response()->json([
                 'status' => 'success',
-                'url' => url('/').'/'.$request->custom_url,
+                'url' => url('/').'/'.$url->shorten_suffix,
             ]);
         } else {
             return response()->json(['status' => 'error']);
