@@ -169,14 +169,14 @@
 	                            <br>
 	                            <label for="makeCustomUrl" style="color:white">Create Your Own Custom Link</label>
 	                            <div class="input-group">
-	                                <span class="input-group-addon">{{ env('APP_HOST') }}/{{\Auth::user()->id}}_</span>
+	                                <span class="input-group-addon">{{ env('APP_HOST') }}</span>
 	                                <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. MyLinK">
 	                            </div>
 	                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
 	                                Shorten Url
 	                            </button>
 	                            <br>
-	                            <span id="err_cust" style="color:red; display:none;" >You have seleced this custom shortend link earlier. Please try with a different name</span>
+	                            <span id="err_cust" style="color:red; display:none;" >This URL is taken. Please try with a different name</span>
 	                        </div>
 		                </div>
 		            </div>
@@ -505,6 +505,7 @@
                                         type: 'POST',
                                         data: {url_id: {{ $url->id }}, _token: "{{ csrf_token() }}"},
                                         success: function (response) {
+                                        	console.log('postFetchAnalytics');
                                             if (response.status == "success") {
                                                 google.charts.setOnLoadCallback(function () {
                                                     var data = google.visualization.arrayToDataTable(response.location);
@@ -760,9 +761,10 @@
                     var title = $('.modal-body #urlTitle').val();
                     $.ajax({
                         type: 'POST',
-                        url: '{{ route('postEditUrlInfo') }}',
+                        url: "{{ route('postEditUrlInfo') }}",
                         data: {id: id, title: title, _token: "{{ csrf_token() }}"},
                         success: function(response) {
+                        	console.log('postEditUrlInfo');
                             $('#myModal').modal('hide');
                             swal({
                                 title: "Success",
@@ -929,6 +931,7 @@
 	                    url:"/check_custom",
 	                    data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
 	                    success:function(response){
+	                    	console.log('check_custom');
 	                    	console.log(response);
 	                    	if(response == 1)
 	                    	{
@@ -946,6 +949,7 @@
 			                                    user_id: userId,
 			                                    _token: "{{ csrf_token() }}"
 			                                }, success: function (response) {
+			                                	console.log('postCustomUrlTier5');
 			                                    if(response.status=="success") {
 			                                        var shortenUrl = response.url;
 			                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
@@ -1054,6 +1058,7 @@
                                 url: "{{ route('postShortUrlTier5') }}",
                                 data: {url: url, user_id: userId, _token: "{{ csrf_token() }}"},
                                 success: function (response) {
+                                	console.log('postShortUrlTier5');
                                     if(response.status=="success") {
                                         var shortenUrl = response.url;
                                         var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
@@ -1143,6 +1148,8 @@
                         "_token": "{{ csrf_token() }}"
                     },
                     success: function(response) {
+                    	console.log('postChartDataFilterDateRange');
+                    	console.log(response);
                     	var date_from = "{{ date( 'M d'  , strtotime($filter['start'])) }}";
                     	var date_to   = "{{ date( 'M d'  , (strtotime($filter['end']))-86400) }}";
 
@@ -1282,9 +1289,11 @@
             @else
             $.ajax({
                 type: 'post',
-                url: '{{ route('postFetchChartData') }}',
+                url: "{{ route('postFetchChartData') }}",
                 data: {'user_id': '{{ $user->id }}', '_token': '{{ csrf_token() }}'},
                 success: function(response) {
+                	console.log('postFetchChartData');
+                	console.log(response);
                     var chartDataStack = [];
                     $('#columnChart').highcharts({
                         chart: {

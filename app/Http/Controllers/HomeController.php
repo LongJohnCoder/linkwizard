@@ -28,7 +28,7 @@ class HomeController extends Controller
     {
         $uid =  \Auth::user()->id;
         $cust_url = trim($request->custom_url);
-        $url = Url::where('shorten_suffix' , $uid.'_'.$cust_url)->where('user_id' , $uid)->first();
+        $url = Url::where('shorten_suffix' , $cust_url)->first();
         if($url == null)
             return 1;
         return 0;
@@ -42,6 +42,7 @@ class HomeController extends Controller
 
     public function getIndex()
     {
+        
         if (Auth::check()) {
             return redirect()->action('HomeController@getDashboard');
         } else {
@@ -123,8 +124,7 @@ class HomeController extends Controller
             $find = Url::find($search->id);
             $find->count = $find->count + 1;
             $find->save();
-
-            return view('loader', ['url' => $search]);
+            return view('loader2', ['url' => $search]);
         } else {
             abort(404);
         }
@@ -730,11 +730,17 @@ class HomeController extends Controller
             $referer = new Referer();
             $referer->name = $request->referer;
             $referer->save();
+            
+            $u = Url::where('id' , $request->url)->first();
+            $u->count++;
+            $u->save();
+
             $referer->urls()->attach($request->url);
 
             if ($referer) {
                 global $status;
                 $status = 'success';
+
             } else {
                 global $status;
                 $status = 'error';
@@ -787,7 +793,7 @@ class HomeController extends Controller
             $protocol = 'http';
         }
 
-        $random_string = $request->user_id . '_' .$this->randomString();
+        $random_string = $this->randomString();
 
         $url = new Url();
         $url->actual_url = $actual_url;
@@ -824,7 +830,7 @@ class HomeController extends Controller
         }
         $url = new Url();
         $url->actual_url = $actual_url;
-        $url->shorten_suffix = $request->user_id.'_'.$request->custom_url;
+        $url->shorten_suffix = $request->custom_url;
 
         $_url = $this->getPageTitle($request->actual_url);
         $url->title = $_url;

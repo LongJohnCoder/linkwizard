@@ -1,3 +1,4 @@
+
 <?php
 
 $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
@@ -9,13 +10,24 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
+<title>Url Shortner</title>
+
+<link href="{{url('/')}}/public/loader/css/bootstrap.min.css" rel="stylesheet">
+<link href="{{url('/')}}/public/loader/css/style.css" rel="stylesheet">
+<script src="{{url('/')}}/public/loader/js/jquery.min.js"></script>
+<script src="{{url('/')}}/public/loader/js/bootstrap.min.js"></script>
+
+
+
     <meta name="robots" content="noindex,nofollow" />
-    <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
+    
     <title>Tier5 | URL Shortener</title>
     <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
     <meta name="keywords" content="Tier5 URL Shortener, Tr5.io, Tier5" />
@@ -47,12 +59,22 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     }
 
     </style>
-</head>
 
-<body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
-    <script>
+
+</head>
+<body>
+	<!-- Main Content Start -->
+	<div class="container">
+		<div class="centerdiv">
+			<div class="image-div"><img src="{{url('/')}}/public/images/Git-Icon-1788C.png" class="img-responsive"></div>
+			
+			<div class="text">Please wait a snap while we take you to the actual website.. <a href="#">eget malesuada.</a></div>
+
+		</div>
+	</div>
+	<script type="text/javascript">
     $(document).ready(function() {
         $.ajax({
             url: '//freegeoip.net/json/',
@@ -71,37 +93,18 @@ if (isset($_SERVER['HTTP_REFERER'])) {
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response){
-                        
+                    	console.log(response);
+                        setTimeout(function() {
+				            window.location.replace('{{ $url->protocol }}://' + '{{ $url->actual_url }}');
+				            HoldOn.close();
+				        }, {{ $url->redirecting_time }});
                     }
                 });
             }
         });
     });
-
-    </script>
-    <script>
-    $(document).ready(function() {
-        @if ($url->uploaded_path == null)
-            var uploadedPath = "{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}";
-        @else
-            var uploadedPath = "/{{ $url->uploaded_path }}";
-        @endif
-        var options = {
-            theme: "custom",
-            content: '<div><img style="margin: auto;" src='+uploadedPath+' class="center-block" /></div><br />',
-            message: '{!! $url->redirecting_text_template !!}',
-            backgroundColor: "#212230"
-        };
-
-        HoldOn.open(options);
-        setTimeout(function() {
-            window.location.href = '{{ $url->protocol }}://' + '{{ $url->actual_url }}';
-            HoldOn.close();
-        }, {{ $url->redirecting_time }});
-    });
-
-    </script>
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+	</script>
+	
     <script>
     (function(b, o, i, l, e, r) {
         b.GoogleAnalyticsObject = l;
@@ -117,9 +120,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     }(window, document, 'script', 'ga'));
     ga('create', 'UA-XXXXX-X');
     ga('send', 'pageview');
-
     </script>
+
 </body>
-
 </html>
-
