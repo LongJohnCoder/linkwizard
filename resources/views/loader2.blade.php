@@ -25,7 +25,6 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 <script src="{{url('/')}}/public/loader/js/bootstrap.min.js"></script>
 
 
-
     <meta name="robots" content="noindex,nofollow" />
     
     <title>Tier5 | URL Shortener</title>
@@ -36,13 +35,6 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
     <meta name="author" content="Tier5 LLC" />
     <meta property="og:title" content="Tier5 URL Shortener" />
-    @if ($url->uploaded_path == null)
-    <meta property="og:image" content="{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}" />
-    <meta property="twitter:image" content="{{ URL::to('/').'/public/resources/img/tier5_animation.gif' }}" />
-    @else
-    <meta property="og:image" content="{{ URL::to('/') }}/{{ $url->uploaded_path }}" />
-    <meta property="twitter:image" content="{{ URL::to('/')}}/{{ $url->uploaded_path }}" />
-    @endif
     <meta property="og:url" content="tr5.io" />
     <meta property="og:site_name" content="Tr5.io" />
     <meta property="og:description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
@@ -68,7 +60,13 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	<!-- Main Content Start -->
 	<div class="container">
 		<div class="centerdiv">
-			<div class="image-div"><img src="{{url('/')}}/public/images/Git-Icon-1788C.png" class="img-responsive"></div>
+			<div class="image-div">
+			@if($url->uploaded_path)
+				<img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
+			@else
+				<img src="{{url('/')}}/public/images/Git-Icon-1788C.png" class="img-responsive">
+			@endif
+			</div>
 			
 			<span class="text">Please wait a snap while we take you to the actual website</span>
 			<span id="txt_"></span>

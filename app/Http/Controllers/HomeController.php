@@ -119,11 +119,7 @@ class HomeController extends Controller
     public function getRequestedUrl($url)
     {
         $search = Url::where('shorten_suffix', $url)->first();
-
         if ($search) {
-            $find = Url::find($search->id);
-            $find->count = $find->count + 1;
-            $find->save();
             return view('loader2', ['url' => $search]);
         } else {
             abort(404);
@@ -723,6 +719,11 @@ class HomeController extends Controller
 
         $referer = Referer::where('name', $request->referer)->first();
         if ($referer) {
+
+            $find = Url::find($request->url);
+            $find->count = $find->count + 1;
+            $find->save();
+
             $referer->urls()->attach($request->url);
             global $status;
             $status = 'success';
@@ -1069,7 +1070,7 @@ class HomeController extends Controller
         $url = Url::find($request->url_id);
 
         if ($request->hasFile('brandLogo')) {
-            $upload_path = 'uploads/brand_images';
+            $upload_path ='uploads/brand_images';
             $image_name = $request->brandLogo->getClientOriginalName();
             $request->brandLogo->move($upload_path, $image_name);
             $url->uploaded_path = $upload_path.'/'.$image_name;
