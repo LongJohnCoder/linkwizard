@@ -25,6 +25,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script> 
 <script src="https://www.google.com/jsapi"></script>
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0-rc.2/Chart.bundle.min.js"></script> --}}
@@ -32,14 +33,15 @@
 <script src="{{ URL::to('/').'/public/resources/js/highchart-data.js' }}"></script>
 <script src="{{ URL::to('/').'/public/resources/js/highchart-drilldown.js' }}"></script>
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+
 
 
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 
-<script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
+<!-- <script src="{{url('/')}}/public/js/bootstrap.min.js"></script> -->
+
 
 
 
@@ -896,6 +898,10 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+
+
+		$.fn.modal.Constructor.prototype.enforceFocus = function() {};
+
 		$(".list-group ul li").click(function(){
 			$(this).addClass("active");
 			$(".list-group ul li").not($(this)).removeClass("active");

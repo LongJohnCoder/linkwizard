@@ -70,12 +70,20 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 		<div class="centerdiv">
 			<div class="image-div"><img src="{{url('/')}}/public/images/Git-Icon-1788C.png" class="img-responsive"></div>
 			
-			<div class="text">Please wait a snap while we take you to the actual website.. <a href="#">eget malesuada.</a></div>
+			<span class="text">Please wait a snap while we take you to the actual website</span>
+			<span id="txt_"></span>
 
 		</div>
 	</div>
 	<script type="text/javascript">
     $(document).ready(function() {
+
+
+		window.setInterval(function(){
+		  $('#txt_').text($('#txt_').text() + ' .');
+		  $('#txt_').text().length > 10 ? $('#txt_').text('') : null ;
+		}, 1000);
+
         $.ajax({
             url: '//freegeoip.net/json/',
             type: 'POST',
