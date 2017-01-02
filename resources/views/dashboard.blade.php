@@ -11,14 +11,14 @@
         <meta name="author" content="Tier5 LLC" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-        <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+        <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
-        <link rel="stylesheet" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
+        <link rel="stylesheet" href="https://t4t5.github.io/sweetalert/dist/sweetalert.css" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
         <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
         <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
-        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
         <script src="https://www.gstatic.com/charts/loader.js"></script> 
@@ -29,8 +29,8 @@
         <script src="{{ URL::to('/').'/public/resources/js/highchart-drilldown.js' }}"></script>
         <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
-        <script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+        <script src="https://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
         <!-- Facebook and Twitter integration -->
         <meta property="og:title" content="Tier5 URL Shortener" />
         <meta property="og:image" content="{{ URL('/')}}/public/resources/img/company_logo.png" />
@@ -50,7 +50,7 @@
     </head>
     <body>
         <!--[if lt IE 7]>
-        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <!-- open/close -->
         <!-- Facebook API -->

@@ -12,13 +12,13 @@
     <meta name="author" content="Tier5 LLC" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-    <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/animate.css">
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style.css">
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
-    <link rel="stylesheet" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
+    <link rel="stylesheet" href="https://t4t5.github.io/sweetalert/dist/sweetalert.css" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/creditCardTypeDetector.css" />
     <meta property="og:title" content="" />
     <meta property="og:image" content="" />
@@ -131,7 +131,7 @@
     <!-- JavaScripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
-    <script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
+    <script src="https://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
     <script>
         $(document).ready(function () {
             $('#hamburger').on('click', function () {

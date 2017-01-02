@@ -1,4 +1,4 @@
-<script src="http://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
+<script src="https://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
@@ -29,7 +29,7 @@
         @endif
 
         $("#tier5_us").click(function(){
-            window.location.href = "http://tier5.us";
+            window.location.href = "https://tier5.us";
         });
 
         $("#login1").click(function(){

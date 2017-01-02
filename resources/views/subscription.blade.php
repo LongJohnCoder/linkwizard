@@ -12,13 +12,13 @@
     <meta name="author" content="Tier5 LLC" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-    <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/animate.css">
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style.css">
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
-    <link rel="stylesheet" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
+    <link rel="stylesheet" href="https://t4t5.github.io/sweetalert/dist/sweetalert.css" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/creditCardTypeDetector.css" />
     <meta property="og:title" content="" />
     <meta property="og:image" content="" />
@@ -76,7 +76,7 @@
 
 <body>
     <!--[if lt IE 7]>
-    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     <!-- open/close -->
     <header>
@@ -316,7 +316,7 @@
     };
 
     </script>
-    <script src="http://parsleyjs.org/dist/parsley.js "></script>
+    <script src="https://parsleyjs.org/dist/parsley.js "></script>
     <script type="text/javascript " src="https://js.stripe.com/v2/ "></script>
     <script>
     Stripe.setPublishableKey("{{ env('STRIPE_PUBLISHABLE_SECRET') }}");

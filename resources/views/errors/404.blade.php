@@ -11,7 +11,7 @@
     <meta name="author" content="Tier5 LLC" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

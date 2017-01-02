@@ -40,7 +40,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     <meta property="og:url" content="tr5.io" />
     <meta property="al:web:url" content="{{ $url->protocol }}://{{ $url->actual_url }}" />
     <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
-    <link rel="stylesheet" type="text/css" href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' />
+    <link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
     <style type="text/css">
     body {
         font-family: 'Nunito';

@@ -342,7 +342,7 @@
                                     <h3>
                                         @if($url->subdomain->type == 'subdomain')
   											<a href="https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                                http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}
+                                                https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}
                                             </a>
                                         @elseif($url->subdomain->type == 'subdirectory')
                                             <a href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">

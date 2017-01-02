@@ -16,14 +16,14 @@
 <script src="{{url('/')}}/public/js/jquery.min.js"></script>
 <script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="http://t4t5.github.io/sweetalert/dist/sweetalert.css" />
+<link rel="stylesheet" type="text/css" href="https://t4t5.github.io/sweetalert/dist/sweetalert.css" />
 
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
 <link href="{{ URL::to('/').'/public/resources/css/bootstrap.min.css'}}" rel="stylesheet" />
 <link href="{{ URL::to('/').'/public/resources/css/jquery.fancybox.css'}}" rel="stylesheet" />
 <link href="{{ URL::to('/').'/public/resources/css/animate.css'}}" rel="stylesheet" />
-<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
-<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css' />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css' />
 <link href="{{ URL::to('/').'/public/resources/css/styles.css'}}" rel="stylesheet" />
 <link href="{{ URL::to('/').'/public/resources/css/queries.css'}}" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
