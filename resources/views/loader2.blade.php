@@ -54,9 +54,15 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
+    <style type="text/css">
+        body{
+            background: #fff !important;
+        }
+    </style>
 
 </head>
 <body>
+
 	<!-- Main Content Start -->
 	<div class="container">
 		<div class="centerdiv">

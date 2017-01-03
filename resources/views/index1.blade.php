@@ -123,9 +123,10 @@
             </div>
         </div>
     </div>
+    <div class="clear"></div>
     <div class="container">
-        <div class="col-md-3"></div>
-        <div class="col-md-6">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
             <div class="videosection">
                 <img src="{{url('/')}}/public/images/vdo-img.jpg" class="img-responsive">
                 <div class="video-container">
@@ -133,7 +134,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3"></div>
+        <div class="col-md-2"></div>
     </div>
     <div class="benefit text-center">
         <div class="container">

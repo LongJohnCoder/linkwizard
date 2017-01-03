@@ -184,8 +184,8 @@
 		            </div>
 
 
-		            <div class="top-menu">
-						<div class="mobile-menu">
+		            <div class="top-menu dashboard-menu">
+						<!-- <div class="mobile-menu">
 							<div class="hamburg-menu">
 				              <a href="#" class="menu-icon" style="display: block;">
 				                <div class="span bar top" style="background-color: #fff;"></div>
@@ -202,7 +202,7 @@
 		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
                     			@endif
 				            </ul>
-				        </div>
+				        </div> -->
 				        <div class="desktop-menu">
 				            <ul>
 				            	<li><a href="/about">about</a></li>
@@ -227,7 +227,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close modalclosebtn" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">Select date range</h4>
@@ -236,19 +236,21 @@
                 <form action="{{ route('getDashboard') }}" method="get" role="form" class="form" id="datePickerForm">
                     <div class="form-group">
                         <div class="input-daterange input-group" id="datepicker">
-                            <input type="text" class="input-sm form-control" name="from" id="datePickerFrom" required />
-                            <span class="input-group-addon">to</span>
-                            <input type="text" class="input-sm form-control" name="to" id="datePickerTo" required />
+                        	<label>
+	                        	<i class="fa fa-calendar" aria-hidden="true"></i>
+	                            <input type="text" class="input-sm form-control" name="from" id="datePickerFrom" required />
+                            </label>
+                            <span class="input-group-addon">TO</span>
+                            <label>
+	                            <i class="fa fa-calendar" aria-hidden="true"></i>
+	                            <input type="text" class="input-sm form-control" name="to" id="datePickerTo" required />
+                            </label>
                         </div>
                     </div>
-                    <button type="submit" id="date_form" class="btn btn-primary pull-right">Apply</button>
-                    <br />
+                    <div class="form-group">
+                    	<button type="submit" id="date_form" class="btn btn-primary pull-right">Apply</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <center>
-                    <button id="close_date_modal" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </center>
             </div>
         </div>
     </div>
@@ -280,7 +282,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
-				<div id="columnChart" style="min-width: 310px; height: 165px; margin: 0 auto"></div> <!-- col-md-12 graph -->
+				<div id="columnChart" style="height: 165px; margin: 0 auto"></div> <!-- col-md-12 graph -->
 			</div>
 		</div>
 	</div>
@@ -290,310 +292,306 @@
 <section class="main-content tabsection">
 	<div class="container">
 		<div class="row">
-	        <div class="col-md-12">
-	            <div class="col-md-4 col-sm-4">
-		            <div class="list-group">
-		              	@if($count_url > 1)
-		              	<h2 id="cnt_link">{{$count_url}} links</h2>
-		              	@else
-		              	<h2 id="cnt_link">{{$count_url}} link</h2>
-		              	@endif
-		              	<ul>
-		              		@foreach ($urls as $key => $url)
-			                <li class="active">
-			                
-			                	<div class="col-sm-1">
-			                 		
-			                 	</div>
-			                 	<div class="tab-cont">
-				                 	<div class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</div>
-				                 	<p>{{ $url->title }}</p>
-				                 	@if (isset($url->subdomain))
-						                @if($url->subdomain->type == 'subdomain')
-						                    <a class="link" href=https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}>https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}</a>
+            <div class="col-md-4 col-sm-4">
+	            <div class="list-group">
+	              	@if($count_url > 1)
+	              	<h2 id="cnt_link">{{$count_url}} links</h2>
+	              	@else
+	              	<h2 id="cnt_link">{{$count_url}} link</h2>
+	              	@endif
+	              	<ul>
+	              		@foreach ($urls as $key => $url)
+		                <li class="active">
+		                
+		                	<div class="col-sm-1">
+		                 		
+		                 	</div>
+		                 	<div class="tab-cont">
+			                 	<div class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</div>
+			                 	<p>{{ $url->title }}</p>
+			                 	@if (isset($url->subdomain))
+					                @if($url->subdomain->type == 'subdomain')
+					                    <a class="link" href=https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}>https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}</a>
 
-						                @elseif($url->subdomain->type == 'subdirectory')
-												<a class="link" href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}">{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}</a>
-						                @endif
-						            @else
-						                <a class="link" href="{{ route('getIndex') }}/{{ $url->shorten_suffix }}">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</a>
-						            @endif
-				                 	<div class="flags">
-				                 		{{$url->count}}<img src="{{url('/')}}/public/images/bar2.png" class="img-responsive">
-				                 	</div>
+					                @elseif($url->subdomain->type == 'subdirectory')
+											<a class="link" href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}">{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}</a>
+					                @endif
+					            @else
+					                <a class="link" href="{{ route('getIndex') }}/{{ $url->shorten_suffix }}">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</a>
+					            @endif
+			                 	<div class="flags">
+			                 		{{$url->count}}<img src="{{url('/')}}/public/images/bar2.png" class="img-responsive">
 			                 	</div>
-			                </li>
-			                @endforeach
-		                </ul>
-		            </div>
+		                 	</div>
+		                </li>
+		                @endforeach
+	                </ul>
 	            </div>
+            </div>
+            <div class="col-md-8 col-sm-8">
+                <!-- flight section -->
+                @foreach ($urls as $key => $url)
+                <div class="tab-content">
+                	<div class="tab-content-top">
+	                	<div class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</div>
+	                	<p id="urlTitleHeading{{ $key }}">{{$url->title}}</p>
+	                	<a href="{{ $url->protocol }}://{{ $url->actual_url }}">{{ $url->protocol }}://{{ $url->actual_url }}</a>
+                	</div>
+                	<div class="row">
+                		 <div class="col-md-6 col-sm-6">
+                		 	@if (isset($url->subdomain))
+                                <h3>
+                                    @if($url->subdomain->type == 'subdomain')
+											<a href="https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                            https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}
+                                        </a>
+                                    @elseif($url->subdomain->type == 'subdirectory')
+                                        <a href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                            {{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}
+                                        </a>
+                                    @endif
+                                </h3>
+                            @else
+                                <h3>
+                                    <a href="{{route('getIndex') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                        {{ route('getIndex') }}/{{ $url->shorten_suffix }}
+                                    </a>
+                                </h3>
+                            @endif
+                		 </div>
 
 
-	            <div class="col-md-8 col-sm-8">
-	                <!-- flight section -->
-	                @foreach ($urls as $key => $url)
-	                <div class="tab-content">
-	                	<div class="tab-content-top">
-		                	<div class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</div>
-		                	<p id="urlTitleHeading{{ $key }}">{{$url->title}}</p>
-		                	<a href="{{ $url->protocol }}://{{ $url->actual_url }}">{{ $url->protocol }}://{{ $url->actual_url }}</a>
-	                	</div>
-	                	<div class="row">
-	                		 <div class="col-md-6 col-sm-6">
-	                		 	@if (isset($url->subdomain))
-                                    <h3>
-                                        @if($url->subdomain->type == 'subdomain')
-  											<a href="https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                                https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}
-                                            </a>
-                                        @elseif($url->subdomain->type == 'subdirectory')
-                                            <a href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                                {{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}
-                                            </a>
+                		 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                <div class="buttons">
+                                    <button id="clipboard{{ $key }}" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy"  data-clipboard-target="#copylink{{ $key }}" style="width:70px">
+                                        <i class='fa fa-clipboard'></i> copy
+                                    </button>
+                                    <button id="edit-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:70px">
+                                        <i class='fa fa-pencil'></i> edit
+                                    </button>
+                                    <button id="fb-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:70px">
+                                        <i class='fa fa-facebook'></i> share
+                                    </button>
+                                    <button id="gp-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="1094910841675-1rtgjkoe9l9p5thbgus0s1vlf9j5rrjf.apps.googleusercontent.com" data-contenturl="{{ route('getIndex') }}/{{ $url->shorten_suffix }}" data-cookiepolicy="none" data-prefilltext="{{ $url->title }}" data-calltoactionlabel="SEND" data-calltoactionurl="{{ route('getIndex') }}/{{ $url->shorten_suffix }}" style="width:70px">
+                                        <i class='fa fa-google-plus'></i> share
+                                    </button>
+                                    <a href="https://twitter.com/intent/tweet?text={{ $url->title }} please visit {{ route('getIndex') }}/{{ $url->shorten_suffix }} to know more." style="border: none; padding: 0px; margin: 0px;">
+                                        <button id="tw-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:70px">
+                                            <i class='fa fa-twitter'></i> share
+                                        </button>
+                                    </a>
+                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ route('getIndex') }}/{{ $url->shorten_suffix }}&title={{ $url->title }}&summary={{ $url->title }}&source=LinkedIn" target="_blank" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no'); return false;" style="border: none; padding: 0px; margin: 0px;">
+                                        <button id="tw-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:70px">
+                                            <i class='fa fa-linkedin'></i> share
+                                        </button>
+                                    </a>
+                                    @if ($subscription_status != null)
+                                        <button id="addBrand{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:130px">
+                                            <i class="fa fa-bullhorn"></i> create brand
+                                        </button>
+                                        @if (!isset($url->subdomain))
+                                            <button id="brandLink{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:130px">
+                                                <i class="fa fa-anchor"></i> Brand Link
+                                            </button>
                                         @endif
-                                    </h3>
-                                @else
-                                    <h3>
-                                        <a href="{{route('getIndex') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                            {{ route('getIndex') }}/{{ $url->shorten_suffix }}
-                                        </a>
-                                    </h3>
-                                @endif
-	                		 </div>
-
-
-	                		 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
-                                    <div class="buttons">
-                                        <button id="clipboard{{ $key }}" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy"  data-clipboard-target="#copylink{{ $key }}" style="width:70px">
-                                            <i class='fa fa-clipboard'></i> copy
-                                        </button>
-                                        <button id="edit-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:70px">
-                                            <i class='fa fa-pencil'></i> edit
-                                        </button>
-                                        <button id="fb-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:70px">
-                                            <i class='fa fa-facebook'></i> share
-                                        </button>
-                                        <button id="gp-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="1094910841675-1rtgjkoe9l9p5thbgus0s1vlf9j5rrjf.apps.googleusercontent.com" data-contenturl="{{ route('getIndex') }}/{{ $url->shorten_suffix }}" data-cookiepolicy="none" data-prefilltext="{{ $url->title }}" data-calltoactionlabel="SEND" data-calltoactionurl="{{ route('getIndex') }}/{{ $url->shorten_suffix }}" style="width:70px">
-                                            <i class='fa fa-google-plus'></i> share
-                                        </button>
-                                        <a href="https://twitter.com/intent/tweet?text={{ $url->title }} please visit {{ route('getIndex') }}/{{ $url->shorten_suffix }} to know more." style="border: none; padding: 0px; margin: 0px;">
-                                            <button id="tw-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:70px">
-                                                <i class='fa fa-twitter'></i> share
-                                            </button>
-                                        </a>
-                                        <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ route('getIndex') }}/{{ $url->shorten_suffix }}&title={{ $url->title }}&summary={{ $url->title }}&source=LinkedIn" target="_blank" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no'); return false;" style="border: none; padding: 0px; margin: 0px;">
-                                            <button id="tw-share-btn{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:70px">
-                                                <i class='fa fa-linkedin'></i> share
-                                            </button>
-                                        </a>
-                                        @if ($subscription_status != null)
-                                            <button id="addBrand{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:130px">
-                                                <i class="fa fa-bullhorn"></i> create brand
-                                            </button>
-                                            @if (!isset($url->subdomain))
-                                                <button id="brandLink{{ $key }}" class="btn btn-default btn-sm btngrpthree" style="width:130px">
-                                                    <i class="fa fa-anchor"></i> Brand Link
-                                                </button>
-                                            @endif
-                                        @endif
-                                    </div>
-                                    <script>
-                                        $(document).ready(function () {
-
-                                        	function initSummernote(preloadText) {
-							                $('#redirectingTextTemplate').summernote({
-							                    height: 100,
-							                    minHeight: null,
-							                    maxHeight: null,
-							                    focus: true,
-							                    toolbar: [
-							                        ['style', ['bold', 'italic', 'underline']],
-							                        ['fontsize', ['fontsize']],
-							                        ['color', ['color']],
-							                        ['height', ['height']],
-							                        ['insert', ['link']],
-							                        ['misc', ['undo', 'redo', 'codeview']]
-							                    ]
-							                });
-							                $('#redirectingTextTemplate').summernote('code', preloadText);
-            								}
-                                        	
-                                            $('#clipboard{{ $key }}').on('click', function () {
-                                                new Clipboard('#clipboard{{ $key }}');
-                                            });
-                                            $('#edit-btn{{ $key }}').on('click', function () {
-                                                $("#editModalBody #urlTitle").val('{{ $url->title }}');
-                                                $("#editModalBody #urlId").val('{{ $url->id }}');
-                                                $('#myModal').modal('show');
-                                                editAction({{ $key }});
-                                            });
-                                            $('#fb-share-btn{{ $key }}').on('click', function () {
-                                                fb_share('{{ route('getIndex') }}/{{ $url->shorten_suffix }}' , '{{url('/')}}');
-                                            });
-                                            $('#addBrand{{ $key }}').on('click', function () {
-	                                            $("#urlId").val('{{ $url->id }}');
-	                                            $("#redirectingTime").val('{{ $url->redirecting_time/1000 }}');
-	                                            initSummernote('{!! $url->  redirecting_text_template !!}');
-	                                            $('#myModal1').modal('show');
-	                                        });
-                                            $('#brandLink{{ $key }}').on('click', function () {
-                                                $("#subdomainModalBody #urlId").val('{{ $url->id }}');
-                                                $('#subdomainModal').modal('show');
-                                            });
-                                        });
-                                    </script>
+                                    @endif
                                 </div>
-	                		 
-	                	</div>
-	                	<div class="row">
-	                		 <div class="col-md-6 col-sm-6">
-	                		 	<a href="#" class="tot-count"><img src="{{url('/')}}/public/images/bar2.png" class="img-responsive">{{ $url->count }} total counts</a>
-	                		 </div>
-	                		 <div class="col-md-6 col-sm-6"></div>
-	                	</div>
-	                	<div class="row">
-	                		<div class="col-md-12 col-sm-12">
-	                		 	<div class="tot-clicks">
-		                		 	<h2>Number of hits per country</h2>
-		                		 	<div class="tot-clicks-body">
-		                		 		<div id="regions_div{{ $key }}" style="width: 450px; height: 250px;"></div>
-		                		 	</div>
+                                <script>
+                                    $(document).ready(function () {
+
+                                    	function initSummernote(preloadText) {
+						                $('#redirectingTextTemplate').summernote({
+						                    height: 100,
+						                    minHeight: null,
+						                    maxHeight: null,
+						                    focus: true,
+						                    toolbar: [
+						                        ['style', ['bold', 'italic', 'underline']],
+						                        ['fontsize', ['fontsize']],
+						                        ['color', ['color']],
+						                        ['height', ['height']],
+						                        ['insert', ['link']],
+						                        ['misc', ['undo', 'redo', 'codeview']]
+						                    ]
+						                });
+						                $('#redirectingTextTemplate').summernote('code', preloadText);
+        								}
+                                    	
+                                        $('#clipboard{{ $key }}').on('click', function () {
+                                            new Clipboard('#clipboard{{ $key }}');
+                                        });
+                                        $('#edit-btn{{ $key }}').on('click', function () {
+                                            $("#editModalBody #urlTitle").val('{{ $url->title }}');
+                                            $("#editModalBody #urlId").val('{{ $url->id }}');
+                                            $('#myModal').modal('show');
+                                            editAction({{ $key }});
+                                        });
+                                        $('#fb-share-btn{{ $key }}').on('click', function () {
+                                            fb_share('{{ route('getIndex') }}/{{ $url->shorten_suffix }}' , '{{url('/')}}');
+                                        });
+                                        $('#addBrand{{ $key }}').on('click', function () {
+                                            $("#urlId").val('{{ $url->id }}');
+                                            $("#redirectingTime").val('{{ $url->redirecting_time/1000 }}');
+                                            initSummernote('{!! $url->  redirecting_text_template !!}');
+                                            $('#myModal1').modal('show');
+                                        });
+                                        $('#brandLink{{ $key }}').on('click', function () {
+                                            $("#subdomainModalBody #urlId").val('{{ $url->id }}');
+                                            $('#subdomainModal').modal('show');
+                                        });
+                                    });
+                                </script>
+                            </div>
+                		 
+                	</div>
+                	<div class="row">
+                		 <div class="col-md-6 col-sm-6">
+                		 	<a href="#" class="tot-count"><img src="{{url('/')}}/public/images/bar2.png" class="img-responsive">{{ $url->count }} total counts</a>
+                		 </div>
+                		 <div class="col-md-6 col-sm-6"></div>
+                	</div>
+                	<div class="row">
+                		<div class="col-md-12 col-sm-12">
+                		 	<div class="tot-clicks">
+	                		 	<h2>Number of hits per country</h2>
+	                		 	<div class="tot-clicks-body">
+	                		 		<div id="regions_div{{ $key }}" style="width: 450px; height: 250px;"></div>
 	                		 	</div>
-	                		</div>
-	                		<div class="col-md-6 col-sm-4">
+                		 	</div>
+                		</div>
+                		<div class="col-md-6 col-sm-4">
+                		 	<div class="tot-clicks">
+                		 		<h2>Total Clicks {{ $url->count }} (100%)</h2>
+                		 		<div class="tot-clicks-body">
+                		 			<div id="chart_div{{ $key }}" style="width: 350px; height: 250px;"></div>
+                		 		</div>
+                		 	</div>
+                		</div>
+                		@if ($subscription_status != null)
+
+                			<div class="col-md-6 col-sm-6">
 	                		 	<div class="tot-clicks">
-	                		 		<h2>Total Clicks {{ $url->count }} (100%)</h2>
+	                		 		<h2>Platform Status</h2>
 	                		 		<div class="tot-clicks-body">
-	                		 			<div id="chart_div{{ $key }}" style="width: 350px; height: 250px;"></div>
+	                		 			<div id="platform_div{{ $key }}" style="width: 400px; height: 250px;"></div>
 	                		 		</div>
 	                		 	</div>
 	                		</div>
-	                		@if ($subscription_status != null)
-
-	                			<div class="col-md-6 col-sm-6">
-		                		 	<div class="tot-clicks">
-		                		 		<h2>Platform Status</h2>
-		                		 		<div class="tot-clicks-body">
-		                		 			<div id="platform_div{{ $key }}" style="width: 400px; height: 250px;"></div>
-		                		 		</div>
-		                		 	</div>
-		                		</div>
 
 
-		                		<div class="col-md-6 col-sm-6">
-		                		 	<div class="tot-clicks">
-		                		 		<h2>Browser Status</h2>
-		                		 		<div class="tot-clicks-body">
-		                		 			<div id="browser_div{{ $key }}" style="width: 400px; height: 250px;"></div>
-		                		 		</div>
-		                		 	</div>
-		                		</div>
+	                		<div class="col-md-6 col-sm-6">
+	                		 	<div class="tot-clicks">
+	                		 		<h2>Browser Status</h2>
+	                		 		<div class="tot-clicks-body">
+	                		 			<div id="browser_div{{ $key }}" style="width: 400px; height: 250px;"></div>
+	                		 		</div>
+	                		 	</div>
+	                		</div>
 
-		                		<div class="col-md-6 col-sm-6">
-		                		 	<div class="tot-clicks">
-		                		 		<h2>Referring Chanels</h2>
-		                		 		<div class="tot-clicks-body">
-		                		 			<div id="referral_div{{ $key }}" style="width: 400px; height: 250px;"></div>
-		                		 		</div>
-		                		 	</div>
-		                		</div>
-                        	@endif
+	                		<div class="col-md-6 col-sm-6">
+	                		 	<div class="tot-clicks">
+	                		 		<h2>Referring Chanels</h2>
+	                		 		<div class="tot-clicks-body">
+	                		 			<div id="referral_div{{ $key }}" style="width: 400px; height: 250px;"></div>
+	                		 		</div>
+	                		 	</div>
+	                		</div>
+                    	@endif
 
-                        	<!-- charts and graphs script here -->
-                        	<script type="text/javascript">
-                                    {!! $key == 0 ? "google.charts.load('current', {'packages':['corechart', 'geochart']});" : null !!}
-                                    $.ajax({
-                                        url: "{{ route('postFetchAnalytics') }}",
-                                        type: 'POST',
-                                        data: {url_id: {{ $url->id }}, _token: "{{ csrf_token() }}"},
-                                        success: function (response) {
-                                        	console.log('postFetchAnalytics');
-                                            if (response.status == "success") {
-                                                google.charts.setOnLoadCallback(function () {
-                                                    var data = google.visualization.arrayToDataTable(response.location);
-                                                    var options = {
-                                                        colorAxis: {colors: '#3366ff'},
-                                                        background: 'rgba(255, 255, 255, 0.8)',
-                                                        width: 650,
-                                                        height: 250,
-                                                    };
-                                                    var chart{{ $key }} = new google.visualization.GeoChart(document.getElementById('regions_div{{ $key }}'));
-                                                    chart{{ $key }}.draw(data, options);
-                                                    @if ($subscription_status != null)
-                                                    google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
-                                                        var selectionIdx = chart{{ $key }}.getSelection()[0].row;
-                                                        var countryName = data.getValue(selectionIdx, 0);
-                                                        window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
-                                                    });
-                                                    @endif
-                                                });
-                                                google.charts.setOnLoadCallback(function () {
-                                                    var data = google.visualization.arrayToDataTable(response.location);
-                                                    var options = {
-                                                        title: 'Number of hits per country',
-                                                        width: 350,
-                                                        height: 250,
-                                                    };
-                                                    var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('chart_div{{ $key }}'));
-                                                    chart{{ $key }}.draw(data, options);
-                                                    @if ($subscription_status != null)
-                                                    google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
-                                                        var selectionIdx = chart{{ $key }}.getSelection()[0].row;
-                                                        var countryName = data.getValue(selectionIdx, 0);
-                                                        window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
-                                                    });
-                                                    @endif
-                                                });
+                    	<!-- charts and graphs script here -->
+                    	<script type="text/javascript">
+                                {!! $key == 0 ? "google.charts.load('current', {'packages':['corechart', 'geochart']});" : null !!}
+                                $.ajax({
+                                    url: "{{ route('postFetchAnalytics') }}",
+                                    type: 'POST',
+                                    data: {url_id: {{ $url->id }}, _token: "{{ csrf_token() }}"},
+                                    success: function (response) {
+                                    	console.log('postFetchAnalytics');
+                                        if (response.status == "success") {
+                                            google.charts.setOnLoadCallback(function () {
+                                                var data = google.visualization.arrayToDataTable(response.location);
+                                                var options = {
+                                                    colorAxis: {colors: '#3366ff'},
+                                                    background: 'rgba(255, 255, 255, 0.8)',
+                                                    width: 650,
+                                                    height: 250,
+                                                };
+                                                var chart{{ $key }} = new google.visualization.GeoChart(document.getElementById('regions_div{{ $key }}'));
+                                                chart{{ $key }}.draw(data, options);
                                                 @if ($subscription_status != null)
-                                                google.charts.setOnLoadCallback(function () {
-                                                    var data = google.visualization.arrayToDataTable(response.platform);
-                                                    var options = {
-                                                        title: 'Platform Shares',
-                                                        pieHole: 0.4,
-                                                        slices: {textStyle: {fontSize: 6}},
-                                                        width: 400,
-                                                        height: 250,
-                                                    };
-                                                    var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('platform_div{{ $key }}'));
-                                                    chart{{ $key }}.draw(data, options);
-                                                });
-                                                google.charts.setOnLoadCallback(function () {
-                                                    var data = google.visualization.arrayToDataTable(response.browser);
-                                                    var options = {
-                                                        title: 'Browser Stats',
-                                                        pieHole: 0.4,
-                                                        slices: {textStyle: {fontSize: 6}},
-                                                        width: 400,
-                                                        height: 250,
-                                                    };
-                                                    var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('browser_div{{ $key }}'));
-                                                    chart{{ $key }}.draw(data, options);
-                                                });
-                                                google.charts.setOnLoadCallback(function () {
-                                                    var data = google.visualization.arrayToDataTable(response.referer);
-                                                    var options = {
-                                                        title: 'Referring Channels',
-                                                        pieHole: 0.4,
-                                                        slices: {textStyle: {fontSize: 6}},
-                                                        width: 400,
-                                                        height: 250,
-                                                    };
-                                                    var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('referral_div{{ $key }}'));
-                                                    chart{{ $key }}.draw(data, options);
+                                                google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
+                                                    var selectionIdx = chart{{ $key }}.getSelection()[0].row;
+                                                    var countryName = data.getValue(selectionIdx, 0);
+                                                    window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
                                                 });
                                                 @endif
-                                            } else {
-                                             console.log('Response error!');
-                                            }
+                                            });
+                                            google.charts.setOnLoadCallback(function () {
+                                                var data = google.visualization.arrayToDataTable(response.location);
+                                                var options = {
+                                                    title: 'Number of hits per country',
+                                                    width: 350,
+                                                    height: 250,
+                                                };
+                                                var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('chart_div{{ $key }}'));
+                                                chart{{ $key }}.draw(data, options);
+                                                @if ($subscription_status != null)
+                                                google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
+                                                    var selectionIdx = chart{{ $key }}.getSelection()[0].row;
+                                                    var countryName = data.getValue(selectionIdx, 0);
+                                                    window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
+                                                });
+                                                @endif
+                                            });
+                                            @if ($subscription_status != null)
+                                            google.charts.setOnLoadCallback(function () {
+                                                var data = google.visualization.arrayToDataTable(response.platform);
+                                                var options = {
+                                                    title: 'Platform Shares',
+                                                    pieHole: 0.4,
+                                                    slices: {textStyle: {fontSize: 6}},
+                                                    width: 400,
+                                                    height: 250,
+                                                };
+                                                var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('platform_div{{ $key }}'));
+                                                chart{{ $key }}.draw(data, options);
+                                            });
+                                            google.charts.setOnLoadCallback(function () {
+                                                var data = google.visualization.arrayToDataTable(response.browser);
+                                                var options = {
+                                                    title: 'Browser Stats',
+                                                    pieHole: 0.4,
+                                                    slices: {textStyle: {fontSize: 6}},
+                                                    width: 400,
+                                                    height: 250,
+                                                };
+                                                var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('browser_div{{ $key }}'));
+                                                chart{{ $key }}.draw(data, options);
+                                            });
+                                            google.charts.setOnLoadCallback(function () {
+                                                var data = google.visualization.arrayToDataTable(response.referer);
+                                                var options = {
+                                                    title: 'Referring Channels',
+                                                    pieHole: 0.4,
+                                                    slices: {textStyle: {fontSize: 6}},
+                                                    width: 400,
+                                                    height: 250,
+                                                };
+                                                var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('referral_div{{ $key }}'));
+                                                chart{{ $key }}.draw(data, options);
+                                            });
+                                            @endif
+                                        } else {
+                                         console.log('Response error!');
                                         }
-                                    });
-                            </script>
-	                	</div>
-	                </div>
-	                @endforeach
-	                <!-- hotel search --> 
-	            </div>
-	        </div>
+                                    }
+                                });
+                        </script>
+                	</div>
+                </div>
+                @endforeach
+                <!-- hotel search --> 
+            </div>
 		</div>
 	</div>
 
@@ -649,7 +647,6 @@
                                 <label for="redirectingTextTemplate">Set redirecting text template</label>
                                 <textarea id="redirectingTextTemplate" name="redirectingTextTemplate" class="form-control input-md"></textarea>
                             </div>
-                            <hr />
                             <button type="submit" class="btn btn-default btn-md pull-right">
                                 Submit
                             </button>

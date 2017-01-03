@@ -573,6 +573,7 @@ header.brandingheader {
 }
 
 a.signout{
+    border: 1px solid #15A3F9;
     font-family: 'OpenSans-Semibold';
     display: inline-block;
     background: #15A3F9;
@@ -582,6 +583,14 @@ a.signout{
     padding: 8px 15px;
     border-radius: 3px;
     margin-bottom: 10px;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+a.signout:hover {
+    background: none;
+    color: #fff;
+    text-decoration: none;
 }
 
 a.upgrade{
@@ -653,6 +662,25 @@ a.upgrade{
     color: #fff;
 }
 
+.datelink a:hover{
+    color: #fff;
+    text-decoration: none;
+}
+
+.modalclosebtn{
+    float: right;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+    filter: alpha(opacity=20);
+    border: none;
+    background: none;
+
+}
+
 
 .tabsection ul{
     list-style-type: none;
@@ -710,6 +738,10 @@ a.upgrade{
 .tab-cont p{
     color: #808080;
     margin: 0;
+}
+
+.tab-cont a{
+    word-wrap: break-word;
 }
 
 a.link{
@@ -910,6 +942,7 @@ a.tot-count{
 .threeblock{
     border: 3px solid #eee;
     padding: 70px 20px 20px;
+    margin-bottom: 10px;
 }
 
 .threeblock img{
@@ -944,9 +977,12 @@ a.tot-count{
 .linkmanage h2{
     font-size: 24px;
     color: #fff;
+    font-family: 'OpenSans-Regular';
+    margin-bottom: 10px;
 }
 
 .linkmanage p{
+    font-family:'OpenSans-Regular';
     color: #fff;
     line-height: 30px;
 }
@@ -972,7 +1008,10 @@ a.tot-count{
 }
 
 .videosection{
+    margin-top: 50px;
     position: relative;
+    border: 10px solid #f5f5f5;
+    box-shadow: 0px 1px 5px 0px #999;
 }
 
 .videosection img{
@@ -1604,10 +1643,28 @@ display:none;
 
 .modal-body#uploadModalBody input{
     font-size: 14px;
+    border-top: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding-left: 0;
+    height: auto;
 }
 
 #uploadModalBody.modal-body .btn{
     margin-top: 0;
+    width: auto;
+    background: #67baec;
+    color: #fff;
+    border: 1px solid #15A3F9;
+    text-shadow: none;
+    box-shadow: none;
+    margin-left: 1px;
+}
+
+h4#subdomainModalLabel{
+    background: #eee;
+    padding: 10px;
+    font-size: 20px;
 }
 
 #editUrlTitle.btn-warning{
@@ -1629,6 +1686,74 @@ display:none;
     box-shadow: inset 1px 0 10px 0 #ccc;
 }
 
+#myModalLabel.modal-title {
+    background: #eee;
+    padding: 10px;
+    font-size: 20px;
+}
+
+#datePickerModal .modal-content{
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 20px;
+}
+
+#date_form.btn.btn-primary{
+    background: #2D6A8A;
+    text-transform: uppercase;
+    font-size: 15px;
+    width: auto;
+}
+
+form#datePickerForm .input-daterange input{
+    border: 1px solid #ccc;
+    height: 40px;
+}
+
+form#datePickerForm .input-daterange label{
+    position: relative;
+    margin: 0;
+    vertical-align: bottom;
+}
+
+form#datePickerForm .input-daterange i{
+    position: absolute;
+    z-index: 9;
+    font-size: 20px;
+    bottom: 10px;
+    left: 10px;
+}
+
+#subdomainModalBody.modal-body p{
+    text-align: left;
+}
+
+#subdomainModalBody.modal-body input {
+    border: 1px solid #ccc;
+}
+#subdomainModalBody.modal-body .btn {
+    margin-top: 0;
+    width: auto;
+    background: #67baec;
+    color: #fff;
+    border: 1px solid #15A3F9;
+    text-shadow: none;
+    box-shadow: none;
+    margin-left: 1px;
+}
+
+.tabsection ul.list-unstyled{
+    padding-left: 15px;
+    list-style-type: disc;
+}
+
+.tabsection ul.list-unstyled li{
+    padding: 5px 0;
+    background: none;
+    cursor: auto;
+}
+
+
 footer{
     background: #242424;
     padding: 50px 0;
@@ -1636,7 +1761,7 @@ footer{
 }
 
 footer a{
-    color: #fff;
+    color: #fff !important;
 }
 
 footer a:hover{
@@ -1644,8 +1769,17 @@ footer a:hover{
 }
 
 .footer-menu li{
+    font-family: 'OpenSans-Regular';
     display: inline-block;
     width: 10%;
+    float: none;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+footer .copyright p {
+    color: #999;
+    font-size: 15px;
 }
 
 .social-icon{
@@ -1672,6 +1806,10 @@ footer .social-icon a:last-child{
     .modal .modal-dialog {
         max-width: 400px;
     }
+
+    #myModal1.modal .modal-dialog {
+        max-width: 600px;
+    }
 }
 
 @media screen and (min-width: 768px) and (max-width: 1199px){
@@ -1691,6 +1829,10 @@ footer .social-icon a:last-child{
         display: none;
     }
 
+    .dashboard-menu .desktop-menu{
+        display: block;
+    }
+
     .mobile-menu .hamburg-menu {
         background: #154A67;
         position: absolute;
@@ -1701,13 +1843,40 @@ footer .social-icon a:last-child{
     .brands p{
         padding: 0;
     }
+
+    .linkmanage img {
+        margin-top: 30px;
+    }
 }
 
 @media screen and (max-width: 767px){
+
+    .brandingheader .banner-content h2 {
+        font-size: 45px;
+    }
+    .brands h2, .benefit h1 {
+        font-size: 28px;
+    }
+
+    .testimonial h2 {
+        font-size: 28px;
+        margin: 0 0 40px;
+    }
+
+    .branding .first-section h1 {
+        font-size: 25px;
+    }
+
+    .footer-menu ul{
+        margin-top: 0;
+    }
     .footer-menu li {
         display: block;
         width: 100%;
         margin-bottom: 20px;
+        border: none;
+        padding: 0 0 10px;
+        text-align: center;
     }
 
     header.aboutheader {
@@ -1732,10 +1901,44 @@ footer .social-icon a:last-child{
     .banner-content h2 {
         font-size: 30px;
     }
+
+    .top-right .createlink {
+        vertical-align: bottom;
+        border-right: 0;
+        padding-right: 5px;
+    }
+
+    .top-right .createlink a {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .datelink {
+        float: none;
+        font-size: 20px;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    
 }
 
 @media screen and (max-width: 480px){
     .customplan a {
         font-size: 18px;
+    }
+
+    .top-right .createlink {
+        display: block;
+        text-align: center;
+    }
+
+    .dashboard-menu .desktop-menu {
+        text-align: center;
+    }
+
+    .top-menu ul li a {
+        font-size: 10px;
+        padding: 10px 5px;
     }
 }
