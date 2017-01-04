@@ -59,12 +59,12 @@
 									<span class="date">08 Mar</span>
 								</a>
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-6 col-sm-6">
 										<span class="cat">
 											<a href="#">08 Mar 2016 | in analytics, features</a>
 										</span>
 									</div>
-									<div class="col-md-6 text-right">
+									<div class="col-md-6 col-sm-6 text-right">
 										<span class="author">
 											<a href="#">Author | J K paul</a>
 										</span>
@@ -130,12 +130,12 @@
 									<span class="date">08 Mar</span>
 								</a>
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-6 col-sm-6">
 										<span class="cat">
 											<a href="#">08 Mar 2016 | in analytics, features</a>
 										</span>
 									</div>
-									<div class="col-md-6 text-right">
+									<div class="col-md-6 col-sm-6 text-right">
 										<span class="author">
 											<a href="#">Author | J K paul</a>
 										</span>
@@ -160,12 +160,12 @@
 									<span class="date">08 Mar</span>
 								</a>
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-6 col-sm-6">
 										<span class="cat">
 											<a href="#">08 Mar 2016 | in analytics, features</a>
 										</span>
 									</div>
-									<div class="col-md-6 text-right">
+									<div class="col-md-6 col-sm-6 text-right">
 										<span class="author">
 											<a href="#">Author | J K paul</a>
 										</span>
@@ -222,13 +222,5 @@
 </section>
 @include('registration.customfooter')
 </body>
-<script type="text/javascript">
-	$(document).ready(function() {
-	    $(".menu-icon").click(function(){
-	    	$(this).toggleClass("close");
-	    	$('.mobile-menu ul').slideToggle(500);
-	    });
-	});
-</script>
 @include('loginjs')
 </html>

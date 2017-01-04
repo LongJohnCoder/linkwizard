@@ -502,6 +502,7 @@ header.brandingheader {
     width: 100%;
     top: 0;
     left: 0;
+    margin: 0;
 }
 
 
@@ -1389,7 +1390,7 @@ display:none;
 }
 
 .planbox.advanced{
-    border: none;
+    border: 1px solid #fff;
     box-shadow: 0px 0px 10px 0px #ccc;
 }
 
@@ -1425,8 +1426,8 @@ display:none;
     background: #F3F3F3;
     border-left: 4px solid #1586FB;
     border-right: 4px solid #1586FB;
-    border-top: 0;
-    border-bottom: 0;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
 }
 
 .pricing .value span{
@@ -1783,7 +1784,7 @@ footer .copyright p {
 }
 
 .social-icon{
-    margin: 50px 0;
+    margin: 25px 0;
     font-size: 30px;
 }
 
@@ -1815,6 +1816,42 @@ footer .social-icon a:last-child{
 @media screen and (min-width: 768px) and (max-width: 1199px){
     .nbs-flexisel-item img {
         max-width: 80%;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px){
+    .planbox {
+        padding: 10px;
+    }
+
+    .pricing .shortenlink {
+        margin: 0 auto;
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    .pricing a {
+        padding: 5px 20px;
+        font-size: 14px;
+    }
+
+    .single-blog .author a, .single-blog .comments a, .single-blog .cat a {
+        font-size: 11px;
+    }
+
+    .sidebar h2 {
+        padding: 15px 10px;
+        margin: 0;
+        font-size: 17px;
+    }
+
+    .sidebar ul li {
+        text-transform: capitalize;
+        margin-bottom: 10px;
+    }
+
+    .sidebar ul li a {
+        font-size: 12px;
     }
 }
 
@@ -1851,6 +1888,10 @@ footer .social-icon a:last-child{
 
 @media screen and (max-width: 767px){
 
+    .single-blog .text-right{
+        text-align: left;
+    }
+
     .brandingheader .banner-content h2 {
         font-size: 45px;
     }
@@ -1871,11 +1912,10 @@ footer .social-icon a:last-child{
         margin-top: 0;
     }
     .footer-menu li {
-        display: block;
-        width: 100%;
-        margin-bottom: 20px;
+        width: auto;
+        margin: 10px 10px 0;
         border: none;
-        padding: 0 0 10px;
+        padding: 0;
         text-align: center;
     }
 
@@ -1899,7 +1939,7 @@ footer .social-icon a:last-child{
     }
 
     .banner-content h2 {
-        font-size: 30px;
+        font-size: 22px;
     }
 
     .top-right .createlink {
@@ -1920,12 +1960,195 @@ footer .social-icon a:last-child{
         margin-top: 20px;
     }
 
+    .first-section p, .second-section p {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .first-section, .second-section {
+        padding: 20px 0;
+    }
+
+    .second-section h2 {
+        margin-bottom: 0;
+        font-size: 24px;
+    }
+
+    .twosectiongrid h2 {
+        font-size: 20px;
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .twosectiongrid h2 img {
+        display: block;
+        margin: 0 auto 10px;
+    }
+
+    .twosectiongrid p {
+        font-size: 14px;
+        line-height: 20px;
+        padding-left: 0;
+        text-align: center;
+    }
+
+    .third-section hr {
+        margin-top: 20px;
+        width: 100%;
+    }
+
+    .twosectiongrid {
+        padding: 10px 0;
+    }
+
+    .fourth-section hr {
+        width: 100%;
+    }
     
+    footer .copyright p {
+        font-size: 10px;
+    }
+
+    footer li a {
+        font-size: 10px;
+    }
+
+    .social-icon {
+        margin: 10px 0;
+        font-size: 20px;
+    }
+
+    .banner-content p {
+        font-size: 14px;
+    }
+
+    .feature .first-section h2, .feature .second-section h2 {
+        font-size: 22px;
+        margin-bottom: 0;
+    }
+
+    .feature .first-section p, .feature .second-section p {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .end-section {
+        padding: 20px 0;
+    }
+
+    .end-section h3 {
+        font-size: 20px;
+        margin: 0;
+    }
+
+    .end-section a {
+        font-size: 15px;
+        padding: 10px 14px;
+    }
+
+    .pricing h1 {
+        font-size: 20px;
+        margin: 0;
+    }
+
+    .hamburg-menu {
+        padding: 15px 18px;
+    }
+
+    .hamburg-menu .menu-icon {
+        top: 20%;
+        left: 10%;
+        width: 30px;
+        height: 14px;
+        right: 30px;
+    }
+
+    .planbox {
+        padding: 10px;
+    }
+
+    .planbox h2 {
+        margin: 0 0 10px;
+        font-size: 20px;
+    }
+    .pricing .value {
+        font-size: 18px;
+        padding: 0;
+        margin-bottom: 0;
+    }
+
+    .pricing .shortenlink {
+        margin: 10px auto 0;
+        font-size: 12px;
+        padding: 5px 15px;
+    }
+
+    .offers li {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .pricing a {
+        margin-top: 0;
+        padding: 5px 20px;
+        font-size: 16px;
+        letter-spacing: 0;
+    }
+
+    .customplan p{
+        font-size: 22px;
+    }
+
+    .faq {
+        padding: 20px 0;
+    }
+
+    .quesbox {
+        padding: 10px;
+    }
+
+    .faq .ques {
+        font-size: 15px;
+    }
+
+    .faq .ans {
+        font-size: 12px;
+        line-height: 20px;
+    }
+
+    .single-blog .cat a, .single-blog .author a, .single-blog .comments a {
+        font-size: 9px;
+    }
+
+    .blog-txt p {
+        font-size: 12px;
+        margin: 10px 0;
+        line-height: 20px;
+    }
+
+    .blog-section .date {
+        height: auto;
+        font-size: 14px;
+        padding-top: 0;
+    }
+
+    .sidebar h2 {
+        padding: 10px;
+        font-size: 18px;
+    }
+
+    .sidebar ul li {
+        margin-bottom: 5px;
+    }
+
+    .sidebar ul li a {
+        font-size: 12px;
+    }
 }
 
 @media screen and (max-width: 480px){
     .customplan a {
-        font-size: 18px;
+        font-size: 14px;
     }
 
     .top-right .createlink {

@@ -59,13 +59,13 @@
 	<div class="first-section">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-7">
+				<div class="col-md-7 col-sm-7">
 					<h2>Shorten link</h2>
 					<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
 					<div class="clear"></div>
 					<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley.</p>
 				</div>
-				<div class="col-md-5">
+				<div class="col-md-5 col-sm-5">
 					<img src="{{url('/')}}/public/images/feature1.png" class="img-responsive">
 				</div>
 			</div>
@@ -74,10 +74,10 @@
 	<div class="second-section">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-5">
+				<div class="col-md-5 col-sm-5">
 					<img src="{{url('/')}}/public/images/feature2.png" class="img-responsive">
 				</div>
-				<div class="col-md-7">
+				<div class="col-md-7 col-sm-7">
 					<h2>Advanced analytics</h2>
 					<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
 					<div class="clear"></div>
@@ -89,13 +89,13 @@
 	<div class="first-section">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-5">
+				<div class="col-md-5 col-sm-5">
 					<h2>Optimization</h2>
 					<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
 					<div class="clear"></div>
 					<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has.</p>
 				</div>
-				<div class="col-md-7">
+				<div class="col-md-7 col-sm-7">
 					<img src="{{url('/')}}/public/images/feature3.png" class="img-responsive">
 				</div>
 			</div>
@@ -141,13 +141,5 @@
 	</div>
 </footer>
 </body>
-<script type="text/javascript">
-	$(document).ready(function() {
-	    $(".menu-icon").click(function(){
-	    	$(this).toggleClass("close");
-	    	$('.mobile-menu ul').slideToggle(500);
-	    });
-	});
-</script>
 @include('loginjs')
 </html>

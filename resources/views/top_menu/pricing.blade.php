@@ -61,7 +61,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-md-4 col-sm-4">
 					<div class="planbox" id="noPlan">
 						<h2>free</h2>
 						<div class="value">
@@ -79,7 +79,7 @@
 							<a href="#" data-toggle="modal" data-target="#signup" id="new_noplan">Subscribe now</a>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-4 col-sm-4">
 					<div class="planbox" id="basicTier"> 
 						<h2>advanced</h2>
 						<div class="value">
@@ -98,7 +98,7 @@
 							<a href="#" data-toggle="modal" data-target="#signup" id="new_tr5Basic">Subscribe now</a>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-4 col-sm-4">
 					<div class="planbox" id="advancedTier">
 						<h2>pro</h2>
 						<div class="value">
@@ -188,12 +188,6 @@
 </footer>
 </body>
 <script type="text/javascript">
-	$(document).ready(function() {
-	    $(".menu-icon").click(function(){
-	    	$(this).toggleClass("close");
-	    	$('.mobile-menu ul').slideToggle(500);
-	    });
-	});
 
 	$('#noPlan').mouseover(function(){
 		$('#noPlan').addClass('advanced');

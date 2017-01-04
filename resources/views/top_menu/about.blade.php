@@ -85,14 +85,14 @@
 	<div class="third-section twosectiongrid">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-6 col-sm-6">
 					<h2>
 						<img src="{{url('/')}}/public/images/features.png" class="img-responsive">
 						Features
 					</h2>
 					<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer Lorem Ipsum is simply dummy text of the printins.</p>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-6 col-sm-6">
 					<img src="{{url('/')}}/public/images/img1.png" class="img-responsive">
 				</div>
 			</div>
@@ -102,10 +102,10 @@
 	<div class="fourth-section twosectiongrid">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-6 col-sm-6">
 					<img src="{{url('/')}}/public/images/img2.png" class="img-responsive">
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-6 col-sm-6">
 					<h2>
 						<img src="{{url('/')}}/public/images/analytics.png" class="img-responsive">
 						advance analytics
@@ -119,14 +119,14 @@
 	<div class="fifth-section twosectiongrid">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-6 col-sm-6">
 					<h2>
 						<img src="{{url('/')}}/public/images/dataflexibility.png" class="img-responsive">
 						data flexibility
 					</h2>
 					<p>Lorem Ipsum is simply dummy text of the printing typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer Lorem.</p>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-6 col-sm-6">
 					<img src="{{url('/')}}/public/images/img3.png" class="img-responsive">
 				</div>
 			</div>
@@ -162,13 +162,5 @@
 	</div>
 </footer>
 </body>
-<script type="text/javascript">
-	$(document).ready(function() {
-	    $(".menu-icon").click(function(){
-	    	$(this).toggleClass("close");
-	    	$('.mobile-menu ul').slideToggle(500);
-	    });
-	});
-</script>
 @include('loginjs')
 </html>
