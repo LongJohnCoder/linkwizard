@@ -1755,6 +1755,11 @@ form#datePickerForm .input-daterange i{
     cursor: auto;
 }
 
+.each-section{
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
 
 footer{
     background: #242424;

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
     <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Lato:400,300,700' />
+    <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/animate.css">
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style.css">
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
@@ -58,46 +59,95 @@
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     <!-- open/close -->
-    <header>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
-                    <div class="logo">
-                        <a href="{{ route('getIndex') }}">
-                            <img src="{{ URL('/')}}/public/resources/img/company_logo.png" alt="img" />
-                        </a>
-                    </div>
+
+<header>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="logo">
+                    <img src="{{url('/')}}/public/images/logo.png" class="img-responsive">
                 </div>
-                <div class="col-md-8 col-sm-8 header-right">
-                    <div class="menu-icon">
-                        <span id="hamburger" class="sidebar" aria-hidden="false" data-action="open" data-side="right">
-                            <i class="fa fa-bars"></i>
-                        </span>
+            </div>
+
+            <div class="col-md-8">
+                <div class="top-right">
+                    
+                    <div class="hamburg-menu">
+                      <a href="#" id="menu-icon" class="menu-icon">
+                        <div class="span bar top" style="background-color: #fff;"></div>
+                        <div class="span bar middle" style="background-color: #fff;"></div>
+                        <div class="span bar bottom" style="background-color: #fff;"></div>
+                      </a>
+                    </div>
+                    <div id="userdetails" class="userdetails">
+                        <div>
+                            <a href="{{ route('getLogout') }}" class="signout"><i class="fa fa-sign-out"></i> Sign out</a>
+                            <p style="color:white">{{ $user->name }}</p>
+                            <p style="color:white">{{ $user->email }}</p>
+                            
+                        </div>
+                    </div>
+
+                    <div id="myNav1" class="userdetails">
+                        <div class="overlay-content">
+                            <div class="col-md-12 col-sm-12">
+                                <label for="givenUrl" style="color:white">Paste An Actual URL Here</label>
+                                <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+                                <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
+                                    Shorten Url
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="myNav2" class="userdetails">
+                        <div class="overlay-content">
+                            <div class="col-md-12 col-sm-12">
+                                <label for="givenActualUrl" style="color:white;">Paste An Actual URL Here</label>
+                                <input id="givenActualUrl" style="width:280px" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
+                                <br>
+                                <br>
+                                <label for="makeCustomUrl" style="color:white">Create Your Own Custom Link</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">{{ env('APP_HOST') }}</span>
+                                    <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. MyLinK">
+                                </div>
+                                <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
+                                    Shorten Url
+                                </button>
+                                <br>
+                                <span id="err_cust" style="color:red; display:none;" >This URL is taken. Please try with a different name</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="top-menu dashboard-menu">
+                        <div class="desktop-menu">
+                            <ul>
+                                <li><a href="/about">about</a></li>
+                                <li><a href="/features">features</a></li>
+                                <li><a href="/pricing">pricing</a></li>
+                                <li><a href="/blog">blog</a></li>
+                                @if ($user->is_admin == 1)
+                                    <li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
+                                @endif
+                                
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="myNav" class="sidebar right">
-            <span id="cross" class="closebtn"><i class="fa fa-times"></i></span>
-            <div class="overlay-content">
-                <a href="{{ route('getLogout') }}">
-                    <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-sign-out"></i>Sign out</button>
-                </a>
-                <div class="profile-name">{{ $user->name }}</div>
-                <div class="profile-email">{{ $user->email }}</div>
-                <a href="{{ route('getDashboard') }}">
-                    <button type="button" class="btn btn-success btn-sm"><i class="fa fa-upgrade"></i>Dashboard</button>
-                </a>
-            </div>
-        </div>
-    </header>
+    </div>
+</header>
     <section class="hero">
         <section class="main-content">
             <div class="container">
                 <section class="main-content">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div id="columnChart" style="min-width: 310px; height: 165px; margin: 0 auto"></div>
+                            <div id="columnChart" style="height: 165px; margin: 0 auto"></div>
                         </div>
                     </div>
                 </section>
@@ -114,14 +164,16 @@
                                         <a href="#" class="pull-right" style="margin: 10px 20px 0px 0px; text-decoration: none; border-bottom: 1px dashed;" data-toggle="tooltip" data-placement="bottom" title="All clicks data are reported in UTC to provide consistence data acrosss different timezones.">DATA IN UTC</a>
                                     </p>
                                     <div class="row" style="background-color: #ffffff">
-                                        <div class="col-sm-4">
-                                            <div id="platform_div" style="width: 400px; height: 250px;"></div>
+                                        <div class="col-md-6">
+                                            <div id="platform_div" class="each-section"></div>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <div id="browser_div" style="width: 400px; height: 250px;"></div>
+                                        <div class="col-md-6">
+                                            <div id="browser_div" class="each-section"></div>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <div id="referral_div" style="width: 400px; height: 250px;"></div>
+                                        <div class="col-md-6">
+                                            <div id="referral_div" class="each-section"></div>
+                                        </div>
+                                        <div class="col-md-6">
                                         </div>
                                     </div>
                                     <script type="text/javascript">
@@ -178,6 +230,34 @@
                 </div>
             </section>
     </section>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="footer-menu">
+                        <ul>
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Contact</a></li>
+                            <li><a href="#">Partners</a></li>
+                            <li><a href="#">Privacy</a></li>
+                        </ul>
+                    </div>
+                    <div class="social-icon">
+                        <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                        <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+                    </div>
+                    <div class="copyright">
+                        <p>© All Rights Reserved to Tier5 LLC. </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
     <!-- JavaScripts -->
     <script>
     $(document).ready(function() {
@@ -303,6 +383,62 @@
 
     </script>
 </body>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+        $(this).on('click', '.menu-icon', function(){
+            $(this).addClass("close");
+            $('#userdetails').slideToggle(500);
+            $('#myNav1').hide();
+            $('#myNav2').hide();
+        });
+
+        $("#basic").click(function(){
+            $('.menu-icon').addClass("close");
+            $('#myNav1').slideToggle(500);
+            $('#myNav2').hide();
+            $('#userdetails').hide();
+        });
+
+        $("#advanced").click(function(){
+            $('.menu-icon').addClass("close");
+            $('#myNav2').slideToggle(500);
+            $('#myNav1').hide();
+            $('#userdetails').hide();
+        });
+
+        $(this).on('click', '.close', function(){
+            $('.userdetails').hide();
+            $(this).removeClass("close");
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+        $('#hamburger').on('click', function () {
+            $('.sidebar.right').addClass('open', true);
+            $('.sidebar.right').removeClass('close', true);
+        });
+        $('#cross').on('click', function () {
+            $('.sidebar.right').toggleClass('close', true);
+            $('.sidebar.right').removeClass('open', true);
+        });
+        $('#tr5link').on('click', function () {
+            $('.tr5link').addClass('open', true);
+            $('.tr5link').removeClass('close', true);
+        });
+        
+        $('#customLink').on('click', function () {
+            $('.sharebar').addClass('open', true);
+            $('.sharebar').removeClass('close', true);
+        });
+        $('#cross2').on('click', function () {
+            $('.sharebar').addClass('close', true);
+            $('.sharebar').removeClass('open', true);
+        });
+        
+    });
+</script>
 
 </html>
 
