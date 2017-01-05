@@ -2164,4 +2164,16 @@ footer .social-icon a:last-child{
         font-size: 10px;
         padding: 10px 5px;
     }
+
+    .tot-counts img {
+        margin: 0;
+    }
+
+    .count {
+        font-size: 10px;
+    }
+
+    .datelink {
+        font-size: 14px;
+    }
 }
