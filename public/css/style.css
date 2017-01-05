@@ -733,8 +733,9 @@ a.upgrade{
     font-size: 18px;
 }
 
-.date{
-    color: #3F4040;
+.tab-content-top .date{
+    /*color: #3F4040;*/
+    margin-bottom: 20px;
 }
 .tab-cont p{
     color: #808080;
@@ -1769,6 +1770,10 @@ footer a:hover{
     color: #fff;
 }
 
+footer ul {
+    margin-top: 30px;
+}
+
 .footer-menu li{
     font-family: 'OpenSans-Regular';
     display: inline-block;
@@ -1883,6 +1888,10 @@ footer .social-icon a:last-child{
 
     .linkmanage img {
         margin-top: 30px;
+    }
+
+    .tot-clicks {
+        overflow-x: auto;
     }
 }
 
@@ -2144,6 +2153,8 @@ footer .social-icon a:last-child{
     .sidebar ul li a {
         font-size: 12px;
     }
+
+
 }
 
 @media screen and (max-width: 480px){
@@ -2176,4 +2187,23 @@ footer .social-icon a:last-child{
     .datelink {
         font-size: 14px;
     }
+
+    form#datePickerForm .input-daterange input {
+        font-size: 14px;
+    }
+
+    form#datePickerForm .input-daterange label {
+        display: inline-block;
+        font-size: 10px;
+        width: 100%;
+    }
+
+    #datepicker span{
+        display: block;
+        width: 100%;
+        background: none;
+        border: none;
+    }
+
+
 }

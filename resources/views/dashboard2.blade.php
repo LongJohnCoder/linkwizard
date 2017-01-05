@@ -451,7 +451,7 @@
                 		 <div class="col-md-6 col-sm-6"></div>
                 	</div>
                 	<div class="row">
-                		<div class="col-md-12 col-sm-12">
+                		<div class="col-md-12">
                 		 	<div class="tot-clicks">
 	                		 	<h2>Number of hits per country</h2>
 	                		 	<div class="tot-clicks-body">
@@ -459,7 +459,7 @@
 	                		 	</div>
                 		 	</div>
                 		</div>
-                		<div class="col-md-6 col-sm-4">
+                		<div class="col-md-6">
                 		 	<div class="tot-clicks">
                 		 		<h2>Total Clicks {{ $url->count }} (100%)</h2>
                 		 		<div class="tot-clicks-body">
@@ -469,7 +469,7 @@
                 		</div>
                 		@if ($subscription_status != null)
 
-                			<div class="col-md-6 col-sm-6">
+                			<div class="col-md-6">
 	                		 	<div class="tot-clicks">
 	                		 		<h2>Platform Status</h2>
 	                		 		<div class="tot-clicks-body">
@@ -479,7 +479,7 @@
 	                		</div>
 
 
-	                		<div class="col-md-6 col-sm-6">
+	                		<div class="col-md-6">
 	                		 	<div class="tot-clicks">
 	                		 		<h2>Browser Status</h2>
 	                		 		<div class="tot-clicks-body">
@@ -488,7 +488,7 @@
 	                		 	</div>
 	                		</div>
 
-	                		<div class="col-md-6 col-sm-6">
+	                		<div class="col-md-6">
 	                		 	<div class="tot-clicks">
 	                		 		<h2>Referring Chanels</h2>
 	                		 		<div class="tot-clicks-body">
