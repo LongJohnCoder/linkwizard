@@ -8,7 +8,18 @@
 
 <script type="text/javascript">
 
+    var check_name = false;
+    var check_email = false;
+    var check_password = false;
+    var check_cpassword =false;
+
     $(document).ready(function() {
+
+        $('#Email').val('');
+        $('#Name').val('');
+        $('#password').val('');
+        $('#password_confirmation').val('');
+
 
         @if(\Session::has('login_err'))
            swal({
@@ -29,7 +40,7 @@
         @endif
 
         $("#tier5_us").click(function(){
-            window.location.href = "https://tier5.us";
+            window.location.href = "{{url('/')}}/about";
         });
 
         $("#login1").click(function(){
@@ -96,6 +107,7 @@
                 $(this).focus();
                 $('#NameValidation').remove('#NameValidation');
                 $(this).parent().append("<span id='NameValidation' style='color: red'>Name field should not be blank.</span>");
+                check_name = false;
                 return false;
             } else if (!nameRegex.test(nameInput)) {
                 $(this).focus();
@@ -104,6 +116,7 @@
                 return false;
             } else {
                 $('#NameValidation').remove('#NameValidation');
+                check_name = true;
                 return true;
             }
         });
@@ -119,11 +132,13 @@
                 $(this).focus();
                 $('#EmailValidation').remove('#EmailValidation');
                 $(this).parent().append("<span id='EmailValidation' style='color: red'>Email field should not be blank.</span>");
+                check_email = false;
                 return false;
             } else if (!emailRegex.test(emailInput)) {
                 $(this).focus();
                 $('#EmailValidation').remove('#EmailValidation');
                 $(this).parent().append("<span id='EmailValidation' style='color: red'>Please enter a valid email address.</span>");
+                check_email = false;
                 return false;
             } else {
                 $.ajax({
@@ -138,9 +153,11 @@
                             $('#Email').focus();
                             $('#EmailValidation').remove('#EmailValidation');
                             $('#Email').parent().append("<span id='EmailValidation' style='color: red'>This email is already registered.</span>");
+                            check_email = false;
                             return false;
                         } else {
                             $('#EmailValidation').remove('#EmailValidation');
+                            check_email = true;
                             return true;
                         }
                     },
@@ -167,14 +184,34 @@
                 $(this).focus();
                 $('#passwordValidation').remove('#passwordValidation');
                 $(this).parent().append("<span id='passwordValidation' style='color: red'>Password field should not be blank.</span>");
+                check_password = false;
                 return false;
             } else if (!passwordRegex.test(passwordInput)) {
                 $(this).focus();
                 $('#passwordValidation').remove('#passwordValidation');
                 $(this).parent().append("<span id='passwordValidation' style='color: red'>Password should be atleast eight characters long and contain one lowercase, one uppercase, one numeric and one special character.</span>");
+                check_password = false;
                 return false;
-            } else {
+            }
+            else if(passwordInput != $('#password_confirmation').val() && $('#password_confirmation').val() != '')
+            {
+                $(this).focus();
                 $('#passwordValidation').remove('#passwordValidation');
+                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Password and confirm password should match.</span>");
+                check_password = false;
+                return false;
+
+            }
+            else {
+
+                if(passwordInput == $('#password_confirmation').val())
+                {
+                    $('#password_confirmationValidation').remove('#password_confirmationValidation');
+                }
+                $('#passwordValidation').remove('#passwordValidation');
+                check_password = true;
+                check_cpassword = true;
+                console.log('check_password' , check_password);
                 return true;
             }
         });
@@ -191,19 +228,26 @@
                 $(this).focus();
                 $('#password_confirmationValidation').remove('#password_confirmationValidation');
                 $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Confirm password field should not be blank.</span>");
+                check_cpassword = false;
                 return false;
             } else if (!password_confirmationRegex.test(password_confirmationInput)) {
                 $(this).focus();
                 $('#password_confirmationValidation').remove('#password_confirmationValidation');
-                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Password should be atleast eight characters long and contain one lowercase, one uppercase, one numeric and one special character.</span>");
+                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Confirm Password should be atleast eight characters long and contain one lowercase, one uppercase, one numeric and one special character.</span>");
+                check_cpassword = false;
                 return false;
             } else if (passwordInput !== password_confirmationInput) {
                 $(this).focus();
                 $('#password_confirmationValidation').remove('#password_confirmationValidation');
                 $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Password and confirm password should match.</span>");
+                check_cpassword = false;
                 return false;
             } else {
                 $('#password_confirmationValidation').remove('#password_confirmationValidation');
+
+                check_cpassword = true; 
+                check_password = true;
+                console.log('check_cpassword'  , check_cpassword);
                 return true;
             }
         });

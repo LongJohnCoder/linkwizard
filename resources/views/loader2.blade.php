@@ -63,6 +63,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 </head>
 <body>
 
+
 	<!-- Main Content Start -->
 	<div class="container">
 		<div class="centerdiv">
@@ -74,18 +75,21 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 			@endif
 			</div>
 			
+            @if($url->redirecting_text_template)
+            <span class="text">{{$url->redirecting_text_template}}</span>
+            @else
 			<span class="text">Please wait a snap while we take you to the actual website</span>
-			<span id="txt_"></span>
-
+            @endif
+			in <span id="txt_">{{$url->redirecting_time / 1000 }}</span> sec
 		</div>
 	</div>
 	<script type="text/javascript">
     $(document).ready(function() {
-
+        var sec = '{{$url->redirecting_time}}' / 1000;
 
 		window.setInterval(function(){
-		  $('#txt_').text($('#txt_').text() + ' .');
-		  $('#txt_').text().length > 10 ? $('#txt_').text('') : null ;
+            sec--;
+		      $('#txt_').text(sec.toString());
 		}, 1000);
 
         $.ajax({

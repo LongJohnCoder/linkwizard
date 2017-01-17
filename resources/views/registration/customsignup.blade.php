@@ -6,7 +6,7 @@
          </div>
 	     <div class="modal-body">
 	        <h1>sign up</h1>
-	        <form method="post" action="{{ route('postRegister') }}" onsubmit="return validateHumanity();">
+	        <form method="post" id="signup_form" action="{{ route('postRegister') }}" onsubmit="return validateHumanity();">
 	        	<div class="form-group"> 
 	        		@if($errors->any())
                 		<div id="NameValidation" style="color:red">{{ $errors->first('name') }}</div>
@@ -58,3 +58,22 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+
+		$('#signup_form').submit(function(e){
+				
+				console.log(check_name , check_email , check_password , check_cpassword);
+				if(check_name && check_email && check_password && check_cpassword)
+				{
+					
+				}
+				else{
+					e.preventDefault();
+					alert('please fill all details properly');
+				}
+				
+			});
+	});
+</script>

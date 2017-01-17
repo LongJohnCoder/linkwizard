@@ -187,7 +187,12 @@
 	</div>
 </footer>
 </body>
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+
 <script type="text/javascript">
+
+	Stripe.setPublishableKey('pk_test_NeErELVu7Qbv59BWm0c7HQT1');
 
 	$('#noPlan').mouseover(function(){
 		$('#noPlan').addClass('advanced');
@@ -220,7 +225,13 @@
 		$('#_plan').val(2);
 		$('#__plan').val(2);
 	});
+
 </script>
+
+
+
+
+
 @include('loginjs')
 </html>
 @endif

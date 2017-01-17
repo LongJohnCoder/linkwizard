@@ -35,6 +35,17 @@
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
 
 
+@if(\Session::has('plan'))
+<script type="text/javascript">
+	$(document).ready(function(){
+		var plan = "{{\Session::get('plan')}}";
+		var url = "{{url('/')}}/app/user/subscribe";
+		window.location.replace(url);
+	});
+</script>
+@endif
+
+
 
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
@@ -59,10 +70,6 @@
 
 <script src="//connect.facebook.net/en_US/sdk/debug.js"></script>
 <script src="{{ URL::to('/').'/public/js/fb_share.js'}}"></script>
-
-
-
-
 
 <!-- /Facebook API -->
 <!-- Google API -->
@@ -107,12 +114,14 @@
 <body>
 <!-- Header Start -->
 
+
+
 <header>
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-4">
 				<div class="logo">
-					<img src="{{url('/')}}/public/images/logo.png" class="img-responsive">
+					 <a href="{{url('/')}}/about"><img src="{{url('/')}}/public/images/logo.png" class="img-responsive"></a>
 				</div>
 			</div>
 
@@ -1511,15 +1520,7 @@
             ga('create','UA-XXXXX-X');ga('send','pageview');
         </script>
 
-        @if(\Session::has('plan'))
-		<script type="text/javascript">
-			$(document).ready(function(){
-				var plan = "{{\Session::get('plan')}}";
-				var url = "{{url('/')}}/app/user/subscribe";
-				window.location.replace(url);
-			});
-		</script>
-		@endif
+        
 		@if(\Session::has('adv'))
 		<script type="text/javascript">
 			$(document).ready(function(){
@@ -1533,6 +1534,18 @@
 		</script>
 		@endif
 
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+
+				if (typeof(FB) != 'undefined'
+		     && FB != null ) {
+		    // run the app
+			} else {
+			    alert('check browser settings to enable facebook sharing.. ');
+			}
+			});
+		</script>
 
 </body>
 </html>

@@ -15,6 +15,10 @@
 
 <script src="{{url('/')}}/public/js/jquery.min.js"></script>
 <script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+
 </head>
 <body>
 <!-- Header Start -->
@@ -33,11 +37,28 @@
 </header>
 <!-- Header End -->
 <!-- Main Content Start -->
-@if(\Session::has('plan'))
+@if(isset($session_plan) && $session_plan != null)
 	<div>
 		<h4 style="color:green"> select your plan and complete your subscription here  </h4>
 	</div>
 @endif
+
+@if(\Session::has('subscription_success'))
+	<div>
+		<h4 style="color:">{{\Session::put('subscription_success')}}</h4>
+	</div>
+@endif
+
+
+
+@if(\Session::has('subscription_success'))
+	  <div id="er" class="alert alert-success" align="center"><strong>Success!</strong>\Session::get('subscription_success')<a href="javascript:void(0)" class="close" data-dismiss="success" aria-label="close" id="subs_succ">&times;</a></div>
+@elseif(\Session::has('subscription_error'))
+	  <div id="er" class="alert alert-error" align="center"><strong>Oops!</strong> Failed to create subscription try again <a href="javascript:void(0)" class="close" data-dismiss="success" aria-label="close" id="subs_fail">&times;</a></div>
+@endif
+
+
+
 
 <section class="main-content pricing">
 	<div class="first-section">
@@ -116,7 +137,7 @@
 			</div>
 		</div>
 	</div>
-	@include('stripe.stripe')
+	
 	<div class="customplan text-center">
 		<div class="container">
 			<div class="row">
@@ -224,8 +245,72 @@
 
     </script>
 
+
 <script type="text/javascript">
 	$(document).ready(function() {
+
+
+
+	var to_plan = '';
+	var isset_plan = '{{ isset($session_plan) }}' ? true : false;
+	
+
+       
+      var handler = StripeCheckout.configure({
+      key: "{{env('STRIPE_PUBLISHABLE_SECRET')}}",
+      image: '{{url("/")}}'+'/uploads/defaultuser.png',
+      locale: 'auto',
+      token: function(token) {
+        console.log(token);
+        var plan = to_plan;
+        //alert('here');
+        $('#loader').show();
+        $.ajax({
+          url: "{{route('postSubscription')}}",
+          data: {stripeToken_:token.id , plan:plan , _token: '{!! csrf_token() !!}'},
+          type :"post",
+          success: function(url) 
+          {
+         		$(location).attr('href',url);
+          }
+        });
+      }
+    });
+    
+
+    
+      function handler_open(amount , plan)
+      {
+      	to_plan = plan;
+	  	handler.open({
+	    	name: "{{url('/')}}",
+	    	email: '{{$user->email}}',
+	    	description: 'Invoice',
+	    	amount: amount,
+	    	currency: 'usd',
+	  	});
+      }
+  
+    
+
+    // Close Checkout on page navigation:
+    $(window).on('popstate', function() {
+      handler.close();
+    });
+
+    if(isset_plan)
+	{
+		var check_notnull = '{{ $session_plan != null }}' ? true : false;
+		if(check_notnull)
+		{
+			var flag = "{{ $session_plan }}" , amount , plan;
+			flag == 1 ? (amount = 1000 , plan = 'tr5Basic') : (amount = 2000 , plan = 'tr5Advanced');
+			handler_open(amount , plan);
+		}
+	}
+
+
+
 	    $(".menu-icon").click(function(){
 	    	$(this).toggleClass("close");
 	    	$('.mobile-menu ul').slideToggle(500);
@@ -253,14 +338,16 @@
 	    }
 
 	    $('#basicButton').on('click', function() {
-            $('#stripeModal').modal('show');
-            $('#money').text('$10');
-            $('#plan').val('tr5Basic');
+	    	handler_open(1000 , 'tr5Basic');
+            // $('#stripeModal').modal('show');
+            // $('#money').text('$10');
+            // $('#plan').val('tr5Basic');
         });
         $('#advancedButton').on('click', function() {
-            $('#stripeModal').modal('show');
-            $('#money').text('$20');
-            $('#plan').val('tr5Advanced');
+        	handler_open(2000 , 'tr5Advanced');
+            // $('#stripeModal').modal('show');
+            // $('#money').text('$20');
+            // $('#plan').val('tr5Advanced');
         });
 
         

@@ -61,32 +61,7 @@ class HomeController extends Controller
 
         if (Auth::check()) 
         {
-            $user = Auth::user();
-            if ($user->subscribed('main', 'tr5Advanced')) 
-            {
-                $subscription_status = 'tr5Advanced';
-                return view('top_menu.pricing', [
-                        'user' => $user,
-                        'subscription_status' => $subscription_status,
-                    ]);
-            } 
-            elseif ($user->subscribed('main', 'tr5Basic')) 
-            {
-                $subscription_status = 'tr5Basic';
-
-                return view('top_menu.pricing', [
-                        'user' => $user,
-                        'subscription_status' => $subscription_status,
-                    ]);
-            } 
-            else 
-            {
-                $subscription_status = null;
-                return view('top_menu.pricing', [
-                        'user' => $user,
-                        'subscription_status' => $subscription_status,
-                    ]);
-            }
+            return redirect()->action('HomeController@getSubscribe');
         } 
         else 
         {
@@ -927,6 +902,7 @@ class HomeController extends Controller
      */
     public function postRegister(Request $request)
     {
+       //dd($request->all());
         $v = \Validator::make($request->all(), [
             'name' => 'required|string|min:2',
             'email' => 'required|email|unique:users',
@@ -942,13 +918,15 @@ class HomeController extends Controller
         }
         else
         {
-            if(isset($request->_plan) && $request->_plan != "")
-                \Session::put('plan' , $request->_plan);
+            if(isset($request->_plan) && $request->_plan != 0) \Session::put('plan' , $request->_plan);
+
+
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = bcrypt($request->password);
             $user->remember_token = $request->_token;
+
 
             if ($user->save() && Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
                 $limit = new LinkLimit();
@@ -990,67 +968,78 @@ class HomeController extends Controller
     public function getDashboard(Request $request)
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            $urls = Url::where('user_id', $user->id)
-                    ->orderBy('id', 'DESC')
-                    ->get();
 
-            $count_url = $urls->count();
+            if(\Session::has('plan'))
+            {
+                //return 18745;
+                return redirect()->action('HomeController@getSubscribe');
+            }
+            else
+            {
+                    $user = Auth::user();
+                    $urls = Url::where('user_id', $user->id)
+                            ->orderBy('id', 'DESC')
+                            ->get();
 
-            $count = DB::table('urls')
-                ->selectRaw('count(user_id) AS `count`')
-                ->where('user_id', $user->id)
-                ->groupBy('user_id')
-                ->get();
+                    $count_url = $urls->count();
 
-            $total_links = null;
-            if ($count) {
-                $total_links = $count[0]->count;
-                $limit = LinkLimit::where('user_id', $user->id)->first();
-                if ($limit) {
-                    $limit->number_of_links = $total_links;
-                    $limit->save();
-                }
+                    $count = DB::table('urls')
+                        ->selectRaw('count(user_id) AS `count`')
+                        ->where('user_id', $user->id)
+                        ->groupBy('user_id')
+                        ->get();
+
+                    $total_links = null;
+                    if ($count) {
+                        $total_links = $count[0]->count;
+                        $limit = LinkLimit::where('user_id', $user->id)->first();
+                        if ($limit) {
+                            $limit->number_of_links = $total_links;
+                            $limit->save();
+                        }
+                    }
+
+                    if ($user->subscribed('main', 'tr5Advanced')) {
+                        $subscription_status = 'tr5Advanced';
+                        $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+                    } elseif ($user->subscribed('main', 'tr5Basic')) {
+                        $subscription_status = 'tr5Basic';
+                        $limit = Limit::where('plan_code', 'tr5Basic')->first();
+                    } else {
+                        $subscription_status = false;
+                        $limit = Limit::where('plan_code', 'tr5free')->first();
+                    }
+
+                    $filter = [];
+                    $dates = [];
+                    if (isset($request->from) and isset($request->to)) {
+                        $filter['type'] = 'date';
+                        $filter['start'] = $request->from;
+                        $filter['end'] = date('Y-M-d', strtotime('+1 day', strtotime($request->to)));
+                        $start_date = new \DateTime($request->from);
+                        $end_date = new \DateTime($request->to);
+
+                        $date_range = new \DatePeriod($start_date, new \DateInterval('P1D'), $end_date);
+
+                        foreach ($date_range as $key => $date) {
+                            $dates[$key] = $date->format('M d');
+                        }
+                    }
+
+                    return view('dashboard2', [
+                        'count_url' => $count_url,
+                        'user' => $user,
+                        'urls' => $urls,
+                        'subscription_status' => $subscription_status,
+                        'limit' => $limit,
+                        'total_links' => $total_links,
+                        'filter' => $filter,
+                        'dates' => $dates,
+                        '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
+                    ]);
             }
 
-            if ($user->subscribed('main', 'tr5Advanced')) {
-                $subscription_status = 'tr5Advanced';
-                $limit = Limit::where('plan_code', 'tr5Advanced')->first();
-            } elseif ($user->subscribed('main', 'tr5Basic')) {
-                $subscription_status = 'tr5Basic';
-                $limit = Limit::where('plan_code', 'tr5Basic')->first();
-            } else {
-                $subscription_status = false;
-                $limit = Limit::where('plan_code', 'tr5free')->first();
-            }
-
-            $filter = [];
-            $dates = [];
-            if (isset($request->from) and isset($request->to)) {
-                $filter['type'] = 'date';
-                $filter['start'] = $request->from;
-                $filter['end'] = date('Y-M-d', strtotime('+1 day', strtotime($request->to)));
-                $start_date = new \DateTime($request->from);
-                $end_date = new \DateTime($request->to);
-
-                $date_range = new \DatePeriod($start_date, new \DateInterval('P1D'), $end_date);
-
-                foreach ($date_range as $key => $date) {
-                    $dates[$key] = $date->format('M d');
-                }
-            }
-
-            return view('dashboard2', [
-                'count_url' => $count_url,
-                'user' => $user,
-                'urls' => $urls,
-                'subscription_status' => $subscription_status,
-                'limit' => $limit,
-                'total_links' => $total_links,
-                'filter' => $filter,
-                'dates' => $dates,
-                '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
-            ]);
+            
         } else {
             return redirect()->action('HomeController@getIndex');
         }
@@ -1062,6 +1051,7 @@ class HomeController extends Controller
      */
     public function postBrandLogo(Request $request)
     {
+
         $this->validate($request, [
             'brandLogo' => 'image|dimensions:min_width=64px,min_height=64px,max_width:512px,max_height:512px,ratio:1:1',
             'redirectingTime' => 'numeric',
@@ -1078,6 +1068,7 @@ class HomeController extends Controller
         $url->redirecting_time = $request->redirectingTime * 1000;
         $url->redirecting_text_template = $request->redirectingTextTemplate;
         if ($url->save()) {
+            //dd($url);
             return redirect()->back()
                     ->with('success', 'Upload successful.');
         } else {
@@ -1131,14 +1122,14 @@ class HomeController extends Controller
         if (Auth::check()) 
         {
             $user = Auth::user();
+            $session_plan = null;
             if(Session::has('plan'))
             {
+                $session_plan = Session::get('plan');
                 Session::put('plan' , null);
             }
             if ($user->subscribed('main', 'tr5Advanced')) 
             {
-
-                
                 return redirect()->action('HomeController@getDashboard');
             } 
             elseif ($user->subscribed('main', 'tr5Basic')) 
@@ -1148,6 +1139,7 @@ class HomeController extends Controller
 
                 return view('subscription2', [
                         'user' => $user,
+                        'session_plan' => $session_plan,
                         'subscription_status' => $subscription_status,
                     ]);
             } 
@@ -1156,6 +1148,7 @@ class HomeController extends Controller
                 $subscription_status = null;
                 return view('subscription2', [
                         'user' => $user,
+                        'session_plan' => $session_plan,
                         'subscription_status' => $subscription_status,
                     ]);
             }
@@ -1176,6 +1169,7 @@ class HomeController extends Controller
     public function postSubscription(Request $request)
     {
 
+    //dd($request->all());
         $user = Auth::user();
         try {
             $user->newSubscription('main', $request->plan)
@@ -1197,10 +1191,20 @@ class HomeController extends Controller
             }
             $limit->save();
 
-            return redirect()->route('getDashboard')
-                    ->with('success', 'Subscription is completed.');
+            $url = url('/').'/app/user/subscribe';
+            Session::flash('subscription_success','Subscription is completed !');
+            return ($url);
+
+            //return redirect()->route('getDashboard')
+                    //->with('success', 'Subscription is completed.');
         } catch (Exception $e) {
-            return back()->with('success ..', $e->getMessage());
+
+            $url = url('/').'/app/user/subscribe';
+            Session::flash('subscription_error','Subscription is incomplete!');
+            return ($url);
+
+
+            //return back()->with('success ..', $e->getMessage());
         }
     }
 
