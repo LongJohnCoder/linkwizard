@@ -1052,6 +1052,7 @@ class HomeController extends Controller
     public function postBrandLogo(Request $request)
     {
 
+        //dd($request->all());
         $this->validate($request, [
             'brandLogo' => 'image|dimensions:min_width=64px,min_height=64px,max_width:512px,max_height:512px,ratio:1:1',
             'redirectingTime' => 'numeric',

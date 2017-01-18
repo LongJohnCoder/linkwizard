@@ -439,7 +439,8 @@
                                             fb_share('{{ route('getIndex') }}/{{ $url->shorten_suffix }}' , '{{url('/')}}');
                                         });
                                         $('#addBrand{{ $key }}').on('click', function () {
-                                            $("#urlId").val('{{ $url->id }}');
+                                        	
+                                            $("#urlId1").val('{{ $url->id }}');
                                             $("#redirectingTime").val('{{ $url->redirecting_time/1000 }}');
                                             initSummernote('{!! $url->  redirecting_text_template !!}');
                                             $('#myModal1').modal('show');
@@ -642,8 +643,9 @@
                     </div>
                     <div class="modal-body" id="uploadModalBody">
                         <form class="form" role="form" action="{{ route('postBrandLogo') }}" method="post" enctype="multipart/form-data">
+
                             <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                            <input type="hidden" name="url_id" value="{{ $url->id }}" id="urlId" />
+                            <input type="hidden" name="url_id" id="urlId1" />
                             <div class="form-group">
                                 <label for="brandLogo">Upload brand logo</label>
                                 <input type="file" id="brandLogo1" name="brandLogo" class="form-control input-md" value="" />
