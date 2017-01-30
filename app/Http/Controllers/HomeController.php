@@ -758,9 +758,77 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function short_url_api(Request $request)
+    {
+        
+        try{
+
+
+
+
+            if (starts_with($request->url, 'https://')) {
+            $actual_url = str_replace('https://', null, $request->url);
+            $protocol = 'https';
+        } else {
+            $actual_url = str_replace('http://', null, $request->url);
+            $protocol = 'http';
+        }
+
+        $random_string = $this->randomString();
+
+        $url = new Url();
+        $url->actual_url = $actual_url;
+        $url->protocol = $protocol;
+        $url->shorten_suffix = $random_string;
+
+        $_url = $this->getPageTitle($request->url);
+        $url->title = $_url;
+        $url->user_id = 0;
+
+        if ($url->save()) {
+            return json_encode([
+                'status' => 'success',
+                'url' => url('/').'/'.$random_string,
+            ]);
+        } else {
+            return json_encode([
+                'status' => 'error (May be this site has blocked curl services) ',
+                'url'    => ''
+                ]);
+        }
+
+
+
+
+
+        }
+        catch(\Exception $e)
+        {
+            return json_encode([
+                'status' => 'unrecognized url (check if you have inserted your url correctly , and give full url path with http or https)',
+                'url'    => ''
+                ]);
+        }
+        
+        
+    }
+
+    public function api_test()
+    {
+        return view('api_test');
+    }
+
+
+
+
+   
+
+
     public function postShortUrlTier5(Request $request)
     {
 
+        //dd($request->all());
         if (starts_with($request->url, 'https://')) {
             $actual_url = str_replace('https://', null, $request->url);
             $protocol = 'https';

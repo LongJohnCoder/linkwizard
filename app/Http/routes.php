@@ -24,6 +24,10 @@ Route::group(['domain' => env('APP_HOST')], function () {
         'uses' => 'HomeController@getIndex',
         'as' => 'getIndex',
     ]);
+
+    Route::get('/api_test' , 'HomeController@api_test');
+
+    Route::get('/short_url_api' , 'HomeController@short_url_api');
     
     Route::get('/blog' , 'HomeController@blog');
     Route::get('/pricing' , 'HomeController@pricing');

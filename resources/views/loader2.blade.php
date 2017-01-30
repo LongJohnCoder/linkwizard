@@ -69,11 +69,12 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 		<div class="centerdiv">
 			<div class="image-div">
 			@if($url->uploaded_path)
-				<img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
+				<img style="width:650px; height:380px" src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
 			@else
 				<img src="{{url('/')}}/public/images/Git-Icon-1788C.png" class="img-responsive">
 			@endif
 			</div>
+            <br><br><br>
 			
             @if($url->redirecting_text_template)
             <span class="text">{{$url->redirecting_text_template}}</span>
