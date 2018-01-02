@@ -43,3 +43,5 @@ V2.6.3:
 V2.6.4:
     1. Add time frame graph on by date anlytics page
     2. Add Subdomain & Subdirectory Links
+V2.7:
+    1. Bug fix in url shortening function.

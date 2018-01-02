@@ -1,4 +1,4 @@
-<script src="https://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.0.0/sweetalert.min.js"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
@@ -273,7 +273,7 @@
 
         var options = {
             theme: "custom",
-            content: '<img style="width:80px;" src="{{ URL::to(' / ').' / public / resources / img / company_logo.png ' }}" class="center-block">',
+            content: '<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" class="center-block">',
             message: "Please wait a while",
             backgroundColor: "#212230"
         };
