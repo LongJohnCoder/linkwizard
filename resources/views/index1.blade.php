@@ -16,7 +16,7 @@
 <script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
 
 
-<link rel="stylesheet" type="text/css" href="https://t4t5.github.io/sweetalert/dist/sweetalert.css" />
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.0.0/sweetalert.min.css" />
 
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
 <link href="{{ URL::to('/').'/public/resources/css/bootstrap.min.css'}}" rel="stylesheet" />
