@@ -926,7 +926,7 @@ class HomeController extends Controller
         $random_string = null;
 
         for ($i = 0; $i < 6; ++$i) {
-            $random_string = $random_string.$character_set[rand(0, strlen($character_set))];
+            $random_string = $random_string.$character_set[rand(0, strlen($character_set)-1)];
         }
 
         if (Url::where('shorten_suffix', $random_string)->first()) {
