@@ -10,7 +10,9 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
+Route::get('/test12',function(){
+    dd(env('PUBLISHABLE_KEY'));
+});
 
 Route::group(['domain' => env('APP_HOST')], function () {
 
@@ -28,12 +30,12 @@ Route::group(['domain' => env('APP_HOST')], function () {
     Route::get('/api_test' , 'HomeController@api_test');
 
     Route::get('/short_url_api' , 'HomeController@short_url_api');
-    
+
     Route::get('/blog' , 'HomeController@blog');
     Route::get('/pricing' , 'HomeController@pricing');
     Route::get('/features' , 'HomeController@features');
     Route::get('/about' , 'HomeController@about');
-    
+
     Route::get('/{url}', [
         'uses' => 'HomeController@getRequestedUrl',
         'as' => 'getRequestedUrl',
@@ -188,15 +190,3 @@ Route::group(['domain' => '{subdomain}.'.env('APP_HOST')], function () {
         'as' => 'getRequestedSubdomainUrl',
     ]);
 });
-
-
-
-
-
-
-
-
-
-
-
-

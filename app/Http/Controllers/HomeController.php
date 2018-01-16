@@ -42,7 +42,7 @@ class HomeController extends Controller
 
     public function getIndex()
     {
-        
+
         if (Auth::check()) {
             return redirect()->action('HomeController@getDashboard');
         } else {
@@ -53,34 +53,34 @@ class HomeController extends Controller
 
     public function blog()
     {
-        return view('top_menu.blog');   
+        return view('top_menu.blog');
     }
 
     public function pricing()
     {
 
-        if (Auth::check()) 
+        if (Auth::check())
         {
             return redirect()->action('HomeController@getSubscribe');
-        } 
-        else 
+        }
+        else
         {
             return view('top_menu.pricing' , [
                         'user' => null,
                         'subscription_status' => -1,
-                    ]);   
-        }   
+                    ]);
+        }
     }
 
     public function features()
     {
-        return view('top_menu.features');   
+        return view('top_menu.features');
     }
 
     public function about()
     {
-        return view('top_menu.about');   
-    }    
+        return view('top_menu.about');
+    }
 
 
     /**
@@ -113,6 +113,8 @@ class HomeController extends Controller
         $urls = Url::where('user_id', $request->user_id)
                     ->orderBy('id', 'DESC')
                     ->get();
+        $URLs = [];
+        $URLstat = [];
         foreach ($urls as $key => $url) {
             $URLs[$key]['name'] = url('/').'/'.$url->shorten_suffix;
             $URLs[$key]['y'] = (int) $url->count;
@@ -706,7 +708,7 @@ class HomeController extends Controller
             $referer = new Referer();
             $referer->name = $request->referer;
             $referer->save();
-            
+
             $u = Url::where('id' , $request->url)->first();
             $u->count++;
             $u->save();
@@ -761,7 +763,7 @@ class HomeController extends Controller
 
     public function short_url_api(Request $request)
     {
-        
+
         try{
 
 
@@ -810,8 +812,8 @@ class HomeController extends Controller
                 'url'    => ''
                 ]);
         }
-        
-        
+
+
     }
 
     public function api_test()
@@ -822,7 +824,7 @@ class HomeController extends Controller
 
 
 
-   
+
 
 
     public function postShortUrlTier5(Request $request)
@@ -944,7 +946,7 @@ class HomeController extends Controller
     public function postLogin(Request $request)
     {
 
-        
+
         $this->validate($request, [
             'loginemail' => 'required|email',
             'loginpassword' => 'required',
@@ -1006,13 +1008,13 @@ class HomeController extends Controller
                 return redirect()->action('HomeController@getDashboard' )
                         ->with('success', 'You have registered successfully!');
             } else {
-                
+
                 return redirect()->action('HomeController@getDashboard')
-                        ->with('success', 'You have not registered successfully.. try again'); 
+                        ->with('success', 'You have not registered successfully.. try again');
             }
         }
 
-        
+
     }
 
     /**
@@ -1070,6 +1072,7 @@ class HomeController extends Controller
                     if ($user->subscribed('main', 'tr5Advanced')) {
                         $subscription_status = 'tr5Advanced';
                         $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+
                     } elseif ($user->subscribed('main', 'tr5Basic')) {
                         $subscription_status = 'tr5Basic';
                         $limit = Limit::where('plan_code', 'tr5Basic')->first();
@@ -1086,9 +1089,7 @@ class HomeController extends Controller
                         $filter['end'] = date('Y-M-d', strtotime('+1 day', strtotime($request->to)));
                         $start_date = new \DateTime($request->from);
                         $end_date = new \DateTime($request->to);
-
                         $date_range = new \DatePeriod($start_date, new \DateInterval('P1D'), $end_date);
-
                         foreach ($date_range as $key => $date) {
                             $dates[$key] = $date->format('M d');
                         }
@@ -1107,7 +1108,7 @@ class HomeController extends Controller
                     ]);
             }
 
-            
+
         } else {
             return redirect()->action('HomeController@getIndex');
         }
@@ -1188,7 +1189,7 @@ class HomeController extends Controller
      */
     public function getSubscribe()
     {
-        if (Auth::check()) 
+        if (Auth::check())
         {
             $user = Auth::user();
             $session_plan = null;
@@ -1197,11 +1198,11 @@ class HomeController extends Controller
                 $session_plan = Session::get('plan');
                 Session::put('plan' , null);
             }
-            if ($user->subscribed('main', 'tr5Advanced')) 
+            if ($user->subscribed('main', 'tr5Advanced'))
             {
                 return redirect()->action('HomeController@getDashboard');
-            } 
-            elseif ($user->subscribed('main', 'tr5Basic')) 
+            }
+            elseif ($user->subscribed('main', 'tr5Basic'))
             {
 
                 $subscription_status = 'tr5Basic';
@@ -1211,8 +1212,8 @@ class HomeController extends Controller
                         'session_plan' => $session_plan,
                         'subscription_status' => $subscription_status,
                     ]);
-            } 
-            else 
+            }
+            else
             {
                 $subscription_status = null;
                 return view('subscription2', [
@@ -1221,8 +1222,8 @@ class HomeController extends Controller
                         'subscription_status' => $subscription_status,
                     ]);
             }
-        } 
-        else 
+        }
+        else
         {
             return redirect()->action('HomeController@getIndex');
         }
@@ -1238,9 +1239,10 @@ class HomeController extends Controller
     public function postSubscription(Request $request)
     {
 
-    //dd($request->all());
         $user = Auth::user();
         try {
+            //return($request->plan);
+            //return($user->email);
             $user->newSubscription('main', $request->plan)
                     ->create($request->stripeToken_, [
                         'email' => $user->email,
@@ -1320,10 +1322,10 @@ class HomeController extends Controller
     /**
      * Get requested brand subdomain url and serach for the actual url.
      * If found redirect to actual url else show 404.
-     * 
+     *
      * @param  string $subdomain
      * @param  string $url
-     * 
+     *
      *
      * @param string $subdomain
      * @param string $url
@@ -1377,7 +1379,7 @@ class HomeController extends Controller
 
     /**
      * Check a email is available or not from sign up page
-     * 
+     *
      * @param  Request $response
      * @return \Illuminate\Http\Response
      */

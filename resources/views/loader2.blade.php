@@ -26,7 +26,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
 
     <meta name="robots" content="noindex,nofollow" />
-    
+
     <title>Tier5 | URL Shortener</title>
     <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
     <meta name="keywords" content="Tier5 URL Shortener, Tr5.io, Tier5" />
@@ -75,7 +75,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 			@endif
 			</div>
             <br><br><br>
-			
+
             @if($url->redirecting_text_template)
             <span class="text">{{$url->redirecting_text_template}}</span>
             @else
@@ -87,10 +87,14 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	<script type="text/javascript">
     $(document).ready(function() {
         var sec = '{{$url->redirecting_time}}' / 1000;
-
 		window.setInterval(function(){
             sec--;
-		      $('#txt_').text(sec.toString());
+            if(sec >= 0){
+                $('#txt_').text(sec.toString());
+            }
+            else{
+                $('#txt_').text('');
+            }
 		}, 1000);
 
         $.ajax({
@@ -121,7 +125,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
         });
     });
 	</script>
-	
+
     <script>
     (function(b, o, i, l, e, r) {
         b.GoogleAnalyticsObject = l;

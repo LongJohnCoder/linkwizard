@@ -137,7 +137,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="customplan text-center">
 		<div class="container">
 			<div class="row">
@@ -147,7 +147,7 @@
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 	<div class="faq">
 		<div class="container">
 			<div class="row">
@@ -175,7 +175,7 @@
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 </section>
 <footer>
 	<div class="container">
@@ -212,8 +212,12 @@
 <script src="{{url('/')}}/public/js/parsley.js "></script>
 
   <script>
-    Stripe.setPublishableKey("{{ env('STRIPE_PUBLISHABLE_SECRET') }}");
+		var public_key = "{{env('STRIPE_KEY')}}";
+
+    Stripe.setPublishableKey(public_key);
+
     $(function() {
+				console.log('public key :',public_key);
         $('#payment-form').submit(function(event) {
             var $form = $(this);
             var $btn = $('#submitBtn').button('loading');
@@ -253,11 +257,11 @@
 
 	var to_plan = '';
 	var isset_plan = '{{ isset($session_plan) }}' ? true : false;
-	
 
-       
+
+
       var handler = StripeCheckout.configure({
-      key: "{{env('STRIPE_PUBLISHABLE_SECRET')}}",
+      key: public_key,
       image: '{{url("/")}}'+'/uploads/defaultuser.png',
       locale: 'auto',
       token: function(token) {
@@ -269,20 +273,20 @@
           url: "{{route('postSubscription')}}",
           data: {stripeToken_:token.id , plan:plan , _token: '{!! csrf_token() !!}'},
           type :"post",
-          success: function(url) 
+          success: function(url)
           {
          		$(location).attr('href',url);
           }
         });
       }
     });
-    
 
-    
+
+
       function handler_open(amount , plan)
       {
       	to_plan = plan;
-	  	handler.open({
+	  		handler.open({
 	    	name: "{{url('/')}}",
 	    	email: '{{$user->email}}',
 	    	description: 'Invoice',
@@ -290,11 +294,11 @@
 	    	currency: 'usd',
 	  	});
       }
-  
-    
+
+
 
     // Close Checkout on page navigation:
-    $(window).on('popstate', function() {
+    $(window).on('popstate', function(){
       handler.close();
     });
 
@@ -350,14 +354,14 @@
             // $('#plan').val('tr5Advanced');
         });
 
-        
+
 	    window.ParsleyConfig = {
 	        errorsWrapper: '<div></div>',
 	        errorTemplate: '<div class="alert alert-danger parsley " role="alert "></div>',
 	        errorClass: 'has-error',
 	        successClass: 'has-success'
 	    };
-    	
+
 	});
 </script>
 

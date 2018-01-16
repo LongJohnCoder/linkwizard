@@ -26,7 +26,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
-<script src="https://www.gstatic.com/charts/loader.js"></script> 
+<script src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://www.google.com/jsapi"></script>
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0-rc.2/Chart.bundle.min.js"></script> --}}
 <script src="{{ URL::to('/').'/public/resources/js/highcharts.js' }}"></script>
@@ -159,7 +159,7 @@
 
 	                <div id="myNav1" class="userdetails">
 	                	<!-- <a href="#" id="cross1" class="closebtn"><i class="fa fa-times" style="color:white"></i></a> -->
-		                <div class="overlay-content">
+                        <div class="overlay-content">
 	                        <div class="col-md-12 col-sm-12">
 	                            <label for="givenUrl" style="color:white">Paste An Actual URL Here</label>
 	                            <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
@@ -221,7 +221,7 @@
 				            	@if ($user->is_admin == 1)
 		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
                     			@endif
-				            	
+
 				            </ul>
 				        </div>
 					</div>
@@ -311,9 +311,9 @@
 	              	<ul>
 	              		@foreach ($urls as $key => $url)
 		                <li class="active">
-		                
+
 		                	<div class="col-sm-1">
-		                 		
+
 		                 	</div>
 		                 	<div class="tab-cont">
 			                 	<div class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</div>
@@ -340,7 +340,9 @@
             <div class="col-md-8 col-sm-8">
                 <!-- flight section -->
                 @foreach ($urls as $key => $url)
+
                 <div class="tab-content">
+
                 	<div class="tab-content-top">
 	                	<div class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</div>
 	                	<p id="urlTitleHeading{{ $key }}">{{$url->title}}</p>
@@ -349,6 +351,7 @@
                 	<div class="row">
                 		 <div class="col-md-6 col-sm-6">
                 		 	@if (isset($url->subdomain))
+
                                 <h3>
                                     @if($url->subdomain->type == 'subdomain')
 											<a href="https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
@@ -361,6 +364,7 @@
                                     @endif
                                 </h3>
                             @else
+
                                 <h3>
                                     <a href="{{route('getIndex') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
                                         {{ route('getIndex') }}/{{ $url->shorten_suffix }}
@@ -425,7 +429,7 @@
 						                });
 						                $('#redirectingTextTemplate').summernote('code', preloadText);
         								}
-                                    	
+
                                         $('#clipboard{{ $key }}').on('click', function () {
                                             new Clipboard('#clipboard{{ $key }}');
                                         });
@@ -439,7 +443,7 @@
                                             fb_share('{{ route('getIndex') }}/{{ $url->shorten_suffix }}' , '{{url('/')}}');
                                         });
                                         $('#addBrand{{ $key }}').on('click', function () {
-                                        	
+
                                             $("#urlId1").val('{{ $url->id }}');
                                             $("#redirectingTime").val('{{ $url->redirecting_time/1000 }}');
                                             initSummernote('{!! $url->  redirecting_text_template !!}');
@@ -452,7 +456,7 @@
                                     });
                                 </script>
                             </div>
-                		 
+
                 	</div>
                 	<div class="row">
                 		 <div class="col-md-6 col-sm-6">
@@ -600,7 +604,7 @@
                 	</div>
                 </div>
                 @endforeach
-                <!-- hotel search --> 
+                <!-- hotel search -->
             </div>
 		</div>
 	</div>
@@ -874,7 +878,7 @@
             $('.tr5link').addClass('open', true);
             $('.tr5link').removeClass('close', true);
         });
-        
+
         $('#customLink').on('click', function () {
             $('.sharebar').addClass('open', true);
             $('.sharebar').removeClass('close', true);
@@ -898,7 +902,7 @@
             });
         });
 
-	    
+
 	});
 </script>
 <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
@@ -950,9 +954,9 @@
 	                    	if(response == 1)
 	                    	{
 	                    		console.log(response);
-	                    		if (ValidURL(actualUrl)) 
+	                    		if (ValidURL(actualUrl))
 			                    {
-			                        if (ValidCustomURL(customUrl)) 
+			                        if (ValidCustomURL(customUrl))
 			                        {
 			                            $.ajax({
 			                                type: "POST",
@@ -986,7 +990,7 @@
 			                                            text: "Please paste an actual URL",
 			                                            type: "warning",
 			                                            html: true
-			                                        }); 
+			                                        });
 			                                        HoldOn.close();
 			                                    }
 			                                }, error: function(response) {
@@ -999,13 +1003,13 @@
 			                                            text: "Access Forbidden, Please paste a valid URL!",
 			                                            type: "error",
 			                                            html: true
-			                                        }); 
+			                                        });
 			                                        HoldOn.close();
 			                                    }
 			                                }
 			                            });
-			                        } 
-			                        else 
+			                        }
+			                        else
 			                        {
 			                            swal({
 			                                type: "warning",
@@ -1014,14 +1018,14 @@
 			                                html: true
 			                            });
 			                        }
-			                    } 
-			                    else 
+			                    }
+			                    else
 			                    {
 			                        swal({
 			                            type: "warning",
 			                            title: null,
 			                            text: "Please Enter An URL"
-			                        	});     
+			                        	});
 			                    }
 	                    	}
 	                    	else
@@ -1032,10 +1036,10 @@
 
 	                    }
 	                });
-                }); 
-                
+                });
 
-                
+
+
                 function ValidURL(str) {
                     var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
                     var url = str;
@@ -1095,7 +1099,7 @@
                                             text: "Please paste an actual URL",
                                             type: "warning",
                                             html: true
-                                        }); 
+                                        });
                                         HoldOn.close();
                                     }
                                 }, error: function(response) {
@@ -1108,7 +1112,7 @@
                                             text: "Access Forbidden, Please paste a valid URL!",
                                             type: "error",
                                             html: true
-                                        }); 
+                                        });
                                         HoldOn.close();
                                     }
                                 }
@@ -1120,7 +1124,7 @@
                                 text: errorMsg,
                                 type: "error",
                                 html: true
-                            }); 
+                            });
                         }
                     } else {
                         var errorMsg="Please Enter An URL";
@@ -1129,12 +1133,12 @@
                             text: errorMsg,
                             type: "warning",
                             html: true
-                        });     
+                        });
                     }
                 });
 
             });
-            
+
         </script>
         <script type="text/javascript">
         $(document).ready(function () {
@@ -1450,7 +1454,7 @@
                         text: "{{Session::get('success')}}",
                         type: "success",
                         html: true
-                    }); 
+                    });
                 });
             </script>
         @endif
@@ -1462,7 +1466,7 @@
                         text: "{{Session::get('error')}}",
                         type: "error",
                         html: true
-                    }); 
+                    });
                 });
             </script>
         @endif
@@ -1474,12 +1478,12 @@
                         text: "@foreach ($errors->all() as $error){{ $error }}<br/>@endforeach",
                         type: "error",
                         html: true
-                    }); 
+                    });
                 });
             </script>
         @endif
         <script>
-            
+
         </script>
         <script src="{{ URL('/')}}/public/resources/js/bootstrap-datepicker.min.js"></script>
         <script>
@@ -1522,7 +1526,7 @@
             ga('create','UA-XXXXX-X');ga('send','pageview');
         </script>
 
-        
+
 		@if(\Session::has('adv'))
 		<script type="text/javascript">
 			$(document).ready(function(){
@@ -1531,7 +1535,7 @@
                         text: "{{Session::get('adv')}}",
                         type: "info",
                         html: true
-                    }); 
+                    });
 			});
 		</script>
 		@endif
