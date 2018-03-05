@@ -166,7 +166,7 @@
 															<br>
 															<label for="addFbPixelid" style="color:white">Add facebook pixel</label>
 															<input id="checkboxAddFbPixelid" type="checkbox" style="color: white">
-															<input id="fbPixelid" class="myInput form-control" type="text" name="client_fb_pixel_id" placeholder="Paste Your Facebook-pixel-id Here" style="display : none">
+															<input id="fbPixelid" class="myInput form-control" type="number" name="client_fb_pixel_id" placeholder="Paste Your Facebook-pixel-id Here" style="display : none">
 
 															<button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
 	                                Shorten Url
@@ -188,6 +188,12 @@
 	                                <span class="input-group-addon">{{ env('APP_HOST') }}</span>
 	                                <input id="makeCustomUrl" class="myInput form-control" type="text" name="" placeholder="e.g. MyLinK">
 	                            </div>
+															<br>
+
+															<label for="checkboxAddFbPixelid" style="color:white">Add facebook pixel</label>
+															<input id="checkboxAddFbPixelid1" type="checkbox" style="color: white">
+															<input id="fbPixelid1" class="myInput form-control" type="number" placeholder="Paste Your Facebook-pixel-id Here" style="display : none">
+
 	                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
 	                                Shorten Url
 	                            </button>
@@ -850,6 +856,17 @@
       }
       else if($(this).prop("checked") == false){
 					$('#fbPixelid').hide();
+					$('#fbPixelid').val('');
+      }
+		});
+
+		$('#checkboxAddFbPixelid1, input[type="checkbox"]').on('click', function(){
+			if($(this).prop("checked") == true){
+					$('#fbPixelid1').show();
+      }
+      else if($(this).prop("checked") == false){
+					$('#fbPixelid1').hide();
+					$('#fbPixelid1').val('');
       }
 		});
 
@@ -958,6 +975,9 @@
                         var userId = 0;
                     @endif
 
+										var checkboxAddFbPixelid 	= 	$("#checkboxAddFbPixelid1").prop('checked');
+										var fbPixelid							= 	$("#fbPixelid1").val();
+
                     $.ajax({
 	                    type:"POST",
 	                    url:"/check_custom",
@@ -976,9 +996,11 @@
 			                                type: "POST",
 			                                url: "{{ route('postCustomUrlTier5') }}",
 			                                data: {
-			                                    actual_url: actualUrl,
-			                                    custom_url: customUrl,
-			                                    user_id: userId,
+																					checkboxAddFbPixelid : checkboxAddFbPixelid,
+																					fbPixelid		: fbPixelid,
+			                                    actual_url	: actualUrl,
+			                                    custom_url	: customUrl,
+			                                    user_id			: userId,
 			                                    _token: "{{ csrf_token() }}"
 			                                }, success: function (response) {
 			                                	console.log('postCustomUrlTier5');
@@ -1082,13 +1104,21 @@
                     @else
                         var userId = 0;
                     @endif
+
+										var checkboxAddFbPixelid 	= 	$("#checkboxAddFbPixelid").prop('checked');
+										var fbPixelid							= 	$("#fbPixelid").val();
                     if(url) {
                         if(validUrl) {
                             HoldOn.open(options);
                             $.ajax({
                                 type: 'POST',
                                 url: "{{ route('postShortUrlTier5') }}",
-                                data: {url: url, user_id: userId, _token: "{{ csrf_token() }}"},
+                                data: {
+																	url: url,
+																	user_id: userId,
+																	checkboxAddFbPixelid : checkboxAddFbPixelid,
+																	fbPixelid : fbPixelid,
+																	_token: "{{ csrf_token() }}"},
                                 success: function (response) {
                                 	console.log('postShortUrlTier5');
                                     if(response.status=="success") {

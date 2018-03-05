@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\UrlFeature;
+
 
 class HomeController extends Controller
 {
@@ -94,8 +96,9 @@ class HomeController extends Controller
     public function getRequestedUrl($url)
     {
         $search = Url::where('shorten_suffix', $url)->first();
+        $url_features = UrlFeature::where('url_id', $search->id)->first();
         if ($search) {
-            return view('loader2', ['url' => $search]);
+            return view('loader2', ['url' => $search, 'url_features' => $url_features]);
         } else {
             abort(404);
         }
@@ -829,8 +832,11 @@ class HomeController extends Controller
 
     public function postShortUrlTier5(Request $request)
     {
-
-        //dd($request->all());
+      try{
+        $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
+        $fbPixelid            = isset($request->fbPixelid) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null;
+        // print("<pre>");print_r($checkboxAddFbPixelid.' --- '.$fbPixelid);
+        // die();
         if (starts_with($request->url, 'https://')) {
             $actual_url = str_replace('https://', null, $request->url);
             $protocol = 'https';
@@ -850,13 +856,31 @@ class HomeController extends Controller
         $url->title = $_url;
         $url->user_id = $request->user_id;
         if ($url->save()) {
+          if($checkboxAddFbPixelid && $fbPixelid != null) {
+            $urlfeature = new UrlFeature();
+            $urlfeature->url_id = $url->id;
+            $urlfeature->fb_pixel_id = $fbPixelid;
+            if($urlfeature->save()) {
+              return response()->json([
+                  'status' => 'success',
+                  'url' => url('/').'/'.$random_string,
+              ]);
+            } else {
+              return response()->json(['status' => 'error']);
+            }
+          } else {
             return response()->json([
                 'status' => 'success',
                 'url' => url('/').'/'.$random_string,
             ]);
+          }
         } else {
             return response()->json(['status' => 'error']);
         }
+      }
+      catch(\Exception $e) {
+        return response()->json(['status' => 'error', 'msg' => $e->getMessage()]);
+      }
     }
 
     /**
@@ -869,6 +893,14 @@ class HomeController extends Controller
      */
     public function postCustomUrlTier5(Request $request)
     {
+      try {
+
+        $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
+        $fbPixelid            = isset($request->fbPixelid) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null;
+
+        //print("<pre>");print_r($request->all());
+        //die();
+
         if (starts_with($request->actual_url, 'https://')) {
             $actual_url = str_replace('https://', null, $request->actual_url);
         } else {
@@ -884,13 +916,37 @@ class HomeController extends Controller
         $url->user_id = $request->user_id;
         $url->is_custom = 1;
         if ($url->save()) {
+
+          if($checkboxAddFbPixelid && $fbPixelid != null) {
+            $urlfeature = new UrlFeature();
+            $urlfeature->url_id = $url->id;
+            $urlfeature->fb_pixel_id = $fbPixelid;
+            if($urlfeature->save()) {
+              return response()->json([
+                    'status' => 'success',
+                    'url' => url('/').'/'.$url->shorten_suffix,
+              ]);
+            } else {
+              return response()->json(['status' => 'error']);
+            }
+          } else {
             return response()->json([
-                'status' => 'success',
-                'url' => url('/').'/'.$url->shorten_suffix,
+                  'status' => 'success',
+                  'url' => url('/').'/'.$url->shorten_suffix,
             ]);
+          }
+
+          // return response()->json([
+          //       'status' => 'success',
+          //       'url' => url('/').'/'.$url->shorten_suffix,
+          // ]);
         } else {
             return response()->json(['status' => 'error']);
         }
+      } catch(\Exception $e) {
+        return response()->json(['status' => 'error', 'msg'=>$e->getMessage()]);
+      }
+
     }
 
     /**
