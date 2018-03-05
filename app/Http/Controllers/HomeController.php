@@ -1238,7 +1238,7 @@ class HomeController extends Controller
      */
     public function postSubscription(Request $request)
     {
-
+      //return $request->all();
         $user = Auth::user();
         try {
             //return($request->plan);

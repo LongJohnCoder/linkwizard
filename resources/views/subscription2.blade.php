@@ -106,10 +106,10 @@
 						</ul>
 
 						@if ($subscription_status == 'tr5Basic')
-                            <a href="#">Subscribed</a>
-                        @else
-                        	<a href="#" id="basicButton">Subscribe now</a>
-                        @endif
+                <a href="#">Subscribed</a>
+            @else
+            	<a href="#" id="basicButton">Subscribe now</a>
+            @endif
 					</div>
 				</div>
 				<div class="col-md-4">
@@ -128,10 +128,10 @@
 							<li><span>24 X 7</span> hour support</li>
 						</ul>
 						@if ($subscription_status == 'tr5Advanced')
-                            <a href="#">Subscribed</a>
-                        @else
-                        	<a href="#" id="advancedButton">Subscribe now</a>
-                        @endif
+                <a href="#">Subscribed</a>
+            @else
+            	<a href="#" id="advancedButton">Subscribe now</a>
+            @endif
 					</div>
 				</div>
 			</div>
@@ -213,7 +213,6 @@
 
   <script>
 		var public_key = "{{env('STRIPE_KEY')}}";
-
     Stripe.setPublishableKey(public_key);
 
     $(function() {
@@ -262,7 +261,7 @@
 
       var handler = StripeCheckout.configure({
       key: public_key,
-      image: '{{url("/")}}'+'/uploads/defaultuser.png',
+      //image: '{{url("/")}}'+'/uploads/defaultuser.png',
       locale: 'auto',
       token: function(token) {
         console.log(token);
@@ -275,6 +274,7 @@
           type :"post",
           success: function(url)
           {
+						console.log('url is :',url);
          		$(location).attr('href',url);
           }
         });
@@ -283,35 +283,40 @@
 
 
 
-      function handler_open(amount , plan)
-      {
-      	to_plan = plan;
-	  		handler.open({
-	    	name: "{{url('/')}}",
-	    	email: '{{$user->email}}',
-	    	description: 'Invoice',
-	    	amount: amount,
-	    	currency: 'usd',
-	  	});
-      }
+		function handler_open(amount , plan)
+		{
+		  	to_plan = plan;
+				console.log("name : {{url('/')}}" , "email: '{{$user->email}}'" , "amount : "+amount);
+				handler.open({
+		  	name: "{{url('/')}}",
+		  	email: '{{$user->email}}',
+		  	description: 'Invoice',
+		  	amount: amount,
+		  	currency: 'usd',
+			});
+		}
 
 
 
     // Close Checkout on page navigation:
-    $(window).on('popstate', function(){
-      handler.close();
-    });
+    // $(window).on('popstate', function(){
+    //   handler.close();
+    // });
+
+		// $(window).on('backward', function(){
+    //   alert('alert');
+    // });
 
     if(isset_plan)
-	{
-		var check_notnull = '{{ $session_plan != null }}' ? true : false;
-		if(check_notnull)
 		{
-			var flag = "{{ $session_plan }}" , amount , plan;
-			flag == 1 ? (amount = 1000 , plan = 'tr5Basic') : (amount = 2000 , plan = 'tr5Advanced');
-			handler_open(amount , plan);
+			var check_notnull = '{{ $session_plan != null }}' ? true : false;
+			if(check_notnull)
+			{
+				var flag = "{{ $session_plan }}" , amount , plan;
+				flag == 1 ? (amount = 1000 , plan = 'tr5Basic') : (amount = 2000 , plan = 'tr5Advanced');
+				handler_open(amount , plan);
+			}
 		}
-	}
 
 
 

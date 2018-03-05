@@ -163,9 +163,14 @@
 	                        <div class="col-md-12 col-sm-12">
 	                            <label for="givenUrl" style="color:white">Paste An Actual URL Here</label>
 	                            <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
-	                            <button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
+															<br>
+															<label for="addFbPixelid" style="color:white">Add facebook pixel</label>
+															<input id="checkboxAddFbPixelid" type="checkbox" style="color: white">
+															<input id="fbPixelid" class="myInput form-control" type="text" name="client_fb_pixel_id" placeholder="Paste Your Facebook-pixel-id Here" style="display : none">
+
+															<button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
 	                                Shorten Url
-	                            </button>
+	                            </button><br>
 	                        </div>
 		                </div>
 	                </div>
@@ -838,6 +843,15 @@
 <script type="text/javascript">
 
 	$(document).ready(function() {
+
+		$('#checkboxAddFbPixelid, input[type="checkbox"]').on('click', function(){
+			if($(this).prop("checked") == true){
+					$('#fbPixelid').show();
+      }
+      else if($(this).prop("checked") == false){
+					$('#fbPixelid').hide();
+      }
+		});
 
 		$(this).on('click', '.menu-icon', function(){
 	    	$(this).addClass("close");
