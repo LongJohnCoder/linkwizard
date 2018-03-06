@@ -36,10 +36,20 @@ class HomeController extends Controller
         return 0;
     }
 
-    public function test(Request $request)
+    // public function test(Request $request)
+    // {
+    //     //$a = $this->getPageTitle($request->url);
+    //     $b = $this->getPageMetaContents($request->url);
+    //     dd($b)
+    //     return \Response::json(array('url'=>$a));
+    // }
+
+    public function testnow($url)
     {
-        $a = $this->getPageTitle($request->url);
-        return \Response::json(array('url'=>$a));
+        $url = 'https://www.invoicingyou.com/';
+        //$a = $this->getPageTitle($request->url);
+        $b = $this->getPageMetaContents($url);
+        dd($b);
     }
 
     public function getIndex()
@@ -768,10 +778,6 @@ class HomeController extends Controller
     {
 
         try{
-
-
-
-
             if (starts_with($request->url, 'https://')) {
             $actual_url = str_replace('https://', null, $request->url);
             $protocol = 'https';
@@ -787,8 +793,27 @@ class HomeController extends Controller
         $url->protocol = $protocol;
         $url->shorten_suffix = $random_string;
 
-        $_url = $this->getPageTitle($request->url);
-        $url->title = $_url;
+        //$_url = $this->getPageTitle($request->url);
+        //$url->title = $_url;
+
+        $meta_data = $this->getPageMetaContents($request->url);
+        $url->title           = $meta_data['title'];
+
+        //facebook data
+        $url->og_image        = $meta_data['og_image'];
+        $url->og_description  = $meta_data['og_description'];
+        $url->og_url          = $meta_data['og_url'];
+        $url->og_title        = $meta_data['og_title'];
+
+        //twitter data
+        $url->twitter_image   = $meta_data['twitter_image'] == null ? $meta_data['og_image'] : $meta_data['twitter_image'];
+        $url->og_description  = $meta_data['twitter_description'];
+        $url->og_url          = $meta_data['twitter_url'];
+        $url->og_title        = $meta_data['twitter_title'];
+
+        //meta description
+        $url->meta_description = $meta_data['meta_description'];
+
         $url->user_id = 0;
 
         if ($url->save()) {
@@ -852,8 +877,26 @@ class HomeController extends Controller
         $url->protocol = $protocol;
         $url->shorten_suffix = $random_string;
 
-        $_url = $this->getPageTitle($request->url);
-        $url->title = $_url;
+        //$_url = $this->getPageTitle($request->url);
+        //$url->title = $_url;
+        $meta_data = $this->getPageMetaContents($request->url);
+        $url->title           = $meta_data['title'];
+
+        //facebook data
+        $url->og_image        = $meta_data['og_image'];
+        $url->og_description  = $meta_data['og_description'];
+        $url->og_url          = $meta_data['og_url'];
+        $url->og_title        = $meta_data['og_title'];
+
+        //twitter data
+        $url->twitter_image         = $meta_data['twitter_image'] == null ? $meta_data['og_image'] : $meta_data['twitter_image'];
+        $url->twitter_description   = $meta_data['twitter_description'];
+        $url->twitter_url           = $meta_data['twitter_url'];
+        $url->twitter_title         = $meta_data['twitter_title'];
+
+        //meta description
+        $url->meta_description = $meta_data['meta_description'];
+
         $url->user_id = $request->user_id;
         if ($url->save()) {
           if($checkboxAddFbPixelid && $fbPixelid != null) {
@@ -910,8 +953,26 @@ class HomeController extends Controller
         $url->actual_url = $actual_url;
         $url->shorten_suffix = $request->custom_url;
 
-        $_url = $this->getPageTitle($request->actual_url);
-        $url->title = $_url;
+        //$_url = $this->getPageTitle($request->actual_url);
+        //$url->title = $_url;
+
+        $meta_data = $this->getPageMetaContents($request->actual_url);
+        $url->title           = $meta_data['title'];
+
+        //facebook data
+        $url->og_image        = $meta_data['og_image'];
+        $url->og_description  = $meta_data['og_description'];
+        $url->og_url          = $meta_data['og_url'];
+        $url->og_title        = $meta_data['og_title'];
+
+        //twitter data
+        $url->twitter_image         = $meta_data['twitter_image'] == null ? $meta_data['og_image'] : $meta_data['twitter_image'];
+        $url->twitter_description   = $meta_data['twitter_description'];
+        $url->twitter_url           = $meta_data['twitter_url'];
+        $url->twitter_title         = $meta_data['twitter_title'];
+
+        //meta description
+        $url->meta_description = $meta_data['meta_description'];
 
         $url->user_id = $request->user_id;
         $url->is_custom = 1;
@@ -966,6 +1027,102 @@ class HomeController extends Controller
                 return null;
             }
         }
+    }
+
+
+    /**
+     * Fetch the meta data [title, description, url, image] of an actual url.
+     *
+     * @param string $url
+     *
+     * @return array
+     */
+    private function getPageMetaContents($url)
+    {
+      //$url = 'https://www.invoicingyou.com/';
+      $html = file_get_contents($url);
+
+      //reduction of https://www.invoicingyou.com/dashboard to invoicingyou.com
+      $filtered_url = explode('/',$url);
+      $final_url = null;
+      if(strpos($filtered_url[2],'www.') && isset($filtered_url[2]) && strpos($filtered_url[2],'.')) {
+        $final_url = (substr($filtered_url[2],strpos($filtered_url[2],'.')+1,strlen($filtered_url[2])));
+      } else {
+        $final_url = $filtered_url[2];
+      }
+
+
+      $meta = array();
+      $meta['title'] = $meta['meta_description'] = null;
+      $meta['og_title'] = $meta['og_description'] = $meta['og_url'] = $meta['og_image'] = null;
+      $meta['twitter_title'] = $meta['twitter_description'] = $meta['twitter_url'] = $meta['twitter_image'] = null;
+      if (strlen($html) > 0) {
+          if (preg_match("/\<title\>(.*)\<\/title\>/i", (string) $html, $title)) {
+              $meta['title'] = $title[1];
+          }
+
+          $doc = new \DOMDocument();
+          @$doc->loadHTML($html);
+          $metas = $doc->getElementsByTagName('meta');
+          for ($i = 0; $i < $metas->length; $i++)
+          {
+              $m = $metas->item($i);
+              switch ($m->getAttribute('property')) {
+
+                //meta data attributes for fb
+                case 'og:title':
+                      $meta['og_title'] = $m->getAttribute('content');
+                  break;
+                case 'og:description':
+                      $meta['og_description'] = $m->getAttribute('content');
+                  break;
+                case 'og:url':
+                      $meta['og_url'] = $final_url != null ? $final_url : $m->getAttribute('content');
+                  break;
+                case 'og:image':
+                      $meta['og_image'] = $m->getAttribute('content');
+                  break;
+
+                default:
+                  # code...
+                  break;
+              }
+
+              switch($m->getAttribute('name')) {
+                //meta data attributes for instagram
+                case 'twitter:title':
+                      $meta['twitter_title'] = $m->getAttribute('content');
+                  break;
+
+                case 'twitter:description':
+                      $meta['twitter_description'] = $m->getAttribute('content');
+                  break;
+                case 'twitter:url':
+                      $meta['twitter_url'] = $final_url != null ? $final_url : $m->getAttribute('content');
+                  break;
+                case 'twitter:image':
+                      $meta['twitter_image'] = $m->getAttribute('content');
+                  break;
+
+                default:
+                  # code...
+                  break;
+              }
+
+              switch($m->getAttribute('name')) {
+                //meta data attributes for instagram
+
+                case 'description':
+                      $meta['meta_description'] = $m->getAttribute('content');
+                  break;
+
+                default:
+                  # code...
+                  break;
+              }
+          }
+      }
+      return $meta;
     }
     // https://www.google.co.in/search?client=ubuntu&channel=fs&q=google&ie=utf-8&oe=utf-8&gfe_rd=cr&ei=Dd5XWLrMAdL08weqgq_ACw
 

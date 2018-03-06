@@ -27,22 +27,77 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
     <meta name="robots" content="noindex,nofollow" />
 
-    <title>Tier5 | URL Shortener</title>
-    <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
+    <title>@if(strlen($url->title) > 0){{$url->title}}@else{{'Tier5 | URL Shortener'}}@endif</title>
+
+
+    @if(strlen($url->og_title) > 0)
+    <!-- Title to display for fb open graph for destination url -->
+      <meta property="og:title" content="{{$url->og_title}}" />
+    @endif
+
+
+    @if(strlen($url->og_description) > 0)
+    <!-- description to display content for fb open graph for destination url -->
+      <meta property="og:description" content="{{$url->og_description}}" />
+    @endif
+
+
+    @if(strlen($url->og_url) > 0)
+    <!-- URL to display for fb open graph for destination url -->
+      <meta property="og:url" content="{{$url->og_url}}" />
+    @endif
+
+
+    @if(strlen($url->og_image) > 0)
+    <!-- URL to display for fb open graph for image -->
+      <meta property="og:image" content="{{$url->og_image}}" />
+    @endif
+
+
+    @if(strlen($url->meta_description) > 0)
+    <!-- meta description -->
+      <meta name="description" content="{{$url->meta_description}}" />
+    @endif
+
     <meta name="keywords" content="Tier5 URL Shortener, Tr5.io, Tier5" />
     <meta name="author" content="Tier5 LLC" />
+    <!--
     <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
-    <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
-    <meta name="author" content="Tier5 LLC" />
+    -->
+
+    <!--
     <meta property="og:title" content="Tier5 URL Shortener" />
+    -->
+
+    {{--<meta property="og:site_name" content="Tr5.io" />--}}
+    <!--
     <meta property="og:url" content="tr5.io" />
-    <meta property="og:site_name" content="Tr5.io" />
     <meta property="og:description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
-    <meta name="twitter:title" content="Tr5.io"  />
-    <meta name="twitter:url" content="tr5.io"  />
+    -->
+
+    @if(strlen($url->twitter_image) > 0)
+    <!-- Title to display for twitter for tittle -->
+      <meta name="twitter:title" content="{{$url->twitter_image}}" />
+    @endif
+
+    @if(strlen($url->twitter_url) > 0)
+    <!-- Title to display for twitter for destination url -->
+      <meta name="twitter:url" content="{{$url->twitter_url}}" />
+    @endif
+
+    @if(strlen($url->twitter_description) > 0)
+    <!-- Title to display for twitter for description -->
+      <meta name="twitter:description" content="{{$url->twitter_description}}" />
+    @endif
+
+    @if(strlen($url->twitter_image) > 0)
+    <!-- Title to display for twitter for image -->
+      <meta name="twitter:image" content="{{$url->twitter_image}}" />
+    @endif
+
     <meta name="twitter:card" content="summary"  />
-    <meta property="og:url" content="tr5.io" />
-    <meta property="al:web:url" content="{{ $url->protocol }}://{{ $url->actual_url }}" />
+
+    {{--<meta property="al:web:url" content="{{ $url->protocol }}://{{ $url->actual_url }}" />--}}
     <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
     <link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
     <style type="text/css">
