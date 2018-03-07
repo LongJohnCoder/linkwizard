@@ -165,8 +165,14 @@
 	                            <input id="givenUrl" class="myInput form-control" type="text" name="" placeholder="Paste Your URL Here">
 															<br>
 															<label for="addFbPixelid" style="color:white">Add facebook pixel</label>
-															<input id="checkboxAddFbPixelid" type="checkbox" style="color: white">
+															<input id="checkboxAddFbPixelid" type="checkbox" name="chk_fb_short" style="color: white">
 															<input id="fbPixelid" class="myInput form-control" type="number" name="client_fb_pixel_id" placeholder="Paste Your Facebook-pixel-id Here" style="display : none">
+
+															<br>
+															<label for="addGlPixelid" style="color:white">Add google pixel</label>
+															<input id="checkboxAddGlPixelid" type="checkbox" name="chk_gl_short" style="color: white">
+															<input id="glPixelid" class="myInput form-control" type="number" name="client_gl_pixel_id" placeholder="Paste Your Google-pixel-id Here" style="display : none">
+
 
 															<button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
 	                                Shorten Url
@@ -190,9 +196,13 @@
 	                            </div>
 															<br>
 
-															<label for="checkboxAddFbPixelid" style="color:white">Add facebook pixel</label>
-															<input id="checkboxAddFbPixelid1" type="checkbox" style="color: white">
+															<label for="checkboxAddFbPixelid1" style="color:white">Add facebook pixel</label>
+															<input id="checkboxAddFbPixelid1" type="checkbox" name="chk_fb_custom" style="color: white">
 															<input id="fbPixelid1" class="myInput form-control" type="number" placeholder="Paste Your Facebook-pixel-id Here" style="display : none">
+															<br>
+															<label for="addGlPixelid1" style="color:white">Add google pixel</label>
+															<input id="checkboxAddGlPixelid1" type="checkbox" name="chk_gl_custom" style="color: white">
+															<input id="glPixelid1" class="myInput form-control" type="number" name="client_gl_pixel_id1" placeholder="Paste Your Google-pixel-id Here" style="display : none">
 
 	                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
 	                                Shorten Url
@@ -850,25 +860,90 @@
 
 	$(document).ready(function() {
 
-		$('#checkboxAddFbPixelid, input[type="checkbox"]').on('click', function(){
-			if($(this).prop("checked") == true){
-					$('#fbPixelid').show();
-      }
-      else if($(this).prop("checked") == false){
-					$('#fbPixelid').hide();
-					$('#fbPixelid').val('');
-      }
-		});
+		// $('#checkboxAddGlPixelid').on('checked', function(){
+		// 	if($(this).prop("checked") == true){
+		// 			$('#glPixelid').show();
+    //   }
+    //   else if($(this).prop("checked") == false){
+		// 			$('#glPixelid').hide();
+		// 			$('#glPixelid').val('');
+    //   }
+		// });
 
-		$('#checkboxAddFbPixelid1, input[type="checkbox"]').on('click', function(){
-			if($(this).prop("checked") == true){
-					$('#fbPixelid1').show();
-      }
-      else if($(this).prop("checked") == false){
-					$('#fbPixelid1').hide();
-					$('#fbPixelid1').val('');
-      }
-		});
+		$(":checkbox").on("change", function() {
+
+				//facebook analytics checkbox for short urls
+        if (this.id === "checkboxAddFbPixelid" && this["name"] === "chk_fb_short") {
+					if(this.checked) {
+          	$('#fbPixelid').show();
+					} else {
+						$('#fbPixelid').hide();
+						$('#fbPixelid').val('');
+					}
+        }
+
+				//facebook analytics checkbox for custom urls
+				if (this.id === "checkboxAddFbPixelid1" && this["name"] === "chk_fb_custom") {
+					if(this.checked) {
+						$('#fbPixelid1').show();
+					} else {
+						$('#fbPixelid1').hide();
+						$('#fbPixelid1').val('');
+					}
+	      }
+
+				//google analytics checkbox for short urls
+				if (this.id === "checkboxAddGlPixelid" && this["name"] === "chk_gl_short") {
+					if(this.checked) {
+						$('#glPixelid').show();
+					} else {
+						$('#glPixelid').hide();
+						$('#glPixelid').val('');
+					}
+	      }
+
+				//google analytics checkbox for custom urls
+				if (this.id === "checkboxAddGlPixelid1" && this["name"] === "chk_gl_custom") {
+					if(this.checked) {
+						$('#glPixelid1').show();
+					} else {
+						$('#glPixelid1').hide();
+						$('#glPixelid1').val('');
+					}
+	      }
+				
+    });
+
+		// $('#checkboxAddFbPixelid, input[type="checkbox"&name="chb1"]').on('click', function(){
+		// 	alert('here');
+		// 	if($(this).prop("checked") == true){
+		// 			$('#fbPixelid').show();
+    //   }
+    //   else if($(this).prop("checked") == false){
+		// 			$('#fbPixelid').hide();
+		// 			$('#fbPixelid').val('');
+    //   }
+		// });
+
+		// $('#checkboxAddGlPixelid1, input[type="checkbox"]').on('click', function(){
+		// 	if($(this).prop("checked") == true){
+		// 			$('#glPixelid1').show();
+    //   }
+    //   else if($(this).prop("checked") == false){
+		// 			$('#glPixelid1').hide();
+		// 			$('#glPixelid1').val('');
+    //   }
+		// });
+    //
+		// $('#checkboxAddFbPixelid1, input[type="checkbox"]').on('click', function(){
+		// 	if($(this).prop("checked") == true){
+		// 			$('#fbPixelid1').show();
+    //   }
+    //   else if($(this).prop("checked") == false){
+		// 			$('#fbPixelid1').hide();
+		// 			$('#fbPixelid1').val('');
+    //   }
+		// });
 
 		$(this).on('click', '.menu-icon', function(){
 	    	$(this).addClass("close");
@@ -977,6 +1052,8 @@
 
 										var checkboxAddFbPixelid 	= 	$("#checkboxAddFbPixelid1").prop('checked');
 										var fbPixelid							= 	$("#fbPixelid1").val();
+										var checkboxAddGlPixelid 	= 	$("#checkboxAddGlPixelid1").prop('checked');
+										var glPixelid							= 	$("#glPixelid1").val();
 
                     $.ajax({
 	                    type:"POST",
@@ -996,11 +1073,13 @@
 			                                type: "POST",
 			                                url: "{{ route('postCustomUrlTier5') }}",
 			                                data: {
-																					checkboxAddFbPixelid : checkboxAddFbPixelid,
-																					fbPixelid		: fbPixelid,
-			                                    actual_url	: actualUrl,
-			                                    custom_url	: customUrl,
-			                                    user_id			: userId,
+																					checkboxAddFbPixelid 	: checkboxAddFbPixelid,
+																					fbPixelid							: fbPixelid,
+																					checkboxAddGlPixelid 	: checkboxAddGlPixelid,
+																					glPixelid 						: glPixelid,
+			                                    actual_url						: actualUrl,
+			                                    custom_url						: customUrl,
+			                                    user_id								: userId,
 			                                    _token: "{{ csrf_token() }}"
 			                                }, success: function (response) {
 			                                	console.log('postCustomUrlTier5');
@@ -1107,6 +1186,9 @@
 
 										var checkboxAddFbPixelid 	= 	$("#checkboxAddFbPixelid").prop('checked');
 										var fbPixelid							= 	$("#fbPixelid").val();
+										var checkboxAddGlPixelid 	= 	$("#checkboxAddGlPixelid").prop('checked');
+										var glPixelid							= 	$("#glPixelid").val();
+
                     if(url) {
                         if(validUrl) {
                             HoldOn.open(options);
@@ -1114,10 +1196,12 @@
                                 type: 'POST',
                                 url: "{{ route('postShortUrlTier5') }}",
                                 data: {
-																	url: url,
-																	user_id: userId,
-																	checkboxAddFbPixelid : checkboxAddFbPixelid,
-																	fbPixelid : fbPixelid,
+																	url										: url,
+																	user_id								: userId,
+																	checkboxAddFbPixelid 	: checkboxAddFbPixelid,
+																	fbPixelid 						: fbPixelid,
+																	checkboxAddGlPixelid 	: checkboxAddGlPixelid,
+																	glPixelid 						: glPixelid,
 																	_token: "{{ csrf_token() }}"},
                                 success: function (response) {
                                 	console.log('postShortUrlTier5');

@@ -858,8 +858,15 @@ class HomeController extends Controller
     public function postShortUrlTier5(Request $request)
     {
       try{
+
+        //facebook pixel id
         $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
         $fbPixelid            = isset($request->fbPixelid) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null;
+
+        //google pixel id
+        $checkboxAddGlPixelid = isset($request->checkboxAddGlPixelid) && $request->checkboxAddGlPixelid == true ? true : false;
+        $glPixelid            = isset($request->glPixelid) && strlen($request->glPixelid) > 0 ? $request->glPixelid : null;
+
         // print("<pre>");print_r($checkboxAddFbPixelid.' --- '.$fbPixelid);
         // die();
         if (starts_with($request->url, 'https://')) {
@@ -896,26 +903,33 @@ class HomeController extends Controller
 
         //meta description
         $url->meta_description = $meta_data['meta_description'];
-
         $url->user_id = $request->user_id;
+
         if ($url->save()) {
-          if($checkboxAddFbPixelid && $fbPixelid != null) {
+          if(($checkboxAddFbPixelid && $fbPixelid != null) || $checkboxAddGlPixelid && $glPixelid != null) {
+
             $urlfeature = new UrlFeature();
             $urlfeature->url_id = $url->id;
-            $urlfeature->fb_pixel_id = $fbPixelid;
+            if($checkboxAddFbPixelid && $fbPixelid != null) {
+              $urlfeature->fb_pixel_id = $fbPixelid;
+            }
+            if($checkboxAddGlPixelid && $glPixelid != null) {
+              $urlfeature->gl_pixel_id = $glPixelid;
+            }
+
             if($urlfeature->save()) {
               return response()->json([
-                  'status' => 'success',
-                  'url' => url('/').'/'.$random_string,
+                    'status' => 'success',
+                    'url' => url('/').'/'.$random_string,
               ]);
             } else {
               return response()->json(['status' => 'error']);
             }
           } else {
-            return response()->json([
-                'status' => 'success',
-                'url' => url('/').'/'.$random_string,
-            ]);
+              return response()->json([
+                    'status' => 'success',
+                    'url' => url('/').'/'.$random_string,
+              ]);
           }
         } else {
             return response()->json(['status' => 'error']);
@@ -938,8 +952,13 @@ class HomeController extends Controller
     {
       try {
 
+        //facebook pixel id
         $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
         $fbPixelid            = isset($request->fbPixelid) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null;
+
+        //google pixel id
+        $checkboxAddGlPixelid = isset($request->checkboxAddGlPixelid) && $request->checkboxAddGlPixelid == true ? true : false;
+        $glPixelid            = isset($request->glPixelid) && strlen($request->glPixelid) > 0 ? $request->glPixelid : null;
 
         //print("<pre>");print_r($request->all());
         //die();
@@ -978,10 +997,17 @@ class HomeController extends Controller
         $url->is_custom = 1;
         if ($url->save()) {
 
-          if($checkboxAddFbPixelid && $fbPixelid != null) {
+          if(($checkboxAddFbPixelid && $fbPixelid != null) || $checkboxAddGlPixelid && $glPixelid != null) {
+
             $urlfeature = new UrlFeature();
             $urlfeature->url_id = $url->id;
-            $urlfeature->fb_pixel_id = $fbPixelid;
+            if($checkboxAddFbPixelid && $fbPixelid != null) {
+              $urlfeature->fb_pixel_id = $fbPixelid;
+            }
+            if($checkboxAddGlPixelid && $glPixelid != null) {
+              $urlfeature->gl_pixel_id = $glPixelid;
+            }
+
             if($urlfeature->save()) {
               return response()->json([
                     'status' => 'success',
@@ -991,16 +1017,12 @@ class HomeController extends Controller
               return response()->json(['status' => 'error']);
             }
           } else {
-            return response()->json([
-                  'status' => 'success',
-                  'url' => url('/').'/'.$url->shorten_suffix,
-            ]);
+              return response()->json([
+                    'status' => 'success',
+                    'url' => url('/').'/'.$url->shorten_suffix,
+              ]);
           }
 
-          // return response()->json([
-          //       'status' => 'success',
-          //       'url' => url('/').'/'.$url->shorten_suffix,
-          // ]);
         } else {
             return response()->json(['status' => 'error']);
         }
