@@ -21,6 +21,13 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 
     <meta name="robots" content="noindex,nofollow" />
 
+    @if(strlen($url->title) > 0)
+      <title>{{$url->title}}</title>
+    @endif
+    @if(strlen($url->meta_description) > 0)
+      <meta name="description" content="{{$url->meta_description}}">
+    @endif
+
     @if(strlen($url->og_title) > 0)
       <meta property="og:title" content="{{$url->og_title}}" />
     @endif
@@ -33,13 +40,10 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     @if(strlen($url->og_image) > 0)
       <meta property="og:image" content="{{$url->og_image}}" />
     @endif
-    @if(strlen($url->meta_description) > 0)
-      <meta name="description" content="{{$url->meta_description}}" />
-    @endif
+
     @if(strlen($url->twitter_image) > 0)
       <meta name="twitter:title" content="{{$url->twitter_image}}" />
     @endif
-
     @if(strlen($url->twitter_url) > 0)
       <meta name="twitter:url" content="{{$url->twitter_url}}" />
     @endif
