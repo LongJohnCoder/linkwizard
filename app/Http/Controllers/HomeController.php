@@ -1043,13 +1043,13 @@ class HomeController extends Controller
       $html = file_get_contents($url);
 
       //reduction of https://www.invoicingyou.com/dashboard to invoicingyou.com
-      $filtered_url = explode('/',$url);
-      $final_url = null;
-      if(strpos($filtered_url[2],'www.') && isset($filtered_url[2]) && strpos($filtered_url[2],'.')) {
+      //$filtered_url = explode('/',$url);
+      //$final_url = null;
+      /*if(strpos($filtered_url[2],'www.') && isset($filtered_url[2]) && strpos($filtered_url[2],'.')) {
         $final_url = (substr($filtered_url[2],strpos($filtered_url[2],'.')+1,strlen($filtered_url[2])));
       } else {
         $final_url = $filtered_url[2];
-      }
+      }*/
 
 
       $meta = array();
@@ -1077,7 +1077,7 @@ class HomeController extends Controller
                       $meta['og_description'] = $m->getAttribute('content');
                   break;
                 case 'og:url':
-                      $meta['og_url'] = $final_url != null ? $final_url : $m->getAttribute('content');
+                      $meta['og_url'] = $url;
                   break;
                 case 'og:image':
                       $meta['og_image'] = $m->getAttribute('content');
@@ -1093,12 +1093,11 @@ class HomeController extends Controller
                 case 'twitter:title':
                       $meta['twitter_title'] = $m->getAttribute('content');
                   break;
-
                 case 'twitter:description':
                       $meta['twitter_description'] = $m->getAttribute('content');
                   break;
                 case 'twitter:url':
-                      $meta['twitter_url'] = $final_url != null ? $final_url : $m->getAttribute('content');
+                      $meta['twitter_url'] = $url;
                   break;
                 case 'twitter:image':
                       $meta['twitter_image'] = $m->getAttribute('content');
