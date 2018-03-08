@@ -72,6 +72,8 @@ ul{
     padding: 0;
 }
 
+
+
 .clear{
     clear: both;
     display: inline-block;
@@ -269,13 +271,13 @@ ul{
 .tabsection ::-webkit-scrollbar {
     width:8px;
 }
- 
+
 .tabsection ::-webkit-scrollbar-track {
     border-radius: 10px;
     background: #fff;
     box-shadow: inset 1px 1px 1px 1px #ccc;
 }
- 
+
 .tabsection ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: #E1E4E9;
@@ -286,15 +288,15 @@ ul{
 }
 
 .form input:-moz-placeholder { /* Firefox 18- */
-   color: #C5C5C5;  
+   color: #C5C5C5;
 }
 
 .form input::-moz-placeholder {  /* Firefox 19+ */
-   color: #C5C5C5;  
+   color: #C5C5C5;
 }
 
-.form input:-ms-input-placeholder {  
-   color: #C5C5C5;  
+.form input:-ms-input-placeholder {
+   color: #C5C5C5;
 }
 
 header{
@@ -443,7 +445,7 @@ header.brandingheader {
     position: absolute;
     top: 10px;
     right: 10px;
-} 
+}
 
 .top-menu{
     padding: 25px 0 0;
@@ -774,7 +776,7 @@ a.link{
 }
 
 .main-content{
-    margin-bottom:100px; 
+    margin-bottom:100px;
 }
 
 .tab-content p{
@@ -1237,8 +1239,8 @@ display:none;
     width:99999px;
     margin:0px;
     padding:0px;
-    list-style-type:none;   
-    text-align:center;  
+    list-style-type:none;
+    text-align:center;
 }
 
 .nbs-flexisel-inner {
@@ -1279,7 +1281,7 @@ display:none;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 22px;    
+    font-size: 22px;
 }
 
 .nbs-flexisel-nav-left {
@@ -1295,7 +1297,7 @@ display:none;
 }
 
 .nbs-flexisel-nav-right {
-    right: 5px;    
+    right: 5px;
 }
 
 .nbs-flexisel-nav-right:before {
@@ -1524,7 +1526,7 @@ display:none;
 
 .faq .ques{
     color: #252525;
-    font-size: 22px;    
+    font-size: 22px;
 }
 
 .faq .ans{
@@ -1637,7 +1639,7 @@ display:none;
     width: auto;
     height: auto;
     margin-left: 20px;
-} 
+}
 
 #subdomainModalBody.modal-body .btn{
     margin-top: 0;
@@ -1763,7 +1765,7 @@ form#datePickerForm .input-daterange i{
 
 footer{
     background: #242424;
-    
+
     text-align: center;
 }
 
@@ -2018,7 +2020,7 @@ footer .social-icon a:last-child{
     .fourth-section hr {
         width: 100%;
     }
-    
+
     footer .copyright p {
         font-size: 10px;
     }

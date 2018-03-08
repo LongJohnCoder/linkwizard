@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use App\UrlFeature;
-
+use App\UrlSearchInfo;
+use App\UrlTag;
+use App\UrlTagMap;
 
 class HomeController extends Controller
 {
@@ -851,12 +853,31 @@ class HomeController extends Controller
 
 
 
+    private function setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$urlId) {
+      $urlTagMap = [];
+      if($allowTags && count($searchTags) > 0) {
+        foreach ($searchTags as $key => $tag) {
+          $urlTag     = UrlTag::firstOrCreate(['tag'=>$tag]);
+          $urlTagMap  = new UrlTagMap;
+          $urlTagMap->url_id = $urlId;
+          $urlTagMap->url_tag_id = $urlTag->id;
+          $urlTagMap->save();
+        }
+      }
 
+      if($allowDescription && strlen($searchDescription) > 0) {
+        $urlSearchInfo = new UrlSearchInfo;
+        $urlSearchInfo->url_id = $urlId;
+        $urlSearchInfo->description = $searchDescription;
+        $urlSearchInfo->save();
+      }
+    }
 
 
 
     public function postShortUrlTier5(Request $request)
     {
+
       try{
 
         //facebook pixel id
@@ -867,8 +888,14 @@ class HomeController extends Controller
         $checkboxAddGlPixelid = isset($request->checkboxAddGlPixelid) && $request->checkboxAddGlPixelid == true ? true : false;
         $glPixelid            = isset($request->glPixelid) && strlen($request->glPixelid) > 0 ? $request->glPixelid : null;
 
-        // print("<pre>");print_r($checkboxAddFbPixelid.' --- '.$fbPixelid);
-        // die();
+        //set tags and description for search for a url
+        $allowTags            = isset($request->allowTag) && $request->allowTag == true ? true : false;
+        $searchTags           = isset($request->tags) && count($request->tags) > 0 ? $request->tags : null;
+
+        $allowDescription     = isset($request->allowDescription) && $request->allowDescription == true ? true : false;
+        $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
+
+
         if (starts_with($request->url, 'https://')) {
             $actual_url = str_replace('https://', null, $request->url);
             $protocol = 'https';
@@ -918,6 +945,9 @@ class HomeController extends Controller
             }
 
             if($urlfeature->save()) {
+
+              $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
+
               return response()->json([
                     'status' => 'success',
                     'url' => url('/').'/'.$random_string,
@@ -926,6 +956,9 @@ class HomeController extends Controller
               return response()->json(['status' => 'error']);
             }
           } else {
+
+              $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
+
               return response()->json([
                     'status' => 'success',
                     'url' => url('/').'/'.$random_string,
@@ -936,7 +969,7 @@ class HomeController extends Controller
         }
       }
       catch(\Exception $e) {
-        return response()->json(['status' => 'error', 'msg' => $e->getMessage()]);
+        return response()->json(['status' => 'error', 'msg' => $e->getMessage(), 'line' => $e->getLine()]);
       }
     }
 
@@ -959,6 +992,14 @@ class HomeController extends Controller
         //google pixel id
         $checkboxAddGlPixelid = isset($request->checkboxAddGlPixelid) && $request->checkboxAddGlPixelid == true ? true : false;
         $glPixelid            = isset($request->glPixelid) && strlen($request->glPixelid) > 0 ? $request->glPixelid : null;
+
+        //set tags and description for search for a url
+        $allowTags            = isset($request->allowTag) && $request->allowTag == true ? true : false;
+        $searchTags           = isset($request->tags) && count($request->tags) > 0 ? $request->tags : null;
+
+        $allowDescription     = isset($request->allowDescription) && $request->allowDescription == true ? true : false;
+        $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
+
 
         //print("<pre>");print_r($request->all());
         //die();
@@ -1009,6 +1050,9 @@ class HomeController extends Controller
             }
 
             if($urlfeature->save()) {
+
+              $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
+
               return response()->json([
                     'status' => 'success',
                     'url' => url('/').'/'.$url->shorten_suffix,
@@ -1017,6 +1061,9 @@ class HomeController extends Controller
               return response()->json(['status' => 'error']);
             }
           } else {
+
+              $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
+
               return response()->json([
                     'status' => 'success',
                     'url' => url('/').'/'.$url->shorten_suffix,

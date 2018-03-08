@@ -23,6 +23,12 @@ div.bhoechie-tab-menu {
     background-color: #C7CED1;
 }
 
+.description{
+  width : 100%;
+  display:box;
+  word-wrap: break-word;
+}
+
 div.bhoechie-tab-menu div.list-group {
     margin-bottom: 0;
     overflow-x: hidden;

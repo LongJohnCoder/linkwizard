@@ -35,6 +35,12 @@
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
 
 
+{{-- Tags css --}}
+<link rel="stylesheet" href="{{ URL('/')}}/public/css/bootstrap-tagsinput.css" />
+
+{{-- Tags js --}}
+<script src="{{URL::to('/').'/public/js/bootstrap-tagsinput.js'}}"></script>
+
 @if(\Session::has('plan'))
 <script type="text/javascript">
 	$(document).ready(function(){
@@ -173,10 +179,22 @@
 															<input id="checkboxAddGlPixelid" type="checkbox" name="chk_gl_short" style="color: white">
 															<input id="glPixelid" class="myInput form-control" type="number" name="client_gl_pixel_id" placeholder="Paste Your Google-pixel-id Here" style="display : none">
 
+															<br>
+															<label for="shortTags" style="color:white">Add tags</label>
+															<input id="shortTagsEnable" type="checkbox" name="shortTagsEnable" style="color: white">
+															<div id="shortTagsArea" style="display: none">
+																<input id="shortTagsContents" class="myInput form-control" data-role="tagsinput" type="text" name="shortTagsContents" placeholder="Mention tags for this link" style="display: none">
+															</div>
 
-															<button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
-	                                Shorten Url
-	                            </button><br>
+															<br>
+																<label for="shortDescription" style="color:white">Add description</label>
+																<input id="shortDescriptionEnable" type="checkbox" name="shortDescriptionEnable" style="color: white">
+																<input id="shortDescriptionContents" class="myInput form-control description" type="textarea" name="shortDescriptionContents" placeholder="Mention description for this link" style="display : none">
+
+																<button id="swalbtn" type="submit" class="btn btn-primary btn-sm">
+		                                Shorten Url
+		                            </button>
+															<br>
 	                        </div>
 		                </div>
 	                </div>
@@ -203,6 +221,18 @@
 															<label for="addGlPixelid1" style="color:white">Add google pixel</label>
 															<input id="checkboxAddGlPixelid1" type="checkbox" name="chk_gl_custom" style="color: white">
 															<input id="glPixelid1" class="myInput form-control" type="number" name="client_gl_pixel_id1" placeholder="Paste Your Google-pixel-id Here" style="display : none">
+
+															<br>
+															<label for="customTags" style="color:white">Add tags</label>
+															<input id="customTagsEnable" type="checkbox" name="customTagsEnable" style="color: white">
+															<div id="customTagsArea" style="display: none">
+																<input id="customTagsContents" class="myInput form-control" data-role="tagsinput" type="text" name="customTagsContents" placeholder="Mention tags for this link" style="display: none">
+															</div>
+
+															<br>
+																<label for="customDescription" style="color:white">Add description</label>
+																<input id="customDescriptionEnable" type="checkbox" name="customDescriptionEnable" style="color: white">
+																<input id="customDescriptionContents" class="myInput form-control description" type="textarea" name="customDescriptionContents" placeholder="Mention description for this link" style="display : none">
 
 	                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
 	                                Shorten Url
@@ -860,15 +890,11 @@
 
 	$(document).ready(function() {
 
-		// $('#checkboxAddGlPixelid').on('checked', function(){
-		// 	if($(this).prop("checked") == true){
-		// 			$('#glPixelid').show();
-    //   }
-    //   else if($(this).prop("checked") == false){
-		// 			$('#glPixelid').hide();
-		// 			$('#glPixelid').val('');
-    //   }
-		// });
+		$('.shortTagsContents').tagsinput({
+      	allowDuplicates: false,
+        // itemValue: 'id',  // this will be used to set id of tag
+        // itemText: 'label' // this will be used to set text of tag
+    });
 
 		$(":checkbox").on("change", function() {
 
@@ -905,25 +931,57 @@
 				//google analytics checkbox for custom urls
 				if (this.id === "checkboxAddGlPixelid1" && this["name"] === "chk_gl_custom") {
 					if(this.checked) {
+
 						$('#glPixelid1').show();
 					} else {
 						$('#glPixelid1').hide();
 						$('#glPixelid1').val('');
 					}
 	      }
-				
+
+				//addtags for short urls
+				if (this.id === "shortTagsEnable" && this["name"] === "shortTagsEnable") {
+					if(this.checked) {
+						$('#shortTagsArea').show();
+					} else {
+						$('#shortTagsArea').hide();
+						$("#shortTagsContents").tagsinput('removeAll');
+					}
+	      }
+
+				//addtags for custom urls
+				if (this.id === "customTagsEnable" && this["name"] === "customTagsEnable") {
+					if(this.checked) {
+						$('#customTagsArea').show();
+					} else {
+						$('#customTagsArea').hide();
+						$("#customTagsContents").tagsinput('removeAll');
+					}
+	      }
+
+				//add short descriptions for short urls
+				if (this.id === "shortDescriptionEnable" && this["name"] === "shortDescriptionEnable") {
+					if(this.checked) {
+						$('#shortDescriptionContents').show();
+					} else {
+						$('#shortDescriptionContents').hide();
+						$('#shortDescriptionContents').val('');
+					}
+	      }
+
+				//add short descriptions for short urls
+				if (this.id === "customDescriptionEnable" && this["name"] === "customDescriptionEnable") {
+					if(this.checked) {
+						$('#customDescriptionContents').show();
+					} else {
+						$('#customDescriptionContents').hide();
+						$('#customDescriptionContents').val('');
+					}
+				}
+
     });
 
-		// $('#checkboxAddFbPixelid, input[type="checkbox"&name="chb1"]').on('click', function(){
-		// 	alert('here');
-		// 	if($(this).prop("checked") == true){
-		// 			$('#fbPixelid').show();
-    //   }
-    //   else if($(this).prop("checked") == false){
-		// 			$('#fbPixelid').hide();
-		// 			$('#fbPixelid').val('');
-    //   }
-		// });
+
 
 		// $('#checkboxAddGlPixelid1, input[type="checkbox"]').on('click', function(){
 		// 	if($(this).prop("checked") == true){
@@ -1054,6 +1112,10 @@
 										var fbPixelid							= 	$("#fbPixelid1").val();
 										var checkboxAddGlPixelid 	= 	$("#checkboxAddGlPixelid1").prop('checked');
 										var glPixelid							= 	$("#glPixelid1").val();
+										var allowTag							=   $("#customTagsEnable").prop('checked');
+										var tags 									= 	$("#customTagsContents").tagsinput('items');
+										var allowDescription      = 	$("#customDescriptionEnable").prop('checked');
+										var searchDescription			= 	$("#customDescriptionContents").val();
 
                     $.ajax({
 	                    type:"POST",
@@ -1080,6 +1142,10 @@
 			                                    actual_url						: actualUrl,
 			                                    custom_url						: customUrl,
 			                                    user_id								: userId,
+																					allowTag							: allowTag,
+																					tags									: tags,
+																					allowDescription			: allowDescription,
+																					searchDescription			: searchDescription,
 			                                    _token: "{{ csrf_token() }}"
 			                                }, success: function (response) {
 			                                	console.log('postCustomUrlTier5');
@@ -1188,6 +1254,10 @@
 										var fbPixelid							= 	$("#fbPixelid").val();
 										var checkboxAddGlPixelid 	= 	$("#checkboxAddGlPixelid").prop('checked');
 										var glPixelid							= 	$("#glPixelid").val();
+										var allowTag							=   $("#shortTagsEnable").prop('checked');
+										var tags 									= 	$("#shortTagsContents").tagsinput('items');
+										var allowDescription      = 	$("#shortDescriptionEnable").prop('checked');
+										var searchDescription			= 	$("#shortDescriptionContents").val();
 
                     if(url) {
                         if(validUrl) {
@@ -1202,6 +1272,10 @@
 																	fbPixelid 						: fbPixelid,
 																	checkboxAddGlPixelid 	: checkboxAddGlPixelid,
 																	glPixelid 						: glPixelid,
+																	allowTag							: allowTag,
+																	tags									: tags,
+																	allowDescription			: allowDescription,
+																	searchDescription			: searchDescription,
 																	_token: "{{ csrf_token() }}"},
                                 success: function (response) {
                                 	console.log('postShortUrlTier5');

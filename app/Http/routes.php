@@ -13,7 +13,25 @@
 
 //test route
 Route::get('/test', function(){
-  dd('This is a test route');
+  //dd('This is a test route');
+  //dd(\App\UrlTag::firstOrCreate(['tag'=>'tag5']));
+
+  $allowTags = true;
+  $searchTags = ['lakd','aduyf','ajdflad','aldg'];
+
+  if($allowTags && count($searchTags) > 0) {
+    foreach ($searchTags as $key => $tag) {
+      dd(\App\UrlTag::firstOrCreate(['tag'=>(string)$tag]));
+      //dd($urlTag);
+      // $urlTagMap  = new \App\UrlTagMap;
+      // $urlTagMap->url_id = $urlId;
+      // $urlTagMap->url_tag_id = $urlTag->id;
+      // $urlTagMap->save();
+    }
+    dd('success');
+  }
+
+
 });
 
 Route::get('/test12',function(){
