@@ -116,6 +116,48 @@ class HomeController extends Controller
         }
     }
 
+    private function getDataOfSearchTags($textToSearch = '', $tagsToSearch = '', $userId) {
+      // $textToSearch = $request->textToSearch;
+      // $tagsToSearch = $request->tagsToSearch;
+      $flag = 0;
+      if(strlen($textToSearch) > 0 || strlen($tagsToSearch) > 0){
+        $urls = Url::where('user_id', $userId);
+        if(strlen($textToSearch) > 0) {
+          $urls = $urls->whereHas('urlSearchInfo', function($q) use($textToSearch) {
+            $q->whereRaw("MATCH (description) AGAINST ('".$textToSearch."' IN BOOLEAN MODE)");
+          });
+          $flag = 1;
+        }
+        if(strlen($tagsToSearch) > 0) {
+          $condition = $flag == 0 ? 'whereHas' : 'orWhereHas';
+          $urls = $urls->$condition('urlTagMap', function($q) use($tagsToSearch) {
+            $q->whereHas('urlTag', function($q2) use($tagsToSearch) {
+              $refinedTags = str_replace($tagsToSearch,',',' ');
+              $q2->whereRaw("MATCH (tag) AGAINST ('".$tagsToSearch."' IN BOOLEAN MODE)");
+            });
+          });
+        }
+        //print_r($urls->toSql());die();
+        $urls = $urls->get();
+        $count_url = $urls->count();
+        return [
+          'urls' => $urls,
+          'count_url' => $count_url
+        ];
+      } else {
+
+        $urls = Url::where('user_id', $userId)
+                ->orderBy('id', 'DESC')
+                ->get();
+        $count_url = $urls->count();
+
+        return [
+          'urls' => $urls,
+          'count_url' => $count_url
+        ];
+      }
+    }
+
     /**
      * Return URL data for chart.
      *
@@ -125,9 +167,40 @@ class HomeController extends Controller
      */
     public function postFetchChartData(Request $request)
     {
-        $urls = Url::where('user_id', $request->user_id)
-                    ->orderBy('id', 'DESC')
-                    ->get();
+        //print_r("<pre>");print_r($request->all());
+
+        $textToSearch = $request->textToSearch;
+        $tagsToSearch = $request->tagsToSearch;
+        // if(strlen($textToSearch) > 0 || strlen($tagsToSearch) > 0){
+        //   $urls = Url::where('user_id', $user->id);
+        //   if(strlen($textToSearch) > 0) {
+        //     $urls = $urls->whereHas('urlSearchInfo', function($q) use($textToSearch) {
+        //       $q->whereRaw("MATCH (description) AGAINST ('".$textToSearch."' IN BOOLEAN MODE)");
+        //     });
+        //   }
+        //   if(strlen($tagsToSearch) > 0) {
+        //     $urls = $urls->whereHas('urlTagMap', function($q) use($tagsToSearch) {
+        //       $q->whereHas('urlTag', function($q2) use($tagsToSearch) {
+        //         $refinedTags = str_replace($tagsToSearch,',',' ');
+        //         //$q2->query(\DB::raw('selct tag from url_tags WHERE MATCH (tag) AGAINST ('.$refinedTags.')'));
+        //         $q2->whereRaw("MATCH (tag) AGAINST ('".$tagsToSearch."' IN BOOLEAN MODE)");
+        //       });
+        //       //$q->select(\DB::raw('WHERE MATCH (description) AGAINST ('.$textToSearch.')'));
+        //     });
+        //   }
+        //   $urls = $urls->get();
+        //   $count_url = $urls->count();
+        // } else {
+        //
+        // $urls = Url::where('user_id', $request->user_id)
+        //             ->orderBy('id', 'DESC')
+        //             ->get();
+        // }
+
+        $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $request->user_id);
+        $urls       = $ret['urls'];
+        $count_url  = $ret['count_url'];
+
         $URLs = [];
         $URLstat = [];
         foreach ($urls as $key => $url) {
@@ -184,7 +257,7 @@ class HomeController extends Controller
      * @return Illuminate\Http\Response
      */
     public function postChartDataFilterDateRange(Request $request)
-    {
+    {   //print_r("<pre>");print_r($request->all());
         $start_date = new \DateTime($request->start_date);
         $end_date = new \DateTime($request->end_date);
 
@@ -1328,11 +1401,38 @@ class HomeController extends Controller
             else
             {
                     $user = Auth::user();
-                    $urls = Url::where('user_id', $user->id)
-                            ->orderBy('id', 'DESC')
-                            ->get();
+                    //code for search based on tags and description if the params are not empty
+                    $textToSearch = $request->textToSearch;
+                    $tagsToSearch = $request->tagsToSearch;
+                    // if(strlen($textToSearch) > 0 || strlen($tagsToSearch) > 0){
+                    //   $urls = Url::where('user_id', $user->id);
+                    //   if(strlen($textToSearch) > 0) {
+                    //     $urls = $urls->whereHas('urlSearchInfo', function($q) use($textToSearch) {
+                    //       $q->whereRaw("MATCH (description) AGAINST ('".$textToSearch."' IN BOOLEAN MODE)");
+                    //     });
+                    //   }
+                    //   if(strlen($tagsToSearch) > 0) {
+                    //     $urls = $urls->whereHas('urlTagMap', function($q) use($tagsToSearch) {
+                    //       $q->whereHas('urlTag', function($q2) use($tagsToSearch) {
+                    //         $refinedTags = str_replace($tagsToSearch,',',' ');
+                    //         //$q2->query(\DB::raw('selct tag from url_tags WHERE MATCH (tag) AGAINST ('.$refinedTags.')'));
+                    //         $q2->whereRaw("MATCH (tag) AGAINST ('".$tagsToSearch."' IN BOOLEAN MODE)");
+                    //       });
+                    //       //$q->select(\DB::raw('WHERE MATCH (description) AGAINST ('.$textToSearch.')'));
+                    //     });
+                    //   }
+                    //   $urls = $urls->get();
+                    //   $count_url = $urls->count();
+                    // } else {
+                    //   $urls = Url::where('user_id', $user->id)
+                    //           ->orderBy('id', 'DESC')
+                    //           ->get();
+                    //   $count_url = $urls->count();
+                    // }
 
-                    $count_url = $urls->count();
+                    $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
+                    $urls       = $ret['urls'];
+                    $count_url  = $ret['count_url'];
 
                     $count = DB::table('urls')
                         ->selectRaw('count(user_id) AS `count`')
@@ -1377,9 +1477,9 @@ class HomeController extends Controller
                     }
 
                     return view('dashboard2', [
-                        'count_url' => $count_url,
+                        'count_url' => $count_url,// dynamic
                         'user' => $user,
-                        'urls' => $urls,
+                        'urls' => $urls,// dynamic
                         'subscription_status' => $subscription_status,
                         'limit' => $limit,
                         'total_links' => $total_links,

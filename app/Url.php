@@ -8,7 +8,7 @@ class Url extends Model
 {
     /**
      * An url should belongs to a user.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
@@ -18,7 +18,7 @@ class Url extends Model
 
     /**
      * Get all the countries associated with an url.
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function countries()
@@ -28,7 +28,7 @@ class Url extends Model
 
     /**
      * Get all the platforms associated with an url.
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function platforms()
@@ -38,7 +38,7 @@ class Url extends Model
 
     /**
      * Get all the browsers associated with an url.
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function browsers()
@@ -48,11 +48,21 @@ class Url extends Model
 
     /**
      * Get the subdomain associated with an url.
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function subdomain()
     {
         return $this->hasOne('App\Subdomain');
+    }
+
+    public function urlSearchInfo()
+    {
+        return $this->hasOne('App\UrlSearchInfo');
+    }
+
+    public function urlTagMap()
+    {
+        return $this->hasMany('App\UrlTagMap');
     }
 }

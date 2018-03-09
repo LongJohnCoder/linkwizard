@@ -84,6 +84,9 @@ Route::group(['domain' => env('APP_HOST')], function () {
 
     Route::group(['prefix' => 'app'], function () {
         Route::group(['prefix' => 'url'], function () {
+
+            //search url with links
+
             Route::post('short', [
                 'uses' => 'HomeController@postShortUrlTier5',
                 'as' => 'postShortUrlTier5',
