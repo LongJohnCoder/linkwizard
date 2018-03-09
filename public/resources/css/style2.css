@@ -23,6 +23,30 @@ div.bhoechie-tab-menu {
     background-color: #C7CED1;
 }
 
+/* .dashboard-search{
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+
+    border: 5px solid white;
+    -webkit-box-shadow:
+      inset 0 0 8px  rgba(0,0,0,0.1),
+            0 0 16px rgba(0,0,0,0.1);
+    -moz-box-shadow:
+      inset 0 0 8px  rgba(0,0,0,0.1),
+            0 0 16px rgba(0,0,0,0.1);
+    box-shadow:
+      inset 0 0 8px  rgba(0,0,0,0.1),
+            0 0 16px rgba(0,0,0,0.1);
+    padding: 15px;
+    background: rgba(255,255,255,0.5);
+    margin: 0 0 10px 0;
+    width: 100%;
+}
+
+.dashboard-search:focus {
+    width: 100%;
+} */
+
 .description{
   width : 100%;
   display:box;
@@ -288,3 +312,12 @@ p.count i {
         overflow-y: auto;
     }
 }
+
+.search-wrap{background: #EDEDEE; padding: 15px 0;}
+.searchpart-area{padding: 15px 0 0;}
+.searchpart-area .btn{margin-top: 0; padding: 11px 12px;}
+.searchpart-area .less-pad{padding: 0 7px;}
+.searchpart-area .form-control{height: 44px;}
+
+
+.form-group .bootstrap-tagsinput{padding: 10px 12px; display: block; min-height: 44px;}

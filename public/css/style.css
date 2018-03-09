@@ -2214,3 +2214,12 @@ footer .social-icon a:last-child{
 
 
 }
+
+
+
+#myNav1 .mainscrool{max-height: 551px; overflow-y: auto; padding-bottom: 40px;}
+#myNav1 > div{top: 15%;}
+#myNav2 .mainscrool{max-height: 551px; overflow-y: auto; padding-bottom: 40px;}
+#myNav2 > div{top: 15%;}
+#shortTagsArea .bootstrap-tagsinput{display: block;}
+#customTagsArea .bootstrap-tagsinput{display: block;}
