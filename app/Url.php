@@ -11,6 +11,7 @@ class Url extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
+    protected $table = 'urls';
     public function user()
     {
         return $this->belongsTo('App\User');
@@ -64,5 +65,57 @@ class Url extends Model
     public function urlTagMap()
     {
         return $this->hasMany('App\UrlTagMap');
+    }
+
+    // public function urlTag()
+    // {
+    //     return $this->hasManyThrough('\App\UrlTag',
+    //           '\App\UrlTagMap',
+    //           'url_id',
+    //           '')
+    // }
+
+    // public function manyThroughMany($related, $through, $firstKey, $secondKey, $pivotKey)
+    // {
+    //     $model = new $related;
+    //     $table = $model->getTable();
+    //     $throughModel = new $through;
+    //     $pivot = $throughModel->getTable();
+    //
+    //     return $model
+    //         ->join($pivot, $pivot . '.' . $pivotKey, '=', $table . '.' . $secondKey)
+    //         ->select($table . '.*')
+    //         ->where($pivot . '.' . $firstKey, '=', $this->id);
+    // }
+
+    public function thisHasManyThrough($finalModel, $throughModel, $baseKey='id', $throughToBaseKey='url_id', $throughToFinalKey='url_tag_id', $finalKey='id', $rows = null)
+    {
+        $base         = 'urls';
+        $rowsToSelectFromBase = '';
+        if($rows != null && count($rows) > 0) {
+          foreach ($rows as $key => $colName) {
+            if($rowsToSelectFromBase != '') {
+              $rowsToSelectFromBase .= ','.$base.'.'.$colName;
+            } else {
+              $rowsToSelectFromBase .= $base.'.'.$colName;
+            }
+          }
+        } else {
+          $rowsToSelectFromBase .= $base.'*';
+        }
+
+        $final        = new $finalModel;
+        $final        = $final->getTable();
+        $through      = new $throughModel;
+        $through      = $through->getTable();
+
+        dd($this->join($through, $base.'.'.$baseKey, '=', $through.'.'.$throughToBaseKey)
+                      ->join($final,  $through.'.'.$throughToFinalKey, '=', $final.'.'.$finalKey)->toSql());
+                      //->select($rowsToSelectFromBase);
+    }
+
+    public function urlTag()
+    {
+        return $this->thisHasManyThrough('\App\UrlTag', '\App\UrlTagMap');
     }
 }

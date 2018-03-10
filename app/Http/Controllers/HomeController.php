@@ -116,6 +116,20 @@ class HomeController extends Controller
         }
     }
 
+    public function giveMyTags(Request $request){
+      if(\Auth::user()) {
+        $userId = \Auth::user()->id;
+        $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($userId) {
+                      $q->where('user_id',$userId);
+                    })->pluck('tag')->toArray();
+
+        return \Response::json([
+          'status'  =>  200,
+          'data'    =>  $urlTags
+        ]);
+      }
+    }
+
     private function getDataOfSearchTags($textToSearch = '', $tagsToSearch = '', $userId) {
       // $textToSearch = $request->textToSearch;
       // $tagsToSearch = $request->tagsToSearch;

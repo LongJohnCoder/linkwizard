@@ -6,6 +6,10 @@
 <body>
 <!-- head end -->
 
+<link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
+<script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
+<script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
+
 <!-- Header Start -->
 @include('contents/header')
 <!-- Header End -->
@@ -56,6 +60,51 @@
 @include('contents/footer')
 
 <script type="text/javascript">
+
+var giveMyTags = function() {
+	$.ajax({
+		type 	:	"POST",
+		url		:	"{{route('giveMyTags')}}",
+		data	: {_token:'{{csrf_token()}}'},
+		success : function(res) {
+			console.log(res);
+			var tagsArray = [];
+			for(var i = 0 ; i < res.data.length ; i ++) {
+				var ob = {tag : res.data[i]};
+				console.log('each ob : ',ob);
+				tagsArray.push(ob);
+			}
+			console.log('final tags : ',tagsArray);
+			$('#shortTagsContentss').selectize({
+				maxItems: null,
+				valueField: 'tag',
+				labelField: 'tag',
+				searchField: 'tag',
+				options: tagsArray,
+				create: true
+			});
+		},
+		error : function(res) {
+			console.log(res);
+		}
+	});
+}
+
+window.onload = function(){
+	console.log('reached here');
+	giveMyTags();
+}
+
+// var $select = $('#shortTagsContentss').selectize({
+// 				maxItems: null,
+// 				valueField: 'tag',
+// 				labelField: 'tag',
+// 				searchField: 'tag',
+// 				options: [
+// 					{tag: 'tag1'},{tag:'tag2'},{tag:'tag3'}
+// 				],
+// 				create: true
+// 			});
 
 	var maintainSidebar = function(thisInstance) {
 		//facebook analytics checkbox for short urls
@@ -166,25 +215,25 @@
 
 		});
 
-		$('.shortTagsContents').tagsinput({
-      	allowDuplicates: false,
-				maxChars: 20,
-        // itemValue: 'id',  // this will be used to set id of tag
-        // itemText: 'label' // this will be used to set text of tag
-    });
-		$('.customTagsContents').tagsinput({
-      	allowDuplicates: false,
-				maxChars: 20,
-        // itemValue: 'id',  // this will be used to set id of tag
-        // itemText: 'label' // this will be used to set text of tag
-    });
-		$('.dashboard-tags-to-search').tagsinput({
-      	allowDuplicates: false,
-				maxChars: 20,
-				maxTags: 3
-        // itemValue: 'id',  // this will be used to set id of tag
-        // itemText: 'label' // this will be used to set text of tag
-    });
+		// $('.shortTagsContents').tagsinput({
+    //   	allowDuplicates: false,
+		// 		maxChars: 20,
+    //     // itemValue: 'id',  // this will be used to set id of tag
+    //     // itemText: 'label' // this will be used to set text of tag
+    // });
+		// $('.customTagsContents').tagsinput({
+    //   	allowDuplicates: false,
+		// 		maxChars: 20,
+    //     // itemValue: 'id',  // this will be used to set id of tag
+    //     // itemText: 'label' // this will be used to set text of tag
+    // });
+		// $('.dashboard-tags-to-search').tagsinput({
+    //   	allowDuplicates: false,
+		// 		maxChars: 20,
+		// 		maxTags: 3
+    //     // itemValue: 'id',  // this will be used to set id of tag
+    //     // itemText: 'label' // this will be used to set text of tag
+    // });
 
 
 		$(":checkbox").on("change", function() {

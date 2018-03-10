@@ -12,4 +12,9 @@ class UrlTagMap extends Model
     {
         return $this->hasMany('App\UrlTag','id','url_tag_id');
     }
+
+    public function url()
+    {
+        return $this->hasOne('App\Url','id','url_id');
+    }
 }

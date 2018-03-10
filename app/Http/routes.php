@@ -15,6 +15,20 @@
 Route::get('/test', function(){
   //dd('This is a test route');
   //dd(\App\UrlTag::firstOrCreate(['tag'=>'tag5']));
+  $userId = 8;
+  // dd(\App\UrlTag::whereHas('urlTagMap',function($q) use($userId) {
+  //                 $q->whereHas('url', function($q1) use($userId) {
+  //                   $q1->where('user_id',$userId);
+  //                 })->whereHas('urlTag', function($q1) {
+  //                   $q1->select('tag');
+  //                 });
+  //           })->toSql());
+
+  dd(\App\UrlTag::whereHas('urlTagMap.url',function($q) use($userId) {
+                    $q->where('user_id',$userId);
+                  })->pluck('tag')->toArray());
+
+  dd(\App\Url::where('user_id',1)->first()->urlTag()->get());
 
   $allowTags = true;
   $searchTags = ['lakd','aduyf','ajdflad','aldg'];
@@ -86,6 +100,11 @@ Route::group(['domain' => env('APP_HOST')], function () {
         Route::group(['prefix' => 'url'], function () {
 
             //search url with links
+
+            Route::post('giveMyTags', [
+              'uses'  =>  'HomeController@giveMyTags',
+              'as'    =>  'giveMyTags'
+            ]);
 
             Route::post('short', [
                 'uses' => 'HomeController@postShortUrlTier5',
