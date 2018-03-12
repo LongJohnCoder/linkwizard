@@ -91,6 +91,11 @@ Route::group(['domain' => env('APP_HOST')], function () {
         'as' => 'getAnalyticsByDate',
     ]);
 
+    Route::get('/{url}/{subdirectory}/date/{date}/analytics', [
+        'uses' => 'HomeController@getAnalyticsBySubdirectoryDate',
+        'as' => 'getAnalyticsBySubdirectoryDate',
+    ]);
+
     Route::get('/{url}/country/{country}/analytics', [
         'uses' => 'HomeController@getAnalyticsByCountry',
         'as' => 'getAnalyticsByCountry',

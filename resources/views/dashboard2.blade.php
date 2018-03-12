@@ -61,6 +61,12 @@
 
 <script type="text/javascript">
 
+var appURL = "{{url('/')}}";
+appURL = appURL.replace('https://','');
+appURL = appURL.replace('http://','');
+
+console.log('appURL : ',appURL);
+
 var giveMyTags = function() {
 	$.ajax({
 		type 	:	"POST",
@@ -677,7 +683,7 @@ window.onload = function(){
                                     events:{
                                         click: function (event) {
                                             var pointName = event.point.name;
-                                            if (pointName.search('{{ url('/') }}')) {
+                                            if (pointName.search(appURL)) {
                                                 var pointData = event.point.year+' '+pointName;
                                                 chartDataStack = [];
                                                 chartDataStack.push(pointData);
@@ -783,6 +789,19 @@ window.onload = function(){
                 	console.log('postFetchChartData');
                 	console.log(response);
                     var chartDataStack = [];
+										var urlSeries = [];
+										if (response.urls.length > 0) {
+											var ur_len = response.urls.length;
+											for(var i = 0 ; i < ur_len ; i ++) {
+												var ur_obj = {
+													name 	: response.urls[i]['name'],
+													id 		:	response.urls[i]['name'],
+													data 	:	response.urlStat[i]
+												};
+												urlSeries.push(ur_obj);
+												ur_obj = null;
+											}
+										}
                     $('#columnChart').highcharts({
                         chart: {
                             type: 'column',
@@ -814,19 +833,29 @@ window.onload = function(){
                             enabled: false
                         },
                         plotOptions: {
-                            series: {
+                            series : {
                                 borderWidth: 0,
                                 dataLabels: {
                                     enabled: false,
                                     format: '{point.y:.1f}%'
                                 },
-                                events:{
+                                events : {
                                     click: function (event) {
                                         var pointName = event.point.name;
-                                        if (pointName.search('{{ url('/') }}')) {
+																				//var urlToSearch = "{{url('/')}}";
+																				var urlToSearch = appURL;
+                                        if (pointName.search(urlToSearch) == -1) {
+																						console.log('searching for :',urlToSearch);
+																						console.log('serach_ res',pointName.search(urlToSearch));
+																						console.log('came here 1 : pointname : ',pointName);
+																						console.log('');
                                             pushChartDataStack(pointName);
                                         } else {
+																						console.log('searching for :',urlToSearch);
+																						console.log('serach_ res',pointName.search(pointName));
+																						console.log('came here 2 : pointname : ',pointName);
                                             chartDataStack = [];
+																						console.log('');
                                             chartDataStack.push(pointName);
                                         }
                                     }
@@ -883,23 +912,17 @@ window.onload = function(){
                                     }
                                 }
                             },
-                            series: [
-                            @foreach ($urls as $key => $url)
-                            {
-                                name: '{{ url('/') }}/{{ $url->shorten_suffix }}',
-                                id: '{{ url('/') }}/{{ $url->shorten_suffix }}',
-                                data: response.urlStat[{{ $key }}]
-                            },
-                            @endforeach
-                            ]
+                            series: urlSeries
                         }
                     });
                     @if ($subscription_status != null)
                     function pushChartDataStack(data) {
+												console.log('came here 3');
                         chartDataStack.push(data);
                         date = new Date(chartDataStack.pop());
                         month = date.getMonth()+1;
                         isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
+												console.log('location to redirect : ',chartDataStack[0]+"/date/"+isoDate+"/analytics");
                         window.location.href = chartDataStack[0]+"/date/"+isoDate+"/analytics";
                     }
                     @endif

@@ -181,6 +181,7 @@ class HomeController extends Controller
      */
     public function postFetchChartData(Request $request)
     {
+
         //print_r("<pre>");print_r($request->all());
 
         $textToSearch = $request->textToSearch;
@@ -218,9 +219,26 @@ class HomeController extends Controller
         $URLs = [];
         $URLstat = [];
         foreach ($urls as $key => $url) {
-            $URLs[$key]['name'] = url('/').'/'.$url->shorten_suffix;
+
+          if(isset($url->subdomain)) {
+            if($url->subdomain->type == 'subdomain') {
+              $URLs[$key]['name']       = 'https://'.$url->subdomain->name.'.'.env('APP_HOST').'/'.$url->shorten_suffix;
+              $URLs[$key]['drilldown']  = $URLs[$key]['name'];
+            }
+            else if($url->subdomain->type == 'subdirectory') {
+              $URLs[$key]['name'] = route('getIndex').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+              $URLs[$key]['drilldown']  = $URLs[$key]['name'];
+            }
+          }
+          else {
+            $URLs[$key]['name'] = route('getIndex').'/'.$url->shorten_suffix;
+            $URLs[$key]['drilldown']  = $URLs[$key]['name'];
+          }
+
+
+            //$URLs[$key]['name'] = url('/').'/'.$url->shorten_suffix;
             $URLs[$key]['y'] = (int) $url->count;
-            $URLs[$key]['drilldown'] = url('/').'/'.$url->shorten_suffix;
+            //$URLs[$key]['drilldown'] = url('/').'/'.$url->shorten_suffix;
 
             $start_date = DB::table('referer_url')
                 ->selectRaw('min(created_at) as `min`')
@@ -418,7 +436,37 @@ class HomeController extends Controller
      *
      * @return Illuminate\Http\Response
      */
-    public function getAnalyticsByDate($url, $date)
+    public function getAnalyticsByDate($url,$date)
+    {
+        //dd($url,$date);
+        if (Auth::check()) {
+            $user = Auth::user();
+            $date = date('Y-m-d', strtotime($date));
+            $url = DB::table('urls')->where('urls.shorten_suffix', $url)
+                    ->join('country_url', 'urls.id', '=', 'country_url.url_id')
+                    ->join('browser_url', 'urls.id', '=', 'browser_url.url_id')
+                    ->join('platform_url', 'urls.id', '=', 'platform_url.url_id')
+                    ->join('referer_url', 'urls.id', '=', 'referer_url.url_id')
+                    ->selectRaw('distinct(urls.id) as url_id')
+                    ->where('country_url.created_at', 'like', $date.'%')
+                    ->where('browser_url.created_at', 'like', $date.'%')
+                    ->where('platform_url.created_at', 'like', $date.'%')
+                    ->where('referer_url.created_at', 'like', $date.'%')
+                    ->first();
+                    //dd($url);
+            if ($url) {
+                $url = Url::find($url->url_id);
+                return view('analytics.date', ['user' => $user, 'url' => $url, 'date' => $date]);
+            } else {
+                return redirect()->action('HomeController@getDashboard')
+                            ->with('error', 'Sorry, for this inconvenience. There is no analytical records founds on '.date('M d, Y', strtotime($date)));
+            }
+        } else {
+            return redirect()->action('HomeController@getIndex');
+        }
+    }
+
+    public function getAnalyticsBySubdirectoryDate($url,$subdirectory,$date)
     {
         if (Auth::check()) {
             $user = Auth::user();
@@ -437,7 +485,6 @@ class HomeController extends Controller
                     ->first();
             if ($url) {
                 $url = Url::find($url->url_id);
-
                 return view('analytics.date', ['user' => $user, 'url' => $url, 'date' => $date]);
             } else {
                 return redirect()->action('HomeController@getDashboard')
@@ -658,6 +705,7 @@ class HomeController extends Controller
      */
     public function postFetchAnalytics(Request $request)
     {
+        //die();
         $location[0][0] = 'Country';
         $location[0][1] = 'Clicks';
 
@@ -1418,31 +1466,6 @@ class HomeController extends Controller
                     //code for search based on tags and description if the params are not empty
                     $textToSearch = $request->textToSearch;
                     $tagsToSearch = $request->tagsToSearch;
-                    // if(strlen($textToSearch) > 0 || strlen($tagsToSearch) > 0){
-                    //   $urls = Url::where('user_id', $user->id);
-                    //   if(strlen($textToSearch) > 0) {
-                    //     $urls = $urls->whereHas('urlSearchInfo', function($q) use($textToSearch) {
-                    //       $q->whereRaw("MATCH (description) AGAINST ('".$textToSearch."' IN BOOLEAN MODE)");
-                    //     });
-                    //   }
-                    //   if(strlen($tagsToSearch) > 0) {
-                    //     $urls = $urls->whereHas('urlTagMap', function($q) use($tagsToSearch) {
-                    //       $q->whereHas('urlTag', function($q2) use($tagsToSearch) {
-                    //         $refinedTags = str_replace($tagsToSearch,',',' ');
-                    //         //$q2->query(\DB::raw('selct tag from url_tags WHERE MATCH (tag) AGAINST ('.$refinedTags.')'));
-                    //         $q2->whereRaw("MATCH (tag) AGAINST ('".$tagsToSearch."' IN BOOLEAN MODE)");
-                    //       });
-                    //       //$q->select(\DB::raw('WHERE MATCH (description) AGAINST ('.$textToSearch.')'));
-                    //     });
-                    //   }
-                    //   $urls = $urls->get();
-                    //   $count_url = $urls->count();
-                    // } else {
-                    //   $urls = Url::where('user_id', $user->id)
-                    //           ->orderBy('id', 'DESC')
-                    //           ->get();
-                    //   $count_url = $urls->count();
-                    // }
 
                     $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
                     $urls       = $ret['urls'];
@@ -1489,7 +1512,7 @@ class HomeController extends Controller
                             $dates[$key] = $date->format('M d');
                         }
                     }
-
+                    //dd($urls);
                     return view('dashboard2', [
                         'count_url' => $count_url,// dynamic
                         'user' => $user,

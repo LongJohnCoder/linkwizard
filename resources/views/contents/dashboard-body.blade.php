@@ -114,7 +114,6 @@
                 @foreach ($urls as $key => $url)
 
                 <div class="tab-content">
-
                 	<div class="tab-content-top">
 	                	<div class="date">{{ date('M d, Y', strtotime($url->created_at)) }}</div>
 	                	<p id="urlTitleHeading{{ $key }}">{{$url->title}}</p>
@@ -122,29 +121,27 @@
                 	</div>
                 	<div class="row">
                 		 <div class="col-md-6 col-sm-6">
-                		 	@if (isset($url->subdomain))
-
-                                <h3>
-                                    @if($url->subdomain->type == 'subdomain')
-											<a href="https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                            https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}
-                                        </a>
-                                    @elseif($url->subdomain->type == 'subdirectory')
-                                        <a href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                            {{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}
-                                        </a>
-                                    @endif
-                                </h3>
-                            @else
-
-                                <h3>
-                                    <a href="{{route('getIndex') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                        {{ route('getIndex') }}/{{ $url->shorten_suffix }}
+            		 	      @if (isset($url->subdomain))
+                            <h3>
+                                @if($url->subdomain->type == 'subdomain')
+                                    <a href="https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                        https://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}
                                     </a>
-                                </h3>
-                            @endif
-                		 </div>
+                                @elseif($url->subdomain->type == 'subdirectory')
+                                    <a href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                        {{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}
+                                    </a>
+                                @endif
+                            </h3>
+                        @else
 
+                            <h3>
+                                <a href="{{route('getIndex') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                    {{ route('getIndex') }}/{{ $url->shorten_suffix }}
+                                </a>
+                            </h3>
+                        @endif
+                		 </div>
 
                 		 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                                 <div class="buttons">
