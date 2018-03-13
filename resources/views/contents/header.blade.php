@@ -60,7 +60,7 @@
 															<label for="shortTags" style="color:white">Add tags</label>
 															<input id="shortTagsEnable" type="checkbox" name="shortTagsEnable" style="color: white">
 															<div id="shortTagsArea" style="display: none">
-																<input id="shortTagsContentss" class="myInput form-control" type="text" name="shortTagsContents" placeholder="Mention tags for this link" >
+																<input id="shortTagsContentss" class="myInput form-control" data-role="tagsinput" type="text" name="shortTagsContents" placeholder="Mention tags for this link" >
 															</div>
 
 															<br>

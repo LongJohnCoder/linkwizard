@@ -5,6 +5,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 } else {
     $referer = parse_url("{{ route('getIndex') }}", PHP_URL_HOST);
 }
+header("Access-Control-Allow-Origin: *");
 @endphp
 
 <!DOCTYPE html>

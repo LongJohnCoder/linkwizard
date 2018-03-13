@@ -67,38 +67,38 @@ appURL = appURL.replace('http://','');
 
 console.log('appURL : ',appURL);
 
-var giveMyTags = function() {
-	$.ajax({
-		type 	:	"POST",
-		url		:	"{{route('giveMyTags')}}",
-		data	: {_token:'{{csrf_token()}}'},
-		success : function(res) {
-			console.log(res);
-			var tagsArray = [];
-			for(var i = 0 ; i < res.data.length ; i ++) {
-				var ob = {tag : res.data[i]};
-				console.log('each ob : ',ob);
-				tagsArray.push(ob);
-			}
-			console.log('final tags : ',tagsArray);
-			$('#shortTagsContentss').selectize({
-				maxItems: null,
-				valueField: 'tag',
-				labelField: 'tag',
-				searchField: 'tag',
-				options: tagsArray,
-				create: true
-			});
-		},
-		error : function(res) {
-			console.log(res);
-		}
-	});
-}
+// var giveMyTags = function() {
+// 	$.ajax({
+// 		type 	:	"POST",
+// 		url		:	"{{route('giveMyTags')}}",
+// 		data	: {_token:'{{csrf_token()}}'},
+// 		success : function(res) {
+// 			console.log(res);
+// 			var tagsArray = [];
+// 			for(var i = 0 ; i < res.data.length ; i ++) {
+// 				var ob = {tag : res.data[i]};
+// 				console.log('each ob : ',ob);
+// 				tagsArray.push(ob);
+// 			}
+// 			console.log('final tags : ',tagsArray);
+// 			$('#shortTagsContentss').selectize({
+// 				maxItems: null,
+// 				valueField: 'tag',
+// 				labelField: 'tag',
+// 				searchField: 'tag',
+// 				options: tagsArray,
+// 				create: true
+// 			});
+// 		},
+// 		error : function(res) {
+// 			console.log(res);
+// 		}
+// 	});
+// }
 
 window.onload = function(){
 	console.log('reached here');
-	giveMyTags();
+	//giveMyTags();
 }
 
 // var $select = $('#shortTagsContentss').selectize({

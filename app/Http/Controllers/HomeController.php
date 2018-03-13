@@ -107,6 +107,7 @@ class HomeController extends Controller
      */
     public function getRequestedUrl($url)
     {
+        // dd(1);
         $search = Url::where('shorten_suffix', $url)->first();
         $url_features = UrlFeature::where('url_id', $search->id)->first();
         if ($search) {
@@ -1574,6 +1575,7 @@ class HomeController extends Controller
      */
     public function postBrandLink(Request $request)
     {
+        //dd($request->all());
         if (Auth::check()) {
             $this->validate($request, [
                 'name' => 'required|unique:subdomains',
