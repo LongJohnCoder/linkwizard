@@ -52,6 +52,15 @@ Route::get('/test12',function(){
     dd(env('PUBLISHABLE_KEY'));
 });
 
+/* API Routes */
+Route::group(['prefix' => 'api/v1'],function() {
+  Route::post('post-subscriber',[
+    'uses'  => 'ApiController@createUserByEmail',
+    'as'    => 'createUserByEmail'
+  ]);
+});
+
+
 
 //actual rooutes goes here
 Route::group(['domain' => env('APP_HOST')], function () {
