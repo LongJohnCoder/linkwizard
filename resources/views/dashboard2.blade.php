@@ -59,6 +59,11 @@
 
 @include('contents/footer')
 
+
+<!-- ManyChat -->
+<script src="//widget.manychat.com/216100302459827.js" async="async">
+</script>
+
 <script type="text/javascript">
 
 var appURL = "{{url('/')}}";

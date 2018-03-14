@@ -31,7 +31,7 @@
 
 </head>
 
-        
+
 <body>
 <!-- Header Start -->
 <header class="brandingheader">
@@ -45,7 +45,7 @@
             </div>
             @include('registration.customheader')
         </div>
-        
+
         <div class="row banner-middle text-center">
             <div class="banner-content">
                 <h2>Make your links manageable.</h2>
@@ -240,6 +240,11 @@
 </section>
 @include('registration.customfooter')
 </body>
+
+<!-- ManyChat -->
+<script src="//widget.manychat.com/216100302459827.js" async="async">
+</script>
+
 <!-- contains the js files for login and registration-->
-    @include('loginjs') 
+    @include('loginjs')
 </html>

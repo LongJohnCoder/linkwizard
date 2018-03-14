@@ -211,6 +211,10 @@
 <script src="{{url('/')}}/public/resources/js/jquery.creditCardTypeDetector.js "></script>
 <script src="{{url('/')}}/public/js/parsley.js "></script>
 
+<!-- ManyChat -->
+<script src="//widget.manychat.com/216100302459827.js" async="async">
+</script>
+
   <script>
 		var public_key = "{{env('STRIPE_KEY')}}";
     Stripe.setPublishableKey(public_key);

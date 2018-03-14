@@ -131,7 +131,7 @@
 				</div>
 			</div>
 		</div>
-	</div>		
+	</div>
 </section>
 <footer>
 	<div class="container">
@@ -162,5 +162,8 @@
 	</div>
 </footer>
 </body>
+<!-- ManyChat -->
+<script src="//widget.manychat.com/216100302459827.js" async="async">
+</script>
 @include('loginjs')
 </html>

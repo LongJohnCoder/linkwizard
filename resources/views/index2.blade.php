@@ -117,10 +117,15 @@
 				</div>
 			</div>
 		</div>
-	</div>		
+	</div>
 </section>
 @include('registration.customfooter')
 </body>
+
+<!-- ManyChat -->
+<script src="//widget.manychat.com/216100302459827.js" async="async">
+</script>
+
 <script type="text/javascript">
 	$(document).ready(function() {
 	    $(".menu-icon").click(function(){

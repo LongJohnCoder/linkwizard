@@ -80,7 +80,7 @@
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-4">
-					<div class="planbox" id="basicTier"> 
+					<div class="planbox" id="basicTier">
 						<h2>advanced</h2>
 						<div class="value">
 							$<span> 10 / </span>month per user
@@ -94,7 +94,7 @@
 							<li><span>custom</span> links</li>
 							<li><span>business</span> hour support</li>
 						</ul>
-						
+
 							<a href="#" data-toggle="modal" data-target="#signup" id="new_tr5Basic">Subscribe now</a>
 					</div>
 				</div>
@@ -128,7 +128,7 @@
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 	<div class="faq">
 		<div class="container">
 			<div class="row">
@@ -156,7 +156,7 @@
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 </section>
 <footer>
 	<div class="container">
@@ -187,6 +187,11 @@
 	</div>
 </footer>
 </body>
+
+<!-- ManyChat -->
+<script src="//widget.manychat.com/216100302459827.js" async="async">
+</script>
+
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script src="https://checkout.stripe.com/checkout.js"></script>
 
