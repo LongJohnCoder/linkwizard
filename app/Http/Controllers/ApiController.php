@@ -42,7 +42,7 @@ class ApiController extends Controller
         $user = new User();
         $user->name   = $name;
         $user->email  = $email;
-        $user->password = config('api.default_password');
+        $user->password = bcrypt(config('api.default_password'));
         $user->remember_token = '';
 
         if($user->save()) {
