@@ -43,7 +43,11 @@
 			<div class="banner-top">
 				<div class="col-md-6">
 					<div class="tot-counts">
-						<img src="{{url('/')}}/public/images/barcount.jpg" class="img-responsive">
+						<!-- <img src="{{url('/')}}/public/images/barcount.jpg" class="img-responsive"> -->
+                        
+                        
+                        <img style="width: 30px; height: auto;" src="{{url('/')}}/public/images/chart-bar.png" class="img-responsive">
+
 						<div class="count"><span>{{$count_url}}</span>total counts</div> <!-- ?count -->
 					</div>
 				</div>
@@ -69,8 +73,350 @@
 	</div>
 </section>
 <!-- Banner End -->
+
+<div class="search-wrap">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-12 col-sm-12">
+                  <div class="searchpart-area">
+                     <div class="row">
+                        <form id="dashboard-search-form" action="{{route('getDashboard')}}" method="GET">
+                           <div class="col-md-5 col-sm-5 less-pad">
+                              <div class="form-group">
+                                 <input id="dashboard-text-to-search" value="@if(\Request::get('textToSearch')){{\Request::get('textToSearch')}}@endif" name="textToSearch" type="text" placeholder="Search links" class="form-control">
+                              </div>
+                           </div>
+                           <div class="col-md-5 col-sm-5 less-pad">
+                              <div class="form-group">
+                                 <div>
+                                    <input id="dashboard-tags-to-search" value="@if(\Request::get('tagsToSearch')){{\Request::get('tagsToSearch')}}@endif" class="tagsToSearch" name="tagsToSearch" type="text" data-role="tagsinput" placeholder="Search tags" class="form-control">
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-md-2 col-sm-2 less-pad">
+                              <div class="form-group">
+                                 <div class="form-group">
+                                    <button type="button" id="dashboard-search-btn" class="btn search-btn">Search</button>
+                                 </div>
+                              </div>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+</div>
+
 <!-- Main Content Start -->
+
 <section class="main-content tabsection">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Click on a row to see details</div>
+                <div class="panel-body">
+                    <div class="table-responsive custom-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Short URL</th>
+                                <th>Destination URL</th>
+                                <th>Description</th>
+                                <th>Clicks</th>
+                                <th>Tags</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="short-url">
+                                        lnkh.co/NqlLxOU
+                                    </div>
+                                </td>
+                                <td>http://www.google.com</td>
+                                <td>Web Design Development</td>
+                                <td>0</td>
+                                <td>03/10/2018</td>
+                                <td>03/10/2018 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="short-url">
+                                        lnkh.co/NqlLxOU
+                                    </div>
+                                </td>
+                                <td>http://www.google.com</td>
+                                <td>Web Design Development</td>
+                                <td>0</td>
+                                <td>03/10/2018</td>
+                                <td>03/10/2018 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="short-url">
+                                        lnkh.co/NqlLxOU
+                                    </div>
+                                </td>
+                                <td>http://www.google.com</td>
+                                <td>Web Design Development</td>
+                                <td>0</td>
+                                <td>03/10/2018</td>
+                                <td>03/10/2018 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="short-url">
+                                        lnkh.co/NqlLxOU
+                                    </div>
+                                </td>
+                                <td>http://www.google.com</td>
+                                <td>Web Design Development</td>
+                                <td>0</td>
+                                <td>03/10/2018</td>
+                                <td>03/10/2018 </td>
+                            </tr> 
+                            <tr>
+                                <td>
+                                    <div class="short-url">
+                                        lnkh.co/NqlLxOU
+                                    </div>
+                                </td>
+                                <td>http://www.google.com</td>
+                                <td>Web Design Development</td>
+                                <td>0</td>
+                                <td>03/10/2018</td>
+                                <td>03/10/2018 </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="short-url">
+                                        lnkh.co/NqlLxOU
+                                    </div>
+                                </td>
+                                <td>http://www.google.com</td>
+                                <td>Web Design Development</td>
+                                <td>0</td>
+                                <td>03/10/2018</td>
+                                <td>03/10/2018 </td>
+                            </tr>  
+                        </tbody>
+                    </table>
+
+
+                    </div>
+
+                </div>
+            </div>    
+                    
+            </div>    
+        </div>    
+    </div>    
+</section>
+
+<section class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="normal-box ">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-3">
+                        <label>
+                            Paste An Actual URL Here
+                        </label>    
+                        </div>
+                        <div class="col-md-9 col-sm-9">
+                            <input type="text" class="form-control long-url">
+                            <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="normal-box1">
+                    <div class="normal-header">
+                        <label class="custom-checkbox">Add facebook pixel
+                          <input type="checkbox" value="facebook-pixel">
+                          <span class="checkmark"></span>
+                        </label>
+                    </div> 
+                    <div class="normal-body facebook-pixel">
+                        <p>Paste Your Facebook-pixel-id Here</p>
+                        <input type="text" class="form-control">
+                    </div>   
+                </div> 
+
+                <div class="normal-box1">
+                    <div class="normal-header">
+                        <label class="custom-checkbox">Add google pixel
+                          <input type="checkbox" value="google-pixel">
+                          <span class="checkmark"></span>
+                        </label>
+                    </div> 
+                    <div class="normal-body google-pixel">
+                        <p>Paste Your Google-pixel-id Here</p>
+                        <input type="text" class="form-control">
+                    </div>   
+                </div>
+
+                <div class="normal-box1">
+                    <div class="normal-header">
+                        <label class="custom-checkbox">Add tags
+                          <input type="checkbox" value="google-pixel">
+                          <span class="checkmark"></span>
+                        </label>
+                    </div> 
+                    <div class="normal-body google-pixel">
+                        <p>Mention tags for this link</p>
+                        <input type="text" class="form-control">
+                    </div>   
+                </div>
+
+                <div class="normal-box1">
+                    <div class="normal-header">
+                        <label class="custom-checkbox">Add tags
+                          <input type="checkbox" value="add-tags">
+                          <span class="checkmark"></span>
+                        </label>
+                    </div> 
+                    <div class="normal-body add-tags">
+                        <p>Mention tags for this link</p>
+                        <input type="text" class="form-control">
+                    </div>   
+                </div>
+
+                <div class="normal-box1">
+                    <div class="normal-header">
+                        <label class="custom-checkbox">Add description
+                          <input type="checkbox" value="add-description">
+                          <span class="checkmark"></span>
+                        </label>
+                    </div> 
+                    <div class="normal-body add-description">
+                        <p>Mention description for this link</p>
+                       
+                        <textarea class="form-control"></textarea>
+                    </div>   
+                </div>
+
+                <div class="normal-box1">
+                    <div class="normal-header">
+                        <label class="custom-checkbox">Link Preview
+                          <input type="checkbox" value="link-preview">
+                          <span class="checkmark"></span>
+                        </label>
+                    </div> 
+                    <div class="normal-body link-preview">
+                        <ul>
+                            <li>
+                                <label class="custom-checkbox">Use Original
+                                  <input type="checkbox" value="">
+                                  <span class="checkmark"></span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="custom-checkbox">Use Custom
+                                  <input type="checkbox" value="use-custom">
+                                  <span class="checkmark"></span>
+                                </label>
+                            </li>
+                        </ul>
+                        <div class="use-custom">
+
+                            <div class="white-paneel">
+                                <div class="white-panel-header">Image</div>
+                                <div class="white-panel-body">
+                                    <input type="file" name="">
+                                </div>
+                            </div>
+
+                            <div class="white-paneel">
+                                <div class="white-panel-header">Title</div>
+                                <div class="white-panel-body">
+                                    <ul>
+                                        <li>
+                                            <label class="custom-checkbox">Use Original
+                                              <input type="checkbox" value="">
+                                              <span class="checkmark"></span>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label class="custom-checkbox">Use Custom
+                                              <input type="checkbox" value="use-custom1">
+                                              <span class="checkmark"></span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                    <div class="use-custom1">
+                                        <input type="text" class="form-control" name="">
+
+                                    </div>    
+
+                                </div>
+                            </div> 
+
+                            <div class="white-paneel">
+                                <div class="white-panel-header">Description</div>
+                                <div class="white-panel-body">
+                                    <ul>
+                                        <li>
+                                            <label class="custom-checkbox">Use Original
+                                              <input type="checkbox" value="">
+                                              <span class="checkmark"></span>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label class="custom-checkbox">Use Custom
+                                              <input type="checkbox" value="use-custom2">
+                                              <span class="checkmark"></span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                    <div class="use-custom2">
+                                        <textarea class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="white-paneel">
+                                <div class="white-panel-header">URL</div>
+                                <div class="white-panel-body">
+                                    <ul>
+                                        <li>
+                                            <label class="custom-checkbox">Use Original
+                                              <input type="checkbox" value="">
+                                              <span class="checkmark"></span>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label class="custom-checkbox">Use Custom
+                                              <input type="checkbox" value="use-custom3">
+                                              <span class="checkmark"></span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                    <div class="use-custom3">
+                                        <input type="text" class="form-control" name="">
+                                    </div>
+                                </div>
+                            </div>           
+
+                        </div>    
+                    </div>   
+                </div>
+
+                <button class=" btn-shorten">Shorten URL</button>
+            </div>
+        </div>    
+    </div>   
+</section>
+
+
+
+
+
+
+<section class="main-content tabsection" style="display: none;">
 	<div class="container">
 		<div class="row">
             <div class="col-md-4 col-sm-4">
@@ -109,7 +455,7 @@
 	            </div>
             </div>
             <div class="col-md-8 col-sm-8">
-                <!-- flight section -->
+              
                 @foreach ($urls as $key => $url)
                 {{--dd($url)--}}
                 <div class="tab-content">
@@ -285,7 +631,7 @@
 	                		</div>
                     	@endif
 
-                    	<!-- charts and graphs script here -->
+                    	
                     	<script type="text/javascript">
                                 {!! $key == 0 ? "google.charts.load('current', {'packages':['corechart', 'geochart']});" : null !!}
                                 $.ajax({
@@ -377,7 +723,7 @@
                 	</div>
                 </div>
                 @endforeach
-                <!-- hotel search -->
+                
             </div>
 		</div>
 	</div>
@@ -639,3 +985,14 @@
 
 
 </section>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $('input[type="checkbox"]').click(function(){
+        var inputValue = $(this).attr("value");
+        $("." + inputValue).toggle();
+    });
+});
+</script

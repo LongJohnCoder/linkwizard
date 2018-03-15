@@ -1513,8 +1513,25 @@ class HomeController extends Controller
                             $dates[$key] = $date->format('M d');
                         }
                     }
+// <<<<<<< fccaf5c34368b75cad6848bf7446b2d99d8b3ab6
                     //dd($urls);
-                    return view('dashboard2', [
+//                    return view('dashboard2', [
+// =======
+
+                    // return view('dashboard2', [
+                    //     'count_url' => $count_url,// dynamic
+                    //     'user' => $user,
+                    //     'urls' => $urls,// dynamic
+                    //     'subscription_status' => $subscription_status,
+                    //     'limit' => $limit,
+                    //     'total_links' => $total_links,
+                    //     'filter' => $filter,
+                    //     'dates' => $dates,
+                    //     '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
+                    // ]);
+
+                    return view('dashboard_new', [
+// >>>>>>> new design v1.0
                         'count_url' => $count_url,// dynamic
                         'user' => $user,
                         'urls' => $urls,// dynamic

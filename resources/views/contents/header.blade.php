@@ -10,14 +10,17 @@
 			<div class="col-md-8">
 				<div class="top-right">
 					@if(count($limit) > 0)
-					<div class="createlink openpop">
-						<a href="javascript:void(0)" id="basic">Create tier5 link</a>
+					<div class="createlink boder openpop">
+						<a href="javascript:void(0)" id="basic">
+						<!-- Create tier5 link --> +Add tier5 link</a>
 					</div>
 					@endif
 					@if ($subscription_status != null)
 						 @if(count($limit) > 0)
 						 	<div class="createlink openpop">
-						 		<a href="javascript:void(0)" id="advanced" style="background-color:red">Create Custom link</a>
+						 		<a href="javascript:void(0)" id="advanced"><!-- Create Custom link -->
+						 			+Add Custom link
+						 		</a>
 						 	</div>
 						 @endif
 					@endif

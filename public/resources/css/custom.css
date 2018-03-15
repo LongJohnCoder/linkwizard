@@ -1,9 +1,15 @@
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+
+
 body {
     overflow-x: hidden;
+    font-family: 'Roboto', sans-serif;
+    background: #f9f9f9;
 }
 
 header {
-    background: #0E3042;
+    background: #01579b;
     padding: 15px 0
 }
 
@@ -351,3 +357,23 @@ header {
     background: #EE6123;
     color: #fff;
 }
+
+
+
+/*new theme*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

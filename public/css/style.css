@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+
+
 @font-face {
     font-family:'OpenSans-Regular';
     src:url('../fonts/OpenSans-Regular.ttf') format('truetype');
@@ -56,10 +59,12 @@ html{
 }
 body{
     position: relative;
-    font-family:'OpenSans-Regular';
+    /*font-family:'OpenSans-Regular';*/
     color: #C9C9C9;
     min-height: 100%;
     background: #ECF2F6;
+    font-family: 'Roboto', sans-serif;
+
 }
 
 a:focus, a:hover {
@@ -338,16 +343,19 @@ header.brandingheader {
 .top-right .createlink {
     display: inline-block;
     vertical-align: top;
-    border-right: 1px solid #154A67;
+    /*border-right: 1px solid #154A67;*/
     padding-right: 15px;
     border-radius: 0;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    /*padding-top: 10px;*/
+    /*padding-bottom: 10px;*/
     margin-right: 10px;
+    /*padding-top: 7px;*/
 }
 
+.top-right+div{border-right: 1px solid #fff;}
+
 .top-right .createlink a{
-    font-family:'OpenSans-Semibold';
+    /*font-family:'OpenSans-Semibold';
     display: block;
     background: #15A3F9;
     color: #fff;
@@ -355,7 +363,15 @@ header.brandingheader {
     font-size: 20px;
     padding: 15px 20px;
     border-radius: 3px;
-    text-decoration: none;
+    text-decoration: none;*/
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #fff;
+    font-size: 15px;
+
+
+
 }
 
 .mobile-menu{
@@ -369,11 +385,13 @@ header.brandingheader {
 
 .hamburg-menu{
     display: inline-block;
-    border: 1px solid #154A67;
-    padding: 32px 30px;
-    border-radius: 3px;
+    /*border: 1px solid #154A67;*/
+    /*padding: 32px 30px;*/
+    padding: 0px 30px;
+   /* border-radius: 3px;*/
     position: relative;
     margin-top: 6px;
+    vertical-align: top;
 }
 
 .hamburg-menu .menu-icon {
@@ -381,7 +399,7 @@ header.brandingheader {
     top: 35%;
     left: 20%;
     background-color: transparent;
-    width: 38px;
+    width: 30px;
     height: 18px;
     z-index: 1000;
     transition: -webkit-transform 550ms cubic-bezier(.23,1,.32,1);
@@ -460,10 +478,11 @@ header.brandingheader {
 .top-menu ul li a{
     color: #fff;
     text-transform: uppercase;
-    font-family:'OpenSans-Semibold';
-    font-size: 17px;
-    padding: 10px 15px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    padding: 10px 11px;
     transition: 0.5s;
+    font-weight: 400;
 }
 
 .top-menu ul li.login{
@@ -614,13 +633,15 @@ a.upgrade{
     margin-top: 10px;
 }
 
-.banner {
+/*.banner {
     background: rgb(62,110,142);
     background: -moz-linear-gradient(left, rgba(62,110,142,1) 0%, rgba(49,83,105,1) 50%, rgba(77,117,131,1) 100%);
     background: -webkit-linear-gradient(left, rgba(62,110,142,1) 0%,rgba(49,83,105,1) 50%,rgba(77,117,131,1) 100%);
     background: linear-gradient(to right, rgba(62,110,142,1) 0%,rgba(49,83,105,1) 50%,rgba(77,117,131,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3e6e8e', endColorstr='#4d7583',GradientType=1 );
-}
+}*/
+
+.banner{background: #448ccb;}
 
 .banner img{
     margin: 15px auto;
@@ -641,7 +662,7 @@ a.upgrade{
     text-align: center;
     vertical-align: bottom;
     font-size: 16px;
-    color: #71CEFF;
+    color: #fff;
     text-transform: uppercase;
     margin-left: 15px;
 }
@@ -777,6 +798,7 @@ a.link{
 
 .main-content{
     margin-bottom:100px;
+    padding-top: 25px;
 }
 
 .tab-content p{
@@ -1766,7 +1788,7 @@ form#datePickerForm .input-daterange i{
 footer{
     background: #242424;
 
-    text-align: center;
+
 }
 
 footer a{
@@ -1774,7 +1796,8 @@ footer a{
 }
 
 footer a:hover{
-    color: #fff;
+    color: #ccc !important;
+    text-decoration: none;
 }
 
 footer ul {
@@ -1784,7 +1807,7 @@ footer ul {
 .footer-menu li{
     font-family: 'OpenSans-Regular';
     display: inline-block;
-    width: 10%;
+    padding: 0 10px;
     float: none;
     margin: 0;
     text-transform: capitalize;
@@ -1797,7 +1820,8 @@ footer .copyright p {
 
 .social-icon{
     margin: 25px 0;
-    font-size: 30px;
+    font-size: 20px;
+    text-align: right;
 }
 
 footer .social-icon a{
@@ -2223,3 +2247,142 @@ footer .social-icon a:last-child{
 #myNav2 > div{top: 15%;}
 #shortTagsArea .bootstrap-tagsinput{display: block;}
 #customTagsArea .bootstrap-tagsinput{display: block;}
+
+
+
+
+.boder{border-right: 1px solid #fff;}
+
+
+.highcharts-background{background: red !important; fill: 68, 140, 203, 1 !important;}
+
+.custom-table .short-url{background: #fff; border: 1px solid #ccc; padding: 2px; 
+    color: #000; width: 113px; overflow: hidden; font-size: 12px;}
+
+
+
+.custom-table table tr td{color: #777777;}
+.custom-table table tbody tr:hover{background: #EDEEF2; cursor: pointer;}
+.copyright{background: #333333; color: #999999; padding: 10px 0 3px; text-align: center;}
+
+
+.normal-box{background: #ececec; border: 1px solid #bdbcbc; padding:15px 10px; vertical-align: middle; margin-bottom: 20px;}
+.long-url{max-width: 300px;}
+.normal-box .form-control{border: 1px solid #acacac; background: #fff; border-radius: 0;}
+
+.normal-box label{padding-top: 8px; text-align: right; display: block;}
+.input-msg{font-size: 13px; padding-top: 7px;}
+
+.normal-box1{background: #ececec; border: 1px solid #bdbcbc; padding:0; vertical-align: middle; margin-bottom: 20px;}
+.normal-header{padding: 15px; border-bottom: 1px solid #b7b7b7; position: relative;}
+.normal-body{padding: 15px; display: none;}
+
+
+
+
+/* Hide the browser's default checkbox */
+
+
+.custom-checkbox {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 0px;
+    cursor: pointer;
+    font-size: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-weight: normal;
+}
+.custom-checkbox .checkmark{background: #fff; border: 1px solid #ccc;}
+
+
+.custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.custom-checkbox:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.custom-checkbox input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.custom-checkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.custom-checkbox .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+.normal-body input.form-control{
+width: 50%;
+border-radius: 0;
+}
+.normal-body textarea.form-control{
+
+border-radius: 0;
+}
+
+.normal-body ul{margin: 0; padding: 0 0 0 20px;}
+.normal-body ul li{margin: 0; padding: 0 20px 0 0; display: inline-block; list-style: none;}
+
+
+.use-custom{display: none; padding: 20px 0 0;}
+.white-paneel{background: #fff; border: 1px solid #ccc;}
+
+.white-paneel {background: #fff; border: 1px solid #bcbbbb; margin-bottom: 16px;}
+
+
+.white-paneel .white-panel-header{background: #dcdada; color: #000; padding: 11px}
+.white-paneel .white-panel-body{padding: 13px;}
+
+.white-panel-body ul{margin: 0; padding: 0;}
+.white-panel-body ul li{margin: 0; padding: 0 20px 0 0; display: inline-block; list-style: none;}
+
+.use-custom1{display: none; padding: 21px 0 5px;}
+.use-custom2{display: none; padding: 21px 0 5px;}
+.use-custom3{display: none; padding: 21px 0 5px;}
+.btn-shorten{background: #01579b; color: #fff; padding: 10px 19px; color: #fff;
+border-radius: 0; border: none; font-size: 16px;}
+
+
+
+
+
