@@ -13,44 +13,7 @@
 
 //test route
 Route::get('/test', function(){
-  // $a = 'aBC';
-  // if($a != 'aBC') {
-  //   dd('not match');
-  // }
-  // dd('over');
-  //dd('This is a test route');
-  //dd(\App\UrlTag::firstOrCreate(['tag'=>'tag5']));
-  $userId = 8;
-  // dd(\App\UrlTag::whereHas('urlTagMap',function($q) use($userId) {
-  //                 $q->whereHas('url', function($q1) use($userId) {
-  //                   $q1->where('user_id',$userId);
-  //                 })->whereHas('urlTag', function($q1) {
-  //                   $q1->select('tag');
-  //                 });
-  //           })->toSql());
-
-  dd(\App\UrlTag::whereHas('urlTagMap.url',function($q) use($userId) {
-                    $q->where('user_id',$userId);
-                  })->pluck('tag')->toArray());
-
-  dd(\App\Url::where('user_id',1)->first()->urlTag()->get());
-
-  $allowTags = true;
-  $searchTags = ['lakd','aduyf','ajdflad','aldg'];
-
-  if($allowTags && count($searchTags) > 0) {
-    foreach ($searchTags as $key => $tag) {
-      dd(\App\UrlTag::firstOrCreate(['tag'=>(string)$tag]));
-      //dd($urlTag);
-      // $urlTagMap  = new \App\UrlTagMap;
-      // $urlTagMap->url_id = $urlId;
-      // $urlTagMap->url_tag_id = $urlTag->id;
-      // $urlTagMap->save();
-    }
-    dd('success');
-  }
-
-
+    dd(env('APP_HOST'));
 });
 
 Route::get('/test12',function(){
@@ -64,22 +27,26 @@ Route::group(['prefix' => 'api/v1'],function() {
     'as'    => 'createUserByEmail'
   ]);
 });
+/* API routes ends here
 
 
+//before login this url is the base url
+//tr5.* for production */
+Route::group(['domain' => env('APP_HOST')], function () {
+  Route::get('/', [
+      'uses' => 'HomeController@getIndex',
+      'as' => 'getIndex',
+  ]);
+});
 
 //actual rooutes goes here
-Route::group(['domain' => env('APP_HOST')], function () {
+Route::group(['domain' => env('APP_LOGIN_HOST')], function () {
 
     Route::post('/check_custom' , 'HomeController@check_custom');
     Route::get('test' , function(){
         return view('test');
     });
     Route::post('/test' , 'HomeController@test');
-
-    Route::get('/', [
-        'uses' => 'HomeController@getIndex',
-        'as' => 'getIndex',
-    ]);
 
     Route::get('/api_test' , 'HomeController@api_test');
 
@@ -90,15 +57,15 @@ Route::group(['domain' => env('APP_HOST')], function () {
     Route::get('/features' , 'HomeController@features');
     Route::get('/about' , 'HomeController@about');
 
-    Route::get('/{url}', [
-        'uses' => 'HomeController@getRequestedUrl',
-        'as' => 'getRequestedUrl',
-    ]);
+    // Route::get('/{url}', [
+    //     'uses' => 'HomeController@getRequestedUrl',
+    //     'as' => 'getRequestedUrl',
+    // ]);
 
-    Route::get('/{subdirectory}/{url}', [
-        'uses' => 'HomeController@getRequestedSubdirectoryUrl',
-        'as' => 'getRequestedSubdirectoryUrl',
-    ]);
+    // Route::get('/{subdirectory}/{url}', [
+    //     'uses' => 'HomeController@getRequestedSubdirectoryUrl',
+    //     'as' => 'getRequestedSubdirectoryUrl',
+    // ]);
 
     Route::get('/{url}/date/{date}/analytics', [
         'uses' => 'HomeController@getAnalyticsByDate',
@@ -247,13 +214,36 @@ Route::group(['domain' => env('APP_HOST')], function () {
     });
 });
 
-Route::group(['domain' => '{subdomain}.'.env('APP_HOST')], function () {
-    Route::get('/', function ($subdomain) {
-        return redirect()->route('getIndex');
-    });
 
-    Route::get('/{url}', [
-        'uses' => 'HomeController@getRequestedSubdomainUrl',
-        'as' => 'getRequestedSubdomainUrl',
-    ]);
+//router for subdomains
+Route::group(['domain' => '{subdomain}.'.env('APP_REDIRECT_HOST')], function () {
+  Route::get('/{url}', 'HomeController@getRequestedSubdomainUrl');
 });
+//routing for subdomains ends here
+
+//router for subdirectories
+Route::group(['domain' => env('APP_REDIRECT_HOST')], function () {
+  //Route::get('/{url}', 'HomeController@getRequestedSubdomainUrl');
+  Route::get('/{subdirectory}/{url}', [
+      'uses' => 'HomeController@getRequestedSubdirectoryUrl',
+      'as' => 'getRequestedSubdirectoryUrl',
+  ]);
+
+  Route::get('/{url}', [
+      'uses' => 'HomeController@getRequestedUrl',
+      'as' => 'getRequestedUrl',
+  ]);
+});
+//routing for subdirectories ends here
+
+
+// Route::group(['domain' => '{subdomain}.'.env('APP_HOST')], function () {
+//     Route::get('/', function ($subdomain) {
+//         return redirect()->route('getIndex');
+//     });
+//
+//     Route::get('/{url}', [
+//         'uses' => 'HomeController@getRequestedSubdomainUrl',
+//         'as' => 'getRequestedSubdomainUrl',
+//     ]);
+// });

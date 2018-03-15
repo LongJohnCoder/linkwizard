@@ -11,42 +11,7 @@
       <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
       <!-- Header Start -->
       @include('contents/header')
-      <!-- Header End -->
-      <!-- search div -->
-      <!-- <div class="search-wrap">
-         <div class="container">
-            <div class="row">
-               <div class="col-md-12 col-sm-12">
-                  <div class="searchpart-area">
-                     <div class="row">
-                        <form id="dashboard-search-form" action="{{route('getDashboard')}}" method="GET">
-                           <div class="col-md-5 col-sm-5 less-pad">
-                              <div class="form-group">
-                                 <input id="dashboard-text-to-search" value="@if(\Request::get('textToSearch')){{\Request::get('textToSearch')}}@endif" name="textToSearch" type="text" placeholder="Search links" class="form-control">
-                              </div>
-                           </div>
-                           <div class="col-md-5 col-sm-5 less-pad">
-                              <div class="form-group">
-                                 <div>
-                                    <input id="dashboard-tags-to-search" value="@if(\Request::get('tagsToSearch')){{\Request::get('tagsToSearch')}}@endif" class="tagsToSearch" name="tagsToSearch" type="text" data-role="tagsinput" placeholder="Search tags" class="form-control">
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="col-md-2 col-sm-2 less-pad">
-                              <div class="form-group">
-                                 <div class="form-group">
-                                    <button type="button" id="dashboard-search-btn" class="btn search-btn">Search</button>
-                                 </div>
-                              </div>
-                           </div>
-                        </form>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div> -->
-      <!-- search div ends -->
+
       <div class="main-dashboard-body">
          @include('contents/dashboard-body')
       </div>
@@ -80,23 +45,12 @@
          		}
          	});
          }
-         
+
          window.onload = function(){
          	console.log('reached here');
          	giveMyTags();
          }
-         
-         // var $select = $('#shortTagsContentss').selectize({
-         // 				maxItems: null,
-         // 				valueField: 'tag',
-         // 				labelField: 'tag',
-         // 				searchField: 'tag',
-         // 				options: [
-         // 					{tag: 'tag1'},{tag:'tag2'},{tag:'tag3'}
-         // 				],
-         // 				create: true
-         // 			});
-         
+
          	var maintainSidebar = function(thisInstance) {
          		//facebook analytics checkbox for short urls
          		if (thisInstance.id === "checkboxAddFbPixelid" && thisInstance["name"] === "chk_fb_short") {
@@ -107,7 +61,7 @@
          				$('#fbPixelid').val('');
          			}
          		}
-         
+
          		//facebook analytics checkbox for custom urls
          		if (thisInstance.id === "checkboxAddFbPixelid1" && thisInstance["name"] === "chk_fb_custom") {
          			if(thisInstance.checked) {
@@ -117,7 +71,7 @@
          				$('#fbPixelid1').val('');
          			}
          		}
-         
+
          		//google analytics checkbox for short urls
          		if (thisInstance.id === "checkboxAddGlPixelid" && thisInstance["name"] === "chk_gl_short") {
          			if(thisInstance.checked) {
@@ -127,18 +81,18 @@
          				$('#glPixelid').val('');
          			}
          		}
-         
+
          		//google analytics checkbox for custom urls
          		if (thisInstance.id === "checkboxAddGlPixelid1" && thisInstance["name"] === "chk_gl_custom") {
          			if(thisInstance.checked) {
-         
+
          				$('#glPixelid1').show();
          			} else {
          				$('#glPixelid1').hide();
          				$('#glPixelid1').val('');
          			}
          		}
-         
+
          		//addtags for short urls
          		if (thisInstance.id === "shortTagsEnable" && thisInstance["name"] === "shortTagsEnable") {
          			if(thisInstance.checked) {
@@ -148,7 +102,7 @@
          				$("#shortTagsContents").tagsinput('removeAll');
          			}
          		}
-         
+
          		//addtags for custom urls
          		if (thisInstance.id === "customTagsEnable" && thisInstance["name"] === "customTagsEnable") {
          			if(thisInstance.checked) {
@@ -158,7 +112,7 @@
          				$("#customTagsContents").tagsinput('removeAll');
          			}
          		}
-         
+
          		//add short descriptions for short urls
          		if (thisInstance.id === "shortDescriptionEnable" && thisInstance["name"] === "shortDescriptionEnable") {
          			if(thisInstance.checked) {
@@ -168,7 +122,7 @@
          				$('#shortDescriptionContents').val('');
          			}
          		}
-         
+
          		//add short descriptions for short urls
          		if (thisInstance.id === "customDescriptionEnable" && thisInstance["name"] === "customDescriptionEnable") {
          			if(thisInstance.checked) {
@@ -179,33 +133,33 @@
          			}
          		}
          	}
-         
+
          	$(document).ready(function() {
-         
+
          		// $('#dashboard-tags-to-search').on('beforeItemAdd', function(event) {
          		// 	var string = $(this).text();
          		// 	$(this).html(string.replace(/,/g , ''));
          		//   // event.item: contains the item
          		//   // event.cancel: set to true to prevent the item getting added
          		// });
-         
+
          		$("#dashboard-search-btn").on('click',function(){
          			var data = $("#dashboard-search-form").serialize();
          			$("#dashboard-search-form").submit();
          		});
-         
+
          		// $("#dashboard-search-form").on('submit',function(e){
          		// 	console.log('form submit handler called');
          		// 	e.preventDefault();
          		// });
-         
+
          		$("#dashboard-search").on('click',function(){
          			var tags = $("#dashboard-tags-to-search").tagsinput('items');
          			var text = $("#dashboard-text-to-search").val();
          			console.log('tags :',tags,' text: ',text);
-         
+
          		});
-         
+
          		// $('.shortTagsContents').tagsinput({
              //   	allowDuplicates: false,
          		// 		maxChars: 20,
@@ -225,14 +179,14 @@
              //     // itemValue: 'id',  // this will be used to set id of tag
              //     // itemText: 'label' // this will be used to set text of tag
              // });
-         
-         
+
+
          		$(":checkbox").on("change", function() {
          			maintainSidebar(this);
              });
-         
-         
-         
+
+
+
          		// $('#checkboxAddGlPixelid1, input[type="checkbox"]').on('click', function(){
          		// 	if($(this).prop("checked") == true){
          		// 			$('#glPixelid1').show();
@@ -252,14 +206,14 @@
          		// 			$('#fbPixelid1').val('');
              //   }
          		// });
-         
+
          		$(this).on('click', '.menu-icon', function(){
          	    	$(this).addClass("close");
          	    	$('#userdetails').slideToggle(500);
          	    	$('#myNav1').hide();
          	    	$('#myNav2').hide();
          	    });
-         
+
          	    $("#basic").click(function(){
          	    	$('.menu-icon').addClass("close");
          	    	$('#myNav1').slideToggle(500);
@@ -267,7 +221,7 @@
          	    	$('#userdetails').hide();
          				maintainSidebar(this);
          	    });
-         
+
          	    $("#advanced").click(function(){
          	    	$('.menu-icon').addClass("close");
          	    	$('#myNav2').slideToggle(500);
@@ -275,12 +229,12 @@
          	    	$('#userdetails').hide();
          				maintainSidebar(this);
          	    });
-         
+
          	    $(this).on('click', '.close', function(){
                  	$('.userdetails').hide();
                  	$(this).removeClass("close");
                  });
-         
+
          		$('[data-toggle="tooltip"]').tooltip();
                  $('#hamburger').on('click', function () {
                      $('.sidebar.right').addClass('open', true);
@@ -294,7 +248,7 @@
                      $('.tr5link').addClass('open', true);
                      $('.tr5link').removeClass('close', true);
                  });
-         
+
                  $('#customLink').on('click', function () {
                      $('.sharebar').addClass('open', true);
                      $('.sharebar').removeClass('close', true);
@@ -317,18 +271,18 @@
                          text: 'You have maximum shorten links. Please upgrade account to get hassle free services.'
                      });
                  });
-         
-         
+
+
          	});
       </script>
       <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
       <script src="{{ URL::to('/').'/public/resources/js/min/toucheffects-min.js'}}"></script>
       <script type="text/javascript">
          $(document).ready(function(){
-         
-         
+
+
          	$.fn.modal.Constructor.prototype.enforceFocus = function() {};
-         
+
          	$(".list-group ul li").click(function(){
          		$(this).addClass("active");
          		$(".list-group ul li").not($(this)).removeClass("active");
@@ -348,7 +302,7 @@
                  backgroundColor:"#ef3300"
              };
          $('#swalbtn1').click(function(){
-         
+
              	var actualUrl = $('#givenActualUrl').val();
                  var customUrl = $('#makeCustomUrl').val();
                  @if (Auth::user())
@@ -356,7 +310,7 @@
                  @else
                      var userId = 0;
                  @endif
-         
+
          var checkboxAddFbPixelid 	= 	$("#checkboxAddFbPixelid1").prop('checked');
          var fbPixelid							= 	$("#fbPixelid1").val();
          var checkboxAddGlPixelid 	= 	$("#checkboxAddGlPixelid1").prop('checked');
@@ -365,7 +319,7 @@
          var tags 									= 	$("#customTagsContents").tagsinput('items');
          var allowDescription      = 	$("#customDescriptionEnable").prop('checked');
          var searchDescription			= 	$("#customDescriptionContents").val();
-         
+
                  $.ajax({
                   type:"POST",
                   url:"/check_custom",
@@ -463,13 +417,13 @@
                   		$("#err_cust").show();
                   		//url already used by this user
                   	}
-         
+
                   }
               });
              });
-         
-         
-         
+
+
+
              function ValidURL(str) {
                  var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
                  var url = str;
@@ -479,7 +433,7 @@
                      return true;
                  }
              }
-         
+
              function ValidCustomURL(str) {
                  var regexp = new RegExp("^[a-zA-Z0-9_]+$");
                  var url = str;
@@ -489,7 +443,7 @@
                      return true;
                  }
              }
-         
+
              $('#swalbtn').click(function() {
                  var url = $('#givenUrl').val();
                  var validUrl = ValidURL(url);
@@ -498,7 +452,7 @@
                  @else
                      var userId = 0;
                  @endif
-         
+
          var checkboxAddFbPixelid 	= 	$("#checkboxAddFbPixelid").prop('checked');
          var fbPixelid							= 	$("#fbPixelid").val();
          var checkboxAddGlPixelid 	= 	$("#checkboxAddGlPixelid").prop('checked');
@@ -507,7 +461,7 @@
          var tags 									= 	$("#shortTagsContents").tagsinput('items');
          var allowDescription      = 	$("#shortDescriptionEnable").prop('checked');
          var searchDescription			= 	$("#shortDescriptionContents").val();
-         
+
                  if(url) {
                      if(validUrl) {
                          HoldOn.open(options);
@@ -587,9 +541,9 @@
                      });
                  }
              });
-         
+
          });
-         
+
       </script>
       <script type="text/javascript">
          $(document).ready(function () {
@@ -606,7 +560,7 @@
       <script>
          $(document).ready(function(){
              @if (isset($filter) and $filter != null) {
-         
+
                  $.ajax({
                      type: "POST",
                      url: "{{ route('postChartDataFilterDateRange') }}",
@@ -621,9 +575,9 @@
                      	console.log(response);
                      	var date_from = "{{ date( 'M d'  , strtotime($filter['start'])) }}";
                      	var date_to   = "{{ date( 'M d'  , (strtotime($filter['end']))-86400) }}";
-         
+
                      	$('#date_range').text(date_from+ ' - ' +date_to);
-         
+
                          var chartDataStack = [];
                          $('#columnChart').highcharts({
                              chart: {
@@ -668,9 +622,11 @@
                                              if (pointName.search('{{ url('/') }}')) {
                                                  var pointData = event.point.year+' '+pointName;
                                                  chartDataStack = [];
+                                                 console.log('function if',pointData);
                                                  chartDataStack.push(pointData);
                                              } else {
-                                                 pushChartDataStack(pointName);
+                                                  console.log('function else',pointName);
+                                                  pushChartDataStack(pointName);
                                              }
                                          }
                                      }
@@ -739,9 +695,11 @@
                          });
                          @if ($subscription_status != null)
                              function pushChartDataStack(url) {
+                                  console.log('this is called 1');
                                  date = new Date(chartDataStack.pop());
                                  nextDate = new Date(date.setDate(date.getDate()+1)).toISOString().slice(0, 10);
-                                 window.location.href = url+"/date/"+nextDate+"/analytics";
+                                 console.log(date,nextDate);
+                                 //window.location.href = url+"/date/"+nextDate+"/analytics";
                              }
                          @endif
                      },
@@ -812,9 +770,11 @@
                                      click: function (event) {
                                          var pointName = event.point.name;
                                          if (pointName.search('{{ url('/') }}')) {
+                                            console.log('pointName1 if',pointName);
                                              pushChartDataStack(pointName);
                                          } else {
                                              chartDataStack = [];
+                                             console.log('pointName1 else',pointName);
                                              chartDataStack.push(pointName);
                                          }
                                      }
@@ -884,11 +844,14 @@
                      });
                      @if ($subscription_status != null)
                      function pushChartDataStack(data) {
+                          console.log('this is called 2');
+                         console.log('function pushChartDataStack',data);
                          chartDataStack.push(data);
                          date = new Date(chartDataStack.pop());
                          month = date.getMonth()+1;
                          isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
-                         window.location.href = chartDataStack[0]+"/date/"+isoDate+"/analytics";
+                         console.log(date,month,isoDate);
+                         //window.location.href = chartDataStack[0]+"/date/"+isoDate+"/analytics";
                      }
                      @endif
                  },
@@ -995,7 +958,7 @@
       @endif
       <script type="text/javascript">
          $(document).ready(function(){
-         
+
          	if (typeof(FB) != 'undefined'
              && FB != null ) {
             // run the app
@@ -1006,4 +969,3 @@
       </script>
    </body>
 </html>
-

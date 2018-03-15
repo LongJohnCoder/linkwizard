@@ -1,11 +1,13 @@
 @php
 $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
+//dd($_SERVER);
 if (isset($_SERVER['HTTP_REFERER'])) {
     $referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
 } else {
     $referer = parse_url("{{ route('getIndex') }}", PHP_URL_HOST);
 }
 header("Access-Control-Allow-Origin: *");
+
 @endphp
 
 <!DOCTYPE html>
@@ -168,8 +170,8 @@ header("Access-Control-Allow-Origin: *");
                     },
                     success: function(response){
                     	console.log(response);
-                        setTimeout(function() {
-				            window.location.replace('{{ $url->protocol }}://' + '{{ $url->actual_url }}');
+                      setTimeout(function() {
+				              window.location.replace('{{ $url->protocol }}://'+'{{ $url->actual_url }}');
 				            HoldOn.close();
 				        }, {{ $url->redirecting_time }});
                     }

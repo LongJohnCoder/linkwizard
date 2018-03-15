@@ -8,7 +8,7 @@ class Referer extends Model
 {
     /**
      * Get all the urls associated with a referer.
-     * 
+     *
      * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function urls()

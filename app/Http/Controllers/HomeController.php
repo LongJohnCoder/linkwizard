@@ -107,7 +107,7 @@ class HomeController extends Controller
      */
     public function getRequestedUrl($url)
     {
-        // dd(1);
+        //dd($url);
         $search = Url::where('shorten_suffix', $url)->first();
         $url_features = UrlFeature::where('url_id', $search->id)->first();
         if ($search) {
@@ -223,16 +223,19 @@ class HomeController extends Controller
 
           if(isset($url->subdomain)) {
             if($url->subdomain->type == 'subdomain') {
-              $URLs[$key]['name']       = 'https://'.$url->subdomain->name.'.'.env('APP_HOST').'/'.$url->shorten_suffix;
+              //$URLs[$key]['name']       = 'https://'.$url->subdomain->name.'.'.env('APP_HOST').'/'.$url->shorten_suffix;
+              $URLs[$key]['name']       = 'http:/'.'/'.$url->subdomain->name.'.'.env( 'APP_REDIRECT_HOST' ).'/'.$url->shorten_suffix;
               $URLs[$key]['drilldown']  = $URLs[$key]['name'];
             }
             else if($url->subdomain->type == 'subdirectory') {
-              $URLs[$key]['name'] = route('getIndex').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+              //$URLs[$key]['name'] = route('getIndex').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+              $URLs[$key]['name']       = 'http:/'.'/'.env('APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
               $URLs[$key]['drilldown']  = $URLs[$key]['name'];
             }
           }
           else {
-            $URLs[$key]['name'] = route('getIndex').'/'.$url->shorten_suffix;
+            //$URLs[$key]['name'] = route('getIndex').'/'.$url->shorten_suffix;
+            $URLs[$key]['name'] = 'http:/'.'/'.env( 'APP_REDIRECT_HOST' ).'/'.$url->shorten_suffix;
             $URLs[$key]['drilldown']  = $URLs[$key]['name'];
           }
 
@@ -275,9 +278,9 @@ class HomeController extends Controller
         }
 
         return response()->json([
-            'status' => 'success',
+            'status'  => 'success',
             'user_id' => $request->user_id,
-            'urls' => $URLs,
+            'urls'    => $URLs,
             'urlStat' => $URLstat,
         ]);
     }
@@ -793,6 +796,7 @@ class HomeController extends Controller
      */
     public function postUserInfo(Request $request)
     {
+        //print_r($request->all());die();
         $status = 'error';
 
         $country = Country::where('code', $request->country['country_code'])->first();
@@ -1513,25 +1517,9 @@ class HomeController extends Controller
                             $dates[$key] = $date->format('M d');
                         }
                     }
-// <<<<<<< fccaf5c34368b75cad6848bf7446b2d99d8b3ab6
-                    //dd($urls);
-//                    return view('dashboard2', [
-// =======
 
-                    // return view('dashboard2', [
-                    //     'count_url' => $count_url,// dynamic
-                    //     'user' => $user,
-                    //     'urls' => $urls,// dynamic
-                    //     'subscription_status' => $subscription_status,
-                    //     'limit' => $limit,
-                    //     'total_links' => $total_links,
-                    //     'filter' => $filter,
-                    //     'dates' => $dates,
-                    //     '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
-                    // ]);
 
-                    return view('dashboard_new', [
-// >>>>>>> new design v1.0
+                    return view('dashboard2', [
                         'count_url' => $count_url,// dynamic
                         'user' => $user,
                         'urls' => $urls,// dynamic
@@ -1542,6 +1530,19 @@ class HomeController extends Controller
                         'dates' => $dates,
                         '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
                     ]);
+
+                    //for new
+                    // return view('dashboard_new', [
+                    //     'count_url' => $count_url,// dynamic
+                    //     'user' => $user,
+                    //     'urls' => $urls,// dynamic
+                    //     'subscription_status' => $subscription_status,
+                    //     'limit' => $limit,
+                    //     'total_links' => $total_links,
+                    //     'filter' => $filter,
+                    //     'dates' => $dates,
+                    //     '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
+                    // ]);
             }
 
 
@@ -1771,6 +1772,7 @@ class HomeController extends Controller
      */
     public function getRequestedSubdomainUrl($subdomain, $url)
     {
+        //dd($subdomain, $url);
         $redirectUrl = Url::where('shorten_suffix', $url)->first();
         if ($redirectUrl) {
             $subDomain = Subdomain::where('name', $subdomain)
@@ -1798,6 +1800,7 @@ class HomeController extends Controller
      */
     public function getRequestedSubdirectoryUrl($subdirectory, $url)
     {
+        //dd($subdirectory, $url);
         $redirectUrl = Url::where('shorten_suffix', $url)->first();
         if ($redirectUrl) {
             $subDirectory = Subdomain::where('name', $subdirectory)
@@ -1813,6 +1816,21 @@ class HomeController extends Controller
             abort(404);
         }
     }
+
+
+
+    // public function getRequestedSubdirectoryUrl($url)
+    // {
+    //   // dd(1);
+    //   $search = Url::where('shorten_suffix', $url)->first();
+    //   $url_features = UrlFeature::where('url_id', $search->id)->first();
+    //   if ($search) {
+    //       return view('loader2', ['url' => $search, 'url_features' => $url_features]);
+    //   } else {
+    //       abort(404);
+    //   }
+    // }
+
 
     /**
      * Check a email is available or not from sign up page

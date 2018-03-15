@@ -154,7 +154,7 @@
 				            	<li><a href="/blog">blog</a></li>
 				            	@if ($user->is_admin == 1)
 		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
-                    			@endif
+                    	@endif
 
 				            </ul>
 				        </div>

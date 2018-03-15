@@ -16,39 +16,7 @@
 
 
 <!-- search div -->
-<div class="search-wrap">
-	<div class="container">
-			<div class="row">
-					<div class="col-md-12 col-sm-12">
-							<div class="searchpart-area">
-									<div class="row">
-										<form id="dashboard-search-form" action="{{route('getDashboard')}}" method="GET">
-											<div class="col-md-5 col-sm-5 less-pad">
-												<div class="form-group">
-														<input id="dashboard-text-to-search" value="@if(\Request::get('textToSearch')){{\Request::get('textToSearch')}}@endif" name="textToSearch" type="text" placeholder="Search links" class="form-control">
-												</div>
-											</div>
-											<div class="col-md-5 col-sm-5 less-pad">
-												<div class="form-group">
-													<div>
-														<input id="dashboard-tags-to-search" value="@if(\Request::get('tagsToSearch')){{\Request::get('tagsToSearch')}}@endif" class="tagsToSearch" name="tagsToSearch" type="text" data-role="tagsinput" placeholder="Search tags" class="form-control">
-													</div>
-												</div>
-											</div>
-											<div class="col-md-2 col-sm-2 less-pad">
-												<div class="form-group">
-														<div class="form-group">
-															<button type="button" id="dashboard-search-btn" class="btn search-btn">Search</button>
-														</div>
-												</div>
-											</div>
-										</form>
-									</div>
-							</div>
-					</div>
-			</div>
-	</div>
-</div>
+
 <!-- search div ends -->
 
 <div class="main-dashboard-body">
@@ -209,7 +177,8 @@ window.onload = function(){
 		//   // event.cancel: set to true to prevent the item getting added
 		// });
 
-		$("#dashboard-search-btn").on('click',function(){
+		$("#dashboard-search-btn").on('click',function() {
+			console.log('came here : submitting form');
 			var data = $("#dashboard-search-form").serialize();
 			$("#dashboard-search-form").submit();
 		});
@@ -219,11 +188,10 @@ window.onload = function(){
 		// 	e.preventDefault();
 		// });
 
-		$("#dashboard-search").on('click',function(){
+		$("#dashboard-search").on('click',function() {
 			var tags = $("#dashboard-tags-to-search").tagsinput('items');
 			var text = $("#dashboard-text-to-search").val();
 			console.log('tags :',tags,' text: ',text);
-
 		});
 
 		// $('.shortTagsContents').tagsinput({
@@ -764,7 +732,7 @@ window.onload = function(){
                             function pushChartDataStack(url) {
                                 date = new Date(chartDataStack.pop());
                                 nextDate = new Date(date.setDate(date.getDate()+1)).toISOString().slice(0, 10);
-                                window.location.href = url+"/date/"+nextDate+"/analytics";
+                                //window.location.href = url+"/date/"+nextDate+"/analytics";
                             }
                         @endif
                     },
@@ -928,7 +896,7 @@ window.onload = function(){
                         month = date.getMonth()+1;
                         isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
 												console.log('location to redirect : ',chartDataStack[0]+"/date/"+isoDate+"/analytics");
-                        window.location.href = chartDataStack[0]+"/date/"+isoDate+"/analytics";
+                        //window.location.href = chartDataStack[0]+"/date/"+isoDate+"/analytics";
                     }
                     @endif
                 },

@@ -110,7 +110,7 @@
 
 <!-- Main Content Start -->
 
-<section class="main-content tabsection" style="display : none">
+<section class="main-content tabsection" style="display: none">
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -130,87 +130,37 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            @foreach ($urls as $key => $url)
+                            <tr onclick="window.location.href()">
+                                @php
+                                  if(isset($url->subdomain)) {
+                                    if($url->subdomain->type == 'subdomain')
+                                        $shrt_url = 'http:/'.'/'.$url->subdomain->name.'.'.env( 'APP_REDIRECT_HOST' ).'/'.$url->shorten_suffix;
+                                    else if($url->subdomain->type == 'subdirectory')
+                                        $shrt_url = 'http:/'.'/'.env('APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+                                  } else {
+                                    $shrt_url = 'http:/'.'/'.env( 'APP_REDIRECT_HOST' ).'/'.$url->shorten_suffix;
+                                  }
+                                @endphp
                                 <td>
                                     <div class="short-url">
-                                        lnkh.co/NqlLxOU
+                                      <a href="{{$shrt_url}}">{{$shrt_url}}</a>
                                     </div>
                                 </td>
-                                <td>http://www.google.com</td>
-                                <td>Web Design Development</td>
-                                <td>0</td>
-                                <td>03/10/2018</td>
-                                <td>03/10/2018 </td>
-                            </tr>
-                            <tr>
                                 <td>
-                                    <div class="short-url">
-                                        lnkh.co/NqlLxOU
-                                    </div>
+                                  <a href="{{$shrt_url}}">{{ $url->protocol }}://{{ $url->actual_url }}</a>
                                 </td>
-                                <td>http://www.google.com</td>
-                                <td>Web Design Development</td>
-                                <td>0</td>
-                                <td>03/10/2018</td>
-                                <td>03/10/2018 </td>
+                                <td>{{$url->title}}</td>
+                                <td>{{$url->count}}</td>
+                                <td>{{$url->created_at->format('d/m/Y')}}</td>
+                                <td>{{$url->updated_at->format('d/m/Y')}}</td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <div class="short-url">
-                                        lnkh.co/NqlLxOU
-                                    </div>
-                                </td>
-                                <td>http://www.google.com</td>
-                                <td>Web Design Development</td>
-                                <td>0</td>
-                                <td>03/10/2018</td>
-                                <td>03/10/2018 </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="short-url">
-                                        lnkh.co/NqlLxOU
-                                    </div>
-                                </td>
-                                <td>http://www.google.com</td>
-                                <td>Web Design Development</td>
-                                <td>0</td>
-                                <td>03/10/2018</td>
-                                <td>03/10/2018 </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="short-url">
-                                        lnkh.co/NqlLxOU
-                                    </div>
-                                </td>
-                                <td>http://www.google.com</td>
-                                <td>Web Design Development</td>
-                                <td>0</td>
-                                <td>03/10/2018</td>
-                                <td>03/10/2018 </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="short-url">
-                                        lnkh.co/NqlLxOU
-                                    </div>
-                                </td>
-                                <td>http://www.google.com</td>
-                                <td>Web Design Development</td>
-                                <td>0</td>
-                                <td>03/10/2018</td>
-                                <td>03/10/2018 </td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
-
-
                     </div>
-
                 </div>
             </div>
-
             </div>
         </div>
     </div>
@@ -438,12 +388,12 @@
 			                 	<p>{{ $url->title }}</p>
 			                 	@if (isset($url->subdomain))
 					                @if($url->subdomain->type == 'subdomain')
-					                    <a class="link" href="http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}">http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}</a>
+					                    <a class="link" href="http://{{ $url->subdomain->name }}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}">http://{{ $url->subdomain->name }}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}</a>
 					                @elseif($url->subdomain->type == 'subdirectory')
-											<a class="link" href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}">{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}</a>
+											        <a class="link" href="http://{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}">http://{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}</a>
 					                @endif
 					            @else
-					                <a class="link" href="{{ route('getIndex') }}/{{ $url->shorten_suffix }}">{{ route('getIndex') }}/{{ $url->shorten_suffix }}</a>
+					                <a class="link" href="http://{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}">http://{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}</a>
 					            @endif
 			                 	<div class="flags">
 			                 		{{$url->count}}<img src="{{url('/')}}/public/images/bar2.png" class="img-responsive">
@@ -469,20 +419,20 @@
             		 	      @if (isset($url->subdomain))
                             <h3>
                                 @if($url->subdomain->type == 'subdomain')
-                                    <a href="http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                        http://{{ $url->subdomain->name }}.{{ env('APP_HOST') }}/{{ $url->shorten_suffix }}
+                                    <a href="http://{{$url->subdomain->name}}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}" target="_blank" class="link" id="copylink{{ $key }}">
+                                      http://{{$url->subdomain->name}}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}
                                     </a>
                                 @elseif($url->subdomain->type == 'subdirectory')
-                                    <a href="{{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                        {{ route('getIndex') }}/{{ $url->subdomain->name }}/{{ $url->shorten_suffix }}
+                                    <a href="http://{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                        http://{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}
                                     </a>
                                 @endif
                             </h3>
                         @else
 
                             <h3>
-                                <a href="{{route('getIndex') }}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                    {{ route('getIndex') }}/{{ $url->shorten_suffix }}
+                                <a href="http://{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}" target="_blank" class="link" id="copylink{{ $key }}">
+                                    http://{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}
                                 </a>
                             </h3>
                         @endif
