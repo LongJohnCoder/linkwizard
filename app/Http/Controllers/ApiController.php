@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\User;
+use App\Subscription;
 
 class ApiController extends Controller
 {
@@ -45,7 +46,30 @@ class ApiController extends Controller
         $user->password = bcrypt(config('api.default_password'));
         $user->remember_token = '';
 
+
+        $subscription = null;
+        if(isset($request->subscription)) {
+          $subscription = $request->subscription;
+          if($subscription != 'tr5Basic' && $subscription != 'tr5Advanced') {
+            return \Response::json([
+              "http_code" => 404,
+              "status"    => "error",
+              "message"   => "Invalid subscription plan name given!"
+            ],404);
+          }
+        }
+
         if($user->save()) {
+          if(strlen($subscription) > 0) {
+            $sb = new Subscription();
+            $sb->user_id      = $user->id;
+            $sb->name         = config('api.subscription.name');
+            $sb->stripe_id    = '';
+            $sb->stripe_plan  = $subscription;
+            $sb->quantity     = 1;
+            $sb->save();
+          }
+
           return \Response::json([
             "http_code" => 200,
             "status"    => "success",

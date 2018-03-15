@@ -44,8 +44,8 @@
 				<div class="col-md-6">
 					<div class="tot-counts">
 						<!-- <img src="{{url('/')}}/public/images/barcount.jpg" class="img-responsive"> -->
-                        
-                        
+
+
                         <img style="width: 30px; height: auto;" src="{{url('/')}}/public/images/chart-bar.png" class="img-responsive">
 
 						<div class="count"><span>{{$count_url}}</span>total counts</div> <!-- ?count -->
@@ -110,7 +110,7 @@
 
 <!-- Main Content Start -->
 
-<section class="main-content tabsection">
+<section class="main-content tabsection" style="display : none">
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -177,7 +177,7 @@
                                 <td>0</td>
                                 <td>03/10/2018</td>
                                 <td>03/10/2018 </td>
-                            </tr> 
+                            </tr>
                             <tr>
                                 <td>
                                     <div class="short-url">
@@ -201,7 +201,7 @@
                                 <td>0</td>
                                 <td>03/10/2018</td>
                                 <td>03/10/2018 </td>
-                            </tr>  
+                            </tr>
                         </tbody>
                     </table>
 
@@ -209,14 +209,14 @@
                     </div>
 
                 </div>
-            </div>    
-                    
-            </div>    
-        </div>    
-    </div>    
+            </div>
+
+            </div>
+        </div>
+    </div>
 </section>
 
-<section class="main-content">
+<section class="main-content" style="display : none">
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -225,26 +225,26 @@
                         <div class="col-md-3 col-sm-3">
                         <label>
                             Paste An Actual URL Here
-                        </label>    
+                        </label>
                         </div>
                         <div class="col-md-9 col-sm-9">
                             <input type="text" class="form-control long-url">
                             <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                         </div>
                     </div>
-                </div> 
+                </div>
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add facebook pixel
                           <input type="checkbox" value="facebook-pixel">
                           <span class="checkmark"></span>
                         </label>
-                    </div> 
+                    </div>
                     <div class="normal-body facebook-pixel">
                         <p>Paste Your Facebook-pixel-id Here</p>
                         <input type="text" class="form-control">
-                    </div>   
-                </div> 
+                    </div>
+                </div>
 
                 <div class="normal-box1">
                     <div class="normal-header">
@@ -252,11 +252,11 @@
                           <input type="checkbox" value="google-pixel">
                           <span class="checkmark"></span>
                         </label>
-                    </div> 
+                    </div>
                     <div class="normal-body google-pixel">
                         <p>Paste Your Google-pixel-id Here</p>
                         <input type="text" class="form-control">
-                    </div>   
+                    </div>
                 </div>
 
                 <div class="normal-box1">
@@ -265,11 +265,11 @@
                           <input type="checkbox" value="google-pixel">
                           <span class="checkmark"></span>
                         </label>
-                    </div> 
+                    </div>
                     <div class="normal-body google-pixel">
                         <p>Mention tags for this link</p>
                         <input type="text" class="form-control">
-                    </div>   
+                    </div>
                 </div>
 
                 <div class="normal-box1">
@@ -278,11 +278,11 @@
                           <input type="checkbox" value="add-tags">
                           <span class="checkmark"></span>
                         </label>
-                    </div> 
+                    </div>
                     <div class="normal-body add-tags">
                         <p>Mention tags for this link</p>
                         <input type="text" class="form-control">
-                    </div>   
+                    </div>
                 </div>
 
                 <div class="normal-box1">
@@ -291,12 +291,12 @@
                           <input type="checkbox" value="add-description">
                           <span class="checkmark"></span>
                         </label>
-                    </div> 
+                    </div>
                     <div class="normal-body add-description">
                         <p>Mention description for this link</p>
-                       
+
                         <textarea class="form-control"></textarea>
-                    </div>   
+                    </div>
                 </div>
 
                 <div class="normal-box1">
@@ -305,7 +305,7 @@
                           <input type="checkbox" value="link-preview">
                           <span class="checkmark"></span>
                         </label>
-                    </div> 
+                    </div>
                     <div class="normal-body link-preview">
                         <ul>
                             <li>
@@ -350,10 +350,10 @@
                                     <div class="use-custom1">
                                         <input type="text" class="form-control" name="">
 
-                                    </div>    
+                                    </div>
 
                                 </div>
-                            </div> 
+                            </div>
 
                             <div class="white-paneel">
                                 <div class="white-panel-header">Description</div>
@@ -399,16 +399,16 @@
                                         <input type="text" class="form-control" name="">
                                     </div>
                                 </div>
-                            </div>           
+                            </div>
 
-                        </div>    
-                    </div>   
+                        </div>
+                    </div>
                 </div>
 
                 <button class=" btn-shorten">Shorten URL</button>
             </div>
-        </div>    
-    </div>   
+        </div>
+    </div>
 </section>
 
 
@@ -416,7 +416,7 @@
 
 
 
-<section class="main-content tabsection" style="display: none;">
+<section class="main-content tabsection">
 	<div class="container">
 		<div class="row">
             <div class="col-md-4 col-sm-4">
@@ -455,7 +455,7 @@
 	            </div>
             </div>
             <div class="col-md-8 col-sm-8">
-              
+
                 @foreach ($urls as $key => $url)
                 {{--dd($url)--}}
                 <div class="tab-content">
@@ -631,7 +631,7 @@
 	                		</div>
                     	@endif
 
-                    	
+
                     	<script type="text/javascript">
                                 {!! $key == 0 ? "google.charts.load('current', {'packages':['corechart', 'geochart']});" : null !!}
                                 $.ajax({
@@ -723,7 +723,7 @@
                 	</div>
                 </div>
                 @endforeach
-                
+
             </div>
 		</div>
 	</div>

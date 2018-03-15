@@ -13,6 +13,11 @@
 
 //test route
 Route::get('/test', function(){
+  // $a = 'aBC';
+  // if($a != 'aBC') {
+  //   dd('not match');
+  // }
+  // dd('over');
   //dd('This is a test route');
   //dd(\App\UrlTag::firstOrCreate(['tag'=>'tag5']));
   $userId = 8;
