@@ -110,7 +110,7 @@
 
 <!-- Main Content Start -->
 
-<section class="main-content tabsection" style="display: none">
+<section class="main-content tabsection" style="display : none">
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -144,7 +144,7 @@
                                 @endphp
                                 <td>
                                     <div class="short-url">
-                                      <a href="{{$shrt_url}}">{{$shrt_url}}</a>
+                                      <a href="{{config('settings.SECURE_PROTOCOL')}}{{$shrt_url}}">{{$shrt_url}}</a>
                                     </div>
                                 </td>
                                 <td>
@@ -388,12 +388,12 @@
 			                 	<p>{{ $url->title }}</p>
 			                 	@if (isset($url->subdomain))
 					                @if($url->subdomain->type == 'subdomain')
-					                    <a class="link" href="http://{{ $url->subdomain->name }}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}">http://{{ $url->subdomain->name }}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}</a>
+					                    <a class="link" href="{{config('settings.SECURE_PROTOCOL')}}{{ $url->subdomain->name }}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}">{{config('settings.SECURE_PROTOCOL')}}{{ $url->subdomain->name }}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}</a>
 					                @elseif($url->subdomain->type == 'subdirectory')
-											        <a class="link" href="http://{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}">http://{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}</a>
+											        <a class="link" href="{{config('settings.SECURE_PROTOCOL')}}{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}">{{config('settings.SECURE_PROTOCOL')}}{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}</a>
 					                @endif
 					            @else
-					                <a class="link" href="http://{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}">http://{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}</a>
+					                <a class="link" href="{{config('settings.SECURE_PROTOCOL')}}{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}">{{config('settings.SECURE_PROTOCOL')}}{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}</a>
 					            @endif
 			                 	<div class="flags">
 			                 		{{$url->count}}<img src="{{url('/')}}/public/images/bar2.png" class="img-responsive">
@@ -419,20 +419,20 @@
             		 	      @if (isset($url->subdomain))
                             <h3>
                                 @if($url->subdomain->type == 'subdomain')
-                                    <a href="http://{{$url->subdomain->name}}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}" target="_blank" class="link" id="copylink{{ $key }}">
-                                      http://{{$url->subdomain->name}}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}
+                                    <a href="{{config('settings.SECURE_PROTOCOL')}}{{$url->subdomain->name}}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}" target="_blank" class="link" id="copylink{{ $key }}">
+                                      {{config('settings.SECURE_PROTOCOL')}}{{$url->subdomain->name}}.{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}
                                     </a>
                                 @elseif($url->subdomain->type == 'subdirectory')
-                                    <a href="http://{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
-                                        http://{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}
+                                    <a href="{{config('settings.SECURE_PROTOCOL')}}{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}" target="_blank" class="link" id="copylink{{ $key }}">
+                                        {{config('settings.SECURE_PROTOCOL')}}{{env('APP_REDIRECT_HOST')}}/{{$url->subdomain->name}}/{{ $url->shorten_suffix }}
                                     </a>
                                 @endif
                             </h3>
                         @else
 
                             <h3>
-                                <a href="http://{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}" target="_blank" class="link" id="copylink{{ $key }}">
-                                    http://{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}
+                                <a href="{{config('settings.SECURE_PROTOCOL')}}{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}" target="_blank" class="link" id="copylink{{ $key }}">
+                                    {{config('settings.SECURE_PROTOCOL')}}{{env('APP_REDIRECT_HOST')}}/{{$url->shorten_suffix}}
                                 </a>
                             </h3>
                         @endif
