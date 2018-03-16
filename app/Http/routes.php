@@ -37,6 +37,16 @@ Route::group(['domain' => env('APP_HOST')], function () {
       'uses' => 'HomeController@getIndex',
       'as' => 'getIndex',
   ]);
+
+  Route::get('forgot_password', [
+    'uses'  => 'HomeController@forgotPassword',
+    'as'    => 'forgotPassword'
+  ]);
+
+  Route::post('forgotPasswordEmail', [
+    'uses'  =>  'HomeController@forgotPasswordEmail',
+    'as'    =>  'forgotPasswordEmail'
+  ]);
 });
 
 //actual rooutes goes here

@@ -21,6 +21,8 @@ use App\UrlSearchInfo;
 use App\UrlTag;
 use App\UrlTagMap;
 
+use App\Http\Requests\ForgotPasswordRequest;
+
 class HomeController extends Controller
 {
     /**
@@ -36,6 +38,46 @@ class HomeController extends Controller
         if($url == null)
             return 1;
         return 0;
+    }
+
+    public function forgotPassword() {
+      if (\Auth::check()) {
+          return redirect()->action('HomeController@getDashboard');
+      } else {
+          return view('settings.forgot_password');
+      }
+    }
+
+    public function forgotPasswordEmail(Request $request) {
+      $v = \Validator::make($request->all(), [
+          'email' => 'required|email|exists:users',
+      ]);
+
+      if($v->fails()) {
+        \Session::flash('errs',$v->errors()->first('email'));
+        return \Redirect::back();
+      } else {
+        try {
+          $email = $request->email;
+
+          $user    = User::where('email',$email)->first();
+          $subject = 'Reset your password here!';
+          $data    = array('name'=>$user->name);
+
+          \Mail::send('mail.forgetPassword', $data, function($message) use($email,$user,$subject){
+           $message->to($email, config('settings.company_name'))->subject($subject);
+           //$message->body('Please click on the link to change your password');
+           $message->from('work@tier5.us',$user->name);
+          });
+
+          \Session::flash('errs','no errs');
+          return redirect()->back();
+        } catch (\Exception $e) {
+          \Session::flash('errs',$e->getMessage());
+          //\Session::flash('errs','It seems like the mail server is busy! Try again after a few minutes');
+          return redirect()->back();
+        }
+      }
     }
 
     // public function test(Request $request)
@@ -1459,7 +1501,7 @@ class HomeController extends Controller
     public function getDashboard(Request $request)
     {
         if (Auth::check()) {
-
+            //dd(Auth::check());
             if(\Session::has('plan'))
             {
                 //return 18745;
