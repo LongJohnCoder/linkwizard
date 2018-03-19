@@ -1621,6 +1621,7 @@ class HomeController extends Controller
 
 
                     return view('dashboard2', [
+                    //return view('dashboard.shorten_url', [
                         'count_url' => $count_url,// dynamic
                         'user' => $user,
                         'urls' => $urls,// dynamic
