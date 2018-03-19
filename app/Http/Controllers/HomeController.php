@@ -1651,6 +1651,57 @@ class HomeController extends Controller
             return redirect()->action('HomeController@getIndex');
         }
     }
+
+    public function getLinkPreview($id) {
+      if (Auth::check())
+      {
+          //dd(Auth::check());
+          if(\Session::has('plan'))
+          {
+              return redirect()->action('HomeController@getSubscribe');
+          }
+          else
+          {
+            $user = Auth::user();
+            $url = Url::find($id);
+
+            $total_links = null;
+            if ($url) {
+                $total_links = $url->count;
+                $limit = LinkLimit::where('user_id', $user->id)->first();
+                if ($limit) {
+                    $limit->number_of_links = $total_links;
+                    $limit->save();
+                }
+            }
+
+            if ($user->subscribed('main', 'tr5Advanced')) {
+                $subscription_status = 'tr5Advanced';
+                $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+
+            } elseif ($user->subscribed('main', 'tr5Basic')) {
+                $subscription_status = 'tr5Basic';
+                $limit = Limit::where('plan_code', 'tr5Basic')->first();
+            } else {
+                $subscription_status = false;
+                $limit = Limit::where('plan_code', 'tr5free')->first();
+            }
+
+            return view('dashboard.link_preview' , [
+              'url'                 => $url,
+              'total_links'         => $total_links,
+              'limit'               => $limit,
+              'subscription_status' => $subscription_status,
+              'user'                => $user
+            ]);
+          }
+
+      } else {
+          return redirect()->action('HomeController@getIndex');
+      }
+    }
+
+
     /**
      * Post a brand logo.
      *

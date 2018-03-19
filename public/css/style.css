@@ -2256,7 +2256,7 @@ footer .social-icon a:last-child{
 
 .highcharts-background{background: red !important; fill: 68, 140, 203, 1 !important;}
 
-.custom-table .short-url{background: #fff; border: 1px solid #ccc; padding: 2px; 
+.custom-table .short-url{background: #fff; border: 1px solid #ccc; padding: 2px;
     color: #000; width: 113px; overflow: hidden; font-size: 12px;}
 
 
@@ -2381,8 +2381,3 @@ border-radius: 0;
 .use-custom3{display: none; padding: 21px 0 5px;}
 .btn-shorten{background: #01579b; color: #fff; padding: 10px 19px; color: #fff;
 border-radius: 0; border: none; font-size: 16px;}
-
-
-
-
-

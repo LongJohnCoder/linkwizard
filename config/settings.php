@@ -1,6 +1,6 @@
 <?php
 
 return [
-'SECURE_PROTOCOL' => 'https://',
+'SECURE_PROTOCOL' => 'http://',
 'COMPANY_NAME'    => 'Tier5LLC'
 ];

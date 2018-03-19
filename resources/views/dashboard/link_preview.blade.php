@@ -20,7 +20,136 @@
 <!-- search div ends -->
 
 <div class="main-dashboard-body">
-	@include('contents/dashboard-body')
+  <div class="main-content">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-md-12 col-sm-12">
+          <ul class="nav nav-tabs">
+              <li class="active"><a data-toggle="tab" href="#link-deetails">Link Details</a></li>
+              <li><a data-toggle="tab" href="#link-status">Link Status</a></li>
+          </ul>
+          <div class="tab-content tab-holder">
+            <div id="link-deetails" class="tab-pane fade in active">
+              <div class="row">
+                  <div class="col-md-2 col-sm-2"><strong>Redirection link:</strong></div>
+                  <div class="col-md-10 col-sm-10">
+                      <a href="#">lnkh.co/NqlLxOU</a>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-2 col-sm-2"><strong>Clicked link:</strong></div>
+                  <div class="col-md-10 col-sm-10">
+                      <a href="#">https://jv.tr5.us/chatbotpaymentsoftware </a>
+                  </div>
+              </div>
+              <hr>
+              <div class="tag">
+                <ul>
+                  <li>
+                      <button id="clipboard0" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink0" style="width:70px"><i class="fa fa-clipboard"></i> copy
+                      </button>
+                  </li>
+                  <li>
+                    <button id="edit-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-pencil"></i> edit</button>
+                  </li>
+                  <li>
+                    <button id="fb-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-facebook"></i> share</button>
+                  </li>
+                  <li>
+                    <button id="gp-share-btn0" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="1094910841675-1rtgjkoe9l9p5thbgus0s1vlf9j5rrjf.apps.googleusercontent.com" data-contenturl="http://tr5.test/b0DwpA" data-cookiepolicy="none" data-prefilltext="Web Design Development | Software Company USA - Tier5 LLC" data-calltoactionlabel="SEND" data-calltoactionurl="http://tr5.test/b0DwpA" style="width:70px" data-gapiscan="true" data-onload="true" data-gapiattached="true"><i class="fa fa-google-plus"></i> share</button>
+                  </li>
+                  <li>
+                      <a href="https://twitter.com/intent/tweet?text=Web Design Development | Software Company USA - Tier5 LLC please visit http://tr5.test/b0DwpA to know more." style="border: none; padding: 0px; margin: 0px;">
+                      <button id="tw-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-twitter"></i> share</button>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://tr5.test/b0DwpA&amp;title=Web Design Development | Software Company USA - Tier5 LLC&amp;summary=Web Design Development | Software Company USA - Tier5 LLC&amp;source=LinkedIn" target="_blank" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no'); return false;" style="border: none; padding: 0px; margin: 0px;"><button id="tw-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px">
+                      <i class="fa fa-linkedin"></i> share</button>
+                      </a>
+                  </li>
+                  <li>
+                    <button id="tw-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-linkedin"></i> share</button>
+                  </li>
+                  <li>
+                    <button id="addBrand0" class="btn btn-default btn-sm btngrpthree" style="width:130px"><i class="fa fa-bullhorn"></i> create brand</button>
+                  </li>
+                  <li>
+                    <button id="brandLink0" class="btn btn-default btn-sm btngrpthree" style="width:130px"><i class="fa fa-anchor"></i> Brand Link</button>
+                  </li>
+                </ul>
+              </div>
+              <div class="map-area">
+
+              </div>
+
+              <div class="row">
+                  <div class="col-md-12 col-sm-12">
+                  <strong>Link Description:</strong><br>
+                  Web Design Development | Software Company USA - Tier5 LLC
+
+                  </div>
+              </div>
+            </div>
+
+            <div id="link-status" class="tab-pane fade">
+               <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="tot-clicks">
+                            <h2>Total Clicks 10 (100%)</h2>
+                            <div class="tot-clicks-body">
+                                <div class="chart-div">
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="tot-clicks">
+                            <h2>Platform Status</h2>
+                            <div class="tot-clicks-body">
+                                <div class="chart-div">
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+               <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="tot-clicks">
+                            <h2>Browser Status</h2>
+                            <div class="tot-clicks-body">
+                                <div class="chart-div">
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6">
+                        <div class="tot-clicks">
+                            <h2>Referring Chanels</h2>
+                            <div class="tot-clicks-body">
+                                <div class="chart-div">
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 
@@ -778,7 +907,7 @@ window.onload = function(){
                     $('#columnChart').highcharts({
                         chart: {
                             type: 'column',
-                            backgroundColor: 'rgba(68, 140, 203, 1)'
+                            backgroundColor: 'rgba(49, 83, 105, 1)'
                         },
                         title: {
                             text: null

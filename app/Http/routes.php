@@ -66,6 +66,7 @@ Route::group(['domain' => env('APP_HOST')], function () {
 //actual rooutes goes here
 Route::group(['domain' => env('APP_LOGIN_HOST')], function () {
 
+
     Route::post('/check_custom' , 'HomeController@check_custom');
     Route::get('test' , function(){
         return view('test');
@@ -110,6 +111,10 @@ Route::group(['domain' => env('APP_LOGIN_HOST')], function () {
         Route::group(['prefix' => 'url'], function () {
 
             //search url with links
+            Route::get('/{id}/link_preview',[
+              'uses'  =>  'HomeController@getLinkPreview',
+              'as'    =>  'getLinkPreview'
+            ]);
 
             Route::post('giveMyTags', [
               'uses'  =>  'HomeController@giveMyTags',

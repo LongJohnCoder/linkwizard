@@ -110,7 +110,7 @@
 
 <!-- Main Content Start -->
 
-<section class="main-content tabsection" style="display : none">
+<section class="main-content tabsection">
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -131,24 +131,25 @@
                         </thead>
                         <tbody>
                             @foreach ($urls as $key => $url)
-                            <tr onclick="window.location.href()">
+
+                            <tr onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'">
                                 @php
                                   if(isset($url->subdomain)) {
                                     if($url->subdomain->type == 'subdomain')
-                                        $shrt_url = 'http:/'.'/'.$url->subdomain->name.'.'.env( 'APP_REDIRECT_HOST' ).'/'.$url->shorten_suffix;
+                                        $shrt_url = config('settings.SECURE_PROTOCOL').$url->subdomain->name.env('APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
                                     else if($url->subdomain->type == 'subdirectory')
-                                        $shrt_url = 'http:/'.'/'.env('APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+                                        $shrt_url = config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
                                   } else {
-                                    $shrt_url = 'http:/'.'/'.env( 'APP_REDIRECT_HOST' ).'/'.$url->shorten_suffix;
+                                    $shrt_url = config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
                                   }
                                 @endphp
                                 <td>
                                     <div class="short-url">
-                                      <a href="{{config('settings.SECURE_PROTOCOL')}}{{$shrt_url}}">{{$shrt_url}}</a>
+                                      <a href="{{$shrt_url}}">{{$shrt_url}}</a>
                                     </div>
                                 </td>
                                 <td>
-                                  <a href="{{$shrt_url}}">{{ $url->protocol }}://{{ $url->actual_url }}</a>
+                                  <a href="{{$url->protocol}}://{{$url->actual_url}}">{{ $url->protocol }}://{{ $url->actual_url }}</a>
                                 </td>
                                 <td>{{$url->title}}</td>
                                 <td>{{$url->count}}</td>
