@@ -1007,6 +1007,25 @@ window.onload = function(){
 		@endif
 
 
+		<script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
+		<script src="{{ URL::to('/').'/public/resources/js/min/toucheffects-min.js'}}"></script>
+		<script type="text/javascript">
+			 $(document).ready(function(){
+
+
+				$.fn.modal.Constructor.prototype.enforceFocus = function() {};
+
+				$(".list-group ul li").click(function(){
+					$(this).addClass("active");
+					$(".list-group ul li").not($(this)).removeClass("active");
+					$(window).scrollTop(500);
+					var index = $(this).index();
+								$("div.tab-content").removeClass("active");
+								$("div.tab-content").eq(index).addClass("active");
+					});
+			 });
+		</script>
+
 		<script type="text/javascript">
 			$(document).ready(function(){
 

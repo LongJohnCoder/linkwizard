@@ -789,7 +789,7 @@ a.link{
     width: 100%;
     /*overflow-y: scroll;
     overflow-x: hidden;*/
-    display: none;
+    /*display: none;*/
 }
 
 .tab-content.active{
@@ -2381,3 +2381,23 @@ border-radius: 0;
 .use-custom3{display: none; padding: 21px 0 5px;}
 .btn-shorten{background: #01579b; color: #fff; padding: 10px 19px; color: #fff;
 border-radius: 0; border: none; font-size: 16px;}
+
+
+.tab-holder{border: 1px solid #ccc; padding: 15px; border-top: none; background: #fff;}
+
+.tag ul{margin: 0; padding: 0;}
+.tag ul li{margin: 0; padding: 0; list-style: none; display: inline-block;}
+.tag ul li a{color: #448ccb;}
+.tag ul li button{background: #448ccb; text-shadow: none; color: #fff;}
+.tag ul li button:hover{background: #01579b; border: 1px solid #01579b;}
+
+
+.map-area{background: #bdbdbd; width: 100%; height: 360px; margin: 15px 0;}
+.tot-clicks-body{height: 250px; border: 1px solid #ccc;}
+
+
+ chart: {
+     backgroundColor: '#FCFFC5',
+     polar: true,
+     type: 'line'
+  }
