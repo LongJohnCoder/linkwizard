@@ -26,6 +26,10 @@ Route::group(['prefix' => 'api/v1'],function() {
     'uses'  => 'ApiController@createUserByEmail',
     'as'    => 'createUserByEmail'
   ]);
+  Route::post('delete-subscriber',[
+    'uses'  => 'ApiController@deleteUserByEmail',
+    'as'    => 'deleteUserByEmail'
+  ]);
 });
 /* API routes ends here
 
