@@ -44,10 +44,10 @@
           </div>
       @endif
 
-      @if(\Session::has('success'))
-        <div class="alert alert-success">
-              <p>{{\Session::get('success')}}</p>
-        </div>
+      @if(\Session::has('forget_success'))
+          <div class="alert alert-success">
+              <p>{{\Session::get('forget_success')}}</p>
+          </div>
       @endif
       <div class="col-md-8">
         <h2>Reset Password Form</h2>
@@ -56,10 +56,13 @@
         <div class="element-main">
       		<h1>Forgot Password</h1>
       		<p> Send a forgot pasword link in email! </p>
-      		<form class="form" method="post" action="{{url('forgotPasswordEmail')}}">
+      		<form class="form" method="post" action="{{url('set-password')}}">
             {{csrf_field()}}
-      			<input style="width:80%" class="form-group" type="text" name="email" placeholder="Your e-mail address" value=""><br>
-      			<input style="width:20%" class="form-group btn btn-success" type="submit" value="Send">
+            <input style="width:80%" class="form-group" type="email" name="email" placeholder="Your e-mail address" value=" {{ $email }}" readonly><br>
+            <input style="width:80%" class="form-group" type="password" name="password" placeholder="Set Password" value=""><br>
+            <input style="width:80%" class="form-group" type="password" name="password_confirmation" placeholder="Set Confirm Password" value=""><br>
+      			<input style="width:80%" class="form-group" type="hidden" name="token" >
+      			<input style="width:20%" class="form-group btn btn-success" type="submit" value="submit">
       		</form>
       	</div>
       </div>
