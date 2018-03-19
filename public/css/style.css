@@ -1712,6 +1712,15 @@ h4#subdomainModalLabel{
     box-shadow: inset 1px 0 10px 0 #ccc;
 }
 
+.custom-tags-contents .custom-tags-area {
+  width: 80%;
+  font-size: 18px;
+  border-radius: 0;
+  border: 1px solid #ccc;
+  margin-left: 10px;
+  box-shadow: inset 1px 0 10px 0 #ccc;
+}
+
 #myModalLabel.modal-title {
     background: #eee;
     padding: 10px;

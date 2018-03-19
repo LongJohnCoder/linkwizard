@@ -197,11 +197,11 @@
               <div class="tag">
                 <ul>
                   <li>
-                      <button id="cclipboard0" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink0" style="width:70px"><i class="fa fa-clipboard"></i> copy
+                      <button id="clipboard0" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink0" style="width:70px"><i class="fa fa-clipboard"></i> copy
                       </button>
                   </li>
                   <li>
-                    <button id="eedit-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-pencil"></i> edit</button>
+                    <button id="edit-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-pencil"></i> edit</button>
                   </li>
                   <li>
                     <button id="fb-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-facebook"></i> share</button>
@@ -223,7 +223,7 @@
                     <button id="tw-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-linkedin"></i> share</button>
                   </li>
                   <li>
-                    <button id="aaddBrand0" class="btn btn-default btn-sm btngrpthree" style="width:130px"><i class="fa fa-bullhorn"></i> create brand</button>
+                    <button id="addBrand0" class="btn btn-default btn-sm btngrpthree" style="width:130px"><i class="fa fa-bullhorn"></i> create brand</button>
                   </li>
                   <li>
                     <button id="brandLink0" class="btn btn-default btn-sm btngrpthree" style="width:130px"><i class="fa fa-anchor"></i> Brand Link</button>
@@ -231,7 +231,8 @@
                 </ul>
               </div>
               <div class="map-area">
-
+                {{-- This is where map loads dynamically --}}
+                <div id="regions_div"></div>
               </div>
 
               <div class="row">
@@ -249,8 +250,8 @@
                         <div class="tot-clicks">
                             <h2>Total Clicks 10 (100%)</h2>
                             <div class="tot-clicks-body">
-                                <div class="chart-div">
-
+                                {{-- This is where total clicks info loads up dynamically --}}
+                                <div class="chart-div" id="chart-div">
 
                                 </div>
                             </div>
@@ -260,8 +261,8 @@
                         <div class="tot-clicks">
                             <h2>Platform Status</h2>
                             <div class="tot-clicks-body">
-                                <div class="chart-div">
-
+                                {{-- This is where platform status info loads up dynamically --}}
+                                <div class="platform_div">
 
                                 </div>
                             </div>
@@ -273,8 +274,8 @@
                         <div class="tot-clicks">
                             <h2>Browser Status</h2>
                             <div class="tot-clicks-body">
-                                <div class="chart-div">
-
+                                {{-- This is where browser status info loads up dynamically --}}
+                                <div class="browser_div">
 
                                 </div>
                             </div>
@@ -284,8 +285,8 @@
                         <div class="tot-clicks">
                             <h2>Referring Chanels</h2>
                             <div class="tot-clicks-body">
-                                <div class="chart-div">
-
+                                {{-- This is where refferals status info loads up dynamically --}}
+                                <div class="referral_div">
 
                                 </div>
                             </div>
@@ -305,7 +306,7 @@
 
 
 
-<section class="main-content">
+<section class="main-content" style="display: none">
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12">
@@ -646,6 +647,7 @@
                                             fb_share('{{ route('getIndex') }}/{{ $url->shorten_suffix }}' , '{{url('/')}}');
                                         });
                                         $('#addBrand{{ $key }}').on('click', function () {
+
                                             $("#urlId1").val('{{ $url->id }}');
                                             $("#redirectingTime").val('{{ $url->redirecting_time/1000 }}');
                                             initSummernote('{!! $url->  redirecting_text_template !!}');
@@ -676,7 +678,7 @@
                 		 	<div class="tot-clicks">
 	                		 	<h2>Number of hits per country</h2>
 	                		 	<div class="tot-clicks-body">
-	                		 		<div id="regions_div{{ $key }}" style="width: 450px; height: 250px;"></div>
+	                		 		<div id="rregions_div{{ $key }}" style="width: 450px; height: 250px;"></div>
 	                		 	</div>
                 		 	</div>
                 		</div>
@@ -734,16 +736,19 @@
                                                 var options = {
                                                     colorAxis: {colors: '#3366ff'},
                                                     background: 'rgba(255, 255, 255, 0.8)',
-                                                    width: 650,
-                                                    height: 250,
+                                                    width   : '100%',
+                                                    height  : 360,
+                                                    margin  : 15,
+                                                    border  : 15,
+                                                    marginColor : 'black'
                                                 };
-                                                var chart{{ $key }} = new google.visualization.GeoChart(document.getElementById('regions_div{{ $key }}'));
-                                                chart{{ $key }}.draw(data, options);
+                                                var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+                                                chart.draw(data, options);
                                                 @if ($subscription_status != null)
-                                                google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
-                                                    var selectionIdx = chart{{ $key }}.getSelection()[0].row;
+                                                google.visualization.events.addListener(chart, 'select', function() {
+                                                    var selectionIdx = chart.getSelection()[0].row;
                                                     var countryName = data.getValue(selectionIdx, 0);
-                                                    window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
+                                                    window.location.href = "{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/" + countryName + '/analytics';
                                                 });
                                                 @endif
                                             });
@@ -754,11 +759,11 @@
                                                     width: 350,
                                                     height: 250,
                                                 };
-                                                var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('chart_div{{ $key }}'));
-                                                chart{{ $key }}.draw(data, options);
+                                                var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                                                chart.draw(data, options);
                                                 @if ($subscription_status != null)
-                                                google.visualization.events.addListener(chart{{ $key }}, 'select', function() {
-                                                    var selectionIdx = chart{{ $key }}.getSelection()[0].row;
+                                                google.visualization.events.addListener(chart, 'select', function() {
+                                                    var selectionIdx = chart.getSelection()[0].row;
                                                     var countryName = data.getValue(selectionIdx, 0);
                                                     window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
                                                 });
@@ -774,8 +779,8 @@
                                                     width: 400,
                                                     height: 250,
                                                 };
-                                                var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('platform_div{{ $key }}'));
-                                                chart{{ $key }}.draw(data, options);
+                                                var chart = new google.visualization.PieChart(document.getElementById('platform_div'));
+                                                chart.draw(data, options);
                                             });
                                             google.charts.setOnLoadCallback(function () {
                                                 var data = google.visualization.arrayToDataTable(response.browser);
@@ -786,8 +791,8 @@
                                                     width: 400,
                                                     height: 250,
                                                 };
-                                                var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('browser_div{{ $key }}'));
-                                                chart{{ $key }}.draw(data, options);
+                                                var chart = new google.visualization.PieChart(document.getElementById('browser_div'));
+                                                chart.draw(data, options);
                                             });
                                             google.charts.setOnLoadCallback(function () {
                                                 var data = google.visualization.arrayToDataTable(response.referer);
@@ -798,8 +803,8 @@
                                                     width: 400,
                                                     height: 250,
                                                 };
-                                                var chart{{ $key }} = new google.visualization.PieChart(document.getElementById('referral_div{{ $key }}'));
-                                                chart{{ $key }}.draw(data, options);
+                                                var chart = new google.visualization.PieChart(document.getElementById('referral_div'));
+                                                chart.draw(data, options);
                                             });
                                             @endif
                                         } else {
@@ -808,7 +813,8 @@
                                     }
                                 });
                         </script>
-                	</div>
+
+                  </div>
                 </div>
                 @endforeach
 
@@ -1083,4 +1089,4 @@ $(document).ready(function(){
         $("." + inputValue).toggle();
     });
 });
-</script
+</script>

@@ -14,17 +14,19 @@
 @include('contents/header')
 <!-- Header End -->
 
-
 <!-- search div -->
 
 <!-- search div ends -->
 
 <div class="main-dashboard-body">
-  <section class="main-content">
+
+	<section class="main-content">
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12">
-                <div class="normal-box ">
+
+							<form id="url_short_frm" action="{{route('shortenUrl')}}" method="POST">
+								<div class="normal-box ">
                     <div class="row">
                         <div class="col-md-3 col-sm-3">
                         <label>
@@ -32,7 +34,7 @@
                         </label>
                         </div>
                         <div class="col-md-9 col-sm-9">
-                            <input type="text" class="form-control long-url">
+                            <input type="text" name="url" class="form-control long-url">
                             <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                         </div>
                     </div>
@@ -40,26 +42,26 @@
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add facebook pixel
-                          <input type="checkbox" value="facebook-pixel">
+                          <input type="checkbox" id="checkboxAddFbPixelid" name="check_fb">
                           <span class="checkmark"></span>
                         </label>
                     </div>
                     <div class="normal-body facebook-pixel">
                         <p>Paste Your Facebook-pixel-id Here</p>
-                        <input type="text" class="form-control">
+                        <input type="number" name="fbPixelid" class="form-control" id="fbPixel_id">
                     </div>
                 </div>
 
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add google pixel
-                          <input type="checkbox" value="google-pixel">
+                          <input type="checkbox" id="checkboxAddGlPixelid" name="check_gl">
                           <span class="checkmark"></span>
                         </label>
                     </div>
                     <div class="normal-body google-pixel">
                         <p>Paste Your Google-pixel-id Here</p>
-                        <input type="text" class="form-control">
+                        <input type="text" name="glPixelid" class="form-control" id="glPixel_id">
                     </div>
                 </div>
 
@@ -79,34 +81,35 @@
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add tags
-                          <input type="checkbox" value="add-tags">
+                          <input type="checkbox" id="shortTagsEnable" name="shortTagsEnable">
                           <span class="checkmark"></span>
                         </label>
                     </div>
                     <div class="normal-body add-tags">
                         <p>Mention tags for this link</p>
-                        <input type="text" class="form-control">
+												<div class="custom-tags-area" id="customTags_Area" >
+                        	<input class="custom-tags-contents" name="tags" type="text" class="form-control" id="shortTags_Contents" data-role="tagsinput">
+												</div>
                     </div>
                 </div>
 
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add description
-                          <input type="checkbox" value="add-description">
+                          <input type="checkbox" id="descriptionEnable" name="descriptionEnable">
                           <span class="checkmark"></span>
                         </label>
                     </div>
-                    <div class="normal-body add-description">
+                    <div class="normal-body add-description" id="descriptionArea">
                         <p>Mention description for this link</p>
-
-                        <textarea class="form-control"></textarea>
+                        <textarea id="descriptionContents" name="description" class = "form-control"></textarea>
                     </div>
                 </div>
 
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Link Preview
-                          <input type="checkbox" value="link-preview">
+                          <input type="checkbox" id="link_preview_selector" name="link_preview_selector">
                           <span class="checkmark"></span>
                         </label>
                     </div>
@@ -114,13 +117,13 @@
                         <ul>
                             <li>
                                 <label class="custom-checkbox">Use Original
-                                  <input type="checkbox" value="">
+                                  <input type="checkbox" checked id="link_preview_original" name="link_preview_original">
                                   <span class="checkmark"></span>
                                 </label>
                             </li>
                             <li>
                                 <label class="custom-checkbox">Use Custom
-                                  <input type="checkbox" value="use-custom">
+                                  <input type="checkbox" value="use-custom" id="link_preview_custom" name="link_preview_custom">
                                   <span class="checkmark"></span>
                                 </label>
                             </li>
@@ -129,8 +132,24 @@
 
                             <div class="white-paneel">
                                 <div class="white-panel-header">Image</div>
-                                <div class="white-panel-body">
-                                    <input type="file" name="">
+																<div class="white-panel-body">
+                                    <ul>
+                                        <li>
+                                            <label class="custom-checkbox">Use Original
+                                              <input checked type="checkbox" value="" id="org_img_chk" name="org_img_chk">
+                                              <span class="checkmark"></span>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label class="custom-checkbox">Use Custom
+                                              <input type="checkbox" value="use-custom1" id="cust_img_chk" name="cust_img_chk">
+                                              <span class="checkmark"></span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                    <div class="use-custom1 img-inp">
+                                        <input type="file" class="form-control" id="img_inp" name="img_inp">
+                                    </div>
                                 </div>
                             </div>
 
@@ -140,22 +159,20 @@
                                     <ul>
                                         <li>
                                             <label class="custom-checkbox">Use Original
-                                              <input type="checkbox" value="">
+                                              <input checked type="checkbox" value="" id="org_title_chk" name="org_title_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
                                         <li>
                                             <label class="custom-checkbox">Use Custom
-                                              <input type="checkbox" value="use-custom1">
+                                              <input type="checkbox" value="use-custom1" id="cust_title_chk" name="cust_title_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
                                     </ul>
-                                    <div class="use-custom1">
-                                        <input type="text" class="form-control" name="">
-
+                                    <div class="use-custom1 title-inp">
+                                        <input type="text" class="form-control" id="title_inp" name="title_inp">
                                     </div>
-
                                 </div>
                             </div>
 
@@ -165,19 +182,19 @@
                                     <ul>
                                         <li>
                                             <label class="custom-checkbox">Use Original
-                                              <input type="checkbox" value="">
+                                              <input checked type="checkbox" value="" id="org_dsc_chk" name="org_dsc_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
                                         <li>
                                             <label class="custom-checkbox">Use Custom
-                                              <input type="checkbox" value="use-custom2">
+                                              <input type="checkbox" value="use-custom2" id="cust_dsc_chk" name="cust_dsc_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
                                     </ul>
-                                    <div class="use-custom2">
-                                        <textarea class="form-control"></textarea>
+                                    <div class="use-custom2 dsc-inp">
+                                        <textarea class="form-control" id="dsc_inp" name="dsc_inp"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -188,19 +205,19 @@
                                     <ul>
                                         <li>
                                             <label class="custom-checkbox">Use Original
-                                              <input type="checkbox" value="">
+                                              <input checked type="checkbox" value="" id="org_url_chk" name="org_url_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
                                         <li>
                                             <label class="custom-checkbox">Use Custom
-                                              <input type="checkbox" value="use-custom3">
+                                              <input type="checkbox" value="use-custom3" id="cust_url_chk" name="cust_url_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
                                     </ul>
-                                    <div class="use-custom3">
-                                        <input type="text" class="form-control" name="">
+                                    <div class="use-custom3 url-inp">
+                                        <input type="text" class="form-control" name="url_inp" id="url_inp">
                                     </div>
                                 </div>
                             </div>
@@ -209,12 +226,12 @@
                     </div>
                 </div>
 
-                <button class=" btn-shorten">Shorten URL</button>
+                <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
+							</form>
             </div>
         </div>
     </div>
-</section>
-
+	</section>
 
 </div>
 
@@ -228,6 +245,167 @@
 </script>
 
 <script type="text/javascript">
+
+
+// $("#link_preview_selector").attr("checked", false);
+// $("#checkboxAddFbPixelid").attr("checked",false);
+// $("#checkboxAddGlPixelid").attr("checked",false);
+// $()
+
+$("#shorten_url_btn").on('click',function(e){
+
+
+	var actualUrl = $('#givenActualUrl').val();
+		var customUrl = $('#makeCustomUrl').val();
+		@if (Auth::user())
+				var userId = {{ Auth::user()->id }};
+		@else
+				var userId = 0;
+		@endif
+
+		$("#url_short_frm").submit();
+
+
+		var data = {
+			checkboxAddFbPixelid 	: 	$("#checkboxAddFbPixelid").prop('checked'),
+			fbPixelid							: 	$("#fbPixel_id").val(),
+			checkboxAddGlPixelid 	: 	$("#checkboxAddGlPixelid").prop('checked'),
+			glPixelid							: 	$("#glPixel_id").val(),
+			allowTag							:   $("#shortTagsEnable").prop('checked'),
+			tags 									: 	$("#shortTags_Contents").tagsinput('items'),
+			allowDescription      : 	$("#descriptionEnable").prop('checked'),
+			searchDescription			: 	$("#descriptionContents").val(),
+
+			link_preview_selector :   $("#link_preview_selector").prop('checked'),
+			link_preview_original	: 	$("#link_preview_original").prop('checked'),
+			link_preview_custom		: 	$("#link_preview_custom").prop('checked'),
+
+			org_img_chk						: 	$("#org_img_chk").prop('checked'),
+			cust_img_chk					: 	$("#cust_img_chk").prop('checked'),
+			img_inp	              :   $("#img_inp").val(),
+
+			org_title_chk					: 	$("#org_title_chk").prop('checked'),
+			cust_title_chk				: 	$("#cust_title_chk").prop('checked'),
+			title_inp	            :   $("#title_inp").val(),
+
+			org_dsc_chk						: 	$("#org_dsc_chk").prop('checked'),
+			cust_dsc_chk					: 	$("#cust_dsc_chk").prop('checked'),
+			dsc_inp	           	 	:   $("#dsc_inp").val(),
+
+			org_url_chk						: 	$("#org_url_chk").prop('checked'),
+			cust_url_chk					: 	$("#cust_url_chk").prop('checked'),
+			url_inp	            	:   $("url_inp").val()
+		}
+
+		console.log(data);
+
+		$.ajax({
+			type:"POST",
+			url:"/check_custom",
+			data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
+			success:function(response){
+				console.log('check_custom');
+				console.log(response);
+				if(response == 1)
+				{
+					console.log(response);
+					if (ValidURL(actualUrl))
+					{
+							if (ValidCustomURL(customUrl))
+							{
+									$.ajax({
+											type: "POST",
+											url: "{{ route('postCustomUrlTier5') }}",
+											data: {
+													checkboxAddFbPixelid 	: checkboxAddFbPixelid,
+													fbPixelid							: fbPixelid,
+													checkboxAddGlPixelid 	: checkboxAddGlPixelid,
+													glPixelid 						: glPixelid,
+													actual_url						: actualUrl,
+													custom_url						: customUrl,
+													user_id								: userId,
+													allowTag							: allowTag,
+													tags									: tags,
+													allowDescription			: allowDescription,
+													searchDescription			: searchDescription,
+													_token: "{{ csrf_token() }}"
+											}, success: function (response) {
+												console.log('postCustomUrlTier5');
+													if(response.status=="success") {
+															var shortenUrl = response.url;
+															var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
+															swal({
+																	title: "Shorten Url:",
+																	text: displayHtml,
+																	type: "success",
+																	html: true
+															}, function() {
+																	window.location.reload();
+															});
+															new Clipboard('#clipboardswal');
+															$('#clipboardswal').on('click', function () {
+																	window.location.reload();
+															});
+															HoldOn.close();
+													} else {
+															swal({
+																	title: null,
+																	text: "Please paste an actual URL",
+																	type: "warning",
+																	html: true
+															});
+															HoldOn.close();
+													}
+											}, error: function(response) {
+													console.log('Response error!');
+													HoldOn.close();
+											}, statusCode: {
+													500: function() {
+															swal({
+																	title: null,
+																	text: "Access Forbidden, Please paste a valid URL!",
+																	type: "error",
+																	html: true
+															});
+															HoldOn.close();
+													}
+											}
+									});
+							}
+							else
+							{
+									swal({
+											type: "warning",
+											title: null,
+											text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
+											html: true
+									});
+							}
+					}
+					else
+					{
+							swal({
+									type: "warning",
+									title: null,
+									text: "Please Enter An URL"
+								});
+					}
+				}
+				else
+				{
+					$("#err_cust").show();
+					//url already used by this user
+				}
+
+			}
+		});
+
+
+
+
+
+
+});
 
 var appURL = "{{url('/')}}";
 appURL = appURL.replace('https://','');
@@ -281,89 +459,233 @@ window.onload = function(){
 // 			});
 
 	var maintainSidebar = function(thisInstance) {
-		//facebook analytics checkbox for short urls
-		if (thisInstance.id === "checkboxAddFbPixelid" && thisInstance["name"] === "chk_fb_short") {
+
+		//for url
+		if(thisInstance.id === "org_url_chk") {
 			if(thisInstance.checked) {
-				$('#fbPixelid').show();
+				$('.url-inp').hide();
+				$('#url_inp').val('');
+				$('#url_inp').hide();
+				$("#cust_url_chk").attr("checked",false);
 			} else {
-				$('#fbPixelid').hide();
-				$('#fbPixelid').val('');
+			}
+		}
+
+		if(thisInstance.id === "cust_url_chk") {
+			if(thisInstance.checked) {
+				$('.url-inp').show();
+				$('#url_inp').show();
+				$("#org_url_chk").attr("checked",false);
+			} else {
+				$('.url-inp').hide();
+				$('#url_inp').hide();
+				$('#url_inp').val('');
+			}
+		}
+
+		//for description
+		if(thisInstance.id === "org_dsc_chk") {
+			if(thisInstance.checked) {
+				$('.dsc-inp').hide();
+				$('#dsc_inp').val('');
+				$('#dsc_inp').hide();
+				$("#cust_dsc_chk").attr("checked",false);
+			} else {
+			}
+		}
+
+		if(thisInstance.id === "cust_dsc_chk") {
+			if(thisInstance.checked) {
+				$('.dsc-inp').show();
+				$('#dsc_inp').show();
+				$("#org_dsc_chk").attr("checked",false);
+			} else {
+				$('.dsc-inp').hide();
+				$('#dsc_inp').hide();
+				$('#dsc_inp').val('');
+			}
+		}
+
+		//for title
+		if(thisInstance.id === "org_title_chk") {
+			if(thisInstance.checked) {
+				$('.title-inp').hide();
+				$('#title_inp').val('');
+				$('#title_inp').hide();
+				$("#cust_title_chk").attr("checked",false);
+			} else {
+			}
+		}
+
+		if(thisInstance.id === "cust_title_chk") {
+			if(thisInstance.checked) {
+				$('.title-inp').show();
+				$('#title_inp').show();
+				$("#org_title_chk").attr("checked",false);
+			} else {
+				$('.title-inp').hide();
+				$('#title_inp').hide();
+				$('#title_inp').val('');
+			}
+		}
+
+		//for image
+		if(thisInstance.id === "org_img_chk") {
+			if(thisInstance.checked) {
+				$('.img-inp').hide();
+				$('#img_inp').val('');
+				$('#img_inp').hide();
+				$("#cust_img_chk").attr("checked",false);
+			} else {
+			}
+		}
+
+		if(thisInstance.id === "cust_img_chk") {
+			if(thisInstance.checked) {
+				$('.img-inp').show();
+				$('#img_inp').show();
+				$("#org_img_chk").attr("checked",false);
+			} else {
+				$('.img-inp').hide();
+				$('#img_inp').hide();
+				$('#img_inp').val('');
+			}
+		}
+
+		//alert(1234);
+		//facebook analytics checkbox for short urls
+		if (thisInstance.id === "checkboxAddFbPixelid" && thisInstance["name"] === "check_fb") {
+			if(thisInstance.checked) {
+				$('.facebook-pixel').show();
+				$('#fbPixel_id').show();
+			} else {
+
+				$('.facebook-pixel').hide();
+				$('#fbPixel_id').val('');
+				$('#fbPixel_id').hide();
 			}
 		}
 
 		//facebook analytics checkbox for custom urls
-		if (thisInstance.id === "checkboxAddFbPixelid1" && thisInstance["name"] === "chk_fb_custom") {
-			if(thisInstance.checked) {
-				$('#fbPixelid1').show();
-			} else {
-				$('#fbPixelid1').hide();
-				$('#fbPixelid1').val('');
-			}
-		}
+		// if (thisInstance.id === "checkboxAddFbPixelid1" && thisInstance["name"] === "chk_fb_custom") {
+		// 	if(thisInstance.checked) {
+		// 		$('#fbPixelid1').show();
+		// 	} else {
+		// 		$('#fbPixelid1').hide();
+		// 		$('#fbPixelid1').val('');
+		// 	}
+		// }
 
 		//google analytics checkbox for short urls
-		if (thisInstance.id === "checkboxAddGlPixelid" && thisInstance["name"] === "chk_gl_short") {
-			if(thisInstance.checked) {
-				$('#glPixelid').show();
-			} else {
-				$('#glPixelid').hide();
-				$('#glPixelid').val('');
-			}
-		}
+		// if (thisInstance.id === "checkboxAddGlPixelid" && thisInstance["name"] === "chk_gl_short") {
+		// 	if(thisInstance.checked) {
+		// 		$('#glPixelid').show();
+		// 	} else {
+		// 		$('#glPixelid').hide();
+		// 		$('#glPixelid').val('');
+		// 	}
+		// }
 
 		//google analytics checkbox for custom urls
-		if (thisInstance.id === "checkboxAddGlPixelid1" && thisInstance["name"] === "chk_gl_custom") {
+		if (thisInstance.id === "checkboxAddGlPixelid" && thisInstance["name"] === "check_gl") {
 			if(thisInstance.checked) {
-
-				$('#glPixelid1').show();
+				$('.google-pixel').show();
+				$('#glPixel_id').show();
 			} else {
-				$('#glPixelid1').hide();
-				$('#glPixelid1').val('');
+				$('.google-pixel').hide();
+				$('#glPixel_id').hide();
+				$('#glPixel_id').val('');
 			}
 		}
 
 		//addtags for short urls
 		if (thisInstance.id === "shortTagsEnable" && thisInstance["name"] === "shortTagsEnable") {
 			if(thisInstance.checked) {
-				$('#shortTagsArea').show();
+				$('.add-tags').show();
+				$('#shortTags_Area').show();
 			} else {
-				$('#shortTagsArea').hide();
-				$("#shortTagsContents").tagsinput('removeAll');
+				$('.add-tags').hide();
+				$('#shortTags_Area').hide();
+				$("#shortTags_Contents").tagsinput('removeAll');
 			}
 		}
 
 		//addtags for custom urls
-		if (thisInstance.id === "customTagsEnable" && thisInstance["name"] === "customTagsEnable") {
+		// if (thisInstance.id === "customTagsEnable" && thisInstance["name"] === "customTagsEnable") {
+		// 	if(thisInstance.checked) {
+		// 		$('#customTagsArea').show();
+		// 	} else {
+		// 		$('#customTagsArea').hide();
+		// 		$("#customTagsContents").tagsinput('removeAll');
+		// 	}
+		// }
+
+		if (thisInstance.id === "descriptionEnable" && thisInstance["name"] === "descriptionEnable") {
 			if(thisInstance.checked) {
-				$('#customTagsArea').show();
+				$('#descriptionArea').show();
+				$('#descriptionContents').show();
 			} else {
-				$('#customTagsArea').hide();
-				$("#customTagsContents").tagsinput('removeAll');
+				$('#descriptionContents').hide();
+				$('#descriptionContents').val('');
+				$('#descriptionArea').hide();
 			}
 		}
 
-		//add short descriptions for short urls
-		if (thisInstance.id === "shortDescriptionEnable" && thisInstance["name"] === "shortDescriptionEnable") {
+		if(thisInstance.id === "link_preview_selector" && thisInstance["name"] === "link_preview_selector") {
 			if(thisInstance.checked) {
-				$('#shortDescriptionContents').show();
+				$('.link-preview').show();
 			} else {
-				$('#shortDescriptionContents').hide();
-				$('#shortDescriptionContents').val('');
+				$('.link-preview').hide();
 			}
 		}
 
-		//add short descriptions for short urls
-		if (thisInstance.id === "customDescriptionEnable" && thisInstance["name"] === "customDescriptionEnable") {
+		if(thisInstance.id === 'link_preview_original') {
 			if(thisInstance.checked) {
-				$('#customDescriptionContents').show();
+				$('#link_preview_custom').attr("checked", false);
+				$('.use-custom').hide();
 			} else {
-				$('#customDescriptionContents').hide();
-				$('#customDescriptionContents').val('');
+				//$('#link_preview_').hide();
+				//$('#link_preview_original').hide();
 			}
 		}
+
+		if(thisInstance.id === 'link_preview_custom') {
+			if(thisInstance.checked) {
+				$('.use-custom').show();
+				$('#link_preview_original').attr("checked",false);
+			} else {
+				//$('#link_preview_').hide();
+				$('.use-custom').hide();
+			}
+		}
+
+
+		//add short descriptions for short urls
+		// if (thisInstance.id === "shortDescriptionEnable" && thisInstance["name"] === "shortDescriptionEnable") {
+		// 	if(thisInstance.checked) {
+		// 		$('#shortDescriptionContents').show();
+		// 	} else {
+		// 		$('#shortDescriptionContents').hide();
+		// 		$('#shortDescriptionContents').val('');
+		// 	}
+		// }
+    //
+		// //add short descriptions for short urls
+		// if (thisInstance.id === "customDescriptionEnable" && thisInstance["name"] === "customDescriptionEnable") {
+		// 	if(thisInstance.checked) {
+		// 		$('#customDescriptionContents').show();
+		// 	} else {
+		// 		$('#customDescriptionContents').hide();
+		// 		$('#customDescriptionContents').val('');
+		// 	}
+		// }
 	}
 
 	$(document).ready(function() {
+
+		// $("#shorten_url_btn").on("click",function(){
+    //
+		// });
 
 		// $('#dashboard-tags-to-search').on('beforeItemAdd', function(event) {
 		// 	var string = $(this).text();
@@ -410,7 +732,7 @@ window.onload = function(){
     // });
 
 
-		$(":checkbox").on("change", function() {
+		$("input[type='checkbox']").on("change", function() {
 			maintainSidebar(this);
     });
 
@@ -547,7 +869,7 @@ window.onload = function(){
 										var fbPixelid							= 	$("#fbPixelid1").val();
 										var checkboxAddGlPixelid 	= 	$("#checkboxAddGlPixelid1").prop('checked');
 										var glPixelid							= 	$("#glPixelid1").val();
-										var allowTag							=   $("#customTagsEnable").prop('checked');
+										var allowTag							=   $("#shortTagsEnable").prop('checked');
 										var tags 									= 	$("#customTagsContents").tagsinput('items');
 										var allowDescription      = 	$("#customDescriptionEnable").prop('checked');
 										var searchDescription			= 	$("#customDescriptionContents").val();
@@ -1213,6 +1535,16 @@ window.onload = function(){
 			}
 			});
 		</script>
+
+		<script type="text/javascript">
+
+		    // $('input[type="checkbox"]').click(function(){
+		    //     var inputValue = $(this).attr("value");
+		    //     $("." + inputValue).toggle();
+		    // });
+		//});
+		</script>
+
 
 </body>
 </html>

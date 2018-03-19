@@ -183,6 +183,22 @@ Route::group(['domain' => env('APP_LOGIN_HOST')], function () {
         });
 
         Route::group(['prefix' => 'user'], function () {
+
+            Route::post('shortenUrl', [
+              'uses' => 'HomeController@shortenUrl',
+              'as'   => 'shortenUrl'
+            ]);
+
+            Route::get('create_shortened_link',[
+              'uses'  => 'HomeController@createShortenedLink',
+              'as'    => 'createShortenedLink'
+            ]);
+
+            Route::get('create_custom_link',[
+              'uses'  => 'HomeController@createCustomLink',
+              'as'    => 'createCustomLink'
+            ]);
+
             Route::post('register', [
                 'uses' => 'HomeController@postRegister',
                 'as' => 'postRegister',

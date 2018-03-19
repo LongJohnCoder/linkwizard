@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+@php
+$key = 0;
+@endphp
+
 
 <!-- head of th page -->
 <html lang="en">
@@ -15,9 +19,7 @@
 <!-- Header End -->
 
 
-<!-- search div -->
-
-<!-- search div ends -->
+@include('contents.modal.allModal')
 
 <div class="main-dashboard-body">
   <div class="main-content">
@@ -26,62 +28,83 @@
       <div class="row">
         <div class="col-md-12 col-sm-12">
           <ul class="nav nav-tabs">
-              <li class="active"><a data-toggle="tab" href="#link-deetails">Link Details</a></li>
+              <li class="active"><a data-toggle="tab" href="#link-details">Link Details</a></li>
               <li><a data-toggle="tab" href="#link-status">Link Status</a></li>
           </ul>
           <div class="tab-content tab-holder">
-            <div id="link-deetails" class="tab-pane fade in active">
+            <div id="link-details" class="tab-pane fade in active">
+
+              @php
+                if(isset($url->subdomain)) {
+                  if($url->subdomain->type == 'subdomain')
+                      $shrt_url = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.env('APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+                  else if($url->subdomain->type == 'subdirectory')
+                      $shrt_url = config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+                } else {
+                  $shrt_url = config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+                }
+              @endphp
+
               <div class="row">
                   <div class="col-md-2 col-sm-2"><strong>Redirection link:</strong></div>
                   <div class="col-md-10 col-sm-10">
-                      <a href="#">lnkh.co/NqlLxOU</a>
+                      <a href="{{$shrt_url}}" id="copylink">{{$shrt_url}}</a>
                   </div>
               </div>
               <div class="row">
+                @php
+                  $actual_url = $url->protocol.'://'.$url->actual_url;
+                @endphp
                   <div class="col-md-2 col-sm-2"><strong>Clicked link:</strong></div>
                   <div class="col-md-10 col-sm-10">
-                      <a href="#">https://jv.tr5.us/chatbotpaymentsoftware </a>
+                      <a href="{{$actual_url}}">{{$actual_url}}</a>
                   </div>
               </div>
               <hr>
               <div class="tag">
                 <ul>
                   <li>
-                      <button id="clipboard0" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink0" style="width:70px"><i class="fa fa-clipboard"></i> copy
+                      <button id="clipboard" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink" style="width:70px"><i class="fa fa-clipboard"></i> copy
                       </button>
                   </li>
                   <li>
-                    <button id="edit-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-pencil"></i> edit</button>
+                    <button id="edit-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-pencil"></i> edit</button>
                   </li>
                   <li>
-                    <button id="fb-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-facebook"></i> share</button>
+                    <button id="fb-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-facebook"></i> share</button>
                   </li>
                   <li>
-                    <button id="gp-share-btn0" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="1094910841675-1rtgjkoe9l9p5thbgus0s1vlf9j5rrjf.apps.googleusercontent.com" data-contenturl="http://tr5.test/b0DwpA" data-cookiepolicy="none" data-prefilltext="Web Design Development | Software Company USA - Tier5 LLC" data-calltoactionlabel="SEND" data-calltoactionurl="http://tr5.test/b0DwpA" style="width:70px" data-gapiscan="true" data-onload="true" data-gapiattached="true"><i class="fa fa-google-plus"></i> share</button>
+                    <button id="gp-share-btn" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="1094910841675-1rtgjkoe9l9p5thbgus0s1vlf9j5rrjf.apps.googleusercontent.com" data-contenturl="http://tr5.test/b0DwpA" data-cookiepolicy="none" data-prefilltext="Web Design Development | Software Company USA - Tier5 LLC" data-calltoactionlabel="SEND" data-calltoactionurl="http://tr5.test/b0DwpA" style="width:70px" data-gapiscan="true" data-onload="true" data-gapiattached="true"><i class="fa fa-google-plus"></i> share</button>
                   </li>
                   <li>
-                      <a href="https://twitter.com/intent/tweet?text=Web Design Development | Software Company USA - Tier5 LLC please visit http://tr5.test/b0DwpA to know more." style="border: none; padding: 0px; margin: 0px;">
-                      <button id="tw-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-twitter"></i> share</button>
-                      </a>
+
+                        <button id="tw-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px">
+                          <i class="fa fa-twitter"></i> share
+                        </button>
+
                   </li>
                   <li>
-                      <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=http://tr5.test/b0DwpA&amp;title=Web Design Development | Software Company USA - Tier5 LLC&amp;summary=Web Design Development | Software Company USA - Tier5 LLC&amp;source=LinkedIn" target="_blank" onclick="window.open(this.href, 'mywin','left=20,top=20,width=500,height=500,directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=no'); return false;" style="border: none; padding: 0px; margin: 0px;"><button id="tw-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px">
-                      <i class="fa fa-linkedin"></i> share</button>
-                      </a>
+
+                        <button id="tw-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px">
+                          <i class="fa fa-linkedin"></i> share
+                        </button>
+
                   </li>
                   <li>
-                    <button id="tw-share-btn0" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-linkedin"></i> share</button>
+                    <button id="addBrand" class="btn btn-default btn-sm btngrpthree" style="width:130px">
+                      <i class="fa fa-bullhorn"></i> create brand
+                    </button>
                   </li>
                   <li>
-                    <button id="addBrand0" class="btn btn-default btn-sm btngrpthree" style="width:130px"><i class="fa fa-bullhorn"></i> create brand</button>
-                  </li>
-                  <li>
-                    <button id="brandLink0" class="btn btn-default btn-sm btngrpthree" style="width:130px"><i class="fa fa-anchor"></i> Brand Link</button>
+                    <button id="brandLink" class="btn btn-default btn-sm btngrpthree" style="width:130px">
+                      <i class="fa fa-anchor"></i> Brand Link
+                    </button>
                   </li>
                 </ul>
               </div>
               <div class="map-area">
-
+                {{-- This is where map loads dynamically --}}
+                <div id="regions_div"></div>
               </div>
 
               <div class="row">
@@ -99,8 +122,7 @@
                         <div class="tot-clicks">
                             <h2>Total Clicks 10 (100%)</h2>
                             <div class="tot-clicks-body">
-                                <div class="chart-div">
-
+                                <div class="chart-div" id="chart_div">
 
                                 </div>
                             </div>
@@ -110,8 +132,7 @@
                         <div class="tot-clicks">
                             <h2>Platform Status</h2>
                             <div class="tot-clicks-body">
-                                <div class="chart-div">
-
+                                <div class="chart-div" id="platform_div">
 
                                 </div>
                             </div>
@@ -123,8 +144,7 @@
                         <div class="tot-clicks">
                             <h2>Browser Status</h2>
                             <div class="tot-clicks-body">
-                                <div class="chart-div">
-
+                                <div class="chart-div" id="browser_div">
 
                                 </div>
                             </div>
@@ -134,8 +154,7 @@
                         <div class="tot-clicks">
                             <h2>Referring Chanels</h2>
                             <div class="tot-clicks-body">
-                                <div class="chart-div">
-
+                                <div class="chart-div" id="referral_div">
 
                                 </div>
                             </div>
@@ -158,8 +177,192 @@
 
 
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async">
+<script src="//widget.manychat.com/216100302459827.js" async="async"></script>
+
+{{-- script for summernote js --}}
+<script>
+    $(document).ready(function () {
+
+
+      function initSummernote(preloadText) {
+      $('#redirectingTextTemplate').summernote({
+      height: 100,
+      minHeight: null,
+      maxHeight: null,
+      focus: true,
+      toolbar: [
+          ['style', ['bold', 'italic', 'underline']],
+          ['fontsize', ['fontsize']],
+          ['color', ['color']],
+          ['height', ['height']],
+          ['insert', ['link']],
+          ['misc', ['undo', 'redo', 'codeview']]
+      ]
+      });
+        $('#redirectingTextTemplate').summernote('code', preloadText);
+      }
+
+        $('#clipboard').on('click', function () {
+            new Clipboard('#clipboard');
+        });
+        $('#edit-btn').on('click', function () {
+            alert('clicked - here');
+            $("#editModalBody #urlTitle").val('{{$url->title}}');
+            $("#editModalBody #urlId").val('{{$url->id}}');
+            $('#myModal').modal('show');
+            editAction();
+        });
+        $('#fb-share-btn').on('click', function () {
+            fb_share("{{ route('getIndex') }}/{{ $url->shorten_suffix }}" , '{{url('/')}}');
+        });
+        $('#addBrand').on('click', function () {
+            $("#urlId1").val('{{$url->id}}');
+            $("#redirectingTime").val('{{$url->redirecting_time/1000}}');
+            initSummernote('{!! $url->redirecting_text_template !!}');
+            $('#myModal1').modal('show');
+        });
+        $('#brandLink').on('click', function () {
+            $("#subdomainModalBody #urlId").val('{{ $url->id }}');
+            $("#subdomainBrand").val('');
+            $("#subdomainAlert").text('');
+            $("#subdomainRadioAlert").text('');
+            $("#subdomainRadio").attr('checked',false);
+            $("#subdirectoryRadio").attr('checked',false);
+            $('#subdomainModal').modal('show');
+        });
+    });
+
+
+    function editAction() {
+        $('#editUrlTitle').on('click', function () {
+            var id = $('.modal-body #urlId').val();
+            var title = $('.modal-body #urlTitle').val();
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('postEditUrlInfo') }}",
+                data: {id: id, title: title, _token: "{{ csrf_token() }}"},
+                success: function(response) {
+                  console.log('postEditUrlInfo');
+                    $('#myModal').modal('hide');
+                    swal({
+                        title: "Success",
+                        text: "Successfully edited title",
+                        type: "success",
+                        html: true
+                    });
+                    $('#urlTitleHeading').replaceWith('<h1 id="urlTitleHeading">'+response.url.title+'</div>');
+                    $('#tab-title').replaceWith('<span id="tab-title" class="title">'+response.url.title+'</span>');
+                    $(".modal-body #urlTitle").val(response.url.title);
+                },
+                error: function(response) {
+                    swal({
+                        title: "Oops!",
+                        text: "Cannot edit this title",
+                        type: "warning",
+                        html: true
+                    });
+                }
+            });
+        });
+    }
+
 </script>
+
+
+{{-- Script for google maps --}}
+<script type="text/javascript">
+          {!! $key == 0 ? "google.charts.load('current', {'packages':['corechart', 'geochart']});" : null !!}
+          $.ajax({
+              url: "{{ route('postFetchAnalytics') }}",
+              type: 'POST',
+              data: {url_id: {{ $url->id }}, _token: "{{ csrf_token() }}"},
+              success: function (response) {
+                console.log('postFetchAnalytics');
+                  if (response.status == "success") {
+                      google.charts.setOnLoadCallback(function () {
+                          var data = google.visualization.arrayToDataTable(response.location);
+                          var options = {
+                              colorAxis: {colors: '#3366ff'},
+                              background: 'rgba(255, 255, 255, 0.8)',
+                              width   : '100%',
+                              height  : 360,
+                              margin  : 15,
+                              border  : 15,
+                              marginColor : 'black'
+                          };
+                          var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+                          chart.draw(data, options);
+                          @if ($subscription_status != null)
+                          google.visualization.events.addListener(chart, 'select', function() {
+                              var selectionIdx = chart.getSelection()[0].row;
+                              var countryName = data.getValue(selectionIdx, 0);
+                              window.location.href = "{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/" + countryName + '/analytics';
+                          });
+                          @endif
+                      });
+                      google.charts.setOnLoadCallback(function () {
+                          var data = google.visualization.arrayToDataTable(response.location);
+                          var options = {
+                              title: 'Number of hits per country',
+                              width: 350,
+                              height: 250,
+                          };
+                          var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                          chart.draw(data, options);
+                          @if ($subscription_status != null)
+                          google.visualization.events.addListener(chart, 'select', function() {
+                              var selectionIdx = chart.getSelection()[0].row;
+                              var countryName = data.getValue(selectionIdx, 0);
+                              window.location.href = '{{ route('getIndex') }}/{{ $url->shorten_suffix }}/country/' + countryName + '/analytics';
+                          });
+                          @endif
+                      });
+                      @if ($subscription_status != null)
+                      google.charts.setOnLoadCallback(function () {
+                          var data = google.visualization.arrayToDataTable(response.platform);
+                          var options = {
+                              title: 'Platform Shares',
+                              pieHole: 0.4,
+                              slices: {textStyle: {fontSize: 6}},
+                              width: 400,
+                              height: 250,
+                          };
+                          var chart = new google.visualization.PieChart(document.getElementById('platform_div'));
+                          chart.draw(data, options);
+                      });
+                      google.charts.setOnLoadCallback(function () {
+                          var data = google.visualization.arrayToDataTable(response.browser);
+                          var options = {
+                              title: 'Browser Stats',
+                              pieHole: 0.4,
+                              slices: {textStyle: {fontSize: 6}},
+                              width: 400,
+                              height: 250,
+                          };
+                          var chart = new google.visualization.PieChart(document.getElementById('browser_div'));
+                          chart.draw(data, options);
+                      });
+                      google.charts.setOnLoadCallback(function () {
+                          var data = google.visualization.arrayToDataTable(response.referer);
+                          var options = {
+                              title: 'Referring Channels',
+                              pieHole: 0.4,
+                              slices: {textStyle: {fontSize: 6}},
+                              width: 400,
+                              height: 250,
+                          };
+                          var chart = new google.visualization.PieChart(document.getElementById('referral_div'));
+                          chart.draw(data, options);
+                      });
+                      @endif
+                  } else {
+                   console.log('Response error!');
+                  }
+              }
+          });
+  </script>
+
+
 
 <script type="text/javascript">
 

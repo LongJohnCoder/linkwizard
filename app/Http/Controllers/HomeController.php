@@ -1552,6 +1552,92 @@ class HomeController extends Controller
         return redirect()->action('HomeController@getIndex');
     }
 
+    private function createLink($type) {
+      if (Auth::check()) {
+          if(\Session::has('plan'))
+          {
+              return redirect()->action('HomeController@getSubscribe');
+          } else {
+
+            $user = Auth::user();
+            $count = DB::table('urls')
+                ->selectRaw('count(user_id) AS `count`')
+                ->where('user_id', $user->id)
+                ->groupBy('user_id')
+                ->get();
+
+            $total_links = null;
+            if ($count) {
+                $total_links = $count[0]->count;
+                $limit = LinkLimit::where('user_id', $user->id)->first();
+                if ($limit) {
+                    $limit->number_of_links = $total_links;
+                    $limit->save();
+                }
+            }
+
+            if ($user->subscribed('main', 'tr5Advanced')) {
+                $subscription_status = 'tr5Advanced';
+                $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+
+            } elseif ($user->subscribed('main', 'tr5Basic')) {
+                $subscription_status = 'tr5Basic';
+                $limit = Limit::where('plan_code', 'tr5Basic')->first();
+            } else {
+                $subscription_status = false;
+                $limit = Limit::where('plan_code', 'tr5free')->first();
+            }
+
+            return view('dashboard.shorten_url' , [
+
+              'total_links'         => $total_links,
+              'limit'               => $limit,
+              'subscription_status' => $subscription_status,
+              'user'                => $user,
+              'type'                => $type
+            ]);
+
+          }
+      } else {
+        return redirect()->action('HomeController@getIndex');
+      }
+    }
+
+    public function createShortenedLink() {
+        return $this->createlink('short');
+    }
+
+    public function createCustomLink() {
+        return $this->createlink('custom');
+    }
+
+    public function shortenUrl(Request $request) {
+      if (Auth::check()) {
+          if(\Session::has('plan'))
+          {
+              return redirect()->action('HomeController@getSubscribe');
+          } else {
+            dd($request->all());
+            //all codes are here
+
+            //extracting all variables
+            $fbPixel = isset($request->check_fb) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null ;
+            $glPixel = isset($request->check_gl) && strlen($request->glPixelid) > 0 ? $request->glPixelid : null ;
+
+            //$tags = isset($request->shortTagsEnable) && strlen($request->tags) > 0
+            //descriptionEnable
+
+            
+            $v = \Validator::make($request->all(), [
+                'email' => 'required|email|exists:users',
+            ]);
+
+          }
+      } else {
+        return redirect()->action('HomeController@getIndex');
+      }
+    }
+
     /**
      * Get Dashboard access for resgistered user.
      *
@@ -1646,7 +1732,6 @@ class HomeController extends Controller
                     //     '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
                     // ]);
             }
-
 
         } else {
             return redirect()->action('HomeController@getIndex');

@@ -10,18 +10,35 @@
 			<div class="col-md-8">
 				<div class="top-right">
 					@if(count($limit) > 0)
+					{{--
+						<div class="createlink boder openpop">
+							<a href="javascript:void(0)" id="basic">
+								<!-- Create tier5 link --> +Add tier5 link</a>
+						</div>
+					--}}
+
 					<div class="createlink boder openpop">
-						<a href="javascript:void(0)" id="basic">
+						<a href="{{route('createShortenedLink')}}">
 						<!-- Create tier5 link --> +Add tier5 link</a>
 					</div>
+
 					@endif
 					@if ($subscription_status != null)
 						 @if(count($limit) > 0)
-						 	<div class="createlink openpop">
-						 		<a href="javascript:void(0)" id="advanced"><!-- Create Custom link -->
+						 	{{--
+								<div class="createlink openpop">
+						 			<a href="javascript:void(0)" id="advanced"><!-- Create Custom link -->
+						 				+Add Custom link
+						 			</a>
+						 		</div>
+							--}}
+
+							<div class="createlink openpop">
+						 		<a href="{{route('createCustomLink')}}"><!-- Create Custom link -->
 						 			+Add Custom link
 						 		</a>
 						 	</div>
+
 						 @endif
 					@endif
 					<div class="hamburg-menu">
@@ -116,9 +133,9 @@
 																<label for="customDescription" style="color:white">Add description</label>
 																<input id="customDescriptionEnable" type="checkbox" name="customDescriptionEnable" style="color: white">
                                 <textarea id="customDescriptionContents" class="myInput form-control description" type="textarea" name="customDescriptionContents" placeholder="Mention description for this link" style="display : none"></textarea>
-	                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
-	                                Shorten Url
-	                            </button>
+		                            <button id="swalbtn1" type="submit" class="btn btn-primary btn-sm">
+		                                Shorten Url
+		                            </button>
 	                            <br>
 	                            <span id="err_cust" style="color:red; display:none;" >This URL is taken. Please try with a different name</span>
 	                        </div>
