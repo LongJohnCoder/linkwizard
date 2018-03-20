@@ -34,9 +34,22 @@
                         </label>
                         </div>
                         <div class="col-md-9 col-sm-9">
-                            <input type="text" name="url" class="form-control long-url">
+                            <input id="givenActual_Url" type="text" name="url" class="form-control long-url">
                             <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                         </div>
+												<br>
+												@if(strtolower($type) == 'custom')
+													<div class="col-md-3 col-sm-3">
+													<label>
+															Paste Your Customized Url Name
+													</label>
+													</div>
+													<div class="col-md-9 col-sm-9">
+															<input id="makeCustom_Url" type="text" name="url" class="form-control long-url">
+															<div class="input-msg">*Required</div>
+													</div>
+													<br>
+												@endif
                     </div>
                 </div>
                 <div class="normal-box1">
@@ -106,7 +119,8 @@
                     </div>
                 </div>
 
-                <div class="normal-box1">
+                {{--
+									<div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Link Preview
                           <input type="checkbox" id="link_preview_selector" name="link_preview_selector">
@@ -225,7 +239,7 @@
                         </div>
                     </div>
                 </div>
-
+								--}}
                 <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
 							</form>
             </div>
@@ -246,6 +260,127 @@
 
 <script type="text/javascript">
 
+function ValidURL(str) {
+		var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
+		var url = str;
+		if (!regexp.test(url)) {
+				return false;
+		} else {
+				return true;
+		}
+}
+
+function ValidCustomURL(str) {
+		var regexp = new RegExp("^[a-zA-Z0-9_]+$");
+		var url = str;
+		if (!regexp.test(url)) {
+				return false;
+		} else {
+				return true;
+		}
+}
+
+var shortenUrlFunc = function() {
+
+
+
+	var urlToHit = @if($type == 'short') "{{ route('postShortUrlTier5') }}" @elseif($type == 'custom')  "{{ route('postCustomUrlTier5') }}" @endif;
+
+	var actualUrl = $('#givenActual_Url').val();
+
+	var customUrl = null;
+	@if($type == 'custom')
+		customUrl = $('#makeCustom_Url').val();
+	@endif
+
+	var data = {
+
+		checkboxAddFbPixelid 	: 	$("#checkboxAddFbPixelid").prop('checked'),
+		fbPixelid							: 	$("#fbPixel_id").val(),
+		checkboxAddGlPixelid 	: 	$("#checkboxAddGlPixelid").prop('checked'),
+		glPixelid							: 	$("#glPixel_id").val(),
+		allowTag							:   $("#shortTagsEnable").prop('checked'),
+		tags 									: 	$("#shortTags_Contents").tagsinput('items'),
+		allowDescription      : 	$("#descriptionEnable").prop('checked'),
+		searchDescription			: 	$("#descriptionContents").val(),
+
+		link_preview_selector :   $("#link_preview_selector").prop('checked'),
+		link_preview_original	: 	$("#link_preview_original").prop('checked'),
+		link_preview_custom		: 	$("#link_preview_custom").prop('checked'),
+
+		org_img_chk						: 	$("#org_img_chk").prop('checked'),
+		cust_img_chk					: 	$("#cust_img_chk").prop('checked'),
+		img_inp	              :   $("#img_inp").val(),
+
+		org_title_chk					: 	$("#org_title_chk").prop('checked'),
+		cust_title_chk				: 	$("#cust_title_chk").prop('checked'),
+		title_inp	            :   $("#title_inp").val(),
+
+		org_dsc_chk						: 	$("#org_dsc_chk").prop('checked'),
+		cust_dsc_chk					: 	$("#cust_dsc_chk").prop('checked'),
+		dsc_inp	           	 	:   $("#dsc_inp").val(),
+
+		org_url_chk						: 	$("#org_url_chk").prop('checked'),
+		cust_url_chk					: 	$("#cust_url_chk").prop('checked'),
+		url_inp	            	:   $("url_inp").val(),
+
+		actual_url 						:		actualUrl,
+		_token   							: 	"{{ csrf_token() }}"
+	};
+
+	if(customUrl !== null) {
+		data['custom_url'] = customUrl;
+	}
+
+	$.ajax({
+			type	: "POST",
+			url		: urlToHit,
+			data	: data,
+			success: function (response) {
+				console.log(urlToHit);
+					if(response.status=="success") {
+							var shortenUrl = response.url;
+							var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
+							swal({
+									title: "Shorten Url:",
+									text: displayHtml,
+									type: "success",
+									html: true
+							}, function() {
+									//window.location.reload();
+									window.location.href = response.redirect_url;
+							});
+							new Clipboard('#clipboardswal');
+							$('#clipboardswal').on('click', function () {
+									//window.location.reload();
+									window.location.href = response.redirect_url;
+							});
+							HoldOn.close();
+					} else {
+							swal({
+									title: null,
+									text: "Please paste an actual URL",
+									type: "warning",
+									html: true
+							});
+							HoldOn.close();
+					}
+			}, error: function(response) {
+					console.log('Response error!');
+					HoldOn.close();
+			}, statusCode: {
+					500: function() {
+							swal({
+									title: null,
+									text: "Access Forbidden, Please paste a valid URL!",
+									type: "error",
+									html: true
+							});
+							HoldOn.close();
+					}
+			}
+	});
+}
 
 // $("#link_preview_selector").attr("checked", false);
 // $("#checkboxAddFbPixelid").attr("checked",false);
@@ -255,51 +390,20 @@
 $("#shorten_url_btn").on('click',function(e){
 
 
-	var actualUrl = $('#givenActualUrl').val();
-		var customUrl = $('#makeCustomUrl').val();
+		var actualUrl = $('#givenActual_Url').val();
+		var customUrl = $('#makeCustom_Url').val();
 		@if (Auth::user())
 				var userId = {{ Auth::user()->id }};
 		@else
 				var userId = 0;
 		@endif
 
-		$("#url_short_frm").submit();
+		var cust_url_flag = "{{$type}}";
 
 
-		var data = {
-			checkboxAddFbPixelid 	: 	$("#checkboxAddFbPixelid").prop('checked'),
-			fbPixelid							: 	$("#fbPixel_id").val(),
-			checkboxAddGlPixelid 	: 	$("#checkboxAddGlPixelid").prop('checked'),
-			glPixelid							: 	$("#glPixel_id").val(),
-			allowTag							:   $("#shortTagsEnable").prop('checked'),
-			tags 									: 	$("#shortTags_Contents").tagsinput('items'),
-			allowDescription      : 	$("#descriptionEnable").prop('checked'),
-			searchDescription			: 	$("#descriptionContents").val(),
+		if(cust_url_flag == 'custom') {
 
-			link_preview_selector :   $("#link_preview_selector").prop('checked'),
-			link_preview_original	: 	$("#link_preview_original").prop('checked'),
-			link_preview_custom		: 	$("#link_preview_custom").prop('checked'),
-
-			org_img_chk						: 	$("#org_img_chk").prop('checked'),
-			cust_img_chk					: 	$("#cust_img_chk").prop('checked'),
-			img_inp	              :   $("#img_inp").val(),
-
-			org_title_chk					: 	$("#org_title_chk").prop('checked'),
-			cust_title_chk				: 	$("#cust_title_chk").prop('checked'),
-			title_inp	            :   $("#title_inp").val(),
-
-			org_dsc_chk						: 	$("#org_dsc_chk").prop('checked'),
-			cust_dsc_chk					: 	$("#cust_dsc_chk").prop('checked'),
-			dsc_inp	           	 	:   $("#dsc_inp").val(),
-
-			org_url_chk						: 	$("#org_url_chk").prop('checked'),
-			cust_url_chk					: 	$("#cust_url_chk").prop('checked'),
-			url_inp	            	:   $("url_inp").val()
-		}
-
-		console.log(data);
-
-		$.ajax({
+			$.ajax({
 			type:"POST",
 			url:"/check_custom",
 			data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
@@ -313,64 +417,7 @@ $("#shorten_url_btn").on('click',function(e){
 					{
 							if (ValidCustomURL(customUrl))
 							{
-									$.ajax({
-											type: "POST",
-											url: "{{ route('postCustomUrlTier5') }}",
-											data: {
-													checkboxAddFbPixelid 	: checkboxAddFbPixelid,
-													fbPixelid							: fbPixelid,
-													checkboxAddGlPixelid 	: checkboxAddGlPixelid,
-													glPixelid 						: glPixelid,
-													actual_url						: actualUrl,
-													custom_url						: customUrl,
-													user_id								: userId,
-													allowTag							: allowTag,
-													tags									: tags,
-													allowDescription			: allowDescription,
-													searchDescription			: searchDescription,
-													_token: "{{ csrf_token() }}"
-											}, success: function (response) {
-												console.log('postCustomUrlTier5');
-													if(response.status=="success") {
-															var shortenUrl = response.url;
-															var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
-															swal({
-																	title: "Shorten Url:",
-																	text: displayHtml,
-																	type: "success",
-																	html: true
-															}, function() {
-																	window.location.reload();
-															});
-															new Clipboard('#clipboardswal');
-															$('#clipboardswal').on('click', function () {
-																	window.location.reload();
-															});
-															HoldOn.close();
-													} else {
-															swal({
-																	title: null,
-																	text: "Please paste an actual URL",
-																	type: "warning",
-																	html: true
-															});
-															HoldOn.close();
-													}
-											}, error: function(response) {
-													console.log('Response error!');
-													HoldOn.close();
-											}, statusCode: {
-													500: function() {
-															swal({
-																	title: null,
-																	text: "Access Forbidden, Please paste a valid URL!",
-																	type: "error",
-																	html: true
-															});
-															HoldOn.close();
-													}
-											}
-									});
+									shortenUrlFunc();
 							}
 							else
 							{
@@ -393,16 +440,32 @@ $("#shorten_url_btn").on('click',function(e){
 				}
 				else
 				{
-					$("#err_cust").show();
+					swal({
+							type: "warning",
+							title: null,
+							text: "This custom url name is already taken! Try another one"
+						});
 					//url already used by this user
 				}
 
 			}
 		});
+		} else {
 
-
-
-
+			//if it is not custom
+			if (ValidURL(actualUrl))
+			{
+					shortenUrlFunc();
+			}
+			else
+			{
+					swal({
+							type: "warning",
+							title: null,
+							text: "Please Enter An URL"
+						});
+			}
+		}
 
 
 });
@@ -855,246 +918,10 @@ window.onload = function(){
                     message:"Please wait a while",
                     backgroundColor:"#212230"
                 };
-	        $('#swalbtn1').click(function(){
-
-                	var actualUrl = $('#givenActualUrl').val();
-                    var customUrl = $('#makeCustomUrl').val();
-                    @if (Auth::user())
-                        var userId = {{ Auth::user()->id }};
-                    @else
-                        var userId = 0;
-                    @endif
-
-										var checkboxAddFbPixelid 	= 	$("#checkboxAddFbPixelid1").prop('checked');
-										var fbPixelid							= 	$("#fbPixelid1").val();
-										var checkboxAddGlPixelid 	= 	$("#checkboxAddGlPixelid1").prop('checked');
-										var glPixelid							= 	$("#glPixelid1").val();
-										var allowTag							=   $("#shortTagsEnable").prop('checked');
-										var tags 									= 	$("#customTagsContents").tagsinput('items');
-										var allowDescription      = 	$("#customDescriptionEnable").prop('checked');
-										var searchDescription			= 	$("#customDescriptionContents").val();
-
-                    $.ajax({
-	                    type:"POST",
-	                    url:"/check_custom",
-	                    data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
-	                    success:function(response){
-	                    	console.log('check_custom');
-	                    	console.log(response);
-	                    	if(response == 1)
-	                    	{
-	                    		console.log(response);
-	                    		if (ValidURL(actualUrl))
-			                    {
-			                        if (ValidCustomURL(customUrl))
-			                        {
-			                            $.ajax({
-			                                type: "POST",
-			                                url: "{{ route('postCustomUrlTier5') }}",
-			                                data: {
-																					checkboxAddFbPixelid 	: checkboxAddFbPixelid,
-																					fbPixelid							: fbPixelid,
-																					checkboxAddGlPixelid 	: checkboxAddGlPixelid,
-																					glPixelid 						: glPixelid,
-			                                    actual_url						: actualUrl,
-			                                    custom_url						: customUrl,
-			                                    user_id								: userId,
-																					allowTag							: allowTag,
-																					tags									: tags,
-																					allowDescription			: allowDescription,
-																					searchDescription			: searchDescription,
-			                                    _token: "{{ csrf_token() }}"
-			                                }, success: function (response) {
-			                                	console.log('postCustomUrlTier5');
-			                                    if(response.status=="success") {
-			                                        var shortenUrl = response.url;
-			                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
-			                                        swal({
-			                                            title: "Shorten Url:",
-			                                            text: displayHtml,
-			                                            type: "success",
-			                                            html: true
-			                                        }, function() {
-			                                            window.location.reload();
-			                                        });
-			                                        new Clipboard('#clipboardswal');
-			                                        $('#clipboardswal').on('click', function () {
-			                                            window.location.reload();
-			                                        });
-			                                        HoldOn.close();
-			                                    } else {
-			                                        swal({
-			                                            title: null,
-			                                            text: "Please paste an actual URL",
-			                                            type: "warning",
-			                                            html: true
-			                                        });
-			                                        HoldOn.close();
-			                                    }
-			                                }, error: function(response) {
-			                                    console.log('Response error!');
-			                                    HoldOn.close();
-			                                }, statusCode: {
-			                                    500: function() {
-			                                        swal({
-			                                            title: null,
-			                                            text: "Access Forbidden, Please paste a valid URL!",
-			                                            type: "error",
-			                                            html: true
-			                                        });
-			                                        HoldOn.close();
-			                                    }
-			                                }
-			                            });
-			                        }
-			                        else
-			                        {
-			                            swal({
-			                                type: "warning",
-			                                title: null,
-			                                text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
-			                                html: true
-			                            });
-			                        }
-			                    }
-			                    else
-			                    {
-			                        swal({
-			                            type: "warning",
-			                            title: null,
-			                            text: "Please Enter An URL"
-			                        	});
-			                    }
-	                    	}
-	                    	else
-	                    	{
-	                    		$("#err_cust").show();
-	                    		//url already used by this user
-	                    	}
-
-	                    }
-	                });
-                });
 
 
 
-                function ValidURL(str) {
-                    var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
-                    var url = str;
-                    if (!regexp.test(url)) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
 
-                function ValidCustomURL(str) {
-                    var regexp = new RegExp("^[a-zA-Z0-9_]+$");
-                    var url = str;
-                    if (!regexp.test(url)) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-
-                $('#swalbtn').click(function() {
-                    var url = $('#givenUrl').val();
-                    var validUrl = ValidURL(url);
-                    @if (Auth::user())
-                        var userId = {{ Auth::user()->id }};
-                    @else
-                        var userId = 0;
-                    @endif
-
-										var checkboxAddFbPixelid 	= 	$("#checkboxAddFbPixelid").prop('checked');
-										var fbPixelid							= 	$("#fbPixelid").val();
-										var checkboxAddGlPixelid 	= 	$("#checkboxAddGlPixelid").prop('checked');
-										var glPixelid							= 	$("#glPixelid").val();
-										var allowTag							=   $("#shortTagsEnable").prop('checked');
-										var tags 									= 	$("#shortTagsContents").tagsinput('items');
-										var allowDescription      = 	$("#shortDescriptionEnable").prop('checked');
-										var searchDescription			= 	$("#shortDescriptionContents").val();
-
-                    if(url) {
-                        if(validUrl) {
-                            HoldOn.open(options);
-                            $.ajax({
-                                type: 'POST',
-                                url: "{{ route('postShortUrlTier5') }}",
-                                data: {
-																	url										: url,
-																	user_id								: userId,
-																	checkboxAddFbPixelid 	: checkboxAddFbPixelid,
-																	fbPixelid 						: fbPixelid,
-																	checkboxAddGlPixelid 	: checkboxAddGlPixelid,
-																	glPixelid 						: glPixelid,
-																	allowTag							: allowTag,
-																	tags									: tags,
-																	allowDescription			: allowDescription,
-																	searchDescription			: searchDescription,
-																	_token: "{{ csrf_token() }}"},
-                                success: function (response) {
-                                	console.log('postShortUrlTier5');
-                                    if(response.status=="success") {
-                                        var shortenUrl = response.url;
-                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
-                                        swal({
-                                            title: "Shorten Url:",
-                                            text: displayHtml,
-                                            type: "success",
-                                            html: true
-                                        }, function() {
-                                            window.location.reload();
-                                        });
-                                        new Clipboard('#clipboardswal');
-                                        $('#clipboardswal').on('click', function () {
-                                            window.location.reload();
-                                        });
-                                        HoldOn.close();
-                                    } else {
-                                        swal({
-                                            title: null,
-                                            text: "Please paste an actual URL",
-                                            type: "warning",
-                                            html: true
-                                        });
-                                        HoldOn.close();
-                                    }
-                                }, error: function(response) {
-                                    console.log('Response error!');
-                                    HoldOn.close();
-                                }, statusCode: {
-                                    500: function() {
-                                        swal({
-                                            title: null,
-                                            text: "Access Forbidden, Please paste a valid URL!",
-                                            type: "error",
-                                            html: true
-                                        });
-                                        HoldOn.close();
-                                    }
-                                }
-                            });
-                        } else {
-                            var errorMsg="Enter A Valid URL";
-                            swal({
-                                title: null,
-                                text: errorMsg,
-                                type: "error",
-                                html: true
-                            });
-                        }
-                    } else {
-                        var errorMsg="Please Enter An URL";
-                        swal({
-                            title: null,
-                            text: errorMsg,
-                            type: "warning",
-                            html: true
-                        });
-                    }
-                });
 
             });
 
@@ -1111,324 +938,7 @@ window.onload = function(){
             });
         });
         </script>
-        <script>
-        $(document).ready(function(){
-            @if (isset($filter) and $filter != null) {
 
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('postChartDataFilterDateRange') }}",
-                    data: {
-                        "user_id": {{ $user->id }},
-                        "start_date": "{{ $filter['start'] }}",
-                        "end_date": "{{ $filter['end'] }}",
-                        "_token": "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                    	console.log('postChartDataFilterDateRange');
-                    	console.log(response);
-                    	var date_from = "{{ date( 'M d'  , strtotime($filter['start'])) }}";
-                    	var date_to   = "{{ date( 'M d'  , (strtotime($filter['end']))-86400) }}";
-
-                    	$('#date_range').text(date_from+ ' - ' +date_to);
-
-                        var chartDataStack = [];
-                        $('#columnChart').highcharts({
-                            chart: {
-                                type: 'column',
-                                backgroundColor: 'rgba(255, 255, 255, 0)'
-                            },
-                            title: {
-                                text: null
-                            },
-                            xAxis: {
-                                type: 'category',
-                                labels: {
-                                    style: {
-                                        fontWeight: 'bold',
-                                        color: '#fff'
-                                    }
-                                }
-                            },
-                            yAxis: {
-                                labels: {
-                                    enabled: false
-                                },
-                                title: {
-                                    text: null
-                                },
-                                gridLineWidth: 0,
-                                minorGridLineWidth: 0
-                            },
-                            legend: {
-                                enabled: false
-                            },
-                            plotOptions: {
-                                series: {
-                                    borderWidth: 0,
-                                    dataLabels: {
-                                        enabled: false,
-                                        format: '{point.y:.1f}%'
-                                    },
-                                    events:{
-                                        click: function (event) {
-                                            var pointName = event.point.name;
-                                            if (pointName.search(appURL)) {
-                                                var pointData = event.point.year+' '+pointName;
-                                                chartDataStack = [];
-                                                chartDataStack.push(pointData);
-                                            } else {
-                                                pushChartDataStack(pointName);
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            tooltip: {
-                                backgroundColor: '#fff',
-                                borderWidth: 1,
-                                borderRadius: 10,
-                                borderColor: '#AAA',
-                                headerFormat: null,
-                                pointFormat: '<span style="color:{point.color}">{point.name}</span><br/>Total clicks: <b>{point.y:.0f}</b>'
-                            },
-                            series: [{
-                                name: 'URLs',
-                                colorByPoint: true,
-                                //pointWidth: 28,
-                                data: response.chartData
-                            }],
-                            drilldown: {
-                                activeAxisLabelStyle: {
-                                    textDecoration: 'none',
-                                    fontStyle: 'italic',
-                                    color: '#54BDDC'
-                                },
-                                activeDataLabelStyle: {
-                                    textDecoration: 'none',
-                                    fontStyle: 'italic',
-                                    color: '#fff'
-                                },
-                                drillUpButton: {
-                                    relativeTo: 'spacingBox',
-                                    position: {
-                                        y: 0,
-                                        x: 0
-                                    },
-                                    theme: {
-                                        fill: 'white',
-                                        'stroke-width': 1,
-                                        stroke: 'silver',
-                                        r: 0,
-                                        states: {
-                                            hover: {
-                                                color: '#fff',
-                                                stroke: '#039',
-                                                fill: '#2AABD2'
-                                            },
-                                            select: {
-                                                color: '#fff',
-                                                stroke: '#039',
-                                                fill: '#bada55'
-                                            }
-                                        }
-                                    }
-                                },
-                                series: [
-                                @foreach ($dates as $key => $date)
-                                {
-                                    name: '{{ $date }}',
-                                    id: '{{ $date }}',
-                                    data: response.statData[{{ $key }}]
-                                },
-                                @endforeach
-                                ]
-                            }
-                        });
-                        @if ($subscription_status != null)
-                            function pushChartDataStack(url) {
-                                date = new Date(chartDataStack.pop());
-                                nextDate = new Date(date.setDate(date.getDate()+1)).toISOString().slice(0, 10);
-                                //window.location.href = url+"/date/"+nextDate+"/analytics";
-                            }
-                        @endif
-                    },
-                    error: function(response) {
-                        console.log('Response error!');
-                    },
-                    statusCode: {
-                        500: function(response) {
-                            console.log('500 Internal server error!');
-                        }
-                    }
-                });
-            }
-            @else
-						var textToSearch = $("#dashboard-text-to-search").val();
-						var tagsToSearch = $("#dashboard-tags-to-search").val();
-            $.ajax({
-                type: 'post',
-                url: "{{ route('postFetchChartData') }}",
-                data: {
-									'user_id': '{{ $user->id }}',
-									'_token': '{{ csrf_token() }}',
-									textToSearch : textToSearch,
-									tagsToSearch : tagsToSearch
-								},
-                success: function(response) {
-                	console.log('postFetchChartData');
-                	console.log(response);
-                    var chartDataStack = [];
-										var urlSeries = [];
-										if (response.urls.length > 0) {
-											var ur_len = response.urls.length;
-											for(var i = 0 ; i < ur_len ; i ++) {
-												var ur_obj = {
-													name 	: response.urls[i]['name'],
-													id 		:	response.urls[i]['name'],
-													data 	:	response.urlStat[i]
-												};
-												urlSeries.push(ur_obj);
-												ur_obj = null;
-											}
-										}
-                    $('#columnChart').highcharts({
-                        chart: {
-                            type: 'column',
-                            backgroundColor: 'rgba(68, 140, 203, 1)'
-                        },
-                        title: {
-                            text: null
-                        },
-                        xAxis: {
-                            type: 'category',
-                            labels: {
-                                style: {
-                                    fontWeight: 'bold',
-                                    color: '#fff'
-                                }
-                            }
-                        },
-                        yAxis: {
-                            labels: {
-                                enabled: false
-                            },
-                            title: {
-                                text: null
-                            },
-                            gridLineWidth: 0,
-                            minorGridLineWidth: 0
-                        },
-                        legend: {
-                            enabled: false
-                        },
-                        plotOptions: {
-                            series : {
-                                borderWidth: 0,
-                                dataLabels: {
-                                    enabled: false,
-                                    format: '{point.y:.1f}%'
-                                },
-                                events : {
-                                    click: function (event) {
-                                        var pointName = event.point.name;
-																				//var urlToSearch = "{{url('/')}}";
-																				var urlToSearch = appURL;
-                                        if (pointName.search(urlToSearch) == -1) {
-																						console.log('searching for :',urlToSearch);
-																						console.log('serach_ res',pointName.search(urlToSearch));
-																						console.log('came here 1 : pointname : ',pointName);
-																						console.log('');
-                                            pushChartDataStack(pointName);
-                                        } else {
-																						console.log('searching for :',urlToSearch);
-																						console.log('serach_ res',pointName.search(pointName));
-																						console.log('came here 2 : pointname : ',pointName);
-                                            chartDataStack = [];
-																						console.log('');
-                                            chartDataStack.push(pointName);
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: '#fff',
-                            borderWidth: 2,
-                            borderRadius: 5,
-                            borderColor: '{point.color}',
-                            headerFormat: null,
-                            pointFormat: '<span style="color:{point.color}">{point.name}</span><br/><span style="color:{point.color}">\u25A0</span> Total clicks: <b>{point.y:.0f}</b>'
-                        },
-                        series: [{
-                            name: 'URLs',
-                            colorByPoint: true,
-                            //pointWidth: 50,
-                            data: response.urls,    //dataset for all urls and counts
-                        }],
-                        drilldown: {
-                            activeAxisLabelStyle: {
-                                textDecoration: 'none',
-                                fontStyle: 'italic',
-                                color: '#ffffff'
-                            },
-                            activeDataLabelStyle: {
-                                textDecoration: 'none',
-                                fontStyle: 'italic',
-                                color: '#fff'
-                            },
-                            drillUpButton: {
-                                relativeTo: 'spacingBox',
-                                position: {
-                                    y: 0,
-                                    x: 0
-                                },
-                                theme: {
-                                    fill: 'white',
-                                    'stroke-width': 1,
-                                    stroke: 'silver',
-                                    r: 0,
-                                    states: {
-                                        hover: {
-                                            color: '#fff',
-                                            stroke: '#039',
-                                            fill: '#2AABD2'
-                                        },
-                                        select: {
-                                            color: '#fff',
-                                            stroke: '#039',
-                                            fill: '#bada55'
-                                        }
-                                    }
-                                }
-                            },
-                            series: urlSeries
-                        }
-                    });
-                    @if ($subscription_status != null)
-                    function pushChartDataStack(data) {
-												console.log('came here 3');
-                        chartDataStack.push(data);
-                        date = new Date(chartDataStack.pop());
-                        month = date.getMonth()+1;
-                        isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
-												console.log('location to redirect : ',chartDataStack[0]+"/date/"+isoDate+"/analytics");
-                        //window.location.href = chartDataStack[0]+"/date/"+isoDate+"/analytics";
-                    }
-                    @endif
-                },
-                error: function(response) {
-                    console.log('Response error!');
-                },
-                statusCode: {
-                    500: function(response) {
-                        console.log('500 Internal server error!');
-                    }
-                }
-            });
-            @endif
-        });
-        </script>
         @if(Session::has('success'))
             <script type="text/javascript">
                 $(document).ready(function(){

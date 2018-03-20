@@ -72,7 +72,7 @@ class HomeController extends Controller
           $reset->save();
           $url = url('/') . '/reset-password/' . base64_encode($user->email) . '/' . $token;
           $data    = array('name'=>$user->name,'url' => $url,'email' => $user->email);
-          
+
           \Mail::send('mail.forgetPassword', $data, function($message) use($email,$user,$subject){
            $message->to($email, config('settings.company_name'))->subject($subject);
            $message->from('work@tier5.us',$user->name);
@@ -129,14 +129,14 @@ class HomeController extends Controller
               $user->password = bcrypt($request->password);
               $user->save();
               $password = PasswordReset::where('email', $user->email)->delete();
-              
+
               Auth::attempt(['email' => $request->email, 'password' => $request->password]);
               return redirect()->action('HomeController@getDashboard' )
                         ->with('success', 'Password Reset Completed Successfully!');
-             
+
           } else {
 
-              $err_mesg = (!$reset) ? 'Token is Invalid' : 'This email address does not exists';  
+              $err_mesg = (!$reset) ? 'Token is Invalid' : 'This email address does not exists';
              \Session::flash('errs',$err_mesg);
              return \Redirect::back();
           }
@@ -257,8 +257,7 @@ class HomeController extends Controller
       } else {
 
         $urls = Url::where('user_id', $userId)
-                ->orderBy('id', 'DESC')
-                ->get();
+                ->orderBy('id', 'DESC');
         $count_url = $urls->count();
 
         return [
@@ -309,7 +308,7 @@ class HomeController extends Controller
         // }
 
         $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $request->user_id);
-        $urls       = $ret['urls'];
+        $urls       = $ret['urls']->get();
         $count_url  = $ret['count_url'];
 
         $URLs = [];
@@ -1033,6 +1032,13 @@ class HomeController extends Controller
         //$_url = $this->getPageTitle($request->url);
         //$url->title = $_url;
 
+        if(!isset($request->url) || strlen(trim($request->url)) == 0) {
+          return json_encode([
+              'status' => 'url cannot be empty!',
+              'url'    => ''
+              ]);
+        }
+
         $meta_data = $this->getPageMetaContents($request->url);
         $url->title           = $meta_data['title'];
 
@@ -1064,10 +1070,6 @@ class HomeController extends Controller
                 'url'    => ''
                 ]);
         }
-
-
-
-
 
         }
         catch(\Exception $e)
@@ -1115,6 +1117,11 @@ class HomeController extends Controller
 
       try{
 
+        if (\Auth::user())
+      			$userId = \Auth::user()->id;
+      	else
+      			$userId = 0;
+
         //facebook pixel id
         $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
         $fbPixelid            = isset($request->fbPixelid) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null;
@@ -1131,12 +1138,19 @@ class HomeController extends Controller
         $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
 
 
-        if (starts_with($request->url, 'https://')) {
-            $actual_url = str_replace('https://', null, $request->url);
+        if (starts_with($request->actual_url, 'https://')) {
+            $actual_url = str_replace('https://', null, $request->actual_url);
             $protocol = 'https';
         } else {
-            $actual_url = str_replace('http://', null, $request->url);
+            $actual_url = str_replace('http://', null, $request->actual_url);
             $protocol = 'http';
+        }
+
+        if(!isset($request->actual_url) || strlen(trim($request->actual_url)) == 0) {
+          return json_encode([
+              'status' => 'error',
+              'msg'    => 'url cannot be empty!'
+          ]);
         }
 
         $random_string = $this->randomString();
@@ -1165,7 +1179,7 @@ class HomeController extends Controller
 
         //meta description
         $url->meta_description = $meta_data['meta_description'];
-        $url->user_id = $request->user_id;
+        $url->user_id = $userId;
 
         if ($url->save()) {
           if(($checkboxAddFbPixelid && $fbPixelid != null) || $checkboxAddGlPixelid && $glPixelid != null) {
@@ -1184,8 +1198,9 @@ class HomeController extends Controller
               $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
 
               return response()->json([
-                    'status' => 'success',
-                    'url' => url('/').'/'.$random_string,
+                    'status'        => 'success',
+                    'url'           => config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$random_string,
+                    'redirect_url'  => config('settings.SECURE_PROTOCOL').env('APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
               ]);
             } else {
               return response()->json(['status' => 'error']);
@@ -1197,6 +1212,7 @@ class HomeController extends Controller
               return response()->json([
                     'status' => 'success',
                     'url' => url('/').'/'.$random_string,
+                    'redirect_url'  => config('settings.SECURE_PROTOCOL').env('APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
               ]);
           }
         } else {
@@ -1218,7 +1234,14 @@ class HomeController extends Controller
      */
     public function postCustomUrlTier5(Request $request)
     {
+      ///print_r($request->all());die();
       try {
+
+        if (\Auth::user())
+      			$userId = \Auth::user()->id;
+      	else
+      			$userId = 0;
+
 
         //facebook pixel id
         $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
@@ -1238,6 +1261,13 @@ class HomeController extends Controller
 
         //print("<pre>");print_r($request->all());
         //die();
+
+        if(!isset($request->actual_url) || strlen(trim($request->actual_url)) == 0) {
+          return json_encode([
+              'status' => 'url cannot be empty!',
+              'url'    => ''
+              ]);
+        }
 
         if (starts_with($request->actual_url, 'https://')) {
             $actual_url = str_replace('https://', null, $request->actual_url);
@@ -1269,7 +1299,7 @@ class HomeController extends Controller
         //meta description
         $url->meta_description = $meta_data['meta_description'];
 
-        $url->user_id = $request->user_id;
+        $url->user_id = $userId;
         $url->is_custom = 1;
         if ($url->save()) {
 
@@ -1289,8 +1319,9 @@ class HomeController extends Controller
               $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
 
               return response()->json([
-                    'status' => 'success',
-                    'url' => url('/').'/'.$url->shorten_suffix,
+                    'status'        =>  'success',
+                    'url'           =>  config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$url->shorten_suffix,
+                    'redirect_url'  =>  config('settings.SECURE_PROTOCOL').env('APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
               ]);
             } else {
               return response()->json(['status' => 'error']);
@@ -1302,6 +1333,7 @@ class HomeController extends Controller
               return response()->json([
                     'status' => 'success',
                     'url' => url('/').'/'.$url->shorten_suffix,
+                    'redirect_url'  =>  config('settings.SECURE_PROTOCOL').env('APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
               ]);
           }
 
@@ -1347,91 +1379,80 @@ class HomeController extends Controller
       $meta['title'] = $meta['meta_description'] = null;
       $meta['og_title'] = $meta['og_description'] = $meta['og_url'] = $meta['og_image'] = null;
       $meta['twitter_title'] = $meta['twitter_description'] = $meta['twitter_url'] = $meta['twitter_image'] = null;
-      //$url = 'https://www.invoicingyou.com/';
-      try  {
 
-      $html = file_get_contents($url);
+      try {
+        $html = file_get_contents($url);
 
-      //reduction of https://www.invoicingyou.com/dashboard to invoicingyou.com
-      //$filtered_url = explode('/',$url);
-      //$final_url = null;
-      /*if(strpos($filtered_url[2],'www.') && isset($filtered_url[2]) && strpos($filtered_url[2],'.')) {
-        $final_url = (substr($filtered_url[2],strpos($filtered_url[2],'.')+1,strlen($filtered_url[2])));
-      } else {
-        $final_url = $filtered_url[2];
-      }*/
+        if (strlen($html) > 0) {
+            if (preg_match("/\<title\>(.*)\<\/title\>/i", (string) $html, $title)) {
+                $meta['title'] = $title[1];
+            }
 
+            $doc = new \DOMDocument();
+            @$doc->loadHTML($html);
+            $metas = $doc->getElementsByTagName('meta');
+            for ($i = 0; $i < $metas->length; $i++)
+            {
+                $m = $metas->item($i);
+                switch ($m->getAttribute('property')) {
 
-      
-      if (strlen($html) > 0) {
-          if (preg_match("/\<title\>(.*)\<\/title\>/i", (string) $html, $title)) {
-              $meta['title'] = $title[1];
-          }
+                  //meta data attributes for fb
+                  case 'og:title':
+                        $meta['og_title'] = $m->getAttribute('content');
+                    break;
+                  case 'og:description':
+                        $meta['og_description'] = $m->getAttribute('content');
+                    break;
+                  case 'og:url':
+                        $meta['og_url'] = $url;
+                    break;
+                  case 'og:image':
+                        $meta['og_image'] = $m->getAttribute('content');
+                    break;
 
-          $doc = new \DOMDocument();
-          @$doc->loadHTML($html);
-          $metas = $doc->getElementsByTagName('meta');
-          for ($i = 0; $i < $metas->length; $i++)
-          {
-              $m = $metas->item($i);
-              switch ($m->getAttribute('property')) {
+                  default:
+                    # code...
+                    break;
+                }
 
-                //meta data attributes for fb
-                case 'og:title':
-                      $meta['og_title'] = $m->getAttribute('content');
-                  break;
-                case 'og:description':
-                      $meta['og_description'] = $m->getAttribute('content');
-                  break;
-                case 'og:url':
-                      $meta['og_url'] = $url;
-                  break;
-                case 'og:image':
-                      $meta['og_image'] = $m->getAttribute('content');
-                  break;
+                switch($m->getAttribute('name')) {
+                  //meta data attributes for instagram
+                  case 'twitter:title':
+                        $meta['twitter_title'] = $m->getAttribute('content');
+                    break;
+                  case 'twitter:description':
+                        $meta['twitter_description'] = $m->getAttribute('content');
+                    break;
+                  case 'twitter:url':
+                        $meta['twitter_url'] = $url;
+                    break;
+                  case 'twitter:image':
+                        $meta['twitter_image'] = $m->getAttribute('content');
+                    break;
 
-                default:
-                  # code...
-                  break;
-              }
+                  default:
+                    # code...
+                    break;
+                }
 
-              switch($m->getAttribute('name')) {
-                //meta data attributes for instagram
-                case 'twitter:title':
-                      $meta['twitter_title'] = $m->getAttribute('content');
-                  break;
-                case 'twitter:description':
-                      $meta['twitter_description'] = $m->getAttribute('content');
-                  break;
-                case 'twitter:url':
-                      $meta['twitter_url'] = $url;
-                  break;
-                case 'twitter:image':
-                      $meta['twitter_image'] = $m->getAttribute('content');
-                  break;
+                switch($m->getAttribute('name')) {
+                  //meta data attributes for instagram
 
-                default:
-                  # code...
-                  break;
-              }
+                  case 'description':
+                        $meta['meta_description'] = $m->getAttribute('content');
+                    break;
 
-              switch($m->getAttribute('name')) {
-                //meta data attributes for instagram
-
-                case 'description':
-                      $meta['meta_description'] = $m->getAttribute('content');
-                  break;
-
-                default:
-                  # code...
-                  break;
-              }
-          }
-      }
+                  default:
+                    # code...
+                    break;
+                }
+            }
+        }
         return $meta;
       } catch(\Exception $e) {
         return $meta;
       }
+
     }
     // https://www.google.co.in/search?client=ubuntu&channel=fs&q=google&ie=utf-8&oe=utf-8&gfe_rd=cr&ei=Dd5XWLrMAdL08weqgq_ACw
 
@@ -1589,15 +1610,14 @@ class HomeController extends Controller
             }
 
             return view('dashboard.shorten_url' , [
-
               'total_links'         => $total_links,
               'limit'               => $limit,
               'subscription_status' => $subscription_status,
               'user'                => $user,
               'type'                => $type
             ]);
-
           }
+
       } else {
         return redirect()->action('HomeController@getIndex');
       }
@@ -1627,7 +1647,7 @@ class HomeController extends Controller
             //$tags = isset($request->shortTagsEnable) && strlen($request->tags) > 0
             //descriptionEnable
 
-            
+
             $v = \Validator::make($request->all(), [
                 'email' => 'required|email|exists:users',
             ]);
@@ -1660,7 +1680,7 @@ class HomeController extends Controller
                     $tagsToSearch = $request->tagsToSearch;
 
                     $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
-                    $urls       = $ret['urls'];
+                    $urls       = $ret['urls']->get();
                     $count_url  = $ret['count_url'];
 
                     $count = DB::table('urls')

@@ -169,6 +169,7 @@
 				            	<li><a href="/features">features</a></li>
 				            	<li><a href="/pricing">pricing</a></li>
 				            	<li><a href="/blog">blog</a></li>
+											<li><a href="{{route('getDashboard')}}">dashboard</a></li>
 				            	@if ($user->is_admin == 1)
 		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
                     	@endif

@@ -13,7 +13,8 @@
 
 //test route
 Route::get('/test', function(){
-    dd(env('APP_HOST'));
+    $url = 'https://en.wikipedia.org/wiki/Avatar_(2009_film)';
+    dd(app('App\Http\Controllers\HomeController')->getPageMetaContents($url));
 });
 
 Route::get('/test12',function(){

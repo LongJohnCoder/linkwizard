@@ -110,8 +110,7 @@ $key = 0;
               <div class="row">
                   <div class="col-md-12 col-sm-12">
                   <strong>Link Description:</strong><br>
-                  Web Design Development | Software Company USA - Tier5 LLC
-
+                  	{{$url->title}}
                   </div>
               </div>
             </div>
@@ -206,7 +205,7 @@ $key = 0;
             new Clipboard('#clipboard');
         });
         $('#edit-btn').on('click', function () {
-            alert('clicked - here');
+            //alert('clicked - here');
             $("#editModalBody #urlTitle").val('{{$url->title}}');
             $("#editModalBody #urlId").val('{{$url->id}}');
             $('#myModal').modal('show');
