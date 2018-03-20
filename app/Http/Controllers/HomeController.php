@@ -20,6 +20,7 @@ use App\UrlFeature;
 use App\UrlSearchInfo;
 use App\UrlTag;
 use App\UrlTagMap;
+use App\PasswordReset;
 
 use App\Http\Requests\ForgotPasswordRequest;
 
@@ -48,6 +49,7 @@ class HomeController extends Controller
       }
     }
 
+    /** Sending mail with reset password link to user */
     public function forgotPasswordEmail(Request $request) {
       $v = \Validator::make($request->all(), [
           'email' => 'required|email|exists:users',
@@ -62,21 +64,37 @@ class HomeController extends Controller
 
           $user    = User::where('email',$email)->first();
           $subject = 'Reset your password here!';
-          $data    = array('name'=>$user->name);
-
+          $token = str_random(64);
+          $reset = new PasswordReset();
+          $reset->email = $user->email;
+          $reset->token = $token;
+          $reset->created_at = date('Y-m-d h:i:j');
+          $reset->save();
+          $url = url('/') . '/reset-password/' . base64_encode($user->email) . '/' . $token;
+          $data    = array('name'=>$user->name,'url' => $url,'email' => $user->email);
+          
           \Mail::send('mail.forgetPassword', $data, function($message) use($email,$user,$subject){
            $message->to($email, config('settings.company_name'))->subject($subject);
-           //$message->body('Please click on the link to change your password');
            $message->from('work@tier5.us',$user->name);
           });
 
-          \Session::flash('errs','no errs');
-          return redirect()->back();
+          \Session::flash('success','Reset Password link send through mail. please check your mail.');
+          return \Redirect::back();
         } catch (\Exception $e) {
           \Session::flash('errs',$e->getMessage());
           //\Session::flash('errs','It seems like the mail server is busy! Try again after a few minutes');
           return redirect()->back();
         }
+      }
+    }
+
+
+    public function resetPassword(Request $request) {
+      if (\Auth::check()) {
+          return redirect()->action('HomeController@getDashboard');
+      } else {
+        $email = base64_decode($request->email);
+        return view('settings.reset_password')->with('email',$email);
       }
     }
 
@@ -88,13 +106,51 @@ class HomeController extends Controller
     //     return \Response::json(array('url'=>$a));
     // }
 
-    public function testnow($url)
-    {
+    public function testnow($url) {
         $url = 'https://www.invoicingyou.com/';
         //$a = $this->getPageTitle($request->url);
         $b = $this->getPageMetaContents($url);
         dd($b);
     }
+
+    /** updating password  to user table */
+    public function setPassword(Request $request) {
+      $v = \Validator::make($request->all(), [
+          'email' => 'required|email|exists:users',
+          'password' => 'required',
+          'password_confirmation' => 'required|same:password',
+      ]);
+
+      if($v->fails()) {
+        $error_message = $v->errors()->first('email').'  '.$v->errors()->first('password_confirmation');
+        \Session::flash('errs',$error_message);
+        return \Redirect::back();
+      } else {
+        try {
+          $reset = PasswordReset::where('email', $request->email)->where('token', $request->token)->first();
+          $user = User::where('email', $request->email)->first();
+          if ($user != null || $reset) {
+              $user->password = bcrypt($request->password);
+              $user->save();
+              $password = PasswordReset::where('email', $user->email)->delete();
+              
+              Auth::attempt(['email' => $request->email, 'password' => $request->password]);
+              return redirect()->action('HomeController@getDashboard' )
+                        ->with('success', 'Password Reset Completed Successfully!');
+             
+          } else {
+
+              $err_mesg = ($reset) ? 'Token is Invalid' : 'This email address does not exists';  
+             \Session::flash('errs',$e->getMessage());
+          }
+        } catch (\Exception $e) {
+          \Session::flash('errs',$e->getMessage());
+          //\Session::flash('errs','It seems like the mail server is busy! Try again after a few minutes');
+          return redirect()->back();
+        }
+      }
+    }
+
 
     public function getIndex()
     {
@@ -1290,7 +1346,13 @@ class HomeController extends Controller
      */
     private function getPageMetaContents($url)
     {
+      $meta = array();
+      $meta['title'] = $meta['meta_description'] = null;
+      $meta['og_title'] = $meta['og_description'] = $meta['og_url'] = $meta['og_image'] = null;
+      $meta['twitter_title'] = $meta['twitter_description'] = $meta['twitter_url'] = $meta['twitter_image'] = null;
       //$url = 'https://www.invoicingyou.com/';
+      try  {
+
       $html = file_get_contents($url);
 
       //reduction of https://www.invoicingyou.com/dashboard to invoicingyou.com
@@ -1303,10 +1365,7 @@ class HomeController extends Controller
       }*/
 
 
-      $meta = array();
-      $meta['title'] = $meta['meta_description'] = null;
-      $meta['og_title'] = $meta['og_description'] = $meta['og_url'] = $meta['og_image'] = null;
-      $meta['twitter_title'] = $meta['twitter_description'] = $meta['twitter_url'] = $meta['twitter_image'] = null;
+      
       if (strlen($html) > 0) {
           if (preg_match("/\<title\>(.*)\<\/title\>/i", (string) $html, $title)) {
               $meta['title'] = $title[1];
@@ -1372,7 +1431,10 @@ class HomeController extends Controller
               }
           }
       }
-      return $meta;
+        return $meta;
+      } catch(\Exception $e) {
+        return $meta;
+      }
     }
     // https://www.google.co.in/search?client=ubuntu&channel=fs&q=google&ie=utf-8&oe=utf-8&gfe_rd=cr&ei=Dd5XWLrMAdL08weqgq_ACw
 

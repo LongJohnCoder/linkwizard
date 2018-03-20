@@ -51,6 +51,16 @@ Route::group(['domain' => env('APP_HOST')], function () {
     'uses'  =>  'HomeController@forgotPasswordEmail',
     'as'    =>  'forgotPasswordEmail'
   ]);
+
+  Route::get('reset-password/{email}/{token}', [
+    'uses'  =>  'HomeController@resetPassword',
+    'as'    =>  'reset-password'
+  ]);
+
+  Route::post('set-password', [
+    'uses'  =>  'HomeController@setPassword',
+    'as'    =>  'setPassword'
+  ]);
 });
 
 //actual rooutes goes here
