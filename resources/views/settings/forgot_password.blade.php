@@ -49,9 +49,6 @@
               <p>{{\Session::get('success')}}</p>
         </div>
       @endif
-      <div class="col-md-8">
-        <h2>Reset Password Form</h2>
-      </div><br>
       <div class="col-md-8 form">
         <div class="element-main">
       		<h1>Forgot Password</h1>

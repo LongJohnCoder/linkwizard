@@ -1346,7 +1346,13 @@ class HomeController extends Controller
      */
     private function getPageMetaContents($url)
     {
+      $meta = array();
+      $meta['title'] = $meta['meta_description'] = null;
+      $meta['og_title'] = $meta['og_description'] = $meta['og_url'] = $meta['og_image'] = null;
+      $meta['twitter_title'] = $meta['twitter_description'] = $meta['twitter_url'] = $meta['twitter_image'] = null;
       //$url = 'https://www.invoicingyou.com/';
+      try  {
+
       $html = file_get_contents($url);
 
       //reduction of https://www.invoicingyou.com/dashboard to invoicingyou.com
@@ -1359,10 +1365,7 @@ class HomeController extends Controller
       }*/
 
 
-      $meta = array();
-      $meta['title'] = $meta['meta_description'] = null;
-      $meta['og_title'] = $meta['og_description'] = $meta['og_url'] = $meta['og_image'] = null;
-      $meta['twitter_title'] = $meta['twitter_description'] = $meta['twitter_url'] = $meta['twitter_image'] = null;
+      
       if (strlen($html) > 0) {
           if (preg_match("/\<title\>(.*)\<\/title\>/i", (string) $html, $title)) {
               $meta['title'] = $title[1];
@@ -1428,7 +1431,10 @@ class HomeController extends Controller
               }
           }
       }
-      return $meta;
+        return $meta;
+      } catch(\Exception $e) {
+        return $meta;
+      }
     }
     // https://www.google.co.in/search?client=ubuntu&channel=fs&q=google&ie=utf-8&oe=utf-8&gfe_rd=cr&ei=Dd5XWLrMAdL08weqgq_ACw
 

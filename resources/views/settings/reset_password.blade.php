@@ -54,16 +54,41 @@
       </div><br>
       <div class="col-md-8 form">
         <div class="element-main">
-      		<h1>Forgot Password</h1>
-      		<p> Send a forgot pasword link in email! </p>
       		<form class="form" method="post" action="{{url('set-password')}}">
             {{csrf_field()}}
-            <input style="width:80%" class="form-group" type="email" name="email" placeholder="Your e-mail address" value=" {{ $email }}" readonly><br>
-            <input style="width:80%" class="form-group" type="password" name="password" placeholder="Set Password" value=""><br>
-            <input style="width:80%" class="form-group" type="password" name="password_confirmation" placeholder="Set Confirm Password" value=""><br>
-      			<input style="width:80%" class="form-group" type="hidden" name="token" >
-      			<input style="width:20%" class="form-group btn btn-success" type="submit" value="submit">
-      		</form>
+            <fieldset>
+              <!-- Sign Up Form -->
+              <!-- Text input-->
+              <div class="control-group">
+                  <label for="Name" class="control-label">Email:</label>
+                  <div class="controls">
+                      <input type="email" name="email" placeholder="Your e-mail address" value=" {{ $email }}" readonly>
+                  </div>
+              </div>
+              
+              <!-- Password input-->
+              <div class="control-group">
+                  <label for="password" class="control-label">Password:</label>
+                  <div class="controls">
+                      <input type="password" name="password" placeholder="Set Password" value="" id="password">
+                  </div>
+              </div>
+              <!-- Text input-->
+              <div class="control-group">
+                  <label for="password_confirmation" class="control-label">Confirm Password:</label>
+                  <div class="controls">
+                      <input type="password" name="password_confirmation" placeholder="Set Confirm Password" value="" id="password_confirmation">
+                  </div>
+              </div>
+              <!-- Button -->
+              <div class="control-group">
+                  <div class="controls">
+                      <input type="hidden" name="token">
+                      <input class="form-group btn btn-success" type="submit" value="submit">
+                  </div>
+              </div>
+            </fieldset>
+          </form>
       	</div>
       </div>
     </div>
