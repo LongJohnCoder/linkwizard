@@ -1181,6 +1181,10 @@ class HomeController extends Controller
 
     }
 
+    public function imgUploader(Request $request) {
+      print_r($request->all());die();
+    }
+
     public function postShortUrlTier5(Request $request)
     {
       print_r($request->all());exit();

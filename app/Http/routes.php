@@ -70,6 +70,11 @@ Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => ['
 //actual rooutes goes here
 Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups' => ['web','auth']]], function () {
 
+    Route::post('imgUploader', [
+      'uses'  =>  'HomeController@imgUploader',
+      'as'    =>  'imgUploader'
+    ]);
+
 
     Route::post('/check_custom' , 'HomeController@check_custom');
     Route::get('test' , function(){

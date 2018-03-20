@@ -104,7 +104,7 @@
                         	<input class="custom-tags-contents" name="tags" type="text" class="form-control" id="shortTags_Contents" data-role="tagsinput">
 												</div> -->
 
-                        <div class="custom-tags-area" id="customTags_Area" >                         
+                        <div class="custom-tags-area" id="customTags_Area" >
                           <select data-placeholder="Choose a tag..." class="chosen-select chosen-select-header" multiple tabindex="4" id="shortTags_Contents"  name="tags">
                               <option value=""></option>
                               @for ( $i =0 ;$i<count($urlTags);$i++)
@@ -112,7 +112,7 @@
                                @endfor
                            </select>
                         </div>
-                                                         
+
                     </div>
                 </div>
 
@@ -278,6 +278,10 @@
 <script src="//widget.manychat.com/216100302459827.js" async="async">
 </script>
 
+<script src="{{ URL::to('/').'/public/js/fineuploader.min.js' }}"></script>
+<link href="{{ URL::to('/').'/public/css/fineuploader-gallery.min.css' }}" rel="stylesheet" />
+<link href="{{ URL::to('/').'/public/css/fine-uploader-new.min.css' }}" rel="stylesheet" />
+
 <script type="text/javascript">
 
 $(".chosen-select").chosen({});
@@ -296,9 +300,9 @@ $(".chosen-container").bind('keyup',function(e) {
         select.prepend(option);
         // Automatically select it
         select.find(option).prop('selected', true);
-           
+
         select.trigger("chosen:updated");
-        
+
     }
 });
 
@@ -321,6 +325,22 @@ function ValidCustomURL(str) {
 				return true;
 		}
 }
+
+// var manualUploader = new qq.FineUploader({
+//             element: document.getElementById('img_inp'),
+//             //template: 'qq-template-manual-trigger',
+//             request: {
+//                 endpoint: "{{route('imgUploader')}}"
+//             },
+//             thumbnails: {
+//                 placeholders: {
+//                     waitingPath: '/source/placeholders/waiting-generic.png',
+//                     notAvailablePath: '/source/placeholders/not_available-generic.png'
+//                 }
+//             },
+//             autoUpload: false,
+//             debug: true
+//         });
 
 var shortenUrlFunc = function() {
 
@@ -383,7 +403,14 @@ var shortenUrlFunc = function() {
 			type	: "POST",
 			url		: urlToHit,
 			data	: data,
-			processData: false ,
+			//processData: false ,
+			contentType : 'multipart/form-data',
+			//contentType	: false,       // The content type used when sending data to the server.
+			cache				: false,             // To unable request pages to be cached
+			processData	:	false,
+			// beforeSend : function() {
+			// 	manualUploader.uploadStoredFiles();
+			// },
 			success: function (response) {
 				console.log(urlToHit);
 					if(response.status=="success") {
