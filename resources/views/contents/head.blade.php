@@ -32,6 +32,13 @@
 <script src="{{ URL::to('/').'/public/resources/js/highchart-drilldown.js' }}"></script>
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
 
+<!-- Choseen jquery  -->
+<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
+<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
+<script src="{{ URL::to('/').'/public/resources/js/chosen/chosen.jquery.js' }}" type="text/javascript"></script>
+<script src="{{ URL::to('/').'/public/resources/js/chosen/prism.js' }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
+<!-- Choseen jquery  -->
 
 {{-- Tags css --}}
 <link rel="stylesheet" href="{{ URL('/')}}/public/css/bootstrap-tagsinput.css" />

@@ -28,6 +28,13 @@
 @include('contents/footer')
 
 
+<!-- Choseen jquery  -->
+<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
+<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
+<script src="{{ URL::to('/').'/public/resources/js/chosen/chosen.jquery.js' }}" type="text/javascript"></script>
+<script src="{{ URL::to('/').'/public/resources/js/chosen/prism.js' }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
+<!-- Choseen jquery  -->
 <!-- ManyChat -->
 <script src="//widget.manychat.com/216100302459827.js" async="async">
 </script>
@@ -178,7 +185,6 @@ window.onload = function(){
 		// });
 
 		$("#dashboard-search-btn").on('click',function() {
-			console.log('came here : submitting form');
 			var data = $("#dashboard-search-form").serialize();
 			$("#dashboard-search-form").submit();
 		});

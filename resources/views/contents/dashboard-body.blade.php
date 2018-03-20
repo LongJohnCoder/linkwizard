@@ -89,7 +89,14 @@
                            <div class="col-md-5 col-sm-5 less-pad">
                               <div class="form-group">
                                  <div>
-                                    <input id="dashboard-tags-to-search" value="@if(\Request::get('tagsToSearch')){{\Request::get('tagsToSearch')}}@endif" class="tagsToSearch" name="tagsToSearch" type="text" data-role="tagsinput" placeholder="Search tags" class="form-control">
+                                    <!-- <input id="dashboard-tags-to-search" value="@if(\Request::get('tagsToSearch')){{\Request::get('tagsToSearch')}}@endif" class="tagsToSearch" name="tagsToSearch" type="text" data-role="tagsinput" placeholder="Search tags" class="form-control">  -->
+
+                                    <select data-placeholder="Choose a Country..." class="chosen-select" multiple tabindex="4" id="dashboard-tags-to-search" name="tagsToSearch">
+                                      <option value=""></option>
+                                      @for ( $i =0 ;$i<count($urlTags);$i++)
+                                          <option value="{{ $urlTags[$i] }}">{{ $urlTags[$i] }}</option>
+                                      @endfor
+                                    </select>
                                  </div>
                               </div>
                            </div>

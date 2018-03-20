@@ -250,7 +250,7 @@ class HomeController extends Controller
           });
         }
         //print_r($urls->toSql());die();
-        $urls = $urls->get();
+        //$urls = $urls;
         $count_url = $urls->count();
         return [
           'urls' => $urls,
@@ -320,7 +320,7 @@ class HomeController extends Controller
           if(isset($url->subdomain)) {
             if($url->subdomain->type == 'subdomain') {
               //$URLs[$key]['name']       = 'https://'.$url->subdomain->name.'.'.env('APP_HOST').'/'.$url->shorten_suffix;
-              $URLs[$key]['name']       = cconfig('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+              $URLs[$key]['name']       = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
               $URLs[$key]['drilldown']  = $URLs[$key]['name'];
             }
             else if($url->subdomain->type == 'subdirectory') {
@@ -1611,7 +1611,13 @@ class HomeController extends Controller
                 $limit = Limit::where('plan_code', 'tr5free')->first();
             }
 
+            $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($user) {
+                       $q->where('user_id',$user->id);
+                     })->pluck('tag')->toArray();
+
+
             return view('dashboard.shorten_url' , [
+              'urlTags'             => $urlTags,
               'total_links'         => $total_links,
               'limit'               => $limit,
               'subscription_status' => $subscription_status,
@@ -1729,10 +1735,15 @@ class HomeController extends Controller
                         }
                     }
 
+                     $userId = \Auth::user()->id;
+                     $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($userId) {
+                       $q->where('user_id',$userId);
+                     })->pluck('tag')->toArray();
 
                     return view('dashboard2', [
                     //return view('dashboard.shorten_url', [
                         'count_url' => $count_url,// dynamic
+                        'urlTags' => $urlTags,
                         'user' => $user,
                         'urls' => $urls,// dynamic
                         'subscription_status' => $subscription_status,

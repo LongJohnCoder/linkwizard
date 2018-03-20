@@ -100,9 +100,19 @@
                     </div>
                     <div class="normal-body add-tags">
                         <p>Mention tags for this link</p>
-												<div class="custom-tags-area" id="customTags_Area" >
+												<!-- <div class="custom-tags-area" id="customTags_Area" >
                         	<input class="custom-tags-contents" name="tags" type="text" class="form-control" id="shortTags_Contents" data-role="tagsinput">
-												</div>
+												</div> -->
+
+                        <div class="custom-tags-area" id="customTags_Area" >                         
+                          <select data-placeholder="Choose a tag..." class="chosen-select chosen-select-header" multiple tabindex="4" id="shortTags_Contents"  name="tags">
+                              <option value=""></option>
+                              @for ( $i =0 ;$i<count($urlTags);$i++)
+                                  <option value="{{ $urlTags[$i] }}">{{ $urlTags[$i] }}</option>
+                               @endfor
+                           </select>
+                        </div>
+                                                         
                     </div>
                 </div>
 
@@ -252,13 +262,45 @@
 
 
 @include('contents/footer')
-
-
+<!-- Choseen jquery  -->
+<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
+<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
+<script src="{{ URL::to('/').'/public/resources/js/chosen/chosen.jquery.js' }}" type="text/javascript"></script>
+<script src="{{ URL::to('/').'/public/resources/js/chosen/prism.js' }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
+<!-- Choseen jquery  -->
+<style type="text/css">
+    .chosen-container-multi {
+        width:145px !important;
+    }
+</style>
 <!-- ManyChat -->
 <script src="//widget.manychat.com/216100302459827.js" async="async">
 </script>
 
 <script type="text/javascript">
+
+$(".chosen-select").chosen({});
+
+$(".chosen-container").bind('keyup',function(e) {
+   if (e.which == 13 || e.which == 188)
+    {
+       var lastChar = e.target.value.slice(-1);
+       var strVal  = e.target.value;
+         if (lastChar == ',') {
+           strVal = strVal.slice(0, -1);
+         }
+       var option = $("<option>").val(strVal).text(strVal);
+        var select = $(".chosen-select-header");
+        // Add the new option
+        select.prepend(option);
+        // Automatically select it
+        select.find(option).prop('selected', true);
+           
+        select.trigger("chosen:updated");
+        
+    }
+});
 
 function ValidURL(str) {
 		var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
