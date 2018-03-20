@@ -55,7 +55,7 @@
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add facebook pixel
-                          <input type="checkbox" id="checkboxAddFbPixelid" name="check_fb">
+                          <input type="checkbox" id="checkboxAddFbPixelid" name="checkboxAddFbPixelid">
                           <span class="checkmark"></span>
                         </label>
                     </div>
@@ -68,7 +68,7 @@
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add google pixel
-                          <input type="checkbox" id="checkboxAddGlPixelid" name="check_gl">
+                          <input type="checkbox" id="checkboxAddGlPixelid" name="checkboxAddGlPixelid">
                           <span class="checkmark"></span>
                         </label>
                     </div>
@@ -94,7 +94,7 @@
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add tags
-                          <input type="checkbox" id="shortTagsEnable" name="shortTagsEnable">
+                          <input type="checkbox" id="shortTagsEnable" name="allowTag">
                           <span class="checkmark"></span>
                         </label>
                     </div>
@@ -129,7 +129,7 @@
                     </div>
                 </div>
 
-                {{--
+
 									<div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Link Preview
@@ -249,7 +249,7 @@
                         </div>
                     </div>
                 </div>
-								--}}
+
                 <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
 							</form>
             </div>
@@ -335,12 +335,15 @@ var shortenUrlFunc = function() {
 		customUrl = $('#makeCustom_Url').val();
 	@endif
 
+
+
 	var data = {
 
 		checkboxAddFbPixelid 	: 	$("#checkboxAddFbPixelid").prop('checked'),
 		fbPixelid							: 	$("#fbPixel_id").val(),
 		checkboxAddGlPixelid 	: 	$("#checkboxAddGlPixelid").prop('checked'),
 		glPixelid							: 	$("#glPixel_id").val(),
+
 		allowTag							:   $("#shortTagsEnable").prop('checked'),
 		tags 									: 	$("#shortTags_Contents").tagsinput('items'),
 		allowDescription      : 	$("#descriptionEnable").prop('checked'),
@@ -364,7 +367,7 @@ var shortenUrlFunc = function() {
 
 		org_url_chk						: 	$("#org_url_chk").prop('checked'),
 		cust_url_chk					: 	$("#cust_url_chk").prop('checked'),
-		url_inp	            	:   $("url_inp").val(),
+		url_inp	            	:   $('#img_inp')[0].files[0],
 
 		actual_url 						:		actualUrl,
 		_token   							: 	"{{ csrf_token() }}"
@@ -374,10 +377,13 @@ var shortenUrlFunc = function() {
 		data['custom_url'] = customUrl;
 	}
 
+	data = JSON.stringify(data);
+
 	$.ajax({
 			type	: "POST",
 			url		: urlToHit,
 			data	: data,
+			processData: false ,
 			success: function (response) {
 				console.log(urlToHit);
 					if(response.status=="success") {
@@ -398,7 +404,19 @@ var shortenUrlFunc = function() {
 									window.location.href = response.redirect_url;
 							});
 							HoldOn.close();
-					} else {
+					}
+
+					else if(response.status=="error") {
+						swal({
+								title: null,
+								text: response.msg,
+								type: "warning",
+								html: true
+						});
+						HoldOn.close();
+					}
+
+					else {
 							swal({
 									title: null,
 									text: "Please paste an actual URL",

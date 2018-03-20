@@ -1112,17 +1112,86 @@ class HomeController extends Controller
       }
     }
 
+    public function fillUrlDescriptions(Url $url ,Request $request, $meta_data) {
 
+      if($request->link_preview_selector) {
+
+        if($request->link_preview_original) {
+
+          $url->title           = $meta_data['title'];
+
+          //facebook data
+          $url->og_image        = $meta_data['og_image'];
+          $url->og_description  = $meta_data['og_description'];
+          $url->og_url          = $meta_data['og_url'];
+          $url->og_title        = $meta_data['og_title'];
+
+          //twitter data
+          $url->twitter_image         = $meta_data['twitter_image'] == null ? $meta_data['og_image'] : $meta_data['twitter_image'];
+          $url->twitter_description   = $meta_data['twitter_description'];
+          $url->twitter_url           = $meta_data['twitter_url'];
+          $url->twitter_title         = $meta_data['twitter_title'];
+
+          //meta description
+          $url->meta_description = $meta_data['meta_description'];
+        }
+        else if($request->link_preview_custom) {
+
+          if($request->cust_title_chk && strlen($request->title_inp) > 0) {
+            $url->title         =   $request->title_inp;
+            $url->og_title      =   $request->title_inp;
+            $url->twitter_title =   $request->title_inp;
+          } else {
+            $url->title         =   $meta_data['title'];
+            $url->og_title      =   $meta_data['og_title'];
+            $url->twitter_title =   $meta_data['twitter_title'];
+          }
+
+          if($request->cust_dsc_chk && strlen($request->dsc_inp) > 0) {
+            $url->meta_description      =   $request->dsc_inp;
+            $url->og_description        =   $request->dsc_inp;
+            $url->twitter_description   =   $request->dsc_inp;
+          } else {
+            $url->meta_description      =   $meta_data['title'];
+            $url->og_description        =   $meta_data['og_description'];
+            $url->twitter_description   =   $meta_data['twitter_description'];
+          }
+
+          if($request->cust_url_chk && strlen($request->url_inp) > 0) {
+            $url->meta_description      =   $request->url_inp;
+            $url->og_description        =   $request->url_inp;
+            $url->twitter_description   =   $request->url_inp;
+          } else {
+            $url->og_url              =   $meta_data['og_url'];
+            $url->twitter_url         =   $meta_data['twitter_url'];
+          }
+
+          if($request->cust_img_chk && strlen($request->img_inp) > 0) {
+            $url->og_image            =   $request->img_inp;
+            $url->twitter_image   =   $request->img_inp;
+          } else {
+            $url->og_url              =   $meta_data['og_image'];;
+            $url->twitter_url         =   $meta_data['twitter_url'];
+          }
+
+        }
+
+      }
+
+
+    }
 
     public function postShortUrlTier5(Request $request)
     {
-
+      print_r($request->all());exit();
       try{
 
         if (\Auth::user())
       			$userId = \Auth::user()->id;
-      	else
-      			$userId = 0;
+      	else {
+          return response()->json(['status' => 'error', 'msg' => 'Please log in again!']);
+        }
+
 
         //facebook pixel id
         $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
@@ -1165,22 +1234,9 @@ class HomeController extends Controller
         //$_url = $this->getPageTitle($request->url);
         //$url->title = $_url;
         $meta_data = $this->getPageMetaContents($request->url);
-        $url->title           = $meta_data['title'];
 
-        //facebook data
-        $url->og_image        = $meta_data['og_image'];
-        $url->og_description  = $meta_data['og_description'];
-        $url->og_url          = $meta_data['og_url'];
-        $url->og_title        = $meta_data['og_title'];
+        $url = $this->fillUrlDescriptions($url , $request, $meta_data);
 
-        //twitter data
-        $url->twitter_image         = $meta_data['twitter_image'] == null ? $meta_data['og_image'] : $meta_data['twitter_image'];
-        $url->twitter_description   = $meta_data['twitter_description'];
-        $url->twitter_url           = $meta_data['twitter_url'];
-        $url->twitter_title         = $meta_data['twitter_title'];
-
-        //meta description
-        $url->meta_description = $meta_data['meta_description'];
         $url->user_id = $userId;
 
         if ($url->save()) {
@@ -1218,11 +1274,11 @@ class HomeController extends Controller
               ]);
           }
         } else {
-            return response()->json(['status' => 'error']);
+            return response()->json(['status' => 'error', 'msg' => 'Database connection error. Please try again after some time!']);
         }
       }
       catch(\Exception $e) {
-        return response()->json(['status' => 'error', 'msg' => $e->getMessage(), 'line' => $e->getLine()]);
+        return response()->json(['status' => 'error', 'msg' => 'Some error occoured please try again later!']);
       }
     }
 
@@ -1241,8 +1297,9 @@ class HomeController extends Controller
 
         if (\Auth::user())
       			$userId = \Auth::user()->id;
-      	else
-      			$userId = 0;
+      	else {
+          return response()->json(['status' => 'error', 'msg'=>'Database connection error. Please try again later!']);
+        }
 
 
         //facebook pixel id
@@ -1340,10 +1397,10 @@ class HomeController extends Controller
           }
 
         } else {
-            return response()->json(['status' => 'error']);
+            return response()->json(['status' => 'error', 'msg'=>'Database connection error. Please try again later!']);
         }
       } catch(\Exception $e) {
-        return response()->json(['status' => 'error', 'msg'=>$e->getMessage()]);
+        return response()->json(['status' => 'error', 'msg'=>'Some error occoured. Please try again later!']);
       }
 
     }
@@ -1673,7 +1730,7 @@ class HomeController extends Controller
      */
     public function getDashboard(Request $request)
     {
-      
+
         if (Auth::check())
         {
 
