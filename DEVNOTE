@@ -45,3 +45,4 @@ V2.6.4:
     2. Add Subdomain & Subdirectory Links
 V2.7:
     1. Bug fix in url shortening function.
+    2. WebHook Create User By Email v1.1 #stable
