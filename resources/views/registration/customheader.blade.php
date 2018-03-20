@@ -1,3 +1,4 @@
+
 <div class="col-md-8">
 	<div class="top-menu">
 		<div class="mobile-menu">
@@ -14,10 +15,10 @@
             	<li><a href="/pricing">pricing</a></li>
             	<li><a href="/blog">blog</a></li>
                 @if(!\Auth::check())
-            	<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
-            	<li class="signup"><a href="#" data-toggle="modal" data-target="#signup" >signup</a></li>
+            			<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
+            			<li class="signup"><a href="#" data-toggle="modal" data-target="#signup" >signup</a></li>
                 @else
-                    <li><a href="/app/user/dashboard">My Dashboard</a></li>
+                  <li><a href="/app/user/dashboard">My Dashboard</a></li>
                 @endif
             </ul>
         </div>
@@ -28,10 +29,10 @@
             	<li><a href="/pricing">pricing</a></li>
             	<li><a href="/blog">blog</a></li>
                 @if(!\Auth::check())
-            	<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
-            	<li class="signup"><a href="#" data-toggle="modal" data-target="#signup">signup</a></li>
+            			<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
+            			<li class="signup"><a href="#" data-toggle="modal" data-target="#signup">signup</a></li>
                 @else
-                    <li><a href="/app/user/dashboard">My Dashboard</a></li>
+                  <li><a href="/app/user/dashboard">My Dashboard</a></li>
                 @endif
             </ul>
         </div>

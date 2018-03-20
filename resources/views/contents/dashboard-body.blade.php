@@ -136,11 +136,11 @@
                                 @php
                                   if(isset($url->subdomain)) {
                                     if($url->subdomain->type == 'subdomain')
-                                        $shrt_url = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.env('APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+                                        $shrt_url = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
                                     else if($url->subdomain->type == 'subdirectory')
-                                        $shrt_url = config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+                                        $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
                                   } else {
-                                    $shrt_url = config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+                                    $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
                                   }
                                 @endphp
                                 <td>
@@ -166,9 +166,6 @@
         </div>
     </div>
 </section>
-
-
-
 
 
 

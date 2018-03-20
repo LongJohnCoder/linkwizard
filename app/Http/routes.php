@@ -12,6 +12,9 @@
 */
 
 //test route
+
+Route::pattern('domain', config('settings.APP_HOST').'|'.config('settings.APP_LOGIN_HOST'));
+
 Route::get('/test', function(){
     $url = 'https://en.wikipedia.org/wiki/Avatar_(2009_film)';
     dd(app('App\Http\Controllers\HomeController')->getPageMetaContents($url));
@@ -37,7 +40,7 @@ Route::group(['prefix' => 'api/v1'],function() {
 
 //before login this url is the base url
 //tr5.* for production */
-Route::group(['domain' => env('APP_HOST')], function () {
+Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => ['web','auth']]], function () {
   Route::get('/', [
       'uses' => 'HomeController@getIndex',
       'as' => 'getIndex',
@@ -65,7 +68,7 @@ Route::group(['domain' => env('APP_HOST')], function () {
 });
 
 //actual rooutes goes here
-Route::group(['domain' => env('APP_LOGIN_HOST')], function () {
+Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups' => ['web','auth']]], function () {
 
 
     Route::post('/check_custom' , 'HomeController@check_custom');
@@ -262,13 +265,13 @@ Route::group(['domain' => env('APP_LOGIN_HOST')], function () {
 
 
 //router for subdomains
-Route::group(['domain' => '{subdomain}.'.env('APP_REDIRECT_HOST')], function () {
+Route::group(['domain' => '{subdomain}.'.config('settings.APP_REDIRECT_HOST'), ['middlewareGroups' => ['web','auth']]], function () {
   Route::get('/{url}', 'HomeController@getRequestedSubdomainUrl');
 });
 //routing for subdomains ends here
 
 //router for subdirectories
-Route::group(['domain' => env('APP_REDIRECT_HOST')], function () {
+Route::group(['domain' => config('settings.APP_REDIRECT_HOST') , ['middlewareGroups' => ['web','auth']]], function () {
   //Route::get('/{url}', 'HomeController@getRequestedSubdomainUrl');
   Route::get('/{subdirectory}/{url}', [
       'uses' => 'HomeController@getRequestedSubdirectoryUrl',

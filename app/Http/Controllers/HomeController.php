@@ -149,11 +149,13 @@ class HomeController extends Controller
     }
 
 
-    public function getIndex()
+    public function getIndex(Request $request)
     {
-
+        //dd(Auth::check());
         if (Auth::check()) {
-            return redirect()->action('HomeController@getDashboard');
+          return view('index1');
+            //return app('App\Http\Controllers\HomeController')->getDashboard($request);
+          return redirect()->action('HomeController@getDashboard');
         } else {
             Session::put('login_error' , 'incorect username or password');
             return view('index1');
@@ -318,18 +320,18 @@ class HomeController extends Controller
           if(isset($url->subdomain)) {
             if($url->subdomain->type == 'subdomain') {
               //$URLs[$key]['name']       = 'https://'.$url->subdomain->name.'.'.env('APP_HOST').'/'.$url->shorten_suffix;
-              $URLs[$key]['name']       = 'http:/'.'/'.$url->subdomain->name.'.'.env( 'APP_REDIRECT_HOST' ).'/'.$url->shorten_suffix;
+              $URLs[$key]['name']       = cconfig('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
               $URLs[$key]['drilldown']  = $URLs[$key]['name'];
             }
             else if($url->subdomain->type == 'subdirectory') {
               //$URLs[$key]['name'] = route('getIndex').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
-              $URLs[$key]['name']       = 'http:/'.'/'.env('APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+              $URLs[$key]['name']       = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
               $URLs[$key]['drilldown']  = $URLs[$key]['name'];
             }
           }
           else {
             //$URLs[$key]['name'] = route('getIndex').'/'.$url->shorten_suffix;
-            $URLs[$key]['name'] = 'http:/'.'/'.env( 'APP_REDIRECT_HOST' ).'/'.$url->shorten_suffix;
+            $URLs[$key]['name'] = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
             $URLs[$key]['drilldown']  = $URLs[$key]['name'];
           }
 
@@ -1199,8 +1201,8 @@ class HomeController extends Controller
 
               return response()->json([
                     'status'        => 'success',
-                    'url'           => config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$random_string,
-                    'redirect_url'  => config('settings.SECURE_PROTOCOL').env('APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
+                    'url'           => config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$random_string,
+                    'redirect_url'  => config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
               ]);
             } else {
               return response()->json(['status' => 'error']);
@@ -1210,9 +1212,9 @@ class HomeController extends Controller
               $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
 
               return response()->json([
-                    'status' => 'success',
-                    'url' => url('/').'/'.$random_string,
-                    'redirect_url'  => config('settings.SECURE_PROTOCOL').env('APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
+                    'status'        => 'success',
+                    'url'           => config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$random_string,
+                    'redirect_url'  => config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
               ]);
           }
         } else {
@@ -1320,8 +1322,8 @@ class HomeController extends Controller
 
               return response()->json([
                     'status'        =>  'success',
-                    'url'           =>  config('settings.SECURE_PROTOCOL').env('APP_REDIRECT_HOST').'/'.$url->shorten_suffix,
-                    'redirect_url'  =>  config('settings.SECURE_PROTOCOL').env('APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
+                    'url'           =>  config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix,
+                    'redirect_url'  =>  config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
               ]);
             } else {
               return response()->json(['status' => 'error']);
@@ -1331,9 +1333,9 @@ class HomeController extends Controller
               $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
 
               return response()->json([
-                    'status' => 'success',
-                    'url' => url('/').'/'.$url->shorten_suffix,
-                    'redirect_url'  =>  config('settings.SECURE_PROTOCOL').env('APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
+                    'status'        => 'success',
+                    'url'           => config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix,
+                    'redirect_url'  =>  config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
               ]);
           }
 
@@ -1637,7 +1639,7 @@ class HomeController extends Controller
           {
               return redirect()->action('HomeController@getSubscribe');
           } else {
-            dd($request->all());
+
             //all codes are here
 
             //extracting all variables
@@ -1665,8 +1667,10 @@ class HomeController extends Controller
      */
     public function getDashboard(Request $request)
     {
-        if (Auth::check()) {
-            //dd(Auth::check());
+      
+        if (Auth::check())
+        {
+
             if(\Session::has('plan'))
             {
                 //return 18745;
@@ -1754,6 +1758,8 @@ class HomeController extends Controller
             }
 
         } else {
+            Auth::logout();
+            Session::flush();
             return redirect()->action('HomeController@getIndex');
         }
     }
