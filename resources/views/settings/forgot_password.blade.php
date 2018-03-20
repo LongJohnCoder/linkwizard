@@ -34,38 +34,88 @@
 
 <body>
 <!-- Header Start -->
+  <header>
+        <section>
+            <div class="container">
+                <div class="row nav-wrapper">
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-left">
+                        <a href="#"><img src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" alt="Boxify Logo"></a>
+                    </div>
+                    
+                </div>
+              
+            </div>
+           
+        </section>
+  </header>
+<!-- Header end -->
 
+<!-- Main Content start -->
+    <div class="overlay overlay-boxify">
+        <nav>
+            <ul>
+                @if (Auth::user())
+                <li>
+                    <a href="{{ route('getDashboard') }}">
+                        <i class="fa fa-tachometer"></i>Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('getLogout') }}">
+                        <i class="fa fa-sign-out"></i>Logout
+                    </a>
+                </li>
+                @else
+                <li>
+                    <a href="#signin" data-toggle="modal" id="loginButton" data-target=".bs-modal-md">
+                        <i class="fa fa-user"></i>Login
+                    </a>
+                </li>
+                <li>
+                    <a href="#signup" data-toggle="modal" id="registerButton" data-target=".bs-modal-md">
+                        <i class="fa fa-sign-in"></i>Register
+                    </a>
+                </li>
+                @endif
+                <li>
+                    <a target="_blank" href="https://tier5.us/">
+                        <i class="fa fa-desktop"></i>Visit Our Website
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="container centered" style="padding:140px">
+      <div class="elelment">
+        @if(\Session::has('errs'))
+            <div class="alert alert-danger">
+                <p>{{\Session::get('errs')}}</p>
+            </div>
+        @endif
 
-  <div class="container centered" style="padding:140px">
-    <div class="elelment">
-      @if(\Session::has('errs'))
-          <div class="alert alert-danger">
-              <p>{{\Session::get('errs')}}</p>
+        @if(\Session::has('success'))
+          <div class="alert alert-success">
+                <p>{{\Session::get('success')}}</p>
           </div>
-      @endif
-
-      @if(\Session::has('success'))
-        <div class="alert alert-success">
-              <p>{{\Session::get('success')}}</p>
+        @endif
+        <div class="col-md-8 form">
+          <div class="element-main">
+        		<h1>Forgot Password</h1>
+        		<p> Send a forgot pasword link in email! </p>
+        		<form class="form" method="post" action="{{url('forgotPasswordEmail')}}">
+              {{csrf_field()}}
+        			<input style="width:80%" class="form-group" type="text" name="email" placeholder="Your e-mail address" value=""><br>
+        			<input style="width:20%" class="form-group btn btn-success" type="submit" value="Send">
+        		</form>
+        	</div>
         </div>
-      @endif
-      <div class="col-md-8 form">
-        <div class="element-main">
-      		<h1>Forgot Password</h1>
-      		<p> Send a forgot pasword link in email! </p>
-      		<form class="form" method="post" action="{{url('forgotPasswordEmail')}}">
-            {{csrf_field()}}
-      			<input style="width:80%" class="form-group" type="text" name="email" placeholder="Your e-mail address" value=""><br>
-      			<input style="width:20%" class="form-group btn btn-success" type="submit" value="Send">
-      		</form>
-      	</div>
       </div>
     </div>
-  </div>
+<!-- Main Content end -->
+
+<!-- Footer start -->
   @include('registration.customfooter')
-
-<!-- Main Content Start -->
-
+<!-- Footer end -->
 </body>
 
 <!-- ManyChat -->

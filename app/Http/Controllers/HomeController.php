@@ -90,12 +90,8 @@ class HomeController extends Controller
 
 
     public function resetPassword(Request $request) {
-      if (\Auth::check()) {
-          return redirect()->action('HomeController@getDashboard');
-      } else {
-        $email = base64_decode($request->email);
+       $email = base64_decode($request->email);
         return view('settings.reset_password')->with('email',$email);
-      }
     }
 
     // public function test(Request $request)
@@ -129,7 +125,7 @@ class HomeController extends Controller
         try {
           $reset = PasswordReset::where('email', $request->email)->where('token', $request->token)->first();
           $user = User::where('email', $request->email)->first();
-          if ($user != null || $reset) {
+          if ($user != null && $reset) {
               $user->password = bcrypt($request->password);
               $user->save();
               $password = PasswordReset::where('email', $user->email)->delete();
@@ -140,8 +136,9 @@ class HomeController extends Controller
              
           } else {
 
-              $err_mesg = ($reset) ? 'Token is Invalid' : 'This email address does not exists';  
-             \Session::flash('errs',$e->getMessage());
+              $err_mesg = (!$reset) ? 'Token is Invalid' : 'This email address does not exists';  
+             \Session::flash('errs',$err_mesg);
+             return \Redirect::back();
           }
         } catch (\Exception $e) {
           \Session::flash('errs',$e->getMessage());

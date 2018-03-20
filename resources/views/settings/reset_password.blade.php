@@ -33,9 +33,25 @@
 
 
 <body>
+
 <!-- Header Start -->
+  <header>
+        <section>
+            <div class="container">
+                <div class="row nav-wrapper">
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-left">
+                        <a href="#"><img src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" alt="Boxify Logo"></a>
+                    </div>
+                    
+                </div>
+              
+            </div>
+           
+        </section>
+  </header>
+<!-- Header end -->
 
-
+<!-- Main Content start -->
   <div class="container centered" style="padding:140px">
     <div class="elelment">
       @if(\Session::has('errs'))
@@ -93,9 +109,11 @@
       </div>
     </div>
   </div>
-  @include('registration.customfooter')
+<!-- Main Content end -->
 
-<!-- Main Content Start -->
+<!-- Footer start -->
+@include('registration.customfooter')
+<!-- Footer end -->
 
 </body>
 
