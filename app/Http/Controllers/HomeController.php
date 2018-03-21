@@ -1125,6 +1125,7 @@ class HomeController extends Controller
 
     public function fillUrlDescriptions(Url $url ,Request $request, $meta_data) {
 
+
       if($request->link_preview_selector) {
 
         if($request->link_preview_original) {
@@ -1171,12 +1172,11 @@ class HomeController extends Controller
           }
 
           if($request->cust_url_chk && strlen($request->url_inp) > 0) {
-            $url->meta_description      =   $request->url_inp;
-            $url->og_description        =   $request->url_inp;
-            $url->twitter_description   =   $request->url_inp;
+            $url->og_url        =   $request->url_inp;
+            $url->twitter_url   =   $request->url_inp;
           } else {
-            $url->og_url              =   $meta_data['og_url'];
-            $url->twitter_url         =   $meta_data['twitter_url'];
+            $url->og_url        =   $meta_data['og_url'];
+            $url->twitter_url   =   $meta_data['twitter_url'];
           }
 
           // if($request->hasFile('img_inp')) {
@@ -1204,11 +1204,11 @@ class HomeController extends Controller
             $newFileName = rand(1000, 9999) . "-" . date('U');
             $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
 
-            $url->og_image            =   $newFileName.'.'.$actualFileExtension;
-            $url->twitter_image       =   $newFileName.'.'.$actualFileExtension;
+            $url->og_image            =   config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/'.config('settings.UPLOAD_IMG').$newFileName.'.'.$actualFileExtension;
+            $url->twitter_image       =   config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/'.config('settings.UPLOAD_IMG').$newFileName.'.'.$actualFileExtension;
           } else {
-            $url->og_url              =   $meta_data['og_image'];;
-            $url->twitter_url         =   $meta_data['twitter_url'];
+            $url->og_image            =   $meta_data['og_image'];;
+            $url->twitter_image       =   $meta_data['twitter_url'];
           }
           return $url;
         }
@@ -1409,7 +1409,6 @@ class HomeController extends Controller
       }
       catch(\Exception $e) {
         return redirect()->back()->with('error', $e->getMessage().' line :'.$e->getLine());
-
       }
     }
 
@@ -1844,6 +1843,7 @@ class HomeController extends Controller
     }
 
     public function shortenUrl(Request $request) {
+      //dd($request->all());
       //dd($request->file('img_inp'));
       if($request->hasFile('img_inp')) {
         $imgFile        = $request->file('img_inp');
