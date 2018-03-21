@@ -198,6 +198,11 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                 'uses' => 'HomeController@postAnalyticsByDate',
                 'as' => 'postAnalyticsByDate',
             ]);
+
+            Route::post('deleteShortenUrl', [
+                'uses' => 'HomeController@deleteShortenUrl',
+                'as' => 'deleteShortenUrl',
+            ]);
         });
 
         Route::group(['prefix' => 'user'], function () {

@@ -11,6 +11,7 @@
 <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
 <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
 <meta name="author" content="Tier5 LLC" />
+<link href="{{ URL('/')}}/public/images/favicon.ico" rel="shortcut icon" type="image/ico">
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />

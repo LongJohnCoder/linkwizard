@@ -79,7 +79,7 @@
             <div class="row">
                <div class="col-md-12 col-sm-12">
                   <div class="searchpart-area">
-                     <div class="row">
+                     <div class="row1">
                         <form id="dashboard-search-form" action="{{route('getDashboard')}}" method="GET">
                            <div class="col-md-5 col-sm-5 less-pad">
                               <div class="form-group">

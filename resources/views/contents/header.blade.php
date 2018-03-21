@@ -1,13 +1,13 @@
 <header>
 	<div class="container">
 		<div class="row">
-			<div class="col-md-4">
+			<div class="col-md-4 col-sm-4">
 				<div class="logo">
 					 <a href="{{url('/')}}/about"><img src="{{url('/')}}/public/images/logo.png" class="img-responsive"></a>
 				</div>
 			</div>
 
-			<div class="col-md-8">
+			<div class="col-md-8 col-sm-8">
 				<div class="top-right">
 					@if(count($limit) > 0)
 					{{--

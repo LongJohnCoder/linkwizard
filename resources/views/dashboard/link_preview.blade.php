@@ -13,7 +13,7 @@ $key = 0;
 <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
 <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
 <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
-
+<link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
 <!-- Header Start -->
 @include('contents/header')
 <!-- Header End -->
@@ -65,6 +65,11 @@ $key = 0;
                 <ul>
                   <li>
                       <button id="clipboard" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink" style="width:70px"><i class="fa fa-clipboard"></i> copy
+                      </button>
+                  </li>
+
+                  <li>
+                      <button id="clipboard" class="btn btn-default btn-sm btngrpthree delete-url" data-id="{{ $url->id }}" style="width:70px"><i class="fa fa-clipboard"></i> delete
                       </button>
                   </li>
                   <li>
@@ -1357,6 +1362,49 @@ window.onload = function(){
 			    alert('check browser settings to enable facebook sharing.. ');
 			}
 			});
+
+      /** Function to delete url **/
+
+        $(function () {
+            $(".delete-url").click(function (e) {
+              e.preventDefault();
+              var url_id = $(this).data('id');
+              swal({
+                  title: "Are you sure?",
+                  text: "You will not be able to recover this imaginary file!",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#DD6B55",
+                  confirmButtonText: "Yes, delete it!",
+                  closeOnConfirm: false
+                }, function (isConfirm) {
+                  if (!isConfirm) return;
+                  $.ajax({
+                      type: "POST",
+                      url: "{{ route('deleteShortenUrl') }}",
+                      data: {id: url_id, _token: "{{ csrf_token() }}"},
+                      success: function(response) {
+                        swal({
+                          title: "Success",
+                          text: "Url deleted successfully.",
+                          type: "success",
+                          html: true
+                        });
+
+                         window.location.href = "{{ url('/') }}/app/user/dashboard";
+                      },
+                      error: function(response) {
+                          swal({
+                              title: "Oops!",
+                              text: "Cannot delete this url.",
+                              type: "error",
+                              html: true
+                          });
+                      }
+                  });
+              });
+            });
+        });
 		</script>
 
 </body>

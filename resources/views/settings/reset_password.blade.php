@@ -6,12 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Branding</title>
+<title>Reset Password</title>
 
+<link href="{{ URL('/')}}/public/images/favicon.ico" rel="shortcut icon" type="image/ico">
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="{{url('/')}}/public/fonts/font-awesome/css/font-awesome.min.css">
-
+<link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
 <script src="{{url('/')}}/public/js/jquery.min.js"></script>
 <script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
 
@@ -40,7 +41,7 @@
             <div class="container">
                 <div class="row nav-wrapper">
                     <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                        <a href="#"><img src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" alt="Boxify Logo"></a>
+                        <a href="{{ URL::to('/')}}"><img src="{{ URL::to('/').'/public/images/logo.png' }}" alt="Boxify Logo"></a>
                     </div>
                     
                 </div>
@@ -52,7 +53,7 @@
 <!-- Header end -->
 
 <!-- Main Content start -->
-  <div class="container centered" style="padding:140px">
+  <div class="container centered box" >
     <div class="elelment">
       @if(\Session::has('errs'))
           <div class="alert alert-danger">
@@ -65,45 +66,46 @@
               <p>{{\Session::get('forget_success')}}</p>
           </div>
       @endif
-      <div class="col-md-8">
-        <h2>Reset Password Form</h2>
+      <div class="col-md-8 col-md-offset-2">
+       
       </div><br>
-      <div class="col-md-8 form">
+      <div class="col-md-8 col-md-offset-2 form">
         <div class="element-main">
+         <h2>Reset Password Form</h2>
       		<form class="form" method="post" action="{{url('set-password')}}">
             {{csrf_field()}}
-            <fieldset>
+           
               <!-- Sign Up Form -->
               <!-- Text input-->
-              <div class="control-group">
+              <div class="control-group form-group">
                   <label for="Name" class="control-label">Email:</label>
                   <div class="controls">
-                      <input type="email" name="email" placeholder="Your e-mail address" value=" {{ $email }}" readonly>
+                      <input class="form-control" type="email" name="email" placeholder="Your e-mail address" value=" {{ $email }}" readonly>
                   </div>
               </div>
               
               <!-- Password input-->
-              <div class="control-group">
+              <div class="control-group form-group">
                   <label for="password" class="control-label">Password:</label>
                   <div class="controls">
-                      <input type="password" name="password" placeholder="Set Password" value="" id="password">
+                      <input class="form-control" type="password" name="password" placeholder="Set Password" value="" id="password">
                   </div>
               </div>
               <!-- Text input-->
-              <div class="control-group">
+              <div class="control-group form-group">
                   <label for="password_confirmation" class="control-label">Confirm Password:</label>
                   <div class="controls">
-                      <input type="password" name="password_confirmation" placeholder="Set Confirm Password" value="" id="password_confirmation">
+                      <input class="form-control" type="password" name="password_confirmation" placeholder="Set Confirm Password" value="" id="password_confirmation">
                   </div>
               </div>
               <!-- Button -->
-              <div class="control-group">
+              <div class="control-group form-group">
                   <div class="controls">
                       <input type="hidden" name="token">
-                      <input class="form-group btn btn-success" type="submit" value="submit">
+                      <input class="form-control btn btn-success" type="submit" value="submit">
                   </div>
               </div>
-            </fieldset>
+            
           </form>
       	</div>
       </div>

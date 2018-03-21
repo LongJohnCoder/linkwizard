@@ -228,11 +228,12 @@ class HomeController extends Controller
       }
     }
 
-    private function getDataOfSearchTags($textToSearch = '', $tagsToSearch = '', $userId) {
+    private function getDataOfSearchTags($textToSearch = '', $tagsToSearch = [], $userId) {
       // $textToSearch = $request->textToSearch;
       // $tagsToSearch = $request->tagsToSearch;
       $flag = 0;
-      if(strlen($textToSearch) > 0 || strlen($tagsToSearch) > 0){
+      //echo strlen(trim($textToSearch));exit();
+      if(strlen(trim($textToSearch)) > 0 || !empty($tagsToSearch)){
         $urls = Url::where('user_id', $userId);
         if(strlen($textToSearch) > 0) {
           $urls = $urls->whereHas('urlSearchInfo', function($q) use($textToSearch) {
@@ -240,12 +241,13 @@ class HomeController extends Controller
           });
           $flag = 1;
         }
-        if(strlen($tagsToSearch) > 0) {
+        if(!empty($tagsToSearch)) {
+          $allTags = implode(",",$tagsToSearch);
           $condition = $flag == 0 ? 'whereHas' : 'orWhereHas';
-          $urls = $urls->$condition('urlTagMap', function($q) use($tagsToSearch) {
-            $q->whereHas('urlTag', function($q2) use($tagsToSearch) {
-              $refinedTags = str_replace($tagsToSearch,',',' ');
-              $q2->whereRaw("MATCH (tag) AGAINST ('".$tagsToSearch."' IN BOOLEAN MODE)");
+          $urls = $urls->$condition('urlTagMap', function($q) use($allTags) {
+            $q->whereHas('urlTag', function($q2) use($allTags) {
+              $refinedTags = str_replace($allTags,',',' ');
+              $q2->whereRaw("MATCH (tag) AGAINST ('".$allTags."' IN BOOLEAN MODE)");
             });
           });
         }
@@ -254,7 +256,9 @@ class HomeController extends Controller
         $count_url = $urls->count();
         return [
           'urls' => $urls,
-          'count_url' => $count_url
+          'count_url' => $count_url,
+          'tagsToSearch' => $tagsToSearch,
+
         ];
       } else {
 
@@ -264,7 +268,8 @@ class HomeController extends Controller
 
         return [
           'urls' => $urls,
-          'count_url' => $count_url
+          'count_url' => $count_url,
+          'tagsToSearch' =>[]
         ];
       }
     }
@@ -312,6 +317,7 @@ class HomeController extends Controller
         $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $request->user_id);
         $urls       = $ret['urls']->get();
         $count_url  = $ret['count_url'];
+
 
         $URLs = [];
         $URLstat = [];
@@ -1897,6 +1903,7 @@ class HomeController extends Controller
                     $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
                     $urls       = $ret['urls']->get();
                     $count_url  = $ret['count_url'];
+                    $tagsToSearch = $ret['tagsToSearch'];
 
                     $count = DB::table('urls')
                         ->selectRaw('count(user_id) AS `count`')
@@ -1947,6 +1954,7 @@ class HomeController extends Controller
 
                     return view('dashboard2', [
                     //return view('dashboard.shorten_url', [
+                        'tagsToSearch' => $tagsToSearch,
                         'count_url' => $count_url,// dynamic
                         'urlTags' => $urlTags,
                         'user' => $user,
@@ -2332,4 +2340,28 @@ class HomeController extends Controller
             'exist' => $exist,
         ]);
     }
+
+
+    /**
+     * Get an URL id on AJAX request and delete from db.
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteShortenUrl(Request $request)
+    {
+      try {
+        $url_tag          = UrlTagMap::where('url_id', $request->id)->delete();
+        $url_feature      = UrlFeature::where('url_id', $request->id)->delete();
+        $url_search_info  = UrlSearchInfo::where('url_id', $request->id)->delete();
+        $url              = Url::where('id', $request->id)->delete();
+          return response()->json([
+                  'status' => 'success',
+          ]);
+        }catch (Exception $e) {
+          return response()->json(['status' => 'error']);
+      }
+    }
+
 }

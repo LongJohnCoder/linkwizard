@@ -67,6 +67,10 @@ body{
 
 }
 
+html, body {
+    height: 100%;
+}
+
 a:focus, a:hover {
     color: #000;
     text-decoration: none;
@@ -306,6 +310,7 @@ ul{
 
 header{
     background: #0F3043;
+    background: #01579b;
     padding: 10px 0;
 }
 
@@ -337,7 +342,7 @@ header.brandingheader {
 }
 
 .logo{
-    padding: 15px 0;
+    padding: 4px 0;
 }
 
 .top-right .createlink {
@@ -466,7 +471,7 @@ header.brandingheader {
 }
 
 .top-menu{
-    padding: 25px 0 0;
+    padding: 0;
     z-index: 9;
     position: relative;
 }
@@ -484,6 +489,7 @@ header.brandingheader {
     transition: 0.5s;
     font-weight: 400;
 }
+.top-menu ul li a:hover{text-decoration: none; color: #9ed4ff;}
 
 .top-menu ul li.login{
     border: 1px solid #fff;
@@ -532,7 +538,7 @@ header.brandingheader {
     transform: translate(-50%,-50%);
     left: 50%;
     position: absolute;
-    top: 65%;
+    top: 47%;
     width: 100%
 }
 
@@ -674,12 +680,22 @@ a.upgrade{
 }
 
 .datelink{
-    background: #2D6A8A;
+/*    background: #2D6A8A;
     float: right;
     text-transform: uppercase;
     font-size: 20px;
     padding: 7px 10px;
-    box-shadow: 0px 1px 1px 1px #32566D;
+    box-shadow: 0px 1px 1px 1px #32566D;*/
+
+    float: right;
+    text-transform: uppercase;
+    font-size: 20px;
+    background: rgb(1, 87, 155);
+    padding: 7px 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(68, 140, 203);
+    border-image: initial;
 }
 
 .datelink a{
@@ -845,7 +861,7 @@ a.tot-count{
 }
 
 .tot-clicks h2{
-    background: #6F7D95;
+    background: rgb(68, 140, 203);
     color: #fff;
     font-size: 14px;
     padding: 20px;
@@ -1933,6 +1949,8 @@ footer .social-icon a:last-child{
     .tot-clicks {
         overflow-x: auto;
     }
+
+    .footer-menu li{padding: 0 6px;}
 }
 
 @media screen and (max-width: 767px){
@@ -1940,6 +1958,8 @@ footer .social-icon a:last-child{
     .single-blog .text-right{
         text-align: left;
     }
+
+    .logo{width: 300px; margin: 0 auto;}
 
     .brandingheader .banner-content h2 {
         font-size: 45px;
@@ -1985,6 +2005,7 @@ footer .social-icon a:last-child{
         transform: translate(0);
         left: 0;
         top: 0;
+        padding: 0 10px;
     }
 
     .banner-content h2 {
@@ -2193,11 +2214,16 @@ footer .social-icon a:last-child{
     .sidebar ul li a {
         font-size: 12px;
     }
+     footer{text-align: center;}
+     .social-icon{text-align: center;}
 
 
 }
 
 @media screen and (max-width: 480px){
+
+    .logo{width: 250px; margin: 0 auto;}
+
     .customplan a {
         font-size: 14px;
     }
@@ -2210,6 +2236,8 @@ footer .social-icon a:last-child{
     .dashboard-menu .desktop-menu {
         text-align: center;
     }
+   
+
 
     .top-menu ul li a {
         font-size: 10px;
@@ -2244,6 +2272,7 @@ footer .social-icon a:last-child{
         background: none;
         border: none;
     }
+    .banner-content form{width: 95%;}
 
 
 }
@@ -2268,11 +2297,19 @@ footer .social-icon a:last-child{
 .custom-table .short-url{background: #fff; border: 1px solid #ccc; padding: 2px;
     color: #000; width: 113px; overflow: hidden; font-size: 12px;}
 
+.custom-table{max-height: 500px; overflow-y: auto;}
+.custom-table a{color: #777777;}
+.custom-table .short-url a{color: #000;}
+.panel-body {padding: 10px;}
 
+.searchpart-area .btn{width: auto;}
 
 .custom-table table tr td{color: #777777;}
 .custom-table table tbody tr:hover{background: #EDEEF2; cursor: pointer;}
 .copyright{background: #333333; color: #999999; padding: 10px 0 3px; text-align: center;}
+
+.custom-table table tr td:nth-child(2){word-wrap: break-word; width: 145px; display: block;}
+
 
 
 .normal-box{background: #ececec; border: 1px solid #bdbcbc; padding:15px 10px; vertical-align: middle; margin-bottom: 20px;}
@@ -2402,7 +2439,31 @@ border-radius: 0; border: none; font-size: 16px;}
 
 
 .map-area{background: #bdbdbd; width: 100%; height: 360px; margin: 15px 0;}
-.tot-clicks-body{height: 250px; border: 1px solid #ccc;}
+.tot-clicks-body{height: 264px; border: 1px solid #ccc;}
+
+.desktop-menu ul{
+        padding-top: 20px;
+    }
+
+/*.footer{
+
+    position: fixed;
+bottom: 46px;
+width: 100%;
+height: 79px;
+
+
+}*/
+
+.container{min-height: 100%;}
+.box .element-main{border: 1px solid #ccc; margin: 50px 0; padding: 30px;}
+
+.delete-url{background: #fff; color: #e42222; font-size: 12px; 
+    width: 70px; display: block; border: 1px solid #e42222; padding: 4px;}
+
+.delete-url:hover{background: #e42222; color: #fff;}
+.elelment .alert{margin-top: 10px;}
+.elelment .alert p{margin: 0;}
 
 
  chart: {

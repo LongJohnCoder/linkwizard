@@ -6,12 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Branding</title>
+<title>Forget Password</title>
 
+<link href="{{ URL('/')}}/public/images/favicon.ico" rel="shortcut icon" type="image/ico">
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="{{url('/')}}/public/fonts/font-awesome/css/font-awesome.min.css">
-
+<link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
 <script src="{{url('/')}}/public/js/jquery.min.js"></script>
 <script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
 
@@ -39,7 +40,8 @@
             <div class="container">
                 <div class="row nav-wrapper">
                     <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                        <a href="#"><img src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" alt="Boxify Logo"></a>
+                        <a href="{{ URL::to('/')}}"><img src="{{ URL::to('/').'/public/images/logo.png' }}" alt="Boxify Logo"></a>
+
                     </div>
                     
                 </div>
@@ -85,7 +87,7 @@
             </ul>
         </nav>
     </div>
-    <div class="container centered" style="padding:140px">
+    <div class="container centered box" >
       <div class="elelment">
         @if(\Session::has('errs'))
             <div class="alert alert-danger">
@@ -98,13 +100,13 @@
                 <p>{{\Session::get('success')}}</p>
           </div>
         @endif
-        <div class="col-md-8 form">
+        <div class="col-md-8 col-md-offset-2 form">
           <div class="element-main">
         		<h1>Forgot Password</h1>
         		<p> Send a forgot pasword link in email! </p>
         		<form class="form" method="post" action="{{url('forgotPasswordEmail')}}">
               {{csrf_field()}}
-        			<input style="width:80%" class="form-group" type="text" name="email" placeholder="Your e-mail address" value=""><br>
+        			<input  class="form-control" type="text" name="email" placeholder="Your e-mail address" value=""><br>
         			<input style="width:20%" class="form-group btn btn-success" type="submit" value="Send">
         		</form>
         	</div>

@@ -79,7 +79,7 @@
             <div class="row">
                <div class="col-md-12 col-sm-12">
                   <div class="searchpart-area">
-                     <div class="row">
+                     <div class="row1">
                         <form id="dashboard-search-form" action="{{route('getDashboard')}}" method="GET">
                            <div class="col-md-5 col-sm-5 less-pad">
                               <div class="form-group">
@@ -89,12 +89,14 @@
                            <div class="col-md-5 col-sm-5 less-pad">
                               <div class="form-group">
                                  <div>
-                                    <!-- <input id="dashboard-tags-to-search" value="@if(\Request::get('tagsToSearch')){{\Request::get('tagsToSearch')}}@endif" class="tagsToSearch" name="tagsToSearch" type="text" data-role="tagsinput" placeholder="Search tags" class="form-control">  -->
 
-                                    <select data-placeholder="Choose a Country..." class="chosen-select" multiple tabindex="4" id="dashboard-tags-to-search" name="tagsToSearch">
-                                      <option value=""></option>
+                                   {{-- <input id="dashboard-tags-to-search" value="@if(\Request::get('tagsToSearch')){{\Request::get('tagsToSearch')}}@endif" class="tagsToSearch" name="tagsToSearch" type="text" data-role="tagsinput" placeholder="Search tags" class="form-control"> --}}
+                                  
+                                    
+                                    <select data-placeholder="Choose a tag..." class="chosen-select tagsToSearch form-control" multiple tabindex="4" id="dashboard-tags-to-search" name="tagsToSearch[]">
+                                    <option value=""></option>
                                       @for ( $i =0 ;$i<count($urlTags);$i++)
-                                          <option value="{{ $urlTags[$i] }}">{{ $urlTags[$i] }}</option>
+                                          <option value="{{ $urlTags[$i] }}"  @if(in_array($urlTags[$i],$tagsToSearch)) selected @endif>{{ $urlTags[$i] }}</option>
                                       @endfor
                                     </select>
                                  </div>
@@ -132,14 +134,15 @@
                                 <th>Destination URL</th>
                                 <th>Description</th>
                                 <th>Clicks</th>
-                                <th>Tags</th>
                                 <th>Created</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($urls as $key => $url)
 
-                            <tr onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'">
+                            <tr onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">
+
                                 @php
                                   if(isset($url->subdomain)) {
                                     if($url->subdomain->type == 'subdomain')
@@ -150,7 +153,7 @@
                                     $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
                                   }
                                 @endphp
-                                <td>
+                                <td  >
                                     <div class="short-url">
                                       <a href="{{$shrt_url}}">{{$shrt_url}}</a>
                                     </div>
@@ -161,7 +164,8 @@
                                 <td>{{$url->title}}</td>
                                 <td>{{$url->count}}</td>
                                 <td>{{$url->created_at->format('d/m/Y')}}</td>
-                                <td>{{$url->updated_at->format('d/m/Y')}}</td>
+                                
+                                <td><button class='delete-url' data-id="{{ $url->id }}">Delete Url</button></td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -742,6 +746,49 @@
                     });
                 });
             }
+        /** Function to delete url **/
+
+        $(function () {
+            $(".delete-url").click(function (e) {
+              e.stopPropagation();
+              var url_id = $(this).data('id');
+             /*** Test code **/
+                 swal({
+                  title: "Are you sure?",
+                  text: "You will not be able to recover this imaginary file!",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#DD6B55",
+                  confirmButtonText: "Yes, delete it!",
+                  closeOnConfirm: false
+                }, function (isConfirm) {
+                  if (!isConfirm) return;
+                  $.ajax({
+                      type: "POST",
+                      url: "{{ route('deleteShortenUrl') }}",
+                      data: {id: url_id, _token: "{{ csrf_token() }}"},
+                      success: function(response) {
+                        swal({
+                          title: "Success",
+                          text: "Url deleted successfully.",
+                          type: "success",
+                          html: true
+                        });
+                        $('#row-'+url_id).hide();
+                      },
+                      error: function(response) {
+                          swal({
+                              title: "Oops!",
+                              text: "Cannot delete this url.",
+                              type: "error",
+                              html: true
+                          });
+                      }
+                  });
+              });
+              /*** Test code **/
+            });
+        });
         </script>
 
 
@@ -749,6 +796,7 @@
 
 
 
+<link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
 <script type="text/javascript">
 $(document).ready(function(){
     $('input[type="checkbox"]').click(function(){
@@ -756,4 +804,4 @@ $(document).ready(function(){
         $("." + inputValue).toggle();
     });
 });
-</script
+</script>

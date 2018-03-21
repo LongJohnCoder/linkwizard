@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Blog</title>
-
+<link href="{{ URL('/')}}/public/images/favicon.ico" rel="shortcut icon" type="image/ico">
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="{{url('/')}}/public/fonts/font-awesome/css/font-awesome.min.css">
@@ -28,7 +28,7 @@
 <body>
 <!-- Header Start -->
 <header>
-	<div class="container-fluid">
+	<div class="container">
 		<div class="row">
 			<div class="col-md-4 col-sm-6 col-xs-6">
 				<div class="logo">

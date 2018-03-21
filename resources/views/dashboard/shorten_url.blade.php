@@ -7,6 +7,7 @@
 <!-- head end -->
 
 <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
+<link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
 <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
 <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
 
@@ -106,9 +107,6 @@
                     </div>
                     <div class="normal-body add-tags">
                         <p>Mention tags for this link</p>
-												<!-- <div class="custom-tags-area" id="customTags_Area" >
-                        	<input class="custom-tags-contents" name="tags" type="text" class="form-control" id="shortTags_Contents" data-role="tagsinput">
-												</div> -->
 
                         <div class="custom-tags-area" id="customTags_Area" >
                           <select data-placeholder="Choose a tag..." class="chosen-select chosen-select-header" multiple tabindex="4" id="shortTags_Contents"  name="tags[]">
@@ -279,7 +277,7 @@
 <!-- Choseen jquery  -->
 <style type="text/css">
     .chosen-container-multi {
-        width:145px !important;
+        width:100% !important;
     }
 </style>
 <!-- ManyChat -->
@@ -382,10 +380,7 @@ function ValidCustomURL(str) {
 
 
 var shortenUrlFunc = function() {
-
-
-
-	var urlToHit = @if($type == 'short') "{{ route('postShortUrlTier5') }}" @elseif($type == 'custom')  "{{ route('postCustomUrlTier5') }}" @endif;
+  var urlToHit = @if($type == 'short') "{{ route('postShortUrlTier5') }}" @elseif($type == 'custom')  "{{ route('postCustomUrlTier5') }}" @endif;
 
 	var actualUrl = $('#givenActual_Url').val();
 
@@ -393,133 +388,10 @@ var shortenUrlFunc = function() {
 	@if($type == 'custom')
 		customUrl = $('#makeCustom_Url').val();
 	@endif
-
-
-
-	/*var data = {
-
-		checkboxAddFbPixelid 	: 	$("#checkboxAddFbPixelid").prop('checked'),
-		fbPixelid							: 	$("#fbPixel_id").val(),
-		checkboxAddGlPixelid 	: 	$("#checkboxAddGlPixelid").prop('checked'),
-		glPixelid							: 	$("#glPixel_id").val(),
-
-		allowTag							:   $("#shortTagsEnable").prop('checked'),
-		tags 									: 	$("#shortTags_Contents").val(),
-		allowDescription      : 	$("#descriptionEnable").prop('checked'),
-		searchDescription			: 	$("#descriptionContents").val(),
-
-		link_preview_selector :   $("#link_preview_selector").prop('checked'),
-		link_preview_original	: 	$("#link_preview_original").prop('checked'),
-		link_preview_custom		: 	$("#link_preview_custom").prop('checked'),
-
-		org_img_chk						: 	$("#org_img_chk").prop('checked'),
-		cust_img_chk					: 	$("#cust_img_chk").prop('checked'),
-		img_inp	              :   $("#img_inp").val(),
-
-		org_title_chk					: 	$("#org_title_chk").prop('checked'),
-		cust_title_chk				: 	$("#cust_title_chk").prop('checked'),
-		title_inp	            :   $("#title_inp").val(),
-
-		org_dsc_chk						: 	$("#org_dsc_chk").prop('checked'),
-		cust_dsc_chk					: 	$("#cust_dsc_chk").prop('checked'),
-		dsc_inp	           	 	:   $("#dsc_inp").val(),
-
-		org_url_chk						: 	$("#org_url_chk").prop('checked'),
-		cust_url_chk					: 	$("#cust_url_chk").prop('checked'),
-		url_inp	            	:   $('#img_inp')[0].files[0],
-
-		actual_url 						:		actualUrl,
-		_token   							: 	"{{ csrf_token() }}"
-	};
-
-	if(customUrl !== null) {
-		data['custom_url'] = customUrl;
-	}
-
-	data = JSON.stringify(data);
-	*/
-	$("#url_short_frm").submit();
-	//var fd = new FormData()
-	//console.log($("#url_short_frm").serialize());
-	//$("#url_short_frm").submit();
-	/*
-	$.ajax({
-			type	: "POST",
-			url		: urlToHit,
-			data	: new FormData($("#url_short_frm")[0]),
-			//processData: false ,
-			contentType : 'multipart/form-data',
-			//contentType	: false,       // The content type used when sending data to the server.
-			cache				: false,
-			//contentType	: false,
-			processData	: false,
-			// beforeSend : function() {
-			// 	manualUploader.uploadStoredFiles();
-			// },
-			success: function (response) {
-				console.log(urlToHit);
-					if(response.status=="success") {
-							var shortenUrl = response.url;
-							var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
-							swal({
-									title: "Shorten Url:",
-									text: displayHtml,
-									type: "success",
-									html: true
-							}, function() {
-									//window.location.reload();
-									window.location.href = response.redirect_url;
-							});
-							new Clipboard('#clipboardswal');
-							$('#clipboardswal').on('click', function () {
-									//window.location.reload();
-									window.location.href = response.redirect_url;
-							});
-							HoldOn.close();
-					}
-
-					else if(response.status=="error") {
-						swal({
-								title: null,
-								text: response.msg,
-								type: "warning",
-								html: true
-						});
-						HoldOn.close();
-					}
-
-					else {
-							swal({
-									title: null,
-									text: "Please paste an actual URL",
-									type: "warning",
-									html: true
-							});
-							HoldOn.close();
-					}
-			}, error: function(response) {
-					console.log('Response error!');
-					HoldOn.close();
-			}, statusCode: {
-					500: function() {
-							swal({
-									title: null,
-									text: "Access Forbidden, Please paste a valid URL!",
-									type: "error",
-									html: true
-							});
-							HoldOn.close();
-					}
-			}
-	});
-	*/
-
+  $("#url_short_frm").submit();
 }
 
-// $("#link_preview_selector").attr("checked", false);
-// $("#checkboxAddFbPixelid").attr("checked",false);
-// $("#checkboxAddGlPixelid").attr("checked",false);
-// $()
+
 
 $("#shorten_url_btn").on('click',function(e){
 
@@ -542,66 +414,64 @@ $("#shorten_url_btn").on('click',function(e){
 
 
 
-		var actualUrl = $('#givenActual_Url').val();
-		var customUrl = $('#makeCustom_Url').val();
-		@if (Auth::user())
-				var userId = {{ Auth::user()->id }};
-		@else
-				var userId = 0;
-		@endif
+  		var actualUrl = $('#givenActual_Url').val();
+  		var customUrl = $('#makeCustom_Url').val();
+  		@if (Auth::user())
+  				var userId = {{ Auth::user()->id }};
+  		@else
+  				var userId = 0;
+  		@endif
 
-		var cust_url_flag = "{{$type}}";
+		  var cust_url_flag = "{{$type}}";
 
 
 		if(cust_url_flag == 'custom') {
 
-			$.ajax({
-			type:"POST",
-			url:"/check_custom",
-			data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
-			success:function(response){
-				console.log('check_custom');
-				console.log(response);
-				if(response == 1)
-				{
-					console.log(response);
-					if (ValidURL(actualUrl))
-					{
-							if (ValidCustomURL(customUrl))
-							{
-									shortenUrlFunc();
-							}
-							else
-							{
-									swal({
-											type: "warning",
-											title: null,
-											text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
-											html: true
-									});
-							}
-					}
-					else
-					{
-							swal({
-									type: "warning",
-									title: null,
-									text: "Please Enter An URL"
-								});
-					}
-				}
-				else
-				{
-					swal({
-							type: "warning",
-							title: null,
-							text: "This custom url name is already taken! Try another one"
-						});
-					//url already used by this user
-				}
+    			$.ajax({
+      			type:"POST",
+      			url:"/check_custom",
+      			data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
+      			success:function(response){
+      				if(response == 1)
+      				{
+      					console.log(response);
+      					if (ValidURL(actualUrl))
+      					{
+      							if (ValidCustomURL(customUrl))
+      							{
+      									shortenUrlFunc();
+      							}
+      							else
+      							{
+      									swal({
+      											type: "warning",
+      											title: null,
+      											text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
+      											html: true
+      									});
+      							}
+      					}
+      					else
+      					{
+      							swal({
+      									type: "warning",
+      									title: null,
+      									text: "Please Enter An URL"
+      								});
+      					}
+      				}
+      				else
+      				{
+      					swal({
+      							type: "warning",
+      							title: null,
+      							text: "This custom url name is already taken! Try another one"
+      						});
+      					//url already used by this user
+      				}
 
-			}
-		});
+      			}
+    		});
 		} else {
 
 			//if it is not custom
@@ -618,44 +488,12 @@ $("#shorten_url_btn").on('click',function(e){
 						});
 			}
 		}
-
-
 });
 
 var appURL = "{{url('/')}}";
 appURL = appURL.replace('https://','');
 appURL = appURL.replace('http://','');
 
-console.log('appURL : ',appURL);
-
-// var giveMyTags = function() {
-// 	$.ajax({
-// 		type 	:	"POST",
-// 		url		:	"{{route('giveMyTags')}}",
-// 		data	: {_token:'{{csrf_token()}}'},
-// 		success : function(res) {
-// 			console.log(res);
-// 			var tagsArray = [];
-// 			for(var i = 0 ; i < res.data.length ; i ++) {
-// 				var ob = {tag : res.data[i]};
-// 				console.log('each ob : ',ob);
-// 				tagsArray.push(ob);
-// 			}
-// 			console.log('final tags : ',tagsArray);
-// 			$('#shortTagsContentss').selectize({
-// 				maxItems: null,
-// 				valueField: 'tag',
-// 				labelField: 'tag',
-// 				searchField: 'tag',
-// 				options: tagsArray,
-// 				create: true
-// 			});
-// 		},
-// 		error : function(res) {
-// 			console.log(res);
-// 		}
-// 	});
-// }
 
 window.onload = function(){
 	console.log('reached here');
@@ -814,28 +652,24 @@ window.onload = function(){
 		}
 
 		//addtags for short urls
+
 		if (thisInstance.id === "shortTagsEnable") {
 			if(thisInstance.checked) {
+
 				$('.add-tags').show();
 				$('#shortTags_Area').show();
-			} else {
-				$('.add-tags').hide();
+      } else {
+        $('.add-tags').hide();
 				$('#shortTags_Area').hide();
-				$("#shortTags_Contents").val('');
-				//$("#shortTags_Contents").tagsinput('removeAll');
+        $("#shortTags_Contents").val('');
+				var select = $(".chosen-select-header");
+        select.find('option').prop('selected', false);
+        select.trigger("chosen:updated");
+
 			}
 		}
 
-		//addtags for custom urls
-		// if (thisInstance.id === "customTagsEnable" && thisInstance["name"] === "customTagsEnable") {
-		// 	if(thisInstance.checked) {
-		// 		$('#customTagsArea').show();
-		// 	} else {
-		// 		$('#customTagsArea').hide();
-		// 		$("#customTagsContents").tagsinput('removeAll');
-		// 	}
-		// }
-
+		
 		if (thisInstance.id === "descriptionEnable") {
 			if(thisInstance.checked) {
 				$('#descriptionArea').show();
@@ -875,40 +709,9 @@ window.onload = function(){
 			}
 		}
 
-
-		//add short descriptions for short urls
-		// if (thisInstance.id === "shortDescriptionEnable" && thisInstance["name"] === "shortDescriptionEnable") {
-		// 	if(thisInstance.checked) {
-		// 		$('#shortDescriptionContents').show();
-		// 	} else {
-		// 		$('#shortDescriptionContents').hide();
-		// 		$('#shortDescriptionContents').val('');
-		// 	}
-		// }
-    //
-		// //add short descriptions for short urls
-		// if (thisInstance.id === "customDescriptionEnable" && thisInstance["name"] === "customDescriptionEnable") {
-		// 	if(thisInstance.checked) {
-		// 		$('#customDescriptionContents').show();
-		// 	} else {
-		// 		$('#customDescriptionContents').hide();
-		// 		$('#customDescriptionContents').val('');
-		// 	}
-		// }
 	}
 
 	$(document).ready(function() {
-
-		// $("#shorten_url_btn").on("click",function(){
-    //
-		// });
-
-		// $('#dashboard-tags-to-search').on('beforeItemAdd', function(event) {
-		// 	var string = $(this).text();
-		// 	$(this).html(string.replace(/,/g , ''));
-		//   // event.item: contains the item
-		//   // event.cancel: set to true to prevent the item getting added
-		// });
 
 		$("#dashboard-search-btn").on('click',function() {
 			console.log('came here : submitting form');
@@ -916,63 +719,21 @@ window.onload = function(){
 			$("#dashboard-search-form").submit();
 		});
 
-		// $("#dashboard-search-form").on('submit',function(e){
-		// 	console.log('form submit handler called');
-		// 	e.preventDefault();
-		// });
-
+		
 		$("#dashboard-search").on('click',function() {
 			var tags = $("#dashboard-tags-to-search").tagsinput('items');
 			var text = $("#dashboard-text-to-search").val();
 			console.log('tags :',tags,' text: ',text);
 		});
 
-		// $('.shortTagsContents').tagsinput({
-    //   	allowDuplicates: false,
-		// 		maxChars: 20,
-    //     // itemValue: 'id',  // this will be used to set id of tag
-    //     // itemText: 'label' // this will be used to set text of tag
-    // });
-		// $('.customTagsContents').tagsinput({
-    //   	allowDuplicates: false,
-		// 		maxChars: 20,
-    //     // itemValue: 'id',  // this will be used to set id of tag
-    //     // itemText: 'label' // this will be used to set text of tag
-    // });
-		// $('.dashboard-tags-to-search').tagsinput({
-    //   	allowDuplicates: false,
-		// 		maxChars: 20,
-		// 		maxTags: 3
-    //     // itemValue: 'id',  // this will be used to set id of tag
-    //     // itemText: 'label' // this will be used to set text of tag
-    // });
+		
 
 
 		$("input[type='checkbox']").on("change", function() {
-			maintainSidebar(this);
+      maintainSidebar(this);
     });
 
 
-
-		// $('#checkboxAddGlPixelid1, input[type="checkbox"]').on('click', function(){
-		// 	if($(this).prop("checked") == true){
-		// 			$('#glPixelid1').show();
-    //   }
-    //   else if($(this).prop("checked") == false){
-		// 			$('#glPixelid1').hide();
-		// 			$('#glPixelid1').val('');
-    //   }
-		// });
-    //
-		// $('#checkboxAddFbPixelid1, input[type="checkbox"]').on('click', function(){
-		// 	if($(this).prop("checked") == true){
-		// 			$('#fbPixelid1').show();
-    //   }
-    //   else if($(this).prop("checked") == false){
-		// 			$('#fbPixelid1').hide();
-		// 			$('#fbPixelid1').val('');
-    //   }
-		// });
 
 		$(this).on('click', '.menu-icon', function(){
 	    	$(this).addClass("close");
@@ -1198,16 +959,5 @@ window.onload = function(){
 			}
 			});
 		</script>
-
-		<script type="text/javascript">
-
-		    // $('input[type="checkbox"]').click(function(){
-		    //     var inputValue = $(this).attr("value");
-		    //     $("." + inputValue).toggle();
-		    // });
-		//});
-		</script>
-
-
 </body>
 </html>
