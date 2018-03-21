@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
-        <script src="https://www.gstatic.com/charts/loader.js"></script> 
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="https://www.google.com/jsapi"></script>
         {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0-rc.2/Chart.bundle.min.js"></script> --}}
         <script src="{{ URL::to('/').'/public/resources/js/highcharts.js' }}"></script>
@@ -111,7 +111,7 @@
                     <div class="col-md-4 col-sm-4">
                         <div class="logo">
                             <a href="{{ route('getIndex') }}">
-                                <img src="{{ URL('/')}}/public/resources/img/company_logo.png" alt="img" />
+                                <img src="{{config('settings.SITE_LOGO')}}" alt="img" />
                             </a>
                         </div>
                     </div>
@@ -136,7 +136,7 @@
                                     </button>
                                 @endif
                             </div>
-                            {{-- <div class="search-part"> 
+                            {{-- <div class="search-part">
                                 <form action="" class="search-form">
                                     <div class="form-group has-feedback">
                                         <input type="text" class="form-control" name="search" id="search" placeholder="SEARCH" />
@@ -780,7 +780,7 @@
                                             text: "Please paste an actual URL",
                                             type: "warning",
                                             html: true
-                                        }); 
+                                        });
                                         HoldOn.close();
                                     }
                                 }, error: function(response) {
@@ -793,7 +793,7 @@
                                             text: "Access Forbidden, Please paste a valid URL!",
                                             type: "error",
                                             html: true
-                                        }); 
+                                        });
                                         HoldOn.close();
                                     }
                                 }
@@ -811,7 +811,7 @@
                             type: "warning",
                             title: null,
                             text: "Please Enter An URL"
-                        });     
+                        });
                     }
                 });
 
@@ -853,7 +853,7 @@
                                             text: "Please paste an actual URL",
                                             type: "warning",
                                             html: true
-                                        }); 
+                                        });
                                         HoldOn.close();
                                     }
                                 }, error: function(response) {
@@ -866,7 +866,7 @@
                                             text: "Access Forbidden, Please paste a valid URL!",
                                             type: "error",
                                             html: true
-                                        }); 
+                                        });
                                         HoldOn.close();
                                     }
                                 }
@@ -878,7 +878,7 @@
                                 text: errorMsg,
                                 type: "error",
                                 html: true
-                            }); 
+                            });
                         }
                     } else {
                         var errorMsg="Please Enter An URL";
@@ -887,10 +887,10 @@
                             text: errorMsg,
                             type: "warning",
                             html: true
-                        });     
+                        });
                     }
                 });
-                
+
                 function ValidURL(str) {
                     var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
                     var url = str;
@@ -1214,7 +1214,7 @@
                         text: "{{Session::get('success')}}",
                         type: "success",
                         html: true
-                    }); 
+                    });
                 });
             </script>
         @endif
@@ -1226,7 +1226,7 @@
                         text: "{{Session::get('error')}}",
                         type: "error",
                         html: true
-                    }); 
+                    });
                 });
             </script>
         @endif
@@ -1238,7 +1238,7 @@
                         text: "@foreach ($errors->all() as $error){{ $error }}<br/>@endforeach",
                         type: "error",
                         html: true
-                    }); 
+                    });
                 });
             </script>
         @endif

@@ -55,7 +55,7 @@
                 <div class="col-md-4 col-sm-4">
                     <div class="logo">
                         <a href="{{ route('getIndex') }}">
-                            <img src="{{ URL('/')}}/public/resources/img/company_logo.png" alt="img" />
+                            <img src="{{config('settings.SITE_LOGO')}}" alt="img" />
                         </a>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
                     text: "{{Session::get('success')}}",
                     type: "success",
                     html: true
-                }); 
+                });
             });
         </script>
     @elseif (Session::has('error'))
@@ -170,7 +170,7 @@
                     text: "{{Session::get('error')}}",
                     type: "error",
                     html: true
-                }); 
+                });
             });
         </script>
     @endif
@@ -195,4 +195,3 @@
 </body>
 
 </html>
-

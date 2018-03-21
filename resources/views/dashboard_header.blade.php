@@ -4,7 +4,7 @@
 		<div class="row">
 			<div class="col-md-4 col-sm-4">
 				<div class="logo">
-					<img src="{{url('/')}}/public/images/logo.png" class="img-responsive">
+					<img src="{{config('settings.SITE_LOGO')}}" class="img-responsive">
 				</div>
 			</div>
 
@@ -104,7 +104,7 @@
 				            	@if ($user->is_admin == 1)
 		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
                     			@endif
-				            	
+
 				            </ul>
 				        </div>
 					</div>

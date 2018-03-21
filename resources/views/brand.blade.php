@@ -55,7 +55,7 @@
                 <div class="col-md-4 col-sm-4">
                     <div class="logo">
                         <a href="{{ route('getIndex') }}">
-                            <img id="tier5_us" src="{{ URL('/')}}/public/resources/img/company_logo.png" alt="img" />
+                            <img id="tier5_us" src="{{config('settings.SITE_LOGO')}}" alt="img" />
                         </a>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                     text: "{{Session::get('success')}}",
                     type: "success",
                     html: true
-                }); 
+                });
             });
         </script>
     @endif
@@ -135,7 +135,7 @@
                     text: "{{ $errors->first('brandLogo') }}",
                     type: "error",
                     html: true
-                }); 
+                });
             });
         </script>
     @endif
@@ -160,4 +160,3 @@
 </body>
 
 </html>
-

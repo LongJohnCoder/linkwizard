@@ -27,7 +27,7 @@
     <script src="{{ URL::to('/').'/public/resources/js/highchart-data.js' }}"></script>
     <script src="{{ URL::to('/').'/public/resources/js/highchart-drilldown.js' }}"></script>
     <script src="https://t4t5.github.io/sweetalert/dist/sweetalert-dev.js"></script>
-    <script src="https://www.gstatic.com/charts/loader.js"></script> 
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://www.google.com/jsapi"></script>
     <meta property="og:title" content="" />
     <meta property="og:image" content="" />
@@ -65,13 +65,13 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="logo">
-                    <a href="{{url('')}}/about"><img src="{{url('/')}}/public/images/logo.png" class="img-responsive"></a>
+                    <a href="{{url('')}}/about"><img src="{{config('settings.SITE_LOGO')}}" class="img-responsive"></a>
                 </div>
             </div>
 
             <div class="col-md-8">
                 <div class="top-right">
-                    
+
                     <div class="hamburg-menu">
                       <a href="#" id="menu-icon" class="menu-icon">
                         <div class="span bar top" style="background-color: #fff;"></div>
@@ -84,7 +84,7 @@
                             <a href="{{ route('getLogout') }}" class="signout"><i class="fa fa-sign-out"></i> Sign out</a>
                             <p style="color:white">{{ $user->name }}</p>
                             <p style="color:white">{{ $user->email }}</p>
-                            
+
                         </div>
                     </div>
 
@@ -132,7 +132,7 @@
                                 @if ($user->is_admin == 1)
                                     <li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
                                 @endif
-                                
+
                             </ul>
                         </div>
                     </div>
@@ -284,14 +284,14 @@
                     <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
                 </div>
 
-                </div>  
+                </div>
 
                 </div>
 
 
 
-                
-                
+
+
             </div>
 
 
@@ -476,7 +476,7 @@
             $('.tr5link').addClass('open', true);
             $('.tr5link').removeClass('close', true);
         });
-        
+
         $('#customLink').on('click', function () {
             $('.sharebar').addClass('open', true);
             $('.sharebar').removeClass('close', true);
@@ -485,9 +485,8 @@
             $('.sharebar').addClass('close', true);
             $('.sharebar').removeClass('open', true);
         });
-        
+
     });
 </script>
 
 </html>
-

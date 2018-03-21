@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Forget Password</title>
 
-<link href="{{ URL('/')}}/public/images/favicon.ico" rel="shortcut icon" type="image/ico">
+<link href="{{config('settings.FAVICON')}}" rel="shortcut icon" type="image/ico">
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="{{url('/')}}/public/fonts/font-awesome/css/font-awesome.min.css">
@@ -40,14 +40,14 @@
             <div class="container">
                 <div class="row nav-wrapper">
                     <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-                        <a href="{{ URL::to('/')}}"><img src="{{ URL::to('/').'/public/images/logo.png' }}" alt="Boxify Logo"></a>
+                        <a href="{{ URL::to('/')}}"><img src="{{config('settings.SITE_LOGO')}}" alt="Boxify Logo"></a>
 
                     </div>
-                    
+
                 </div>
-              
+
             </div>
-           
+
         </section>
   </header>
 <!-- Header end -->

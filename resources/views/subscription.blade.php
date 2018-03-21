@@ -41,32 +41,32 @@
     body {
         font-family: 'Nunito';
     }
-    
+
     .fa-btn {
         margin-right: 6px;
     }
-    
+
     .alert.parsley {
         margin-top: 5px;
         margin-bottom: 0px;
         padding: 10px 15px 10px 15px;
     }
-    
+
     .check .alert {
         margin-top: 20px;
     }
-    
+
     .credit-card-box .panel-title {
         display: inline;
         font-weight: bold;
     }
-    
+
     .credit-card-box .display-td {
         display: table-cell;
         vertical-align: middle;
         width: 100%;
     }
-    
+
     .credit-card-box .display-tr {
         display: table-row;
     }
@@ -85,7 +85,7 @@
                 <div class="col-md-4 col-sm-4">
                     <div class="logo">
                         <a href="{{ route('getIndex') }}">
-                            <img src="{{ URL('/')}}/public/resources/img/company_logo.png" alt="img" />
+                            <img src="{{config('settings.SITE_LOGO')}}" alt="img" />
                         </a>
                     </div>
                 </div>
@@ -381,4 +381,3 @@
 </body>
 
 </html>
-

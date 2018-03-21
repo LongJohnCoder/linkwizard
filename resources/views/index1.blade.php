@@ -7,8 +7,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Branding</title>
-
+<title>Home</title>
+<link href="{{config('settings.FAVICON')}}" rel="shortcut icon" type="image/ico">
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="{{url('/')}}/public/fonts/font-awesome/css/font-awesome.min.css">
@@ -41,7 +41,7 @@
         <div class="row">
             <div class="col-md-4 col-sm-6 col-xs-6">
                 <div class="logo">
-                    <img id="tier5_us" src="{{url('/')}}/public/images/logo.png" class="img-responsive">
+                    <img id="tier5_us" src="{{config('settings.SITE_LOGO')}}" class="img-responsive">
                 </div>
             </div>
             @include('registration.customheader')
