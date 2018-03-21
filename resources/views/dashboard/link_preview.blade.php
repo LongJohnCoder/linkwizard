@@ -793,13 +793,22 @@ window.onload = function(){
 
 
                 function ValidURL(str) {
-                    var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
-                    var url = str;
-                    if (!regexp.test(url)) {
-                        return false;
-                    } else {
-                        return true;
-                    }
+
+										if(str.indexOf("http://") == 0) {
+											return true;
+										} else if(str.indexOf("https://") == 0) {
+											return true;
+										} else {
+											return false;
+										}
+
+                    // var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
+                    // var url = str;
+                    // if (!regexp.test(url)) {
+                    //     return false;
+                    // } else {
+                    //     return true;
+                    // }
                 }
 
                 function ValidCustomURL(str) {

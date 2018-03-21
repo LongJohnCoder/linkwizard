@@ -1093,9 +1093,13 @@ class HomeController extends Controller
 
 
     private function setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$urlId) {
+      //dd($allowTags,$searchTags,$allowDescription,$searchDescription,$urlId);
       $urlTagMap = [];
       if($allowTags && count($searchTags) > 0) {
         foreach ($searchTags as $key => $tag) {
+
+          if(strlen(trim($tag)) == 0) continue;
+
           $urlTag     = UrlTag::firstOrCreate(['tag'=>$tag]);
           $urlTagMap  = new UrlTagMap;
           $urlTagMap->url_id = $urlId;
@@ -1104,12 +1108,13 @@ class HomeController extends Controller
         }
       }
 
-      if($allowDescription && strlen($searchDescription) > 0) {
+      if($allowDescription && strlen(trim($searchDescription)) > 0) {
         $urlSearchInfo = new UrlSearchInfo;
         $urlSearchInfo->url_id = $urlId;
-        $urlSearchInfo->description = $searchDescription;
+        $urlSearchInfo->description = trim($searchDescription);
         $urlSearchInfo->save();
       }
+      return;
     }
 
     public function fillUrlDescriptions(Url $url ,Request $request, $meta_data) {
@@ -1134,6 +1139,8 @@ class HomeController extends Controller
 
           //meta description
           $url->meta_description = $meta_data['meta_description'];
+
+          return $url;
         }
         else if($request->link_preview_custom) {
 
@@ -1166,36 +1173,56 @@ class HomeController extends Controller
             $url->twitter_url         =   $meta_data['twitter_url'];
           }
 
-          if($request->cust_img_chk && strlen($request->img_inp) > 0) {
-            $url->og_image            =   $request->img_inp;
-            $url->twitter_image   =   $request->img_inp;
+          // if($request->hasFile('img_inp')) {
+          //   $imgFile        = $request->file('img_inp');
+          //   $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
+          //   $actualFileExtension = $imgFile->getClientOriginalExtension();
+          //   $validExtensionRegex = '/(jpg|jpeg)/i';
+          //   if (preg_match($validExtensionRegex, $actualFileExtension)) {
+          //     $uploadPath = getcwd().'/'.config('settings.UPLOAD_IMG');
+          //     $newFileName = rand(1000, 9999) . "-" . date('U');
+          //     $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
+          //   } else {
+          //     return redirect()->back()->with('error','Image should be in jpg, jpeg or png format');
+          //   }
+          // } else dd('o');
+          // dd('done');
+
+          if($request->cust_img_chk && $request->hasFile('img_inp')) {
+
+            $imgFile        = $request->file('img_inp');
+            $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
+            $actualFileExtension = $imgFile->getClientOriginalExtension();
+            $validExtensionRegex = '/(jpg|jpeg|png)/i';
+            $uploadPath = getcwd().'/'.config('settings.UPLOAD_IMG');
+            $newFileName = rand(1000, 9999) . "-" . date('U');
+            $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
+
+            $url->og_image            =   $newFileName.'.'.$actualFileExtension;
+            $url->twitter_image       =   $newFileName.'.'.$actualFileExtension;
           } else {
             $url->og_url              =   $meta_data['og_image'];;
             $url->twitter_url         =   $meta_data['twitter_url'];
           }
-
+          return $url;
         }
-
+        else {
+          return $url;
+        }
       }
-
-
+      return $url;
     }
 
     public function imgUploader(Request $request) {
       print_r($request->all());die();
     }
 
-    public function postShortUrlTier5(Request $request)
-    {
-      print_r($request->all());exit();
-      try{
 
-        if (\Auth::user())
-      			$userId = \Auth::user()->id;
-      	else {
-          return response()->json(['status' => 'error', 'msg' => 'Please log in again!']);
-        }
+    public function postShortUrlNoSession(Request $request){
+      try
+      {
 
+        $userId = 0;
 
         //facebook pixel id
         $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
@@ -1214,14 +1241,14 @@ class HomeController extends Controller
 
 
         if (starts_with($request->actual_url, 'https://')) {
-            $actual_url = str_replace('https://', null, $request->actual_url);
+            $actual_url = str_replace('https://', null, $request->url);
             $protocol = 'https';
         } else {
-            $actual_url = str_replace('http://', null, $request->actual_url);
+            $actual_url = str_replace('http://', null, $request->url);
             $protocol = 'http';
         }
 
-        if(!isset($request->actual_url) || strlen(trim($request->actual_url)) == 0) {
+        if(!isset($request->url) || strlen(trim($request->url)) == 0) {
           return json_encode([
               'status' => 'error',
               'msg'    => 'url cannot be empty!'
@@ -1244,7 +1271,7 @@ class HomeController extends Controller
         $url->user_id = $userId;
 
         if ($url->save()) {
-          if(($checkboxAddFbPixelid && $fbPixelid != null) || $checkboxAddGlPixelid && $glPixelid != null) {
+          if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
 
             $urlfeature = new UrlFeature();
             $urlfeature->url_id = $url->id;
@@ -1283,6 +1310,100 @@ class HomeController extends Controller
       }
       catch(\Exception $e) {
         return response()->json(['status' => 'error', 'msg' => 'Some error occoured please try again later!']);
+      }
+    }
+
+    public function postShortUrlTier5(Request $request)
+    {
+      //print_r("<pre>");print_r($request->all());exit();
+      try{
+
+        if (\Auth::user())
+      			$userId = \Auth::user()->id;
+      	else {
+            $userId = 0;
+        }
+
+
+        //facebook pixel id
+        $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
+        $fbPixelid            = isset($request->fbPixelid) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null;
+
+        //google pixel id
+        $checkboxAddGlPixelid = isset($request->checkboxAddGlPixelid) && $request->checkboxAddGlPixelid == true ? true : false;
+        $glPixelid            = isset($request->glPixelid) && strlen($request->glPixelid) > 0 ? $request->glPixelid : null;
+
+        //set tags and description for search for a url
+        $allowTags            = isset($request->allowTag) && $request->allowTag == true ? true : false;
+        $searchTags           = isset($request->tags) && count($request->tags) > 0 ? $request->tags : null;
+
+        $allowDescription     = isset($request->allowDescription) && $request->allowDescription == true ? true : false;
+        $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
+        //dd($checkboxAddFbPixelid, $fbPixelid , $checkboxAddGlPixelid, $glPixelid, $allowTags, $searchTags, $allowDescription, $searchDescription);
+        //print_r("<pre>");print_r($request->all());exit();
+        if (starts_with($request->actual_url, 'https://')) {
+            $actual_url = str_replace('https://', null, $request->actual_url);
+            $protocol = 'https';
+        } else {
+            $actual_url = str_replace('http://', null, $request->actual_url);
+            $protocol = 'http';
+        }
+
+        if(!isset($request->actual_url) || strlen(trim($request->actual_url)) == 0) {
+          return redirect()->back()->with('error', 'url cannot be empty!');
+        }
+
+        $random_string = $this->randomString();
+
+        $url = new Url();
+        $url->actual_url = $actual_url;
+        $url->protocol = $protocol;
+        $url->shorten_suffix = $random_string;
+        $meta_data = $this->getPageMetaContents($request->url);
+        $url = $this->fillUrlDescriptions($url , $request, $meta_data);
+        $url->user_id = $userId;
+
+        if ($url->save()) {
+          if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
+            //dd('here');
+            $urlfeature = new UrlFeature();
+            $urlfeature->url_id = $url->id;
+            if($checkboxAddFbPixelid && $fbPixelid != null) {
+              $urlfeature->fb_pixel_id = $fbPixelid;
+            }
+            if($checkboxAddGlPixelid && $glPixelid != null) {
+              $urlfeature->gl_pixel_id = $glPixelid;
+            }
+
+            if($urlfeature->save()) {
+
+              $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
+
+              $status           = 'success';
+              $url_shortened    = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$random_string;
+              $url_to_redirect  = route('getLinkPreview',$url->id);
+              return redirect($url_to_redirect)->with('success', 'Url Shortened Successfully');
+
+            } else {
+              return redirect()->back()->with('error', 'Database connection error. Please try again after some time!');
+            }
+          } else {
+              $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
+
+              $status           = 'success';
+              $url_shortened    = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$random_string;
+              $url_to_redirect  = route('getLinkPreview',$url->id);
+              return redirect(route('getLinkPreview',$url->id))->with('success', 'Url Shortened Successfully');
+          }
+        } else {
+          //dd('here3');
+            return redirect()->back()->with('error', 'Database connection error. Please try again after some time!');
+            //return response()->json(['status' => 'error', 'msg' => 'Database connection error. Please try again after some time!']);
+        }
+      }
+      catch(\Exception $e) {
+        return redirect()->back()->with('error', $e->getMessage().' line :'.$e->getLine());
+
       }
     }
 
@@ -1326,10 +1447,11 @@ class HomeController extends Controller
         //die();
 
         if(!isset($request->actual_url) || strlen(trim($request->actual_url)) == 0) {
-          return json_encode([
-              'status' => 'url cannot be empty!',
-              'url'    => ''
-              ]);
+          return redirect()->back()->with('error', 'url cannot be empty!');
+          // return json_encode([
+          //     'status' => 'url cannot be empty!',
+          //     'url'    => ''
+          //     ]);
         }
 
         if (starts_with($request->actual_url, 'https://')) {
@@ -1366,7 +1488,7 @@ class HomeController extends Controller
         $url->is_custom = 1;
         if ($url->save()) {
 
-          if(($checkboxAddFbPixelid && $fbPixelid != null) || $checkboxAddGlPixelid && $glPixelid != null) {
+          if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
 
             $urlfeature = new UrlFeature();
             $urlfeature->url_id = $url->id;
@@ -1381,32 +1503,47 @@ class HomeController extends Controller
 
               $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
 
-              return response()->json([
-                    'status'        =>  'success',
-                    'url'           =>  config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix,
-                    'redirect_url'  =>  config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
-              ]);
+              $status           = 'success';
+              $url_shortened    = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+              $url_to_redirect  = route('getLinkPreview',$url->id);
+
+              // return response()->json([
+              //       'status'        =>  'success',
+              //       'url'           =>  config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix,
+              //       'redirect_url'  =>  config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
+              // ]);
+
+              return redirect($url_to_redirect)->with($status, 'Url Shortened Successfully');
+
             } else {
-              return response()->json(['status' => 'error']);
+              return redirect()->back()->with('error','Database Connectivity Error. Try again later!');
+              //return response()->json(['status' => 'error']);
             }
           } else {
 
               $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
 
-              return response()->json([
-                    'status'        => 'success',
-                    'url'           => config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix,
-                    'redirect_url'  =>  config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
-              ]);
+              $status           = 'success';
+              $url_shortened    = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+              $url_to_redirect  = route('getLinkPreview',$url->id);
+
+              // return response()->json([
+              //       'status'        => 'success',
+              //       'url'           => config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix,
+              //       'redirect_url'  =>  config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
+              // ]);
+
+              return redirect($url_to_redirect)->with($status, 'Url Shortened Successfully');
           }
 
         } else {
-            return response()->json(['status' => 'error', 'msg'=>'Database connection error. Please try again later!']);
+          return redirect()->back()->with('error','Database Connectivity Error. Try again later!');
+            //return response()->json(['status' => 'error', 'msg'=>'Database connection error. Please try again later!']);
         }
       } catch(\Exception $e) {
-        return response()->json(['status' => 'error', 'msg'=>'Some error occoured. Please try again later!']);
+        return redirect()->back()->with('error', $e->getMessage().' line :'.$e->getLine());
+        //return response()->json(['status' => 'error', 'msg'=>'Some error occoured. Please try again later!']);
       }
-
     }
 
     /**
@@ -1701,27 +1838,34 @@ class HomeController extends Controller
     }
 
     public function shortenUrl(Request $request) {
-      if (Auth::check()) {
-          if(\Session::has('plan'))
-          {
-              return redirect()->action('HomeController@getSubscribe');
-          } else {
+      //dd($request->file('img_inp'));
+      if($request->hasFile('img_inp')) {
+        $imgFile        = $request->file('img_inp');
+        $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
+        $actualFileExtension = $imgFile->getClientOriginalExtension();
+        $validExtensionRegex = '/(jpg|jpeg|png)/i';
+        if (!preg_match($validExtensionRegex, $actualFileExtension)) {
+          //$uploadPath = getcwd().'/'.config('settings.UPLOAD_IMG');
+          //$newFileName = rand(1000, 9999) . "-" . date('U');
+          //$uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
+          return redirect()->back()->with('error','Image should be in jpg, jpeg or png format');
+        }
+      }
 
+
+      //print_r("<pre>");print_r($request->all());exit();
+      //return redirect()->back()->with('error','Invalid form submission');
+      if (Auth::check())
+      {
+            if(isset($request->type) && $request->type == 'short') {
+              return $this->postShortUrlTier5($request);
+            }
+            else if(isset($request->type) && $request->type == 'custom') {
+              return $this->postCustomUrlTier5($request);
+            }
             //all codes are here
-
-            //extracting all variables
-            $fbPixel = isset($request->check_fb) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null ;
-            $glPixel = isset($request->check_gl) && strlen($request->glPixelid) > 0 ? $request->glPixelid : null ;
-
-            //$tags = isset($request->shortTagsEnable) && strlen($request->tags) > 0
-            //descriptionEnable
-
-
-            $v = \Validator::make($request->all(), [
-                'email' => 'required|email|exists:users',
-            ]);
-
-          }
+            return redirect()->back()->with('error', 'form data inappropriate');
+            //return response()->json(['status'=>'error', 'msg'=>'form data inappropriate']);
       } else {
         return redirect()->action('HomeController@getIndex');
       }

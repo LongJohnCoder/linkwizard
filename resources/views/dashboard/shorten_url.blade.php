@@ -25,7 +25,13 @@
         <div class="row">
             <div class="col-md-12 col-sm-12">
 
-							<form id="url_short_frm" action="{{route('shortenUrl')}}" method="POST">
+
+
+
+
+							<form id="url_short_frm" action="{{route('shortenUrl')}}" method="POST" enctype="multipart/form-data" files=true>
+								<input type="hidden" value="{{$type}}" name="type">
+								<input type="hidden" value="logedin" name="loggedin">
 								<div class="normal-box ">
                     <div class="row">
                         <div class="col-md-3 col-sm-3">
@@ -34,7 +40,7 @@
                         </label>
                         </div>
                         <div class="col-md-9 col-sm-9">
-                            <input id="givenActual_Url" type="text" name="url" class="form-control long-url">
+                            <input id="givenActual_Url" type="text" name="actual_url" class="form-control long-url">
                             <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                         </div>
 												<br>
@@ -45,7 +51,7 @@
 													</label>
 													</div>
 													<div class="col-md-9 col-sm-9">
-															<input id="makeCustom_Url" type="text" name="url" class="form-control long-url">
+															<input id="makeCustom_Url" type="text" name="custom_url" class="form-control long-url">
 															<div class="input-msg">*Required</div>
 													</div>
 													<br>
@@ -105,7 +111,7 @@
 												</div> -->
 
                         <div class="custom-tags-area" id="customTags_Area" >
-                          <select data-placeholder="Choose a tag..." class="chosen-select chosen-select-header" multiple tabindex="4" id="shortTags_Contents"  name="tags">
+                          <select data-placeholder="Choose a tag..." class="chosen-select chosen-select-header" multiple tabindex="4" id="shortTags_Contents"  name="tags[]">
                               <option value=""></option>
                               @for ( $i =0 ;$i<count($urlTags);$i++)
                                   <option value="{{ $urlTags[$i] }}">{{ $urlTags[$i] }}</option>
@@ -119,13 +125,13 @@
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add description
-                          <input type="checkbox" id="descriptionEnable" name="descriptionEnable">
+                          <input type="checkbox" id="descriptionEnable" name="allowDescription">
                           <span class="checkmark"></span>
                         </label>
                     </div>
                     <div class="normal-body add-description" id="descriptionArea">
                         <p>Mention description for this link</p>
-                        <textarea id="descriptionContents" name="description" class = "form-control"></textarea>
+                        <textarea id="descriptionContents" name="searchDescription" class = "form-control"></textarea>
                     </div>
                 </div>
 
@@ -166,7 +172,7 @@
                                         </li>
                                         <li>
                                             <label class="custom-checkbox">Use Custom
-                                              <input type="checkbox" value="use-custom1" id="cust_img_chk" name="cust_img_chk">
+                                              <input type="checkbox" id="cust_img_chk" name="cust_img_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
@@ -189,7 +195,7 @@
                                         </li>
                                         <li>
                                             <label class="custom-checkbox">Use Custom
-                                              <input type="checkbox" value="use-custom1" id="cust_title_chk" name="cust_title_chk">
+                                              <input type="checkbox" id="cust_title_chk" name="cust_title_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
@@ -206,13 +212,13 @@
                                     <ul>
                                         <li>
                                             <label class="custom-checkbox">Use Original
-                                              <input checked type="checkbox" value="" id="org_dsc_chk" name="org_dsc_chk">
+                                              <input checked type="checkbox" id="org_dsc_chk" name="org_dsc_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
                                         <li>
                                             <label class="custom-checkbox">Use Custom
-                                              <input type="checkbox" value="use-custom2" id="cust_dsc_chk" name="cust_dsc_chk">
+                                              <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
@@ -235,7 +241,7 @@
                                         </li>
                                         <li>
                                             <label class="custom-checkbox">Use Custom
-                                              <input type="checkbox" value="use-custom3" id="cust_url_chk" name="cust_url_chk">
+                                              <input type="checkbox" id="cust_url_chk" name="cust_url_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
@@ -249,10 +255,12 @@
                         </div>
                     </div>
                 </div>
-
+								{{csrf_field()}}
                 <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
 							</form>
-            </div>
+
+
+						</div>
         </div>
     </div>
 	</section>
@@ -291,6 +299,9 @@ $(".chosen-container").bind('keyup',function(e) {
     {
        var lastChar = e.target.value.slice(-1);
        var strVal  = e.target.value;
+			 strVal = strVal.trim();
+			 if(strVal.length == 0) return false;
+
          if (lastChar == ',') {
            strVal = strVal.slice(0, -1);
          }
@@ -307,13 +318,22 @@ $(".chosen-container").bind('keyup',function(e) {
 });
 
 function ValidURL(str) {
-		var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
-		var url = str;
-		if (!regexp.test(url)) {
-				return false;
+
+		if(str.indexOf("http://") == 0) {
+			return true;
+		} else if(str.indexOf("https://") == 0) {
+			return true;
 		} else {
-				return true;
+			return false;
 		}
+
+		// var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
+		// var url = str;
+		// if (!regexp.test(url)) {
+		// 		return false;
+		// } else {
+		// 		return true;
+		// }
 }
 
 function ValidCustomURL(str) {
@@ -342,6 +362,25 @@ function ValidCustomURL(str) {
 //             debug: true
 //         });
 
+// $("#url_short_frm").submit(function(e) {
+//     e.preventDefault();
+// 		var formData = new FormData(this);
+// 		//console.log('form data :',formData);
+//
+//     $.ajax({
+//         url: "{{route('shortenUrl')}}",
+//         type: 'POST',
+//         data: formData,
+//         success: function (data) {
+//             console.log(data)
+//         },
+//         cache: false,
+//         contentType: false,
+//         processData: false
+//     });
+// });
+
+
 var shortenUrlFunc = function() {
 
 
@@ -357,7 +396,7 @@ var shortenUrlFunc = function() {
 
 
 
-	var data = {
+	/*var data = {
 
 		checkboxAddFbPixelid 	: 	$("#checkboxAddFbPixelid").prop('checked'),
 		fbPixelid							: 	$("#fbPixel_id").val(),
@@ -365,7 +404,7 @@ var shortenUrlFunc = function() {
 		glPixelid							: 	$("#glPixel_id").val(),
 
 		allowTag							:   $("#shortTagsEnable").prop('checked'),
-		tags 									: 	$("#shortTags_Contents").tagsinput('items'),
+		tags 									: 	$("#shortTags_Contents").val(),
 		allowDescription      : 	$("#descriptionEnable").prop('checked'),
 		searchDescription			: 	$("#descriptionContents").val(),
 
@@ -398,16 +437,22 @@ var shortenUrlFunc = function() {
 	}
 
 	data = JSON.stringify(data);
-
+	*/
+	$("#url_short_frm").submit();
+	//var fd = new FormData()
+	//console.log($("#url_short_frm").serialize());
+	//$("#url_short_frm").submit();
+	/*
 	$.ajax({
 			type	: "POST",
 			url		: urlToHit,
-			data	: data,
+			data	: new FormData($("#url_short_frm")[0]),
 			//processData: false ,
 			contentType : 'multipart/form-data',
 			//contentType	: false,       // The content type used when sending data to the server.
-			cache				: false,             // To unable request pages to be cached
-			processData	:	false,
+			cache				: false,
+			//contentType	: false,
+			processData	: false,
 			// beforeSend : function() {
 			// 	manualUploader.uploadStoredFiles();
 			// },
@@ -467,6 +512,8 @@ var shortenUrlFunc = function() {
 					}
 			}
 	});
+	*/
+
 }
 
 // $("#link_preview_selector").attr("checked", false);
@@ -475,6 +522,24 @@ var shortenUrlFunc = function() {
 // $()
 
 $("#shorten_url_btn").on('click',function(e){
+
+	if($("#cust_url_chk").prop('checked') && $("#link_preview_selector").prop('checked') && $("#link_preview_custom").prop('checked')) {
+		var url_inp_len = $("#url_inp").val().trim().length;
+		var	url_inp			= $("#url_inp").val();
+		if(url_inp.indexOf(' ') != -1 ||
+			(!(url_inp.indexOf('http://') == 0) && !(url_inp.indexOf('https://') == 0)) ||
+	 		(url_inp.indexOf(',') != -1) ||
+			(url_inp.indexOf(';') != -1)) {
+			swal({
+					type: "warning",
+					title: null,
+					text: "Please give a proper url in your link preview url section",
+					html: true
+			});
+			return false;
+		}
+	}
+
 
 
 		var actualUrl = $('#givenActual_Url').val();
@@ -704,7 +769,7 @@ window.onload = function(){
 
 		//alert(1234);
 		//facebook analytics checkbox for short urls
-		if (thisInstance.id === "checkboxAddFbPixelid" && thisInstance["name"] === "check_fb") {
+		if (thisInstance.id === "checkboxAddFbPixelid") {
 			if(thisInstance.checked) {
 				$('.facebook-pixel').show();
 				$('#fbPixel_id').show();
@@ -737,7 +802,7 @@ window.onload = function(){
 		// }
 
 		//google analytics checkbox for custom urls
-		if (thisInstance.id === "checkboxAddGlPixelid" && thisInstance["name"] === "check_gl") {
+		if (thisInstance.id === "checkboxAddGlPixelid") {
 			if(thisInstance.checked) {
 				$('.google-pixel').show();
 				$('#glPixel_id').show();
@@ -749,14 +814,15 @@ window.onload = function(){
 		}
 
 		//addtags for short urls
-		if (thisInstance.id === "shortTagsEnable" && thisInstance["name"] === "shortTagsEnable") {
+		if (thisInstance.id === "shortTagsEnable") {
 			if(thisInstance.checked) {
 				$('.add-tags').show();
 				$('#shortTags_Area').show();
 			} else {
 				$('.add-tags').hide();
 				$('#shortTags_Area').hide();
-				$("#shortTags_Contents").tagsinput('removeAll');
+				$("#shortTags_Contents").val('');
+				//$("#shortTags_Contents").tagsinput('removeAll');
 			}
 		}
 
@@ -770,7 +836,7 @@ window.onload = function(){
 		// 	}
 		// }
 
-		if (thisInstance.id === "descriptionEnable" && thisInstance["name"] === "descriptionEnable") {
+		if (thisInstance.id === "descriptionEnable") {
 			if(thisInstance.checked) {
 				$('#descriptionArea').show();
 				$('#descriptionContents').show();

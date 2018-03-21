@@ -49,7 +49,7 @@
         $("#signup1").click(function(){
             $("#login_btn").click();
         });
-        
+
 
         $(".menu-icon").click(function(){
             $(this).toggleClass("close");
@@ -245,7 +245,7 @@
             } else {
                 $('#password_confirmationValidation').remove('#password_confirmationValidation');
 
-                check_cpassword = true; 
+                check_cpassword = true;
                 check_password = true;
                 console.log('check_cpassword'  , check_cpassword);
                 return true;
@@ -287,11 +287,12 @@
             var userId = 0;
             @endif
             if (url) {
+
                 if (validUrl) {
                     HoldOn.open(options);
                     $.ajax({
                         type: 'POST',
-                        url: "{{ route('postShortUrlTier5') }}",
+                        url: "{{ route('postShortUrlNoSession') }}",
                         data: {
                             url: url,
                             user_id: userId,
@@ -356,15 +357,24 @@
             }
         });
 
-        function ValidURL(str) 
+        function ValidURL(str)
         {
-            var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
-            var url = str;
-            if (!regexp.test(url)) {
-                return false;
-            } else {
-                return true;
-            }
+
+          if(str.indexOf("http://") == 0) {
+            return true;
+          } else if(str.indexOf("https://") == 0) {
+            return true;
+          } else {
+            return false;
+          }
+
+            // var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
+            // var url = str;
+            // if (!regexp.test(url)) {
+            //     return false;
+            // } else {
+            //     return true;
+            // }
         }
 
         //previous functions here
@@ -392,12 +402,12 @@
     $(window).load(function() {
         $("#flexiselDemo3").flexisel({
             visibleItems: 4,
-            itemsToScroll: 1,         
+            itemsToScroll: 1,
             autoPlay: {
                 enable: true,
                 interval: 5000,
                 pauseOnHover: true
-            }        
+            }
         });
     });
 </script>

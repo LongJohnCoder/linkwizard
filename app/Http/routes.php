@@ -65,6 +65,9 @@ Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => ['
     'uses'  =>  'HomeController@setPassword',
     'as'    =>  'setPassword'
   ]);
+
+
+
 });
 
 //actual rooutes goes here
@@ -125,6 +128,7 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
               'as'    =>  'getLinkPreview'
             ]);
 
+
             Route::post('giveMyTags', [
               'uses'  =>  'HomeController@giveMyTags',
               'as'    =>  'giveMyTags'
@@ -133,6 +137,11 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
             Route::post('short', [
                 'uses' => 'HomeController@postShortUrlTier5',
                 'as' => 'postShortUrlTier5',
+            ]);
+
+            Route::post('postShortUrlNoSession', [
+              'uses'  =>  'HomeController@postShortUrlNoSession',
+              'as'    =>  'postShortUrlNoSession'
             ]);
 
             Route::post('custom', [
