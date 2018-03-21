@@ -1246,13 +1246,14 @@ class HomeController extends Controller
         $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
 
 
-        if (starts_with($request->actual_url, 'https://')) {
-            $actual_url = str_replace('https://', null, $request->url);
+        if (strpos($request->actual_url, 'https://') == 0) {
+            $actual_url = str_replace('https://','', $request->url);
             $protocol = 'https';
         } else {
-            $actual_url = str_replace('http://', null, $request->url);
+            $actual_url = str_replace('http://','', $request->url);
             $protocol = 'http';
         }
+        //print_r($actual_url);die();
 
         if(!isset($request->url) || strlen(trim($request->url)) == 0) {
           return json_encode([
@@ -1347,7 +1348,7 @@ class HomeController extends Controller
         $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
         //dd($checkboxAddFbPixelid, $fbPixelid , $checkboxAddGlPixelid, $glPixelid, $allowTags, $searchTags, $allowDescription, $searchDescription);
         //print_r("<pre>");print_r($request->all());exit();
-        if (starts_with($request->actual_url, 'https://')) {
+        if (strpos($request->actual_url, 'https://') == 0) {
             $actual_url = str_replace('https://', null, $request->actual_url);
             $protocol = 'https';
         } else {
@@ -1459,7 +1460,7 @@ class HomeController extends Controller
           //     ]);
         }
 
-        if (starts_with($request->actual_url, 'https://')) {
+        if (strpos($request->actual_url, 'https://') == 0) {
             $actual_url = str_replace('https://', null, $request->actual_url);
         } else {
             $actual_url = str_replace('http://', null, $request->actual_url);

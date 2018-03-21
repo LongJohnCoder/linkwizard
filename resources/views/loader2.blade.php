@@ -140,6 +140,8 @@ header("Access-Control-Allow-Origin: *");
 		</div>
 	</div>
 	<script type="text/javascript">
+  var URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
+
     $(document).ready(function() {
         var sec = '{{$url->redirecting_time}}' / 1000;
 		window.setInterval(function(){
@@ -171,11 +173,12 @@ header("Access-Control-Allow-Origin: *");
                     success: function(response){
                     	console.log(response);
                       setTimeout(function() {
-				              window.location.replace('{{ $url->protocol }}://'+'{{ $url->actual_url }}');
-				            HoldOn.close();
-				        }, {{ $url->redirecting_time }});
-                    }
-                });
+                        console.log(URL_TO_REDIRECT);
+  				              window.location.replace(URL_TO_REDIRECT);
+        				            HoldOn.close();
+        				        }, "{{ $url->redirecting_time }}");
+                            }
+                        });
             }
         });
     });
