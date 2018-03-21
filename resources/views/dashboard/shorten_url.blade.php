@@ -26,10 +26,6 @@
         <div class="row">
             <div class="col-md-12 col-sm-12">
 
-
-
-
-
 							<form id="url_short_frm" action="{{route('shortenUrl')}}" method="POST" enctype="multipart/form-data" files=true>
 								<input type="hidden" value="{{$type}}" name="type">
 								<input type="hidden" value="logedin" name="loggedin">
@@ -445,7 +441,7 @@ $("#shorten_url_btn").on('click',function(e){
       							{
       									swal({
       											type: "warning",
-      											title: null,
+      											title: 'Incorrect url',
       											text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
       											html: true
       									});
@@ -455,7 +451,7 @@ $("#shorten_url_btn").on('click',function(e){
       					{
       							swal({
       									type: "warning",
-      									title: null,
+      									title: 'Url not found',
       									text: "Please Enter An URL"
       								});
       					}
@@ -464,7 +460,7 @@ $("#shorten_url_btn").on('click',function(e){
       				{
       					swal({
       							type: "warning",
-      							title: null,
+      							title: 'Sorry this url is taken',
       							text: "This custom url name is already taken! Try another one"
       						});
       					//url already used by this user
@@ -483,7 +479,7 @@ $("#shorten_url_btn").on('click',function(e){
 			{
 					swal({
 							type: "warning",
-							title: null,
+							title: 'URl not found',
 							text: "Please Enter An URL"
 						});
 			}
@@ -669,7 +665,7 @@ window.onload = function(){
 			}
 		}
 
-		
+
 		if (thisInstance.id === "descriptionEnable") {
 			if(thisInstance.checked) {
 				$('#descriptionArea').show();
@@ -719,14 +715,14 @@ window.onload = function(){
 			$("#dashboard-search-form").submit();
 		});
 
-		
+
 		$("#dashboard-search").on('click',function() {
 			var tags = $("#dashboard-tags-to-search").tagsinput('items');
 			var text = $("#dashboard-text-to-search").val();
 			console.log('tags :',tags,' text: ',text);
 		});
 
-		
+
 
 
 		$("input[type='checkbox']").on("change", function() {
