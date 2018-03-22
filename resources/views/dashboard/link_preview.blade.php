@@ -70,7 +70,7 @@ $key = 0;
                   </li>
 
                   <li>
-                      <button id="clipboard" class="btn btn-default btn-sm btngrpthree delete-url" data-id="{{ $url->id }}" style="width:70px"><i class="fa fa-clipboard"></i> delete
+                      <button class="btn btn-default btn-sm btngrpthree delete-url" data-id="{{ $url->id }}" style="width:70px"><i class="fa fa-trash-o"></i> delete
                       </button>
                   </li>
                   <li>
@@ -1407,9 +1407,9 @@ window.onload = function(){
                           text: "Url deleted successfully.",
                           type: "success",
                           html: true
-                        });
-
-                         window.location.href = "{{ url('/') }}/app/user/dashboard";
+                        },function(isConfirm){
+													window.location.href = "{{ url('/') }}/app/user/dashboard";
+												});
                       },
                       error: function(response) {
                           swal({

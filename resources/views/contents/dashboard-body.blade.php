@@ -174,7 +174,7 @@
                           <td>{{$url->title}}</td>
                           <td>{{$url->count}}</td>
                           <td>{{$url->created_at->format('d/m/Y')}}</td>
-                          
+
                           <td><button class='delete-url' data-id="{{ $url->id }}">Delete Url</button></td>
                       </tr>
                       @endforeach
