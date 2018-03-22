@@ -135,7 +135,7 @@ $key = 0;
                <div class="row">
                     <div class="col-md-6 col-sm-6">
                         <div class="tot-clicks">
-                            <h2>Total Clicks 10 (100%)</h2>
+                            <h2>Total Clicks {{$url->count}}</h2>
                             <div class="tot-clicks-body">
                                 <div class="chart-div" id="chart_div">
 

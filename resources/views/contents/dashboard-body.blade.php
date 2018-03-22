@@ -333,7 +333,7 @@
                                             editAction({{ $key }});
                                         });
                                         $('#fb-share-btn{{ $key }}').on('click', function () {
-                                            fb_share('{{ route('getIndex') }}/{{ $url->shorten_suffix }}' , '{{url('/')}}');
+                                            fb_share('{{$url->protocol}}'+'://'+'{{$url->actual_url}}' , "{{config('settings.APP_REDIRECT_HOST')}}");
                                         });
                                         $('#addBrand{{ $key }}').on('click', function () {
                                             $("#urlId1").val('{{ $url->id }}');
