@@ -2465,6 +2465,13 @@ height: 79px;
 .elelment .alert{margin-top: 10px;}
 .elelment .alert p{margin: 0;}
 
+ul.pagination{display: block; text-align: center;}
+.pagination>li{padding: 0 !important; display: inline-block !important;}
+
+.pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus
+{background-color: #01579b !important; border-color: #01579b; }
+
+ul.pagination li.active{border-left: 0 !important;}
 
  chart: {
      backgroundColor: '#FCFFC5',

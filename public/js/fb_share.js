@@ -4,7 +4,7 @@ function  fb_share(short_url , from_url)
     //alert(path);
     
         FB.init({
-        appId      : '349677008739634',
+        appId      : '1533260306786947',
         xfbml      : true,
         version    : 'v2.7',
         status     : true,
