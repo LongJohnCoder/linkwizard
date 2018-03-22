@@ -1,10 +1,10 @@
-function  fb_share(short_url , from_url)
+function  fb_share(app_id, short_url , from_url, fb_description, fb_title, fb_image, fb_url)
 {
     //alert('in fb_share');
     //alert(path);
-    
+
         FB.init({
-        appId      : '1533260306786947',
+        appId      : app_id,
         xfbml      : true,
         version    : 'v2.7',
         status     : true,
@@ -12,22 +12,23 @@ function  fb_share(short_url , from_url)
         });
         FB.ui(
         {
-            method: 'share',
-            description: 'Want to make your links user friendly? We manage to shorten all your URLs and provide hastle free services. Feel free to check our site http://www.tr5.io ',
-            picture: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDls6NeGdKEsPOyOiDgtAQoVS-6YmZpXAhO-gHaMYH0QKXVHAo',
-            href: from_url,
-            link: short_url,
+            method      : 'share',
+            description : fb_description,
+            title       : fb_title,
+            picture     : fb_image,
+            href        : short_url,
+            link        : fb_url,
         },
-        function(response) 
+        function(response)
         {
             console.log("FB Response: "+typeof(response));
             if(typeof(response) !== "undefined" && typeof(response) !== undefined && response)
             {
-                
+
             }
             else
             {
-                
+
             }
         });
 

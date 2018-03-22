@@ -52,6 +52,7 @@ $key = 0;
                   </div>
               </div>
               <div class="row">
+								{{--dd(urlencode($url->title))--}}
                 @php
                   $actual_url = $url->protocol.'://'.$url->actual_url;
                 @endphp
@@ -81,32 +82,33 @@ $key = 0;
                   <li>
                     {{--<button id="gp-share-btn" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="815811879-s4o4qvinui63dckggf5u4upjcbjqvjbs.apps.googleusercontent.com" data-contenturl="http://tr5.test/b0DwpA" data-cookiepolicy="none" data-prefilltext="Web Design Development | Software Company USA - Tier5 LLC" data-calltoactionlabel="SEND" data-calltoactionurl="http://tr5.test/b0DwpA" style="width:70px" data-gapiscan="true" data-onload="true" data-gapiattached="true"><i class="fa fa-google-plus"></i> share</button>--}}
 
-                    <button   id="gp-share-btn" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="815811879-s4o4qvinui63dckggf5u4upjcbjqvjbs.apps.googleusercontent.com" data-contenturl="http://tr5.test/b0DwpA" data-cookiepolicy="none" data-prefilltext="Web Design Development | Software Company USA - Tier5 LLC" data-calltoactionlabel="SEND" data-calltoactionurl="http://tr5.test/b0DwpA" style="width:70px" data-gapiscan="true" data-onload="true" data-gapiattached="true" onclick="javascript:window.open('https://plus.google.com/share?url={{$actual_url}}',
-  '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa fa-google-plus"></i>Share</button>
+                    <button   id="gp-share-btn" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="{{config('settings.GL.DATA_CLIENTID')}}" data-contenturl="{{$shrt_url}}" data-cookiepolicy="none" data-prefilltext="{{$url->title}}" data-calltoactionlabel="SEND" data-calltoactionurl="{{$shrt_url}}" style="width:70px" data-gapiscan="true" data-onload="true" data-gapiattached="true" onclick="javascript:window.open('https://plus.google.com/share?url={{$shrt_url}}',
+          							'', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa fa-google-plus"></i>Share</button>
                   </li>
                   <li>
-
+												{{--
                         <button id="tw-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px">
                           <i class="fa fa-twitter"></i> share
                         </button>
+												--}}
 
-                        <button  id="tw-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px" onclick="javascript:window.open('https://twitter.com/intent/tweet?url={{$actual_url}}',
-  '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa fa-twitter"></i> share</button>
-
-                  </li>
+                        <button  id="tw-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px" onclick="javascript:window.open('https://twitter.com/intent/tweet?url={{urlencode($shrt_url)}}&data-url={{urlencode($actual_url)}}&text={{$url->meta_description}}',
+  												'', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa fa-twitter"></i> Share</button>
+									</li>
                   <li>
-
+												{{--
                         <button id="tw-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px">
                           <i class="fa fa-linkedin"></i> share
                         </button>
-                        <button id="tw-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px"  onclick="javascript:window.open('https://www.linkedin.com/shareArticle?mini=true&url={{$actual_url}}&title=tier5&summary=tier5&source=tier5',
-  '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"> <i class="fa fa-linkedin"></i> share
-                        </button>
+												--}}
 
+                        <button id="ln-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px"  onclick="javascript:window.open('https://www.linkedin.com/shareArticle?mini=true&url={{urlencode($actual_url)}}&data-url={{urlencode($shrt_url)}}&title={{urlencode($url->title)}}&summary={{urlencode($url->meta_description)}}',
+  												'', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"> <i class="fa fa-linkedin"></i> Share
+                        </button>
                   </li>
                   <li>
                     <button id="addBrand" class="btn btn-default btn-sm btngrpthree" style="width:130px">
-                      <i class="fa fa-bullhorn"></i> create brand
+                      <i class="fa fa-bullhorn"></i> Create brand
                     </button>
                   </li>
                   <li>
@@ -226,7 +228,14 @@ $key = 0;
             editAction();
         });
         $('#fb-share-btn').on('click', function () {
-            fb_share("{{ route('getIndex') }}/{{ $url->shorten_suffix }}" , '{{url('/')}}');
+					fb_share("{{config('settings.FB.APP_ID')}}",
+					'{{$shrt_url}}',
+					'{{$actual_url}}',
+					'{{$url->og_description}}',
+					'{{$url->og_title}}' ,
+					'{{$url->og_image}}' ,
+					'{{$url->og_url}}');
+            //fb_share("{{ route('getIndex') }}/{{ $url->shorten_suffix }}" , '{{url('/')}}');
         });
         $('#addBrand').on('click', function () {
             $("#urlId1").val('{{$url->id}}');
