@@ -189,6 +189,12 @@ window.onload = function(){
 			$("#dashboard-search-form").submit();
 		});
 
+		$("#dashboard-select").on('change',function(e) {
+			console.log(e.target.value);
+			var data = $("#dashboard-search-form").serialize();
+			$("#dashboard-search-form").submit();
+		});
+
 		// $("#dashboard-search-form").on('submit',function(e){
 		// 	console.log('form submit handler called');
 		// 	e.preventDefault();
@@ -613,8 +619,7 @@ window.onload = function(){
         <script>
         $(document).ready(function(){
             @if (isset($filter) and $filter != null) {
-
-                $.ajax({
+            	$.ajax({
                     type: "POST",
                     url: "{{ route('postChartDataFilterDateRange') }}",
                     data: {
@@ -765,6 +770,8 @@ window.onload = function(){
             @else
 						var textToSearch = $("#dashboard-text-to-search").val();
 						var tagsToSearch = $("#dashboard-tags-to-search").val();
+						var pageLimit = $("#dashboard-select").val();
+						console.log('Page limit '+ pageLimit);
             $.ajax({
                 type: 'post',
                 url: "{{ route('postFetchChartData') }}",
@@ -772,12 +779,11 @@ window.onload = function(){
 									'user_id': '{{ $user->id }}',
 									'_token': '{{ csrf_token() }}',
 									textToSearch : textToSearch,
-									tagsToSearch : tagsToSearch
+									tagsToSearch : tagsToSearch,
+									pageLimit    : pageLimit
 								},
                 success: function(response) {
-                	console.log('postFetchChartData');
-                	console.log(response);
-                    var chartDataStack = [];
+                	var chartDataStack = [];
 										var urlSeries = [];
 										if (response.urls.length > 0) {
 											var ur_len = response.urls.length;

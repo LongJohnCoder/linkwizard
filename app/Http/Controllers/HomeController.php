@@ -262,10 +262,9 @@ class HomeController extends Controller
         ];
       } else {
 
-        $urls = Url::where('user_id', $userId)
+       $urls = Url::where('user_id', $userId)
                 ->orderBy('id', 'DESC');
         $count_url = $urls->count();
-
         return [
           'urls' => $urls,
           'count_url' => $count_url,
@@ -284,10 +283,11 @@ class HomeController extends Controller
     public function postFetchChartData(Request $request)
     {
 
-        //print_r("<pre>");print_r($request->all());
+        //print_r("<pre>");print_r($request->all());exit();
 
         $textToSearch = $request->textToSearch;
         $tagsToSearch = $request->tagsToSearch;
+        $pageLimit    = ( $request->pageLimit ) ? $request->pageLimit : 4;
         // if(strlen($textToSearch) > 0 || strlen($tagsToSearch) > 0){
         //   $urls = Url::where('user_id', $user->id);
         //   if(strlen($textToSearch) > 0) {
@@ -315,7 +315,7 @@ class HomeController extends Controller
         // }
 
         $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $request->user_id);
-        $urls       = $ret['urls']->get();
+        $urls       = $ret['urls']->paginate($pageLimit);
         $count_url  = $ret['count_url'];
 
 
@@ -1896,23 +1896,25 @@ class HomeController extends Controller
             }
             else
             {
-                    $user = Auth::user();
-                    //code for search based on tags and description if the params are not empty
-                    $textToSearch = $request->textToSearch;
-                    $tagsToSearch = $request->tagsToSearch;
+              
+                  $user = Auth::user();
+                  //code for search based on tags and description if the params are not empty
+                  $textToSearch = $request->textToSearch;
+                  $tagsToSearch = $request->tagsToSearch;
+                  $pageLimit        = ( $request->limit ) ? $request->limit: 4;
 
-                    $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
-                    $urls       = $ret['urls']->get();
-                    $count_url  = $ret['count_url'];
-                    $tagsToSearch = $ret['tagsToSearch'];
+                  $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
+                  $urls       = $ret['urls']->paginate($pageLimit);
+                  $count_url  = $ret['count_url'];
+                  $tagsToSearch = $ret['tagsToSearch'];
 
-                    $count = DB::table('urls')
-                        ->selectRaw('count(user_id) AS `count`')
-                        ->where('user_id', $user->id)
-                        ->groupBy('user_id')
-                        ->get();
+                  $count = DB::table('urls')
+                      ->selectRaw('count(user_id) AS `count`')
+                      ->where('user_id', $user->id)
+                      ->groupBy('user_id')
+                      ->get();
 
-                    $total_links = null;
+                  $total_links = null;
                     if ($count) {
                         $total_links = $count[0]->count;
                         $limit = LinkLimit::where('user_id', $user->id)->first();
