@@ -82,7 +82,8 @@ $key = 0;
                   <li>
                     {{--<button id="gp-share-btn" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="815811879-s4o4qvinui63dckggf5u4upjcbjqvjbs.apps.googleusercontent.com" data-contenturl="http://tr5.test/b0DwpA" data-cookiepolicy="none" data-prefilltext="Web Design Development | Software Company USA - Tier5 LLC" data-calltoactionlabel="SEND" data-calltoactionurl="http://tr5.test/b0DwpA" style="width:70px" data-gapiscan="true" data-onload="true" data-gapiattached="true"><i class="fa fa-google-plus"></i> share</button>--}}
 
-                    <button   id="gp-share-btn" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="{{config('settings.GL.DATA_CLIENTID')}}" data-contenturl="{{$shrt_url}}" data-cookiepolicy="none" data-prefilltext="{{$url->title}}" data-calltoactionlabel="SEND" data-calltoactionurl="{{$shrt_url}}" style="width:70px" data-gapiscan="true" data-onload="true" data-gapiattached="true" onclick="javascript:window.open('https://plus.google.com/share?url={{$shrt_url}}',
+                    <button   id="gp-share-btn" class="btn btn-default btn-sm btngrpthree g-interactivepost" data-clientid="{{config('settings.GL.DATA_CLIENTID')}}" data-contenturl="{{$actual_url}}" data-cookiepolicy="none" data-prefilltext="{{$url->title}}" data-calltoactionlabel="SEND" data-calltoactionurl="{{$shrt_url}}" style="width:70px" data-gapiscan="true" data-onload="true" data-gapiattached="true"
+											onclick="javascript:window.open('https://plus.google.com/share?url={{$shrt_url}}&data-description={{urlencode($url->meta_description)}}&data-url={{urlencode($url->og_url)}}&data-title={{urlencode($url->title)}}',
           							'', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa fa-google-plus"></i>Share</button>
                   </li>
                   <li>
