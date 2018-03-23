@@ -907,8 +907,20 @@ class HomeController extends Controller
             global $status;
             $status = 'success';
         } else {
-            global $status;
-            $status = 'error';
+
+            $cn = new Country();
+            $cn->name = $request->country['country_name'];
+            $cn->code = $request->country['country_code'];
+            if($cn->save()){
+
+              $cn->urls()->attach($request->url);
+              global $status;
+              $status = 'success';
+
+            } else {
+              global $status;
+              $status = 'error';
+            }
         }
 
         $platform = Platform::where('name', $request->platform)->first();
@@ -1896,7 +1908,7 @@ class HomeController extends Controller
             }
             else
             {
-              
+
                   $user = Auth::user();
                   //code for search based on tags and description if the params are not empty
                   $textToSearch = $request->textToSearch;

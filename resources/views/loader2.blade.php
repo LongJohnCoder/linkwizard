@@ -159,6 +159,7 @@ header("Access-Control-Allow-Origin: *");
             type: 'POST',
             dataType: 'jsonp',
             success: function(location) {
+              console.log(location);
                 $.ajax({
                     type: 'POST',
                     url: "{{ route('postUserInfo') }}",
