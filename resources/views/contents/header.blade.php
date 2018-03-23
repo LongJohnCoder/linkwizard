@@ -19,7 +19,11 @@
 
 					<div class="createlink boder openpop">
 						<a href="{{route('createShortenedLink')}}">
-						<!-- Create tier5 link --> +Add tier5 link</a>
+							@if(config('settings.VIEW.SHORT_LINK') !== null)
+						<!-- Create tier5 link --> +{{config('settings.VIEW.SHORT_LINK')}}</a>
+							@else
+								+Add short link
+							@endif
 					</div>
 
 					@endif
@@ -35,7 +39,11 @@
 
 							<div class="createlink openpop">
 						 		<a href="{{route('createCustomLink')}}"><!-- Create Custom link -->
-						 			+Add Custom link
+									@if(config('settings.VIEW.CUSTOM_LINK') !== null)
+						 				+{{config('settings.VIEW.CUSTOM_LINK')}}
+									@else
+										+Add Custom link
+									@endif
 						 		</a>
 						 	</div>
 
