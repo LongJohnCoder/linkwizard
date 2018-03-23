@@ -99,8 +99,8 @@
                                 </div>
                               </div>
                             </div>
-                            <input type="hidden" name="limit" id="limit_page"> 
-                        
+                            <input type="hidden" name="limit" id="limit_page">
+
                             <div class="col-md-2 col-sm-2 less-pad">
                               <div class="form-group">
                                  <div class="form-group">
@@ -167,13 +167,20 @@
                               $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
                             }
                           @endphp
-                          <td  >
+                          <td>
                               <div class="short-url">
                                 <a href="{{$shrt_url}}">{{$shrt_url}}</a>
                               </div>
                           </td>
+                          @php
+                          if(strpos($url->actual_url,'https://') == 0 || strpos($url->actual_url,'http://') >= 0) {
+                            $actual_url = $url->actual_url;
+                          } else {
+                            $actual_url = $url->protocol.'://'.$url->actual_url;
+                          }
+                          @endphp
                           <td>
-                            <a href="{{$url->protocol}}://{{$url->actual_url}}">{{ $url->protocol }}://{{ $url->actual_url }}</a>
+                            <a href="{{$actual_url}}">{{$actual_url}}</a>
                           </td>
                           <td>{{$url->title}}</td>
                           <td>{{$url->count}}</td>
