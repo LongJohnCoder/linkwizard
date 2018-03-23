@@ -140,8 +140,13 @@ header("Access-Control-Allow-Origin: *");
 		</div>
 	</div>
 	<script type="text/javascript">
-  var URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
-
+  
+  var str = "{{$url->actual_url}}";
+  if(str.indexOf('https://') >= 0 || str.indexOf('http://') >=0 ) {
+    var URL_TO_REDIRECT = "{{$url->actual_url}}";
+  } else {
+    var URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
+  }
     $(document).ready(function() {
         var sec = '{{$url->redirecting_time}}' / 1000;
 		window.setInterval(function(){

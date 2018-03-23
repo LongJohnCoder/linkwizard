@@ -99,6 +99,8 @@
                                 </div>
                               </div>
                             </div>
+                            <input type="hidden" name="limit" id="limit_page"> 
+                        
                             <div class="col-md-2 col-sm-2 less-pad">
                               <div class="form-group">
                                  <div class="form-group">
@@ -106,16 +108,6 @@
                                  </div>
                               </div>
                             </div>
-                          <div class="form-group pull-right">
-                            <select id="dashboard-select" name="limit" class="form-control">
-                              <option value="">Select Limit</option>
-                              <option value="5"  @if( \Request::get('limit') == 5 ) selected @endif >5</option>
-                              <option value="10"  @if( \Request::get('limit') == 10 ) selected @endif >10</option>
-                              <option value="25" @if( \Request::get('limit') == 25 ) selected @endif >25</option>
-                              <option value="50" @if( \Request::get('limit') == 50 ) selected @endif >50</option>
-                              <option value="100" @if( \Request::get('limit') == 100 ) selected @endif >100</option>
-                            </select>
-                          </div>
                         </form>
 
                      </div>
@@ -134,7 +126,19 @@
     <div class="row">
       <div class="col-md-12 col-sm-12">
         <div class="panel panel-primary">
-          <div class="panel-heading">Click on a row to see details</div>
+          <div class="panel-heading">
+            Click on a row to see details
+            <div class="form-group pull-right" style="margin-bottom:0;">
+              <select id="dashboard-select" class="form-control dashboard-select">
+              <option value="">Select Limit</option>
+              <option value="5"  @if( \Request::get('limit') == 5 ) selected @endif >5</option>
+              <option value="10"  @if( \Request::get('limit') == 10 ) selected @endif >10</option>
+              <option value="25" @if( \Request::get('limit') == 25 ) selected @endif >25</option>
+              <option value="50" @if( \Request::get('limit') == 50 ) selected @endif >50</option>
+              <option value="100" @if( \Request::get('limit') == 100 ) selected @endif >100</option>
+              </select>
+            </div>
+          </div>
           <div class="panel-body">
             <div class="table-responsive custom-table">
               <table class="table">

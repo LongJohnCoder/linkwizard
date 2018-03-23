@@ -185,12 +185,15 @@ window.onload = function(){
 		// });
 
 		$("#dashboard-search-btn").on('click',function() {
+			
+			$('#limit_page').val($('#dashboard-select').val());
 			var data = $("#dashboard-search-form").serialize();
 			$("#dashboard-search-form").submit();
 		});
 
 		$("#dashboard-select").on('change',function(e) {
-			console.log(e.target.value);
+			
+			$('#limit_page').val(e.target.value);
 			var data = $("#dashboard-search-form").serialize();
 			$("#dashboard-search-form").submit();
 		});

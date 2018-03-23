@@ -47,6 +47,13 @@ div.bhoechie-tab-menu {
     width: 100%;
 } */
 
+.dashboard-select {
+    height: 26px;
+    font-size: 12px;
+    padding: 6px;
+}
+
+
 .description{
   width : 100%;
   display:box;
