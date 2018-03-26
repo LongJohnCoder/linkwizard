@@ -37,9 +37,14 @@ header("Access-Control-Allow-Origin: *");
     @if(strlen($url->og_description) > 0)
       <meta property="og:description" content="{{$url->og_description}}" />
     @endif
+
+    {{--
     @if(strlen($url->og_url) > 0)
       <meta property="og:url" content="{{$url->og_url}}" />
     @endif
+    --}}
+
+
     @if(strlen($url->og_image) > 0)
       <meta property="og:image" content="{{$url->og_image}}" />
     @endif
@@ -47,9 +52,13 @@ header("Access-Control-Allow-Origin: *");
     @if(strlen($url->twitter_image) > 0)
       <meta name="twitter:title" content="{{$url->twitter_image}}" />
     @endif
+
+    {{--
     @if(strlen($url->twitter_url) > 0)
       <meta name="twitter:url" content="{{$url->twitter_url}}" />
     @endif
+    --}}
+
     @if(strlen($url->twitter_description) > 0)
       <meta name="twitter:description" content="{{$url->twitter_description}}" />
     @endif
@@ -140,7 +149,7 @@ header("Access-Control-Allow-Origin: *");
 		</div>
 	</div>
 	<script type="text/javascript">
-  
+
   var str = "{{$url->actual_url}}";
   if(str.indexOf('https://') >= 0 || str.indexOf('http://') >=0 ) {
     var URL_TO_REDIRECT = "{{$url->actual_url}}";

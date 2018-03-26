@@ -227,6 +227,7 @@
                                 </div>
                             </div>
 
+														{{--
                             <div class="white-paneel">
                                 <div class="white-panel-header">URL</div>
                                 <div class="white-panel-body">
@@ -249,6 +250,8 @@
                                     </div>
                                 </div>
                             </div>
+														--}}
+
 
                         </div>
                     </div>
@@ -289,17 +292,7 @@
 <link href="{{ URL::to('/').'/public/css/fine-uploader-new.min.css' }}" rel="stylesheet" />
 
 <script type="text/javascript">
-var _URL = window.URL || window.webkitURL;
-// $("#img_inp").change(function (e) {
-//     var file, img;
-//     if ( this.files !== null && this.files[0] !== null && this.files[0] !== undefined && (file = this.files[0])) {
-//         img = new Image();
-//         img.onload = function () {
-//             alert(this.width + " " + this.height);
-//         };
-//         img.src = _URL.createObjectURL(file);
-//     }
-// })
+
 
 $(".chosen-select").chosen({});
 
@@ -389,11 +382,26 @@ function ValidCustomURL(str) {
 //     });
 // });
 
+// var allowedSizes = {
+// 	x :
+// }
 
 var shortenUrlFunc = function() {
   var urlToHit = @if($type == 'short') "{{ route('postShortUrlTier5') }}" @elseif($type == 'custom')  "{{ route('postCustomUrlTier5') }}" @endif;
 
 	var actualUrl = $('#givenActual_Url').val();
+
+	// var _URL = window.URL || window.webkitURL;
+	// $("#img_inp").change(function (e) {
+	//     var file, img;
+	//     if ( this.files !== null && this.files[0] !== null && this.files[0] !== undefined && (file = this.files[0])) {
+	//         img = new Image();
+	//         img.onload = function () {
+	//             alert(this.width + " " + this.height);
+	//         };
+	//         img.src = _URL.createObjectURL(file);
+	//     }
+	// });
 
 	var customUrl = null;
 	@if($type == 'custom')
