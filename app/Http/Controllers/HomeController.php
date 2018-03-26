@@ -90,8 +90,8 @@ class HomeController extends Controller
 
 
     public function resetPassword(Request $request) {
-       $email = base64_decode($request->email);
-        return view('settings.reset_password')->with('email',$email);
+        $email = base64_decode($request->email);
+        return view('settings.reset_password')->with(['email'=>$email,'token'=>$request->token]);
     }
 
     // public function test(Request $request)

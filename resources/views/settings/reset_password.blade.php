@@ -101,7 +101,7 @@
               <!-- Button -->
               <div class="control-group form-group">
                   <div class="controls">
-                      <input type="hidden" name="token">
+                      <input type="hidden" name="token" value="{{ $token }}">
                       <input class="form-control btn btn-success" type="submit" value="submit">
                   </div>
               </div>
