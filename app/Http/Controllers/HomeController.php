@@ -1136,32 +1136,31 @@ class HomeController extends Controller
     }
 
     public function fillUrlDescriptions(Url $url ,Request $request, $meta_data) {
+      //print_r("<pre>");print_r($request->all());die();
 
+      $url->title           = $meta_data['title'];
+      //facebook data
+      $url->og_image        = $meta_data['og_image'];
+      $url->og_description  = $meta_data['og_description'];
+      $url->og_url          = $meta_data['og_url'];
+      $url->og_title        = $meta_data['og_title'];
 
-      if($request->link_preview_selector) {
+      //twitter data
+      $url->twitter_image         = $meta_data['twitter_image'] == null ? $meta_data['og_image'] : $meta_data['twitter_image'];
+      $url->twitter_description   = $meta_data['twitter_description'];
+      $url->twitter_url           = $meta_data['twitter_url'];
+      $url->twitter_title         = $meta_data['twitter_title'];
 
-        if($request->link_preview_original) {
+      //meta description
+      $url->meta_description = $meta_data['meta_description'];
 
-          $url->title           = $meta_data['title'];
+      if(isset($request->link_preview_selector) && strtolower(trim($request->link_preview_selector)) == 'on') {
 
-          //facebook data
-          $url->og_image        = $meta_data['og_image'];
-          $url->og_description  = $meta_data['og_description'];
-          $url->og_url          = $meta_data['og_url'];
-          $url->og_title        = $meta_data['og_title'];
+        //if($request->link_preview_original) {
 
-          //twitter data
-          $url->twitter_image         = $meta_data['twitter_image'] == null ? $meta_data['og_image'] : $meta_data['twitter_image'];
-          $url->twitter_description   = $meta_data['twitter_description'];
-          $url->twitter_url           = $meta_data['twitter_url'];
-          $url->twitter_title         = $meta_data['twitter_title'];
-
-          //meta description
-          $url->meta_description = $meta_data['meta_description'];
-
-          return $url;
-        }
-        else if($request->link_preview_custom) {
+          //return $url;
+        //}
+        if(isset($request->link_preview_custom) && strtolower(trim($request->link_preview_custom)) == 'on') {
 
           if($request->cust_title_chk && strlen($request->title_inp) > 0) {
             $url->title         =   $request->title_inp;
@@ -1378,7 +1377,7 @@ class HomeController extends Controller
         $url->actual_url = $actual_url;
         $url->protocol = $protocol;
         $url->shorten_suffix = $random_string;
-        $meta_data = $this->getPageMetaContents($request->url);
+        $meta_data = $this->getPageMetaContents($request->actual_url);
         $url = $this->fillUrlDescriptions($url , $request, $meta_data);
         $url->user_id = $userId;
 
@@ -1435,7 +1434,7 @@ class HomeController extends Controller
      */
     public function postCustomUrlTier5(Request $request)
     {
-      ///print_r($request->all());die();
+      //print_r("<pre>");print_r($request->all());die();
       try {
 
         if (\Auth::user())
@@ -1484,23 +1483,8 @@ class HomeController extends Controller
         //$_url = $this->getPageTitle($request->actual_url);
         //$url->title = $_url;
 
-        $meta_data = $this->getPageMetaContents($request->actual_url);
-        $url->title           = $meta_data['title'];
-
-        //facebook data
-        $url->og_image        = $meta_data['og_image'];
-        $url->og_description  = $meta_data['og_description'];
-        $url->og_url          = $meta_data['og_url'];
-        $url->og_title        = $meta_data['og_title'];
-
-        //twitter data
-        $url->twitter_image         = $meta_data['twitter_image'] == null ? $meta_data['og_image'] : $meta_data['twitter_image'];
-        $url->twitter_description   = $meta_data['twitter_description'];
-        $url->twitter_url           = $meta_data['twitter_url'];
-        $url->twitter_title         = $meta_data['twitter_title'];
-
-        //meta description
-        $url->meta_description = $meta_data['meta_description'];
+        $meta_data  = $this->getPageMetaContents($request->actual_url);
+        $url        = $this->fillUrlDescriptions($url , $request, $meta_data);
 
         $url->user_id = $userId;
         $url->is_custom = 1;
@@ -1591,7 +1575,7 @@ class HomeController extends Controller
      *
      * @return array
      */
-    private function getPageMetaContents($url)
+    public function getPageMetaContents($url)
     {
       $meta = array();
       $meta['title'] = $meta['meta_description'] = null;

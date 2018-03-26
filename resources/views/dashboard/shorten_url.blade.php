@@ -40,7 +40,8 @@
                             <input id="givenActual_Url" type="text" name="actual_url" class="form-control long-url">
                             <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                         </div>
-												<br>
+											</div>
+											<div class="row">
 												@if(strtolower($type) == 'custom')
 													<div class="col-md-3 col-sm-3">
 													<label>
@@ -48,8 +49,11 @@
 													</label>
 													</div>
 													<div class="col-md-9 col-sm-9">
+														<div class="input-group">
+															<span class="input-group-addon">{{config('settings.APP_REDIRECT_HOST')}}/</span>
 															<input id="makeCustom_Url" type="text" name="custom_url" class="form-control long-url">
-															<div class="input-msg">*Required</div>
+														</div>
+														<div class="input-msg">*Required</div>
 													</div>
 													<br>
 												@endif
@@ -147,7 +151,7 @@
                             </li>
                             <li>
                                 <label class="custom-checkbox">Use Custom
-                                  <input type="checkbox" value="use-custom" id="link_preview_custom" name="link_preview_custom">
+                                  <input type="checkbox" id="link_preview_custom" name="link_preview_custom">
                                   <span class="checkmark"></span>
                                 </label>
                             </li>
@@ -160,7 +164,7 @@
                                     <ul>
                                         <li>
                                             <label class="custom-checkbox">Use Original
-                                              <input checked type="checkbox" value="" id="org_img_chk" name="org_img_chk">
+                                              <input checked type="checkbox" id="org_img_chk" name="org_img_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
@@ -183,7 +187,7 @@
                                     <ul>
                                         <li>
                                             <label class="custom-checkbox">Use Original
-                                              <input checked type="checkbox" value="" id="org_title_chk" name="org_title_chk">
+                                              <input checked type="checkbox" id="org_title_chk" name="org_title_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
@@ -229,7 +233,7 @@
                                     <ul>
                                         <li>
                                             <label class="custom-checkbox">Use Original
-                                              <input checked type="checkbox" value="" id="org_url_chk" name="org_url_chk">
+                                              <input checked type="checkbox" id="org_url_chk" name="org_url_chk">
                                               <span class="checkmark"></span>
                                             </label>
                                         </li>
