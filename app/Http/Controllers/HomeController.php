@@ -2000,6 +2000,10 @@ class HomeController extends Controller
             $user = Auth::user();
             $url = Url::find($id);
 
+            if(!$url) {
+                return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
+            }
+
             $total_links = null;
             if ($url) {
                 $total_links = $url->count;
