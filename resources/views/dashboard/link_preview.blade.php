@@ -109,7 +109,7 @@ $key = 0;
                   </li>
                   <li>
                     <button id="addBrand" class="btn btn-default btn-sm btngrpthree" style="width:130px">
-                      <i class="fa fa-bullhorn"></i> Create brand
+                      <i class="fa fa-bullhorn"></i> Create Ad
                     </button>
                   </li>
                   <li>
