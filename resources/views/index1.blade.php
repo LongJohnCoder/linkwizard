@@ -50,7 +50,7 @@
         <div class="row banner-middle text-center">
             <div class="banner-content">
                 <h2>Make your links manageable.</h2>
-                <p>Lorem Ipsum is simply dummy text of the printing and industry.</p>
+                <p style="margin: 80px">{{config('settings.AD.PLATFORM_NAME')}} {{config('settings.AD.HEADING')}}</p>
                 <form>
                     <div class="col-md-9">
                         <div class="row">
