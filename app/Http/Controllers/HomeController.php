@@ -70,7 +70,9 @@ class HomeController extends Controller
           $reset->token = $token;
           $reset->created_at = date('Y-m-d h:i:j');
           $reset->save();
-          $url = url('/') . '/reset-password/' . base64_encode($user->email) . '/' . $token;
+          $url = route('reset-password',['email' => base64_encode($user->email) , 'token' => $token]);
+
+          //$url = config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/reset-password/'.base64_encode($user->email).'/'.$token;
           $data    = array('name'=>$user->name,'url' => $url,'email' => $user->email);
 
           \Mail::send('mail.forgetPassword', $data, function($message) use($email,$user,$subject){
@@ -90,8 +92,22 @@ class HomeController extends Controller
 
 
     public function resetPassword(Request $request) {
+      //dd($request->all());
         $email = base64_decode($request->email);
         return view('settings.reset_password')->with(['email'=>$email,'token'=>$request->token]);
+    }
+
+
+    /**
+    * reset password from dashboard settings
+    */
+    public function resetPasswordSettings(Request $request) {
+        if(\Auth::check()) {
+          $user = \Auth::user();
+          return view('dashboard-settings.reset-password')->with(['user'=>$user]);
+        } else {
+          return redirect()->action('HomeController@getIndex')->with('error','Your Session has expired.. Please log in again!');
+        }
     }
 
     // public function test(Request $request)
@@ -111,6 +127,12 @@ class HomeController extends Controller
 
     /** updating password  to user table */
     public function setPassword(Request $request) {
+      //dd($request->all());
+
+      //\Session::flash('errs','some errors');
+      //\Session::flash('errs','It seems like the mail server is busy! Try again after a few minutes');
+      //return redirect()->back()->with('errs','some errors');
+
       $v = \Validator::make($request->all(), [
           'email' => 'required|email|exists:users',
           'password' => 'required',
@@ -145,6 +167,52 @@ class HomeController extends Controller
           //\Session::flash('errs','It seems like the mail server is busy! Try again after a few minutes');
           return redirect()->back();
         }
+      }
+    }
+
+
+    public function setPasswordSettings(Request $request) {
+      //dd($request->all());
+      if(\Auth::check()) {
+
+        $user = \Auth::user();
+        $old_password = $request->old_password;
+        $new_password = $request->new_password;
+        $confirm_password = $request->password_confirmation;
+
+        //if old password does not match return error
+        if(!\Hash::check($old_password, $user->password, [])) {
+          return redirect()->back()->with('errs','OOPS! Old password entered dosen\'t match with our records.. Try again!');
+        }
+        if(strlen(trim($new_password)) == 0 || strlen(trim($confirm_password)) == 0) {
+          return redirect()->back()->with('errs','OOPS! New Password or Confirm password cannot be blank.. Try again!');
+        }
+        if(strlen($new_password) < 6) {
+          return redirect()->back()->with('errs','OOPS! New Password entered should be minimum of 6 characters.. Try again!');
+        }
+        if($new_password !== $confirm_password) {
+          return redirect()->back()->with('errs','OOPS! New Password and Confirm password are not matching.. Try again!');
+        }
+
+        //update users with new password
+        $user = \Auth::user();
+        $user->password = bcrypt($new_password);
+
+        if($user->save()) {
+          //Auth::logout();
+          //Session::flush();
+          //dd('here');
+          Auth::attempt(['email' => $user->email, 'password' => $user->password]);
+          return redirect()->action('HomeController@getDashboard' )
+                    ->with('success', 'Password is updated successfully!');
+        } else {
+          return redirect()->action('HomeController@getDashboard' )
+                    ->with('error', 'Please try after some time!');
+        }
+
+      } else {
+        return redirect()->action('HomeController@getIndex' )
+                  ->with('error', 'Your session seems to be expired.. PLease log in!');
       }
     }
 
@@ -1721,10 +1789,15 @@ class HomeController extends Controller
         $v = \Validator::make($request->all(), [
             'name' => 'required|string|min:2',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed',
-            'password_confirmation' => 'required|min:8',
+            'password' => 'required|min:6|confirmed',
+            'password_confirmation' => 'required|min:6',
             //'g-recaptcha-response' => 'recaptcha',
         ]);
+
+        if($request->password !== $request->password_confirmation) {
+          \Session::flash('registration_err' , 'Password and confirm password must be same for registration process.. Please try again!');
+          return redirect()->route('getIndex');
+        }
 
         if($v->fails())
         {
@@ -1881,10 +1954,8 @@ class HomeController extends Controller
      */
     public function getDashboard(Request $request)
     {
-
         if (Auth::check())
         {
-
             if(\Session::has('plan'))
             {
                 //return 18745;

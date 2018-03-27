@@ -64,6 +64,8 @@
 		                	@if ($subscription_status != 'tr5Advanced')
 		                		<a href="{{ route('getSubscribe') }}" class="upgrade"><i class="fa fa-sign-out"></i> Upgrade</a>
 		                	@endif
+											<br>
+											<a href="{{route('resetPasswordSettings')}}" class="reset-password"><i class="fa fa-settings"></i> Reset Password</a>
 	                	</div>
 	                </div>
 

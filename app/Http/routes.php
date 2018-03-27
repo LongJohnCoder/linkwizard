@@ -16,7 +16,7 @@
 Route::pattern('domain', config('settings.APP_HOST').'|'.config('settings.APP_LOGIN_HOST'));
 
 Route::get('/test', function(){
-    $url = 'https://en.wikipedia.org/wiki/Avatar_(2009_film)';
+    $url = 'http://insidetech.monster.com/benefits/articles/8537-10-best-tech-blogs';
     dd(app('App\Http\Controllers\HomeController')->getPageMetaContents($url));
 });
 
@@ -55,18 +55,6 @@ Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => ['
     'uses'  =>  'HomeController@forgotPasswordEmail',
     'as'    =>  'forgotPasswordEmail'
   ]);
-
-  Route::get('reset-password/{email}/{token}', [
-    'uses'  =>  'HomeController@resetPassword',
-    'as'    =>  'reset-password'
-  ]);
-
-  Route::post('set-password', [
-    'uses'  =>  'HomeController@setPassword',
-    'as'    =>  'setPassword'
-  ]);
-
-
 
 });
 
@@ -119,7 +107,20 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
         'as' => 'getAnalyticsByCountry',
     ]);
 
+    Route::get('reset-password/{email}/{token}', [
+      'uses'  =>  'HomeController@resetPassword',
+      'as'    =>  'reset-password'
+    ]);
+
+    Route::post('set-password', [
+      'uses'  =>  'HomeController@setPassword',
+      'as'    =>  'setPassword'
+    ]);
+
     Route::group(['prefix' => 'app'], function () {
+
+
+
         Route::group(['prefix' => 'url'], function () {
 
             //search url with links
@@ -207,6 +208,21 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
 
         Route::group(['prefix' => 'user'], function () {
 
+          //Settings section for an user
+          Route::group(['prefix' => 'settings'], function(){
+
+              Route::get('reset-password-settings',[
+                'uses'  =>  'HomeController@resetPasswordSettings',
+                'as'    =>  'resetPasswordSettings'
+              ]);
+
+              Route::post('set-password-settings',[
+                'uses'  =>  'HomeController@setPasswordSettings',
+                'as'    =>  'setPasswordSettings'
+              ]);
+
+          });
+
             Route::post('shortenUrl', [
               'uses' => 'HomeController@shortenUrl',
               'as'   => 'shortenUrl'
@@ -236,6 +252,10 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                 'uses' => 'HomeController@getLogout',
                 'as' => 'getLogout',
             ]);
+
+            // Route::get('dash',function(){
+            //   dd('here');
+            // });
 
             Route::get('dashboard', [
                 'uses' => 'HomeController@getDashboard',

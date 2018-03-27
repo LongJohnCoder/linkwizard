@@ -89,18 +89,21 @@
     </div>
     <div class="container centered box" >
       <div class="elelment">
-        @if(\Session::has('errs'))
-            <div class="alert alert-danger">
-                <p>{{\Session::get('errs')}}</p>
-            </div>
-        @endif
 
-        @if(\Session::has('success'))
-          <div class="alert alert-success">
-                <p>{{\Session::get('success')}}</p>
-          </div>
-        @endif
         <div class="col-md-8 col-md-offset-2 form">
+          <div>
+            @if(\Session::has('errs'))
+                <div class="alert alert-danger">
+                    <p>{{\Session::get('errs')}}</p>
+                </div>
+            @endif
+
+            @if(\Session::has('success'))
+              <div class="alert alert-success">
+                    <p>{{\Session::get('success')}}</p>
+              </div>
+            @endif
+          </div>
           <div class="element-main">
         		<h1>Forgot Password</h1>
         		<p> Send a forgot pasword link in email! </p>

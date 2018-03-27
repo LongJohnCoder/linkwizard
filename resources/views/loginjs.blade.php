@@ -63,6 +63,7 @@
          $('#useremail').on('blur', function() {
             emailInput = $(this).val();
             emailRegex = new RegExp('^([a-zA-Z0-9-_\.])+@([a-z0-9]+[\.]+[a-z]{2,}([\.]*[a-z]){0,2}){1}$');
+
             if (emailInput.length === 0) {
                 $(this).focus();
                 $('#useremailValidation').remove('#useremailValidation');
@@ -178,8 +179,10 @@
         });
 
         $('#password').on('keyup', function() {
-            passwordRegex =  new RegExp('(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#%^&*_+\-=?\.]).{8,}');
-            passwordInput = $(this).val();
+            //passwordRegex =  new RegExp('(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#%^&*_+\-=?\.]).{8,}');
+            var passwordRegex = new RegExp('.{6,}');
+            //passwordRegex =  new RegExp('{6,}');
+            var passwordInput = $(this).val();
             if (passwordInput.length === 0) {
                 $(this).focus();
                 $('#passwordValidation').remove('#passwordValidation');
@@ -189,7 +192,7 @@
             } else if (!passwordRegex.test(passwordInput)) {
                 $(this).focus();
                 $('#passwordValidation').remove('#passwordValidation');
-                $(this).parent().append("<span id='passwordValidation' style='color: red'>Password should be atleast eight characters long and contain one lowercase, one uppercase, one numeric and one special character.</span>");
+                $(this).parent().append("<span id='passwordValidation' style='color: red'>Password should be atleast six characters long!</span>");
                 check_password = false;
                 return false;
             }
@@ -220,8 +223,12 @@
             $('#passwordValidation').remove('#passwordValidation');
         });*/
 
+
+
         $('#password_confirmation').on('keyup', function() {
-            password_confirmationRegex =  new RegExp('(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#%^&*_+\-=?\.]).{8,}');
+            //password_confirmationRegex =  new RegExp('(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#%^&*_+\-=?\.]).{8,}');
+            password_confirmationRegex  = new RegExp('.{6,}');
+
             password_confirmationInput = $(this).val();
             passwordInput = $('#password').val();
             if (password_confirmationInput.length === 0) {
@@ -233,7 +240,7 @@
             } else if (!password_confirmationRegex.test(password_confirmationInput)) {
                 $(this).focus();
                 $('#password_confirmationValidation').remove('#password_confirmationValidation');
-                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Confirm Password should be atleast eight characters long and contain one lowercase, one uppercase, one numeric and one special character.</span>");
+                $(this).parent().append("<span id='password_confirmationValidation' style='color: red'>Confirm Password should be atleast six characters long!</span>");
                 check_cpassword = false;
                 return false;
             } else if (passwordInput !== password_confirmationInput) {

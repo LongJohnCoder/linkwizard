@@ -639,6 +639,24 @@ a.upgrade{
     margin-top: 10px;
 }
 
+a.reset-password{
+    font-family: 'OpenSans-Semibold';
+    display: inline-block;
+    background-image: -webkit-linear-gradient(top,#5cb85c 0,#419641 100%);
+    background-image: -o-linear-gradient(top,#5cb85c 0,#419641 100%);
+    background-image: -webkit-gradient(linear,left top,left bottom,from(#5cb85c),to(#419641));
+    background-image: linear-gradient(to bottom,#5cb85c 0,#419641 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5cb85c', endColorstr='#ff419641', GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    border-color: #3e8f3e;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 14px;
+    padding: 8px 15px;
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
 /*.banner {
     background: rgb(62,110,142);
     background: -moz-linear-gradient(left, rgba(62,110,142,1) 0%, rgba(49,83,105,1) 50%, rgba(77,117,131,1) 100%);
@@ -2236,7 +2254,7 @@ footer .social-icon a:last-child{
     .dashboard-menu .desktop-menu {
         text-align: center;
     }
-   
+
 
 
     .top-menu ul li a {
@@ -2458,7 +2476,7 @@ height: 79px;
 .container{min-height: 100%;}
 .box .element-main{border: 1px solid #ccc; margin: 50px 0; padding: 30px;}
 
-.delete-url{background: #fff; color: #e42222; font-size: 12px; 
+.delete-url{background: #fff; color: #e42222; font-size: 12px;
     width: 70px; display: block; border: 1px solid #e42222; padding: 4px;}
 
 .delete-url:hover{background: #e42222; color: #fff;}

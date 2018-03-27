@@ -74,46 +74,56 @@
           @endif
         </div>
         <div class="element-main">
-         <h2>Reset Password Form</h2>
-      		<form class="form" method="post" action="{{route('setPassword')}}">
+         <h2>Reset Your Existing Password Here</h2>
+      		<form class="form" method="post" action="{{route('setPasswordSettings')}}" id="set-passwrd-form">
             {{csrf_field()}}
 
               <!-- Sign Up Form -->
               <!-- Text input-->
               <div class="control-group form-group">
-                  <label for="Name" class="control-label">Email:</label>
+                  <label for="Name" class="control-label">Registered Email:</label>
                   <div class="controls">
-                      <input class="form-control" type="email" name="email" placeholder="Your e-mail address" value=" {{ $email }}" readonly>
+                      <input class="form-control" type="email" name="email" placeholder="Your e-mail address" value="{{$user->email}}" readonly>
                   </div>
               </div>
 
-              <!-- Password input-->
+              <!-- Old Password input-->
               <div class="control-group form-group">
-                  <label for="password" class="control-label">Password:</label>
+                  <label for="password" class="control-label">Old Password:</label>
                   <div class="controls">
-                      <input class="form-control" type="password" name="password" placeholder="Set Password" value="" id="password">
+                      <input class="form-control" type="password" name="old_password" placeholder="Set Password" value="" id="old_password1">
+                  </div>
+              </div>
+              <!-- New Password input-->
+              <div class="control-group form-group">
+                  <label for="password" class="control-label">New Password:</label>
+                  <div class="controls">
+                      <input class="form-control" type="password" name="new_password" placeholder="Set Password" value="" id="new_password1">
                   </div>
               </div>
               <!-- Text input-->
               <div class="control-group form-group">
-                  <label for="password_confirmation" class="control-label">Confirm Password:</label>
+                  <label for="password_confirmation" class="control-label">Confirm New Password:</label>
                   <div class="controls">
-                      <input class="form-control" type="password" name="password_confirmation" placeholder="Set Confirm Password" value="" id="password_confirmation">
+                      <input class="form-control" type="password" name="password_confirmation" placeholder="Set Confirm Password" value="" id="password_confirmation1">
                   </div>
               </div>
               <!-- Button -->
               <div class="control-group form-group">
                   <div class="controls">
-                      <input type="hidden" name="token" value="{{ $token }}">
                       <input class="form-control btn btn-success" type="submit" value="submit">
                   </div>
               </div>
-
           </form>
       	</div>
       </div>
     </div>
   </div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
 <!-- Main Content end -->
 
 <!-- Footer start -->
@@ -126,6 +136,20 @@
 <script src="//widget.manychat.com/216100302459827.js" async="async">
 </script>
 
+<script type="text/javascript">
+
+
+
+$(document).ready(function(){
+
+  
+
+
+});
+
+</script>
 <!-- contains the js files for login and registration-->
-    @include('loginjs')
+{{--
+    include('loginjs')
+--}}
 </html>
