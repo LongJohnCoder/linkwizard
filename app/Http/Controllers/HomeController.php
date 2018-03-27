@@ -97,14 +97,90 @@ class HomeController extends Controller
         return view('settings.reset_password')->with(['email'=>$email,'token'=>$request->token]);
     }
 
+    private function getAllDashboardElements($user , $request) {
+      //code for search based on tags and description if the params are not empty
+      $textToSearch = $request->textToSearch;
+      $tagsToSearch = $request->tagsToSearch;
+      $pageLimit        = ( $request->limit ) ? $request->limit: 4;
+
+      $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
+      $urls       = $ret['urls']->paginate($pageLimit);
+      $count_url  = $ret['count_url'];
+      $tagsToSearch = $ret['tagsToSearch'];
+
+      $count = DB::table('urls')
+          ->selectRaw('count(user_id) AS `count`')
+          ->where('user_id', $user->id)
+          ->groupBy('user_id')
+          ->get();
+
+      $total_links = null;
+        if ($count) {
+            $total_links = $count[0]->count;
+            $limit = LinkLimit::where('user_id', $user->id)->first();
+            if ($limit) {
+                $limit->number_of_links = $total_links;
+                $limit->save();
+            }
+        }
+
+        if ($user->subscribed('main', 'tr5Advanced')) {
+            $subscription_status = 'tr5Advanced';
+            $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+
+        } elseif ($user->subscribed('main', 'tr5Basic')) {
+            $subscription_status = 'tr5Basic';
+            $limit = Limit::where('plan_code', 'tr5Basic')->first();
+        } else {
+            $subscription_status = false;
+            $limit = Limit::where('plan_code', 'tr5free')->first();
+        }
+
+        $filter = [];
+        $dates = [];
+        if (isset($request->from) and isset($request->to)) {
+            $filter['type'] = 'date';
+            $filter['start'] = $request->from;
+            $filter['end'] = date('Y-M-d', strtotime('+1 day', strtotime($request->to)));
+            $start_date = new \DateTime($request->from);
+            $end_date = new \DateTime($request->to);
+            $date_range = new \DatePeriod($start_date, new \DateInterval('P1D'), $end_date);
+            foreach ($date_range as $key => $date) {
+                $dates[$key] = $date->format('M d');
+            }
+        }
+
+         $userId = \Auth::user()->id;
+         $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($userId) {
+           $q->where('user_id',$userId);
+         })->pluck('tag')->toArray();
+
+         return [
+               'tagsToSearch' => $tagsToSearch,
+               'count_url' => $count_url,// dynamic
+               'urlTags' => $urlTags,
+               'user' => $user,
+               'urls' => $urls,// dynamic
+               'subscription_status' => $subscription_status,
+               'limit' => $limit,
+               'total_links' => $total_links,
+               'filter' => $filter,
+               'dates' => $dates,
+               '_plan' => \Session::has('plan') ? \Session::get('plan') : null
+         ];
+    }
+
 
     /**
     * reset password from dashboard settings
     */
     public function resetPasswordSettings(Request $request) {
         if(\Auth::check()) {
+
           $user = \Auth::user();
-          return view('dashboard-settings.reset-password')->with(['user'=>$user]);
+          $arr = $this->getAllDashboardElements($user, $request);
+          return view('dashboard-settings.reset-password', $arr);
+          //return view('dashboard-settings.reset-password')->with(['user'  =>  $user]);
         } else {
           return redirect()->action('HomeController@getIndex')->with('error','Your Session has expired.. Please log in again!');
         }
@@ -1965,78 +2041,8 @@ class HomeController extends Controller
             {
 
                   $user = Auth::user();
-                  //code for search based on tags and description if the params are not empty
-                  $textToSearch = $request->textToSearch;
-                  $tagsToSearch = $request->tagsToSearch;
-                  $pageLimit        = ( $request->limit ) ? $request->limit: 4;
-
-                  $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
-                  $urls       = $ret['urls']->paginate($pageLimit);
-                  $count_url  = $ret['count_url'];
-                  $tagsToSearch = $ret['tagsToSearch'];
-
-                  $count = DB::table('urls')
-                      ->selectRaw('count(user_id) AS `count`')
-                      ->where('user_id', $user->id)
-                      ->groupBy('user_id')
-                      ->get();
-
-                  $total_links = null;
-                    if ($count) {
-                        $total_links = $count[0]->count;
-                        $limit = LinkLimit::where('user_id', $user->id)->first();
-                        if ($limit) {
-                            $limit->number_of_links = $total_links;
-                            $limit->save();
-                        }
-                    }
-
-                    if ($user->subscribed('main', 'tr5Advanced')) {
-                        $subscription_status = 'tr5Advanced';
-                        $limit = Limit::where('plan_code', 'tr5Advanced')->first();
-
-                    } elseif ($user->subscribed('main', 'tr5Basic')) {
-                        $subscription_status = 'tr5Basic';
-                        $limit = Limit::where('plan_code', 'tr5Basic')->first();
-                    } else {
-                        $subscription_status = false;
-                        $limit = Limit::where('plan_code', 'tr5free')->first();
-                    }
-
-                    $filter = [];
-                    $dates = [];
-                    if (isset($request->from) and isset($request->to)) {
-                        $filter['type'] = 'date';
-                        $filter['start'] = $request->from;
-                        $filter['end'] = date('Y-M-d', strtotime('+1 day', strtotime($request->to)));
-                        $start_date = new \DateTime($request->from);
-                        $end_date = new \DateTime($request->to);
-                        $date_range = new \DatePeriod($start_date, new \DateInterval('P1D'), $end_date);
-                        foreach ($date_range as $key => $date) {
-                            $dates[$key] = $date->format('M d');
-                        }
-                    }
-
-                     $userId = \Auth::user()->id;
-                     $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($userId) {
-                       $q->where('user_id',$userId);
-                     })->pluck('tag')->toArray();
-
-                    return view('dashboard2', [
-                    //return view('dashboard.shorten_url', [
-                        'tagsToSearch' => $tagsToSearch,
-                        'count_url' => $count_url,// dynamic
-                        'urlTags' => $urlTags,
-                        'user' => $user,
-                        'urls' => $urls,// dynamic
-                        'subscription_status' => $subscription_status,
-                        'limit' => $limit,
-                        'total_links' => $total_links,
-                        'filter' => $filter,
-                        'dates' => $dates,
-                        '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
-                    ]);
-
+                  $arr = $this->getAllDashboardElements($user, $request);
+                  return view('dashboard2', $arr);
                     //for new
                     // return view('dashboard_new', [
                     //     'count_url' => $count_url,// dynamic
