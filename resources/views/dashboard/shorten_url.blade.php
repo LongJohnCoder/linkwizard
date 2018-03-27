@@ -134,7 +134,7 @@
                 </div>
 
 
-									<div class="normal-box1">
+				<div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Link Preview
                           <input type="checkbox" id="link_preview_selector" name="link_preview_selector">

@@ -35,6 +35,7 @@
 
 <body>
 <!-- Header Start -->
+
 <header class="brandingheader">
     <div class="layer"></div>
     <div class="container">
@@ -51,18 +52,177 @@
             <div class="banner-content">
                 <h2>Make your links manageable.</h2>
                 <p style="margin: 80px">{{config('settings.AD.PLATFORM_NAME')}} {{config('settings.AD.HEADING')}}</p>
-                <form>
-                    <div class="col-md-9">
-                        <div class="row">
-                            <input type="text" id="givenUrl" placeholder="Paste a link to shorten it">
+                <div class="formArea">
+                <div class="formContainer">
+                    <form id="shortenUrlForm">
+                        <div class="col-md-9">
+                            <div class="row">
+                                <input type="text" id="givenUrl" placeholder="Paste a link to shorten it">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="row">
+                                <div id="settingBtn"><i class="fa fa-gear"></i></div>
+                                <input id="swalbtn" type="submit" value="Shorten URL" class="shortenUrlBtn">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="formDropdown" style="display:none;">
+                        <div class="normal-box1">
+                            <div class="normal-header">
+                                <label class="custom-checkbox">Add facebook pixel
+                                <input type="checkbox" id="checkboxAddFbPixelid" name="checkboxAddFbPixelid">
+                                <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="normal-body facebook-pixel">
+                                <p>Paste Your Facebook-pixel-id Here</p>
+                                <input type="number" name="fbPixelid" class="form-control" id="fbPixel_id">
+                            </div>
+                        </div>
+
+                        <div class="normal-box1">
+                            <div class="normal-header">
+                                <label class="custom-checkbox">Add google pixel
+                                <input type="checkbox" id="checkboxAddGlPixelid" name="checkboxAddGlPixelid">
+                                <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="normal-body google-pixel">
+                                <p>Paste Your Google-pixel-id Here</p>
+                                <input type="text" name="glPixelid" class="form-control" id="glPixel_id">
+                            </div>
+                        </div>
+
+                        <div class="normal-box1">
+                            <div class="normal-header">
+                                <label class="custom-checkbox">Link Preview
+                                <input type="checkbox" id="link_preview_selector" name="link_preview_selector">
+                                <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="normal-body link-preview">
+                                <ul>
+                                    <li>
+                                        <label class="custom-checkbox">Use Original
+                                        <input type="checkbox" checked id="link_preview_original" name="link_preview_original">
+                                        <span class="checkmark"></span>
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label class="custom-checkbox">Use Custom
+                                        <input type="checkbox" id="link_preview_custom" name="link_preview_custom">
+                                        <span class="checkmark"></span>
+                                        </label>
+                                    </li>
+                                </ul>
+                                <div class="use-custom">
+
+                                    <div class="white-paneel">
+                                        <div class="white-panel-header">Image</div>
+                                                                        <div class="white-panel-body">
+                                            <ul>
+                                                <li>
+                                                    <label class="custom-checkbox">Use Original
+                                                    <input checked type="checkbox" id="org_img_chk" name="org_img_chk">
+                                                    <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <label class="custom-checkbox">Use Custom
+                                                    <input type="checkbox" id="cust_img_chk" name="cust_img_chk">
+                                                    <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                            <div class="use-custom1 img-inp">
+                                                <input type="file" class="form-control" id="img_inp" name="img_inp">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="white-paneel">
+                                        <div class="white-panel-header">Title</div>
+                                        <div class="white-panel-body">
+                                            <ul>
+                                                <li>
+                                                    <label class="custom-checkbox">Use Original
+                                                    <input checked type="checkbox" id="org_title_chk" name="org_title_chk">
+                                                    <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <label class="custom-checkbox">Use Custom
+                                                    <input type="checkbox" id="cust_title_chk" name="cust_title_chk">
+                                                    <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                            <div class="use-custom1 title-inp">
+                                                <input type="text" class="form-control" id="title_inp" name="title_inp">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="white-paneel">
+                                        <div class="white-panel-header">Description</div>
+                                        <div class="white-panel-body">
+                                            <ul>
+                                                <li>
+                                                    <label class="custom-checkbox">Use Original
+                                                    <input checked type="checkbox" id="org_dsc_chk" name="org_dsc_chk">
+                                                    <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <label class="custom-checkbox">Use Custom
+                                                    <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk">
+                                                    <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                            <div class="use-custom2 dsc-inp">
+                                                <textarea class="form-control" id="dsc_inp" name="dsc_inp"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                                                {{--
+                                    <div class="white-paneel">
+                                        <div class="white-panel-header">URL</div>
+                                        <div class="white-panel-body">
+                                            <ul>
+                                                <li>
+                                                    <label class="custom-checkbox">Use Original
+                                                    <input checked type="checkbox" id="org_url_chk" name="org_url_chk">
+                                                    <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <label class="custom-checkbox">Use Custom
+                                                    <input type="checkbox" id="cust_url_chk" name="cust_url_chk">
+                                                    <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                            <div class="use-custom3 url-inp">
+                                                <input type="text" class="form-control" name="url_inp" id="url_inp">
+                                            </div>
+                                        </div>
+                                    </div>
+                                                                --}}
+
+
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="row">
-                            <input id="swalbtn" type="submit" value="Shorten URL">
-                        </div>
-                    </div>
-                </form>
+
+
+                    
+                </div>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -240,10 +400,346 @@
     </div>
 </section>
 @include('registration.customfooter')
+<div id="BlurBack"></div>
+
 </body>
 
 <!-- ManyChat -->
 <script src="//widget.manychat.com/216100302459827.js" async="async">
+</script>
+<script>
+    $(document).ready(function(){
+        var formPosTop = $(".formContainer").position().top;
+        
+        var clickCount = 0;
+
+        $("#settingBtn").click(function(){
+            var scroll = $(document).scrollTop();
+            //var formOfset = formPosTop + scroll;
+            //alert(scroll)
+            var docH = $(document).height();
+            var shorterUrlForm =  $("#shortenUrlForm").html();
+
+            if(clickCount%2 == 0){
+                $(".formContainer").appendTo("#BlurBack");
+                $("#BlurBack").css("height",docH+"px");
+                $("#BlurBack").fadeIn(500);
+                $(".formContainer").css("top",formPosTop+200 + "px");
+                $(".formContainer").addClass("show");
+                setTimeout(function() {
+                    $(".formDropdown").slideDown();
+                }, 500);
+                
+            }
+            else{
+                $(".formDropdown").slideUp();
+                 setTimeout(function() {
+                    $(".formContainer").appendTo(".formArea");
+                    $("#BlurBack").fadeOut(500);
+                    $(".formContainer").css("top","0px");
+                }, 500);
+            }
+
+            clickCount = clickCount+1;
+            
+            
+        });
+
+
+
+	var maintainSidebar = function(thisInstance) {
+
+		//for url
+		if(thisInstance.id === "org_url_chk") {
+			if(thisInstance.checked) {
+				$('.url-inp').hide();
+				$('#url_inp').val('');
+				$('#url_inp').hide();
+				$("#cust_url_chk").attr("checked",false);
+			} else {
+			}
+		}
+
+		if(thisInstance.id === "cust_url_chk") {
+			if(thisInstance.checked) {
+				$('.url-inp').show();
+				$('#url_inp').show();
+				$("#org_url_chk").attr("checked",false);
+			} else {
+				$('.url-inp').hide();
+				$('#url_inp').hide();
+				$('#url_inp').val('');
+			}
+		}
+
+		//for description
+		if(thisInstance.id === "org_dsc_chk") {
+			if(thisInstance.checked) {
+				$('.dsc-inp').hide();
+				$('#dsc_inp').val('');
+				$('#dsc_inp').hide();
+				$("#cust_dsc_chk").attr("checked",false);
+			} else {
+			}
+		}
+
+		if(thisInstance.id === "cust_dsc_chk") {
+			if(thisInstance.checked) {
+				$('.dsc-inp').show();
+				$('#dsc_inp').show();
+				$("#org_dsc_chk").attr("checked",false);
+			} else {
+				$('.dsc-inp').hide();
+				$('#dsc_inp').hide();
+				$('#dsc_inp').val('');
+			}
+		}
+
+		//for title
+		if(thisInstance.id === "org_title_chk") {
+			if(thisInstance.checked) {
+				$('.title-inp').hide();
+				$('#title_inp').val('');
+				$('#title_inp').hide();
+				$("#cust_title_chk").attr("checked",false);
+			} else {
+			}
+		}
+
+		if(thisInstance.id === "cust_title_chk") {
+			if(thisInstance.checked) {
+				$('.title-inp').show();
+				$('#title_inp').show();
+				$("#org_title_chk").attr("checked",false);
+			} else {
+				$('.title-inp').hide();
+				$('#title_inp').hide();
+				$('#title_inp').val('');
+			}
+		}
+
+		//for image
+		if(thisInstance.id === "org_img_chk") {
+			if(thisInstance.checked) {
+				$('.img-inp').hide();
+				$('#img_inp').val('');
+				$('#img_inp').hide();
+				$("#cust_img_chk").attr("checked",false);
+			} else {
+			}
+		}
+
+		if(thisInstance.id === "cust_img_chk") {
+			if(thisInstance.checked) {
+				$('.img-inp').show();
+				$('#img_inp').show();
+				$("#org_img_chk").attr("checked",false);
+			} else {
+				$('.img-inp').hide();
+				$('#img_inp').hide();
+				$('#img_inp').val('');
+			}
+		}
+
+		//alert(1234);
+		//facebook analytics checkbox for short urls
+		if (thisInstance.id === "checkboxAddFbPixelid") {
+			if(thisInstance.checked) {
+				$('.facebook-pixel').show();
+				$('#fbPixel_id').show();
+			} else {
+
+				$('.facebook-pixel').hide();
+				$('#fbPixel_id').val('');
+				$('#fbPixel_id').hide();
+			}
+		}
+
+		//facebook analytics checkbox for custom urls
+		// if (thisInstance.id === "checkboxAddFbPixelid1" && thisInstance["name"] === "chk_fb_custom") {
+		// 	if(thisInstance.checked) {
+		// 		$('#fbPixelid1').show();
+		// 	} else {
+		// 		$('#fbPixelid1').hide();
+		// 		$('#fbPixelid1').val('');
+		// 	}
+		// }
+
+		//google analytics checkbox for short urls
+		// if (thisInstance.id === "checkboxAddGlPixelid" && thisInstance["name"] === "chk_gl_short") {
+		// 	if(thisInstance.checked) {
+		// 		$('#glPixelid').show();
+		// 	} else {
+		// 		$('#glPixelid').hide();
+		// 		$('#glPixelid').val('');
+		// 	}
+		// }
+
+		//google analytics checkbox for custom urls
+		if (thisInstance.id === "checkboxAddGlPixelid") {
+			if(thisInstance.checked) {
+				$('.google-pixel').show();
+				$('#glPixel_id').show();
+			} else {
+				$('.google-pixel').hide();
+				$('#glPixel_id').hide();
+				$('#glPixel_id').val('');
+			}
+		}
+
+		//addtags for short urls
+
+		if (thisInstance.id === "shortTagsEnable") {
+			if(thisInstance.checked) {
+
+				$('.add-tags').show();
+				$('#shortTags_Area').show();
+      } else {
+        $('.add-tags').hide();
+				$('#shortTags_Area').hide();
+        $("#shortTags_Contents").val('');
+				var select = $(".chosen-select-header");
+        select.find('option').prop('selected', false);
+        select.trigger("chosen:updated");
+
+			}
+		}
+
+
+		if (thisInstance.id === "descriptionEnable") {
+			if(thisInstance.checked) {
+				$('#descriptionArea').show();
+				$('#descriptionContents').show();
+			} else {
+				$('#descriptionContents').hide();
+				$('#descriptionContents').val('');
+				$('#descriptionArea').hide();
+			}
+		}
+
+		if(thisInstance.id === "link_preview_selector" && thisInstance["name"] === "link_preview_selector") {
+			if(thisInstance.checked) {
+				$('.link-preview').show();
+			} else {
+				$('.link-preview').hide();
+			}
+		}
+
+		if(thisInstance.id === 'link_preview_original') {
+			if(thisInstance.checked) {
+				$('#link_preview_custom').attr("checked", false);
+				$('.use-custom').hide();
+			} else {
+				//$('#link_preview_').hide();
+				//$('#link_preview_original').hide();
+			}
+		}
+
+		if(thisInstance.id === 'link_preview_custom') {
+			if(thisInstance.checked) {
+				$('.use-custom').show();
+				$('#link_preview_original').attr("checked",false);
+			} else {
+				//$('#link_preview_').hide();
+				$('.use-custom').hide();
+			}
+		}
+
+	}
+
+	$(document).ready(function() {
+
+		$("#dashboard-search-btn").on('click',function() {
+			console.log('came here : submitting form');
+			var data = $("#dashboard-search-form").serialize();
+			$("#dashboard-search-form").submit();
+		});
+
+
+		$("#dashboard-search").on('click',function() {
+			var tags = $("#dashboard-tags-to-search").tagsinput('items');
+			var text = $("#dashboard-text-to-search").val();
+			console.log('tags :',tags,' text: ',text);
+		});
+
+
+
+
+		$("input[type='checkbox']").on("change", function() {
+      maintainSidebar(this);
+    });
+
+
+
+		$(this).on('click', '.menu-icon', function(){
+	    	$(this).addClass("close");
+	    	$('#userdetails').slideToggle(500);
+	    	$('#myNav1').hide();
+	    	$('#myNav2').hide();
+	    });
+
+	    $("#basic").click(function(){
+	    	$('.menu-icon').addClass("close");
+	    	$('#myNav1').slideToggle(500);
+	    	$('#myNav2').hide();
+	    	$('#userdetails').hide();
+				maintainSidebar(this);
+	    });
+
+	    $("#advanced").click(function(){
+	    	$('.menu-icon').addClass("close");
+	    	$('#myNav2').slideToggle(500);
+	    	$('#myNav1').hide();
+	    	$('#userdetails').hide();
+				maintainSidebar(this);
+	    });
+
+	    $(this).on('click', '.close', function(){
+        	$('.userdetails').hide();
+        	$(this).removeClass("close");
+        });
+
+		$('[data-toggle="tooltip"]').tooltip();
+        $('#hamburger').on('click', function () {
+            $('.sidebar.right').addClass('open', true);
+            $('.sidebar.right').removeClass('close', true);
+        });
+        $('#cross').on('click', function () {
+            $('.sidebar.right').toggleClass('close', true);
+            $('.sidebar.right').removeClass('open', true);
+        });
+        $('#tr5link').on('click', function () {
+            $('.tr5link').addClass('open', true);
+            $('.tr5link').removeClass('close', true);
+        });
+
+        $('#customLink').on('click', function () {
+            $('.sharebar').addClass('open', true);
+            $('.sharebar').removeClass('close', true);
+        });
+        $('#cross2').on('click', function () {
+            $('.sharebar').addClass('close', true);
+            $('.sharebar').removeClass('open', true);
+        });
+        $('#noTr5Link').on('click', function () {
+            swal({
+                type: 'warning',
+                title: 'Notification',
+                text: 'You have maximum shorten links. Please upgrade account to get hassle free services.'
+            });
+        });
+        $('#noCustomLink').on('click', function () {
+            swal({
+                type: 'warning',
+                title: 'Notification',
+                text: 'You have maximum shorten links. Please upgrade account to get hassle free services.'
+            });
+        });
+
+
+	});
+
+    });
 </script>
 
 <!-- contains the js files for login and registration-->

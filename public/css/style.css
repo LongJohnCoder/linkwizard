@@ -555,32 +555,82 @@ header.brandingheader {
 .banner-content hr{
     width: 10%;
 }
-
-.banner-content form{
+.formContainer{
+    width: 70%;
+    margin: 0 auto;
+    position: relative;
+}
+.formContainer form{
     background: rgba(255, 255, 255, 0.5);
     padding: 20px 10px;
     border-radius: 5px;
     display: inline-block;
-    width: 70%;
+    width: 100%;
     margin-top: 50px;
 }
 
-.banner-content form input{
+.formContainer form input{
     width: 98%;
     float: left;
     height: 80px;
-    border-radius: 2px;
+    border-radius: 0 2px 2px 0;
     border: none;
 }
+.formContainer form input.shortenUrlBtn{
+    width:75%;
+}
+.formContainer form #settingBtn{
+    width:25%;
+    height: 80px;
+    font-size: 28px;
+    background: #4C90FF;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border:0;
+    border-right: 2px solid #fff;
+    float: left;
+    cursor: pointer;
+    color:#fff;
+    text-align: center;
+}
+.formContainer form #settingBtn i{
+    padding-top: 27px;
+}
+#BlurBack{
+    background: rgba(0,0,0,0.7);
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    display: none;
+}
 
-.banner-content form input[type='text']{
+.formDropdown{
+    width: 100%;
+    margin: -10px auto 0;
+    padding: 20px;
+    background:#fff;
+    text-align: left;
+    color:#333;
+}
+.formDropdown p{
+font-size: 14px;
+  font-family: 'OpenSans-regular';
+  margin: 0;
+  padding-bottom: 7px;
+}
+.formContainer form input[type='text']{
     padding-left: 20px;
     font-size: 17px;
     color: #000;
 }
-.banner-content form input[type='submit']{
+.formContainer form input[type='submit']{
     font-size: 22px;
     background: #4C90FF;
+    color:#fff;
 }
 
 .userdetails{
@@ -1892,9 +1942,30 @@ footer .social-icon a:last-child{
     }
 }
 
+@media screen and (max-width:1200px){
+    .formContainer form #settingBtn {
+        font-size: 20px;
+    }
+    .formContainer form #settingBtn i {
+    padding-top: 31px;
+    }
+    .formContainer form input[type='submit']{
+        font-size: 20px;
+    }
+}
+
 @media screen and (min-width: 768px) and (max-width: 1199px){
     .nbs-flexisel-item img {
         max-width: 80%;
+    }
+}
+
+@media screen and (max-width:991px){
+    .formContainer form input.shortenUrlBtn {
+        width: 73%;
+    }
+    .formContainer form input[type='text']{
+         margin-bottom: 10px;
     }
 }
 
