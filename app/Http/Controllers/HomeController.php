@@ -432,6 +432,7 @@ class HomeController extends Controller
         $textToSearch = $request->textToSearch;
         $tagsToSearch = $request->tagsToSearch;
         $pageLimit    = ( $request->pageLimit ) ? $request->pageLimit : 4;
+        $currentPage  =  isset($request->currentPage) && $request->currentPage > 0 ? $request->currentPage : 1;
         // if(strlen($textToSearch) > 0 || strlen($tagsToSearch) > 0){
         //   $urls = Url::where('user_id', $user->id);
         //   if(strlen($textToSearch) > 0) {
@@ -458,10 +459,11 @@ class HomeController extends Controller
         //             ->get();
         // }
 
-        $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $request->user_id);
-        $urls       = $ret['urls']->paginate($pageLimit);
-        $count_url  = $ret['count_url'];
+        $skip   = $pageLimit * ( $currentPage - 1 );
 
+        $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $request->user_id);
+        $urls       = $ret['urls']->skip($skip)->limit($pageLimit)->get();
+        $count_url  = $ret['count_url'];
 
         $URLs = [];
         $URLstat = [];

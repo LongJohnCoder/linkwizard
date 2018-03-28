@@ -41,6 +41,18 @@
 
 <script type="text/javascript">
 
+function QueryStringToJSON() {
+    var pairs = location.search.slice(1).split('&');
+
+    var result = {};
+    pairs.forEach(function(pair) {
+        pair = pair.split('=');
+        result[pair[0]] = decodeURIComponent(pair[1] || '');
+    });
+
+    return JSON.parse(JSON.stringify(result));
+}
+
 var appURL = "{{url('/')}}";
 appURL = appURL.replace('https://','');
 appURL = appURL.replace('http://','');
@@ -185,14 +197,14 @@ window.onload = function(){
 		// });
 
 		$("#dashboard-search-btn").on('click',function() {
-			
+
 			$('#limit_page').val($('#dashboard-select').val());
 			var data = $("#dashboard-search-form").serialize();
 			$("#dashboard-search-form").submit();
 		});
 
 		$("#dashboard-select").on('change',function(e) {
-			
+
 			$('#limit_page').val(e.target.value);
 			var data = $("#dashboard-search-form").serialize();
 			$("#dashboard-search-form").submit();
@@ -775,6 +787,11 @@ window.onload = function(){
 						var tagsToSearch = $("#dashboard-tags-to-search").val();
 						var pageLimit = $("#dashboard-select").val();
 						console.log('Page limit '+ pageLimit);
+						var qry 		= QueryStringToJSON();
+						var c_page 	=	1;
+						if(qry['page'] !== undefined) {
+							c_page = qry['page'];
+						}
             $.ajax({
                 type: 'post',
                 url: "{{ route('postFetchChartData') }}",
@@ -783,7 +800,8 @@ window.onload = function(){
 									'_token': '{{ csrf_token() }}',
 									textToSearch : textToSearch,
 									tagsToSearch : tagsToSearch,
-									pageLimit    : pageLimit
+									pageLimit    : pageLimit,
+									currentPage	 : c_page
 								},
                 success: function(response) {
                 	var chartDataStack = [];
