@@ -579,9 +579,6 @@ header.brandingheader {
     border-radius: 0 2px 2px 0;
     border: none;
 }
-.formContainer form input.shortenUrlBtn{
-    width:75%;
-}
 .formContainer form #settingBtn{
     width:25%;
     height: 80px;
@@ -601,6 +598,14 @@ header.brandingheader {
 .formContainer form #settingBtn i{
     padding-top: 27px;
 }
+#swalbtn1{
+    width: 75%;
+    background: #4C90FF;
+    color:#fff;
+    height: 80px;
+    border: 0;
+    font-size: 20px;
+}
 #BlurBack{
     background: rgba(0,0,0,0.7);
     width: 100%;
@@ -609,6 +614,10 @@ header.brandingheader {
     left: 0;
     z-index: 100;
     display: none;
+}
+
+.formContainer .custom-checkbox input[type="checkbox"]{
+    height: auto;
 }
 
 .formDropdown{
@@ -1950,9 +1959,6 @@ footer .social-icon a:last-child{
 }
 
 @media screen and (max-width:1200px){
-    .formContainer form #settingBtn {
-        font-size: 20px;
-    }
     .formContainer form #settingBtn i {
     padding-top: 31px;
     }
@@ -1968,8 +1974,9 @@ footer .social-icon a:last-child{
 }
 
 @media screen and (max-width:991px){
-    .formContainer form input.shortenUrlBtn {
+    #swalbtn1 {
         width: 73%;
+        float: left;
     }
     .formContainer form input[type='text']{
          margin-bottom: 10px;
