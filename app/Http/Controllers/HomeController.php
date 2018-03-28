@@ -1381,14 +1381,16 @@ class HomeController extends Controller
     public function postShortUrlNoLogin(Request $request){
       try
       {
-        //print_r("<pre>");print_r($request->all());exit();
-        //dd($request->all());
-
-        //$displayHtml = 'URl cannot be empty!';
-        //\Session::flash('url_shorten_no_session_displayHTML', $displayHtml);
-        //\Session::flash('url_shorten_no_session_type', 'error');
-        //return redirect()->back()
-        //->with(['url_shorten_no_session_displayHTML'=>'some error' , 'url_shorten_no_session_type'=>'error']);
+        if($request->hasFile('img_inp')) {
+          $imgFile        = $request->file('img_inp');
+          $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
+          $actualFileExtension = $imgFile->getClientOriginalExtension();
+          $validExtensionRegex = '/(jpg|jpeg|png)/i';
+          if (!preg_match($validExtensionRegex, $actualFileExtension)) {
+            $displayHtml = 'Image should be in jpg, jpeg or png format';
+            return redirect()->back()->with(['url_shorten_no_session_displayHTML' => $displayHtml , 'url_shorten_no_session_type' => 'error']);
+          }
+        }
 
         if(\Auth::check()) {
           $userId = \Auth::user()->id;

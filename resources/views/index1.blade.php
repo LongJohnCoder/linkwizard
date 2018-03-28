@@ -54,7 +54,7 @@
                 <p style="margin: 80px">{{config('settings.AD.PLATFORM_NAME')}} {{config('settings.AD.HEADING')}}</p>
                 <div class="formArea">
                 <div class="formContainer">
-                    <form id="shortenUrlForm" method="POST" action="{{route('postShortUrlNoLogin')}}">
+                    <form id="shortenUrlForm" method="POST" action="{{route('postShortUrlNoLogin')}}" enctype="multipart/form-data" files=true>
                         <div class="col-md-9 resForm">
                             <div class="row">
                                 <input type="text" name="url" id="givenUrl" placeholder="Paste a link to shorten it">
