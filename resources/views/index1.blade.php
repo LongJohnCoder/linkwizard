@@ -699,7 +699,7 @@
         	$(this).removeClass("close");
         });
 
-		$('[data-toggle="tooltip"]').tooltip();
+		      //$('[data-toggle="tooltip"]').tooltip();
         $('#hamburger').on('click', function () {
             $('.sidebar.right').addClass('open', true);
             $('.sidebar.right').removeClass('close', true);

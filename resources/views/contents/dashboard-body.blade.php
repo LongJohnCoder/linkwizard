@@ -44,11 +44,8 @@
 				<div class="col-md-6">
 					<div class="tot-counts">
 						<!-- <img src="{{url('/')}}/public/images/barcount.jpg" class="img-responsive"> -->
-
-
-                        <img style="width: 30px; height: auto;" src="{{url('/')}}/public/images/chart-bar.png" class="img-responsive">
-
-						<div class="count"><span>{{$count_url}}</span>total counts</div> <!-- ?count -->
+              <img style="width: 30px; height: auto;" src="{{url('/')}}/public/images/chart-bar.png" class="img-responsive">
+						<div class="count"><span>{{$count_url}}</span>Total Urls</div> <!-- ?count -->
 					</div>
 				</div>
 				<div class="col-md-6">
