@@ -284,6 +284,39 @@
             message: "Please wait a while",
             backgroundColor: "#212230"
         };
+
+
+        $('#swalbtn1').click(function(e) {
+            e.preventDefault();
+            var url = $('#givenUrl').val();
+            var validUrl = ValidURL(url);
+
+            if (url)
+            {
+                if (validUrl) {
+                    HoldOn.open(options);
+                    $("#shortenUrlForm").submit();
+                } else {
+                    var errorMsg = "Enter A Valid URL";
+                    swal({
+                        title: null,
+                        text: errorMsg,
+                        type: "error",
+                        html: true
+                    });
+                }
+            } else {
+                var errorMsg = "Please Enter An URL";
+                swal({
+                    title: null,
+                    text: errorMsg,
+                    type: "warning",
+                    html: true
+                });
+            }
+        });
+
+
         $('#swalbtn').click(function(e) {
             e.preventDefault();
             var url = $('#givenUrl').val();

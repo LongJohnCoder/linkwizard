@@ -40,7 +40,7 @@ Route::group(['prefix' => 'api/v1'],function() {
 
 //before login this url is the base url
 //tr5.* for production */
-Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => ['web','auth']]], function () {
+Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => 'web']], function () {
   Route::get('/', [
       'uses' => 'HomeController@getIndex',
       'as' => 'getIndex',
@@ -54,6 +54,12 @@ Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => ['
   Route::post('forgotPasswordEmail', [
     'uses'  =>  'HomeController@forgotPasswordEmail',
     'as'    =>  'forgotPasswordEmail'
+  ]);
+
+
+  Route::post('postShortUrlNoLogin', [
+    'uses'  =>  'HomeController@postShortUrlNoLogin',
+    'as'    =>  'postShortUrlNoLogin'
   ]);
 
 });

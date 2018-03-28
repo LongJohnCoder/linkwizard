@@ -1378,6 +1378,134 @@ class HomeController extends Controller
       print_r($request->all());die();
     }
 
+    public function postShortUrlNoLogin(Request $request){
+      try
+      {
+        //print_r("<pre>");print_r($request->all());exit();
+        //dd($request->all());
+
+        //$displayHtml = 'URl cannot be empty!';
+        //\Session::flash('url_shorten_no_session_displayHTML', $displayHtml);
+        //\Session::flash('url_shorten_no_session_type', 'error');
+        //return redirect()->back()
+        //->with(['url_shorten_no_session_displayHTML'=>'some error' , 'url_shorten_no_session_type'=>'error']);
+
+        if(\Auth::check()) {
+          $userId = \Auth::user()->id;
+        } else {
+          $userId = 0;
+        }
+
+        //facebook pixel id
+        $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
+        $fbPixelid            = isset($request->fbPixelid) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null;
+
+        //google pixel id
+        $checkboxAddGlPixelid = isset($request->checkboxAddGlPixelid) && $request->checkboxAddGlPixelid == true ? true : false;
+        $glPixelid            = isset($request->glPixelid) && strlen($request->glPixelid) > 0 ? $request->glPixelid : null;
+
+        //set tags and description for search for a url
+        $allowTags            = isset($request->allowTag) && $request->allowTag == true ? true : false;
+        $searchTags           = isset($request->tags) && count($request->tags) > 0 ? $request->tags : null;
+
+        $allowDescription     = isset($request->allowDescription) && $request->allowDescription == true ? true : false;
+        $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
+
+
+        if (strpos($request->actual_url, 'https://') == 0) {
+            $actual_url = str_replace('https://','', $request->url);
+            $protocol = 'https';
+        } else {
+            $actual_url = str_replace('http://','', $request->url);
+            $protocol = 'http';
+        }
+        //print_r($actual_url);die();
+
+        if(!isset($request->url) || strlen(trim($request->url)) == 0) {
+          // return json_encode([
+          //     'status' => 'error',
+          //     'msg'    => 'url cannot be empty!'
+          // ]);
+
+          $displayHtml = 'URl cannot be empty!';
+          //\Session::flash('url_shorten_no_session_displayHTML', $displayHtml);
+          //\Session::flash('url_shorten_no_session_type', 'error');
+          return redirect()->back()->with(['url_shorten_no_session_displayHTML' => $displayHtml , 'url_shorten_no_session_type' => 'error']);
+        }
+
+        $random_string = $this->randomString();
+
+        $url = new Url();
+        $url->actual_url = $actual_url;
+        $url->protocol = $protocol;
+        $url->shorten_suffix = $random_string;
+
+        //$_url = $this->getPageTitle($request->url);
+        //$url->title = $_url;
+        $meta_data = $this->getPageMetaContents($request->url);
+
+        $url = $this->fillUrlDescriptions($url , $request, $meta_data);
+
+        $url->user_id = $userId;
+
+        if ($url->save()) {
+          if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
+
+            $urlfeature = new UrlFeature();
+            $urlfeature->url_id = $url->id;
+            if($checkboxAddFbPixelid && $fbPixelid != null) {
+              $urlfeature->fb_pixel_id = $fbPixelid;
+            }
+            if($checkboxAddGlPixelid && $glPixelid != null) {
+              $urlfeature->gl_pixel_id = $glPixelid;
+            }
+
+            if($urlfeature->save()) {
+
+              $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
+
+              // return response()->json([
+              //       'status'        => 'success',
+              //       'url'           => config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$random_string,
+              //       'redirect_url'  => config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
+              // ]);
+
+              $shortenUrl   = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$random_string;
+              $displayHtml  = "<a href=" . $shortenUrl . " target='_blank' id='newshortlink'>" . $shortenUrl . "</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink'><i class='fa fa-clipboard'></i> Copy</button>";
+              return redirect()->back()->with(['url_shorten_no_session_SURL' => $shortenUrl , 'url_shorten_no_session_type' => 'success']);
+
+            } else {
+              //return response()->json(['status' => 'error']);
+
+              $displayHtml = 'Database connection error. Please try again after some time!';
+              return redirect()->back()->with(['url_shorten_no_session_type' => 'error' , 'url_shorten_no_session_msg' => $displayHtml]);
+            }
+          } else {
+
+              $this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
+
+              // return response()->json([
+              //       'status'        => 'success',
+              //       'url'           => config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$random_string,
+              //       'redirect_url'  => config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/app/url/'.$url->id.'/link_preview'
+              // ]);
+
+              $shortenUrl   = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$random_string;
+              $displayHtml  = "<a href=" . $shortenUrl . " target='_blank' id='newshortlink'>" . $shortenUrl . "</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink'><i class='fa fa-clipboard'></i> Copy</button>";
+              return redirect()->back()->with(['url_shorten_no_session_SURL' => $shortenUrl , 'url_shorten_no_session_type' => 'success']);
+          }
+        } else {
+              $displayHtml = 'Database connection error. Please try again after some time!';
+              return redirect()->back()->with(['url_shorten_no_session_type' => 'error' , 'url_shorten_no_session_msg' => $displayHtml]);
+            //return response()->json(['status' => 'error', 'msg' => 'Database connection error. Please try again after some time!']);
+        }
+      }
+      catch(\Exception $e) {
+        $displayHtml = 'Error : '.$e->getMessage().' line : '.$e->getLine();
+        return redirect()->back()->with(['url_shorten_no_session_type' => 'error' , 'url_shorten_no_session_msg' => $displayHtml]);
+        //return response()->json(['status' => 'error', 'msg' => 'Some error occoured please try again later!']);
+      }
+    }
 
     public function postShortUrlNoSession(Request $request){
       try

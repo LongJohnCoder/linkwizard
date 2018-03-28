@@ -54,16 +54,16 @@
                 <p style="margin: 80px">{{config('settings.AD.PLATFORM_NAME')}} {{config('settings.AD.HEADING')}}</p>
                 <div class="formArea">
                 <div class="formContainer">
-                    <form id="shortenUrlForm">
+                    <form id="shortenUrlForm" method="POST" action="{{route('postShortUrlNoLogin')}}">
                         <div class="col-md-9 resForm">
                             <div class="row">
-                                <input type="text" id="givenUrl" placeholder="Paste a link to shorten it">
+                                <input type="text" name="url" id="givenUrl" placeholder="Paste a link to shorten it">
                             </div>
                         </div>
                         <div class="col-md-3 resForm">
                             <div class="row">
                                 <div id="settingBtn"><i class="fa fa-gear"></i></div>
-                                <input id="swalbtn" type="submit" value="Shorten URL" class="shortenUrlBtn">
+                                <button id="swalbtn1" type="button" class="shortenUrlBtn">Shorten URL</button>
                             </div>
                         </div>
                     <div class="clear"></div>
@@ -219,10 +219,10 @@
                     </div>
                     </form>
 
-                    
+
                 </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -410,7 +410,7 @@
 <script>
     $(document).ready(function(){
         var formPosTop = $(".formContainer").position().top;
-        
+
         var clickCount = 0;
 
         $("#settingBtn").click(function(){
@@ -429,7 +429,7 @@
                 setTimeout(function() {
                     $(".formDropdown").slideDown();
                 }, 500);
-                
+
             }
             else{
                 $(".formDropdown").slideUp();
@@ -441,8 +441,8 @@
             }
 
             clickCount = clickCount+1;
-            
-            
+
+
         });
 
 
@@ -742,6 +742,54 @@
     });
 </script>
 
+
 <!-- contains the js files for login and registration-->
     @include('loginjs')
+
+    <script type="text/javascript">
+    @if(\Session::has('url_shorten_no_session_type'))
+
+      @if(\Session::get('url_shorten_no_session_type') == 'success')
+
+          var options = {
+              theme: "custom",
+              content: '<img style="width:80px;" src="{{config('settings.SITE_LOGO')}}" class="center-block">',
+              message: "Please wait a while",
+              backgroundColor: "#212230"
+          };
+
+          @if(\Session::has('url_shorten_no_session_SURL'))
+          //setTimeout(function() {
+            HoldOn.open(options);
+            var surl = "{{\Session::get('url_shorten_no_session_SURL')}}";
+            var txtToShw = "<a href=" + surl + " target='_blank' id='newshortlink'>" + surl + "</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink'><i class='fa fa-clipboard'></i> Copy</button>";
+            swal({
+                title: "Shorten Url:",
+                text: txtToShw,
+                type: "{{\Session::get('url_shorten_no_session_type')}}",
+                html: true
+            });
+            new Clipboard('#clipboardswal');
+            HoldOn.close();
+          @endif
+          //}, 300);
+      @else
+
+        //error
+        var this_er_msg = 'Some error occoured!';
+        @if(\Session::has('url_shorten_no_session_msg'))
+          this_er_msg = \Session::get('url_shorten_no_session_msg');
+        @endif
+
+        swal({
+            title: null,
+            text: this_er_msg,
+            type: "warning",
+            html: true
+        });
+        HoldOn.close();
+      @endif
+
+    @endif
+    </script>
 </html>
