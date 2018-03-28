@@ -568,6 +568,9 @@ header.brandingheader {
     width: 100%;
     margin-top: 50px;
 }
+.formContainer .clear{
+    display: block;
+}
 
 .formContainer form input{
     width: 98%;
@@ -610,11 +613,15 @@ header.brandingheader {
 
 .formDropdown{
     width: 100%;
-    margin: -10px auto 0;
-    padding: 20px;
-    background:#fff;
+    margin: auto 0;
+    padding: 20px 0 0 0;
     text-align: left;
     color:#333;
+}
+.formDropdown input.form-control{
+    float: none;
+    height: auto;
+    border: 1px solid #ccc;
 }
 .formDropdown p{
 font-size: 14px;
@@ -2040,6 +2047,10 @@ footer .social-icon a:last-child{
     }
 
     .footer-menu li{padding: 0 6px;}
+
+    #shortenUrlForm .resForm{
+        padding-right: 6px;
+    }
 }
 
 @media screen and (max-width: 767px){
@@ -2306,7 +2317,17 @@ footer .social-icon a:last-child{
      footer{text-align: center;}
      .social-icon{text-align: center;}
 
+     #shortenUrlForm .formDropdown input.form-control{
+        width: 100%;
+     }
 
+}
+
+@media screen and (max-width: 514px){
+    #shortenUrlForm .normal-body ul li{
+        padding-bottom: 12px;
+    }
+    
 }
 
 @media screen and (max-width: 480px){

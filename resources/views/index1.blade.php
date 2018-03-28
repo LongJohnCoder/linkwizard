@@ -55,18 +55,18 @@
                 <div class="formArea">
                 <div class="formContainer">
                     <form id="shortenUrlForm">
-                        <div class="col-md-9">
+                        <div class="col-md-9 resForm">
                             <div class="row">
                                 <input type="text" id="givenUrl" placeholder="Paste a link to shorten it">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 resForm">
                             <div class="row">
                                 <div id="settingBtn"><i class="fa fa-gear"></i></div>
                                 <input id="swalbtn" type="submit" value="Shorten URL" class="shortenUrlBtn">
                             </div>
                         </div>
-                    </form>
+                    <div class="clear"></div>
                     <div class="formDropdown" style="display:none;">
                         <div class="normal-box1">
                             <div class="normal-header">
@@ -217,7 +217,7 @@
                             </div>
                         </div>
                     </div>
-
+                    </form>
 
                     
                 </div>
