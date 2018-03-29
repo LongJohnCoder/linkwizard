@@ -6,9 +6,9 @@
 				<div class="col-md-8 col-sm-8">
 					<div class="footer-menu">
 						<ul>
-							<li><a href="#">About</a></li>
-							<li><a href="#">Features</a></li>
-							<li><a href="#">Blog</a></li>
+							<li><a href="/about">About</a></li>
+							<li><a href="/features">Features</a></li>
+							<li><a href="/blog">Blog</a></li>
 							<li><a href="#">FAQ</a></li>
 							<li><a href="#">Terms</a></li>
 							<li><a href="#">Contact</a></li>

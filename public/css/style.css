@@ -1975,7 +1975,7 @@ footer .social-icon a:last-child{
 
 @media screen and (max-width:991px){
     #swalbtn1 {
-        width: 73%;
+        width: 75%;
         float: left;
     }
     .formContainer form input[type='text']{
@@ -2058,6 +2058,12 @@ footer .social-icon a:last-child{
     #shortenUrlForm .resForm{
         padding-right: 6px;
     }
+    footer ul{margin-top:18px;}
+    .formContainer{width: 90%;}
+    .formContainer form input{width:100%;}
+    #shortenUrlForm .resForm{padding-right: 15px;}
+
+
 }
 
 @media screen and (max-width: 767px){
@@ -2327,6 +2333,7 @@ footer .social-icon a:last-child{
      #shortenUrlForm .formDropdown input.form-control{
         width: 100%;
      }
+     .formContainer form input[type="text"]{font-size: 15px;}
 
 }
 
@@ -2537,7 +2544,7 @@ border-radius: 0;
 .white-paneel .white-panel-body{padding: 13px;}
 
 .white-panel-body ul{margin: 0; padding: 0;}
-.white-panel-body ul li{margin: 0; padding: 0 20px 0 0; display: inline-block; list-style: none;}
+.white-panel-body ul li{margin: 0 0 12px; padding: 0 16px 0 0; display: inline-block; list-style: none;}
 
 .use-custom1{display: none; padding: 21px 0 5px;}
 .use-custom2{display: none; padding: 21px 0 5px;}
@@ -2595,3 +2602,25 @@ ul.pagination li.active{border-left: 0 !important;}
      polar: true,
      type: 'line'
   }
+
+
+
+
+@media screen and (max-width: 767px){ 
+
+.custom-table table tr td:nth-child(2){width:auto;}
+.normal-box label{text-align: left;}
+.long-url{max-width: none;}
+
+
+}
+
+@media screen and (max-width: 600px){ 
+
+.normal-body input.form-control{width:100%;}
+.footer-menu li{margin: 10px 6px 0;}
+.normal-body ul{padding: 0;}
+.normal-body ul li{padding: 0 5px 0 0;}
+
+
+}

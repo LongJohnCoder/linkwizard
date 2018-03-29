@@ -1,5 +1,5 @@
-footer{position: fixed; width: 100%; bottom: 0; z-index: 99;}
-.main-content{margin-bottom: 164px; }
+/*footer{position: fixed; width: 100%; bottom: 0; z-index: 99;}*/
+.main-content{/*margin-bottom: 164px;*/ margin-bottom: 40px; min-height: calc(100vh - 40px);}
 
 
 @media screen and (max-width: 768px) {
@@ -7,3 +7,9 @@ footer{position: fixed; width: 100%; bottom: 0; z-index: 99;}
 footer{position: relative; width: auto; bottom: 0;}
 
 }
+
+/*@media screen and (max-width: 767px) {
+
+.main-content{margin-bottom: 80px;}
+
+}*/

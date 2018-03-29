@@ -50,7 +50,7 @@ div.bhoechie-tab-menu {
 .dashboard-select {
     height: 26px;
     font-size: 12px;
-    padding: 6px;
+    padding: 3px;
 }
 
 
@@ -328,3 +328,17 @@ p.count i {
 
 
 .form-group .bootstrap-tagsinput{padding: 10px 12px; display: block; min-height: 44px;}
+
+
+
+@media only screen and (max-width: 400px) {
+
+.dashboard-select{width:60px;}
+
+
+}
+
+
+
+
+
