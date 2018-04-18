@@ -1687,6 +1687,7 @@ class HomeController extends Controller
               $status           = 'success';
               $url_shortened    = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$random_string;
               $url_to_redirect  = route('getLinkPreview',$url->id);
+
               return redirect(route('getLinkPreview',$url->id))->with('success', 'Url Shortened Successfully');
           }
         } else {
@@ -1697,6 +1698,28 @@ class HomeController extends Controller
       }
       catch(\Exception $e) {
         return redirect()->back()->with('error', $e->getMessage().' line :'.$e->getLine());
+      }
+    }
+
+    public function zf(Request $request)
+    {
+      try {
+
+        foreach ($request->all() as $key => $val) {
+          $z_array[$key] = $val;
+        }
+
+        return \Response::json(array(
+                      'status' => true,
+                      'response' => $z_array,
+                      'message' => 'Your Lists'
+                    ), 200);
+      } catch (\Exception $e) {
+
+        return \Response::json(array(
+                      'status' => false,
+                      'message' => 'List Not Found'
+                    ), 403);
       }
     }
 
@@ -1749,13 +1772,15 @@ class HomeController extends Controller
 
         if (strpos($request->actual_url, 'https://') == 0) {
             $actual_url = str_replace('https://', null, $request->actual_url);
+            $protocol = 'https';
         } else {
             $actual_url = str_replace('http://', null, $request->actual_url);
+            $protocol = 'http';
         }
         $url = new Url();
-        $url->actual_url = $actual_url;
-        $url->shorten_suffix = $request->custom_url;
-
+        $url->actual_url      = $actual_url;
+        $url->shorten_suffix  = $request->custom_url;
+        $url->protocol        = $protocol;
         //$_url = $this->getPageTitle($request->actual_url);
         //$url->title = $_url;
 
