@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use DB;
 use App\Http\Requests;
 use App\User;
 use App\Subscription;
@@ -104,7 +104,7 @@ class ApiController extends Controller
             return \Response::json([
               "http_code" => 200,
               "status"    => "error",
-              "message"   => "User delete successfull"
+              "message"   => "User delete successfully."
             ],200);
           } else {
             return \Response::json([
@@ -130,5 +130,82 @@ class ApiController extends Controller
       ],500);
     }
   }
-
+    /**
+     * Webhook to create new subscriber
+     * Request @params Company Name, Email,
+     */
+    public function createNewSubscriber(Request $request){
+      $cardName = array();
+      $token = ($request->token!='')?$request->token:'';
+      $email = ($request->email!='')?$request->email:'';
+      $userFullName = ($request->userFullName!='')?$request->userFullName:'';
+      $password = ($request->password!='')?$request->password:123456;
+      $choosePlan = ($request->choosePlan!='')?$request->choosePlan:'';
+      
+      try{
+        DB::beginTransaction();
+        $v = \Validator::make($request->all(), [
+          'email' => 'required|email|unique:users',
+          ]);
+          if($v->fails()) {
+              $response = [
+                  "status"    => false,
+                  'message' => "Please enter correct email format or email already present!",
+              ];
+              $responseCode = 400;
+          }
+          if ($token != config('api.token')) {
+            $response = [
+              "status"    => false,
+              'message' => "Authentication token incorrect!",
+          ];
+          $responseCode = 400;
+          } else {
+              $user               = new User();
+              $user->name         = $userFullName;
+              $user->email        = $email;
+              $user->is_admin     = 0;
+              $user->password     = bcrypt($password);
+              if ($user->save()) {
+              if($choosePlan!=''){
+                      $create_subscription = new Subscription();
+                      $create_subscription->user_id = $user->id;
+                      $create_subscription->name = config('api.subscription.name');
+                      $create_subscription->stripe_id = '';
+                      $create_subscription->stripe_plan = $choosePlan;
+                      $create_subscription->quantity = 1;
+                      $create_subscription->save();
+                      $response = [
+                          "status"    => true,
+                          'message' => "User created successfully.",
+                      ];
+                      $responseCode = 200;
+              } else {
+                  $response = [
+                      "status"    => true,
+                      'message' => "User created successfully.",
+                  ];
+                  $responseCode = 200;
+              }
+          }else {
+          DB::rollback();
+          $response = [
+              "status"    => false,
+              'message' => $exp->getMessage(),
+          ];
+          $responseCode = 200;
+        }
+      }
+      } catch (Exception $exp){
+          DB::rollback();
+          $response = [
+              "status"    => false,
+              'message' => $exp->getMessage(),
+          ];
+          $responseCode = 200;
+      } finally {
+          DB::commit();
+      }
+      return response()->json($response, $responseCode);
+  }
 }
