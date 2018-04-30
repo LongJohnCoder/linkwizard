@@ -188,7 +188,7 @@ class ApiController extends Controller
                   $responseCode = 200;
               }
           }else {
-          DB::rollback();
+          DB::rollBack();
           $response = [
               "status"    => false,
               'message' => $exp->getMessage(),
@@ -197,7 +197,7 @@ class ApiController extends Controller
         }
       }
       } catch (Exception $exp){
-          DB::rollback();
+          DB::rollBack();
           $response = [
               "status"    => false,
               'message' => $exp->getMessage(),
