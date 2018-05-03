@@ -7,6 +7,7 @@ use DB;
 use App\Http\Requests;
 use App\User;
 use App\Subscription;
+use Validator;
 
 class ApiController extends Controller
 {
@@ -93,17 +94,17 @@ class ApiController extends Controller
     try {
       if ($token != config('api.token')) {
         return \Response::json([
-          "http_code" => 400,
+          "http_code" => 403,
           "status"    => "error",
           "message"   => "Authentication token incorrect"
-        ],400);
+        ],403);
       } else {
         $user = User::where('email', $email)->first();
         if ($user) {
           if ($user->delete()) {
             return \Response::json([
               "http_code" => 200,
-              "status"    => "error",
+              "status"    => "success",
               "message"   => "User delete successfully."
             ],200);
           } else {
@@ -115,10 +116,10 @@ class ApiController extends Controller
           }
         } else {
           return \Response::json([
-            "http_code" => 400,
+            "http_code" => 404,
             "status"    => "error",
             "message"   => "User not found"
-          ],400);
+          ],404);
         }
       }
 
@@ -144,22 +145,25 @@ class ApiController extends Controller
       
       try{
         DB::beginTransaction();
-        $v = \Validator::make($request->all(), [
+        $v = Validator::make($request->all(), [
           'email' => 'required|email|unique:users',
           ]);
           if($v->fails()) {
               $response = [
+                  "http_code" => 403,
                   "status"    => false,
                   'message' => "Please enter correct email format or email already present!",
               ];
-              $responseCode = 400;
+              $responseCode = 403;
+              return response()->json($response, $responseCode);
           }
           if ($token != config('api.token')) {
             $response = [
+              "http_code" => 403,
               "status"    => false,
               'message' => "Authentication token incorrect!",
           ];
-          $responseCode = 400;
+          $responseCode = 403;
           } else {
               $user               = new User();
               $user->name         = $userFullName;
@@ -176,33 +180,37 @@ class ApiController extends Controller
                       $create_subscription->quantity = 1;
                       $create_subscription->save();
                       $response = [
+                          "http_code" => 201,
                           "status"    => true,
                           'message' => "User created successfully.",
                       ];
-                      $responseCode = 200;
+                      $responseCode = 201;
               } else {
                   $response = [
+                      "http_code" => 201,
                       "status"    => true,
                       'message' => "User created successfully.",
                   ];
-                  $responseCode = 200;
+                  $responseCode = 201;
               }
           }else {
           DB::rollBack();
           $response = [
+              "http_code" => 404,
               "status"    => false,
               'message' => $exp->getMessage(),
           ];
-          $responseCode = 200;
+          $responseCode = 404;
         }
       }
       } catch (Exception $exp){
           DB::rollBack();
           $response = [
+              "http_code" => 500,
               "status"    => false,
               'message' => $exp->getMessage(),
           ];
-          $responseCode = 200;
+          $responseCode = 500;
       } finally {
           DB::commit();
       }
