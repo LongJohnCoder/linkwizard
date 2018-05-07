@@ -135,7 +135,7 @@ header("Access-Control-Allow-Origin: *");
 			@if($url->uploaded_path)
 				<img style="width:650px; height:380px" src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
 			@else
-				<img src="{{url('/')}}/public/images/Git-Icon-1788C.png" class="img-responsive">
+				<img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
 			@endif
 			</div>
             <br><br><br>

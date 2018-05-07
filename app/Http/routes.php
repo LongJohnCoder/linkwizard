@@ -24,6 +24,12 @@ Route::get('/test12',function(){
     dd(env('PUBLISHABLE_KEY'));
 });
 
+
+Route::get('/blog' , 'HomeController@blog');
+Route::get('/pricing' , 'HomeController@pricing');
+Route::get('/features' , 'HomeController@features');
+Route::get('/about' , 'HomeController@about');
+
 /* API Routes */
 Route::group(['prefix' => 'api/v1'],function() {
   Route::post('post-subscriber',[
@@ -86,11 +92,6 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
     Route::get('/api_test' , 'HomeController@api_test');
 
     Route::get('/short_url_api' , 'HomeController@short_url_api');
-
-    Route::get('/blog' , 'HomeController@blog');
-    Route::get('/pricing' , 'HomeController@pricing');
-    Route::get('/features' , 'HomeController@features');
-    Route::get('/about' , 'HomeController@about');
 
     // Route::get('/{url}', [
     //     'uses' => 'HomeController@getRequestedUrl',
