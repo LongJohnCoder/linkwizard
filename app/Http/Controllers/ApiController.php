@@ -26,18 +26,18 @@ class ApiController extends Controller
       ]);
       if($v->fails()) {
         return \Response::json([
-          "http_code" => 400,
-          "status"    => "error",
+          "http_code" => 200,
+          "status"    => "Success",
           "message"   => "email address format is incorrect or is already present!"
-        ],400);
+        ],200);
       }
 
       if ($token != config('api.token')) {
         return \Response::json([
-          "http_code" => 400,
-          "status"    => "error",
+          "http_code" => 200,
+          "status"    => "Success",
           "message"   => "Authentication token incorrect"
-        ],400);
+        ],200);
       } else {
 
         $name   = explode('@',$email);
@@ -61,24 +61,24 @@ class ApiController extends Controller
 
             return \Response::json([
               "http_code" => 200,
-              "status"    => "success",
+              "status"    => "Success",
               "message"   => "User created successfully with default password!"
             ],200);
 
         } else {
           return \Response::json([
-            "http_code" => 500,
-            "status"    => "error",
+            "http_code" => 200,
+            "status"    => "Success",
             "message"   => "Database connectivity error.. Please try after sometime!"
-          ],500);
+          ],200);
         }
       }
     } catch (Exception $e) {
       return \Response::json([
-        "http_code" => 500,
-        "status"    => "error",
+        "http_code" => 200,
+        "status"    => "Success",
         "message"   => $e->getMessage()
-      ],500);
+      ],200);
     }
   }
 
@@ -94,41 +94,41 @@ class ApiController extends Controller
     try {
       if ($token != config('api.token')) {
         return \Response::json([
-          "http_code" => 403,
-          "status"    => "error",
+          "http_code" => 200,
+          "status"    => "Success",
           "message"   => "Authentication token incorrect"
-        ],403);
+        ],200);
       } else {
         $user = User::where('email', $email)->first();
         if ($user) {
           if ($user->delete()) {
             return \Response::json([
               "http_code" => 200,
-              "status"    => "success",
+              "status"    => "Success",
               "message"   => "User delete successfully."
             ],200);
           } else {
             return \Response::json([
-              "http_code" => 500,
-              "status"    => "error",
+              "http_code" => 200,
+              "status"    => "Success",
               "message"   => "Database error"
-            ],500);
+            ],200);
           }
         } else {
           return \Response::json([
-            "http_code" => 404,
-            "status"    => "error",
+            "http_code" => 200,
+            "status"    => "Success",
             "message"   => "User not found"
-          ],404);
+          ],200);
         }
       }
 
     } catch (Exception $e) {
       return \Response::json([
-        "http_code" => 500,
-        "status"    => "error",
+        "http_code" => 200,
+        "status"    => "Success",
         "message"   => $e->getMessage()
-      ],500);
+      ],200);
     }
   }
     /**
@@ -150,20 +150,20 @@ class ApiController extends Controller
           ]);
           if($v->fails()) {
               $response = [
-                  "http_code" => 403,
-                  "status"    => false,
+                  "http_code" => 200,
+                  "status"    => "Success",
                   'message' => "Please enter correct email format or email already present!",
               ];
-              $responseCode = 403;
+              $responseCode = 200;
               return response()->json($response, $responseCode);
           }
           if ($token != config('api.token')) {
             $response = [
-              "http_code" => 403,
-              "status"    => false,
+              "http_code" => 200,
+              "status"    => "Success",
               'message' => "Authentication token incorrect!",
           ];
-          $responseCode = 403;
+          $responseCode = 200;
           } else {
               $user               = new User();
               $user->name         = $userFullName;
@@ -180,37 +180,37 @@ class ApiController extends Controller
                       $create_subscription->quantity = 1;
                       $create_subscription->save();
                       $response = [
-                          "http_code" => 201,
-                          "status"    => true,
+                          "http_code" => 200,
+                          "status"    => "Success",
                           'message' => "User created successfully.",
                       ];
-                      $responseCode = 201;
+                      $responseCode = 200;
               } else {
                   $response = [
-                      "http_code" => 201,
-                      "status"    => true,
+                      "http_code" => 200,
+                      "status"    => "Success",
                       'message' => "User created successfully.",
                   ];
-                  $responseCode = 201;
+                  $responseCode = 200;
               }
           }else {
           DB::rollBack();
           $response = [
-              "http_code" => 404,
-              "status"    => false,
+              "http_code" => 200,
+              "status"    => "Success",
               'message' => $exp->getMessage(),
           ];
-          $responseCode = 404;
+          $responseCode = 200;
         }
       }
       } catch (Exception $exp){
           DB::rollBack();
           $response = [
-              "http_code" => 500,
-              "status"    => false,
+              "http_code" => 200,
+              "status"    => "Success",
               'message' => $exp->getMessage(),
           ];
-          $responseCode = 500;
+          $responseCode = 200;
       } finally {
           DB::commit();
       }
