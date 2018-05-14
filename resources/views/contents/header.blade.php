@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="col-md-4 col-sm-4">
 				<div class="logo">
-					 <a href="{{url('/')}}/about"><img src="{{config('settings.SITE_LOGO')}}" class="img-responsive"></a>
+					 <a href="{{route('getIndex')}}"><img id="tier5_us" src="{{config('settings.SITE_LOGO')}}" class="img-responsive" alt="use linkwizard logo"></a>
 				</div>
 			</div>
 

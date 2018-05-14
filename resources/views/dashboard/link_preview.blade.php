@@ -44,7 +44,7 @@ $key = 0;
                   $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
                 }
               @endphp
-
+                
               <div class="row">
                   <div class="col-md-2 col-sm-2"><strong>Redirection link:</strong></div>
                   <div class="col-md-10 col-sm-10">

@@ -8,6 +8,15 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 }
 header("Access-Control-Allow-Origin: *");
 
+/* to check query string, 0 means no query string & 1 means url contains query string */
+$query_string = '0';
+$query_link = '';
+if(!empty(Request::query()))
+{
+    $query_string = '1';
+    $query_link = Request::query();
+}
+
 @endphp
 
 <!DOCTYPE html>
@@ -65,6 +74,10 @@ header("Access-Control-Allow-Origin: *");
     @if(strlen($url->twitter_image) > 0)
       <meta name="twitter:image" content="{{$url->twitter_image}}" />
     @endif
+
+    
+    
+
 
     <meta name="twitter:card" content="summary"  />
     <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
@@ -148,6 +161,9 @@ header("Access-Control-Allow-Origin: *");
 			in <span id="txt_">{{$url->redirecting_time / 1000 }}</span> sec
 		</div>
 	</div>
+
+  {{--  redirecting js script  --}}
+
 	<script type="text/javascript">
 
   var str = "{{$url->actual_url}}";
@@ -156,6 +172,18 @@ header("Access-Control-Allow-Origin: *");
   } else {
     var URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
   }
+
+  /* Url for query string */
+  if({{$query_string}}==1)
+  {
+    URL_TO_REDIRECT = URL_TO_REDIRECT+"?"+"{{$query_link}}";
+  }
+  /* Actual url */
+  if({{$query_string}}==0)
+  {
+    URL_TO_REDIRECT = URL_TO_REDIRECT;
+  }
+
     $(document).ready(function() {
         var sec = '{{$url->redirecting_time}}' / 1000;
 		window.setInterval(function(){
