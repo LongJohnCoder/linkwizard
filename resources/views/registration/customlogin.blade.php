@@ -38,8 +38,8 @@
 		        	<input type="submit" value="sign in" id="signinButton">
               <a href="{{route('forgotPassword')}}">Forgot Password</a>
 	        	</div>
-	        	<p>Don't have an account?</p>
-	        	<a href="#" id="signup1" data-toggle="modal" data-target="#signup">sign up</a>
+	        	<!--<p>Don't have an account?</p>
+	        	<a href="#" id="signup1" data-toggle="modal" data-target="#signup">sign up</a>-->
 	        </form>
 	    </div>
     </div>

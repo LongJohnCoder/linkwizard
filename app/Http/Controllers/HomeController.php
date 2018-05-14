@@ -21,7 +21,7 @@ use App\UrlSearchInfo;
 use App\UrlTag;
 use App\UrlTagMap;
 use App\PasswordReset;
-
+use Mail;
 use App\Http\Requests\ForgotPasswordRequest;
 
 class HomeController extends Controller
@@ -2578,6 +2578,22 @@ class HomeController extends Controller
         ]);
     }
 
+    public function requestForPrice(Request $request) {
+        $emailcontent = array (
+            'userName' => $request->input('userName'),
+            'userEmail' => $request->input('userEmail'),
+            'userPhone' => $request->input('userPhone'),
+            'userMsg' => $request->input('userMsg')
+            );
+            Mail::send('mail.priceRequest', $emailcontent, function($message)
+            {
+            $message->to(env('TO_PRICING_EMAIL'),'Pricing Request for LinkWizard')
+                    ->from($request->input('userEmail'))
+                    ->subject('Price request for LinkWizard');
+            });
+             
+            return 'MessageSent';
+    }
 
     /**
      * Get an URL id on AJAX request and delete from db.

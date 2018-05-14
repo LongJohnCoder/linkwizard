@@ -15,7 +15,6 @@
 
 <script src="{{url('/')}}/public/js/jquery.min.js"></script>
 <script src="{{url('/')}}/public/js/bootstrap.min.js"></script>
-
 <link rel="stylesheet" type="text/css" href="https://t4t5.github.io/sweetalert/dist/sweetalert.css" />
 
 <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
@@ -27,6 +26,7 @@
 <link href="{{ URL::to('/').'/public/resources/css/styles.css'}}" rel="stylesheet" />
 <link href="{{ URL::to('/').'/public/resources/css/queries.css'}}" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js" integrity="sha256-fvFKHgcKai7J/0TM9ekjyypGDFhho9uKmuHiFVfScCA=" crossorigin="anonymous"></script>
 </head>
 <body>
 <!-- Header Start -->
@@ -56,13 +56,63 @@
 			<div class="row">
 				<div class="col-md-12">
 					<h1>Our service plans</h1>
-					<p>Lorem Ipsum is simply dummy text of the printin.</p>
-					<hr>
+					<p>For pricing details contact us at <a href="tel:+15022890035">(502)-289-0035</a></p>
+					<p>OR</p>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-4 col-sm-4">
-					<div class="planbox" id="noPlan">
+      <div class="col-md-12">
+        <div class="well well-sm">
+        <div id="successMsg" style="color: green" class="text-center"></div>
+        <div id="errorMsg" style="color: red" class="text-center"></div>
+          <form class="form-horizontal" action="" id="price-request-form" method="post">
+          <fieldset>
+            <h2 class="text-center">Contact us</h2>
+            <!-- Name input-->
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="name">Name</label>
+              <div class="col-md-9">
+                <input name="contact_name" type="text" placeholder="Your name" id="conatct-Name" class="form-control" required="required">
+              </div>
+            </div>
+    
+            <!-- Email input-->
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="email">E-mail</label>
+              <div class="col-md-9">
+                <input name="contact_email" type="email" placeholder="Your email" id="conatct-Email" class="form-control" required="required">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="email">Phone</label>
+              <div class="col-md-9">
+                <input name="conatct_phone" type="phone" placeholder="Your phone" id="conatct-Phone" class="form-control" required="required">
+                <span class="invalidContactNumber" style="color: red"></span>
+              </div>
+            </div>
+            
+    
+            <!-- Message body -->
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="message">Message</label>
+              <div class="col-md-9">
+                <textarea class="form-control" id="conatct-Message" name="conatct_message" placeholder="Please enter your message here..." rows="5"></textarea>
+              </div>
+            </div>
+    
+            <!-- Form actions -->
+            <div class="form-group">
+              <div class="col-md-12 text-right">
+                <button type="submit" class="btn btn-primary btn-lg" id="requestForPricing">Submit</button>
+              </div>
+            </div>
+          </fieldset>
+          </form>
+        </div>
+      </div>
+
+					<!--<div class="planbox" id="noPlan">
 						<h2>free</h2>
 						<div class="value">
 							$<span> 0 / </span>month per user
@@ -115,7 +165,7 @@
 						</ul>
 							<a href="#" data-toggle="modal" data-target="#signup" id="new_tr5Advanced">Subscribe now</a>
 					</div>
-				</div>
+				</div>-->
 			</div>
 		</div>
 	</div>
@@ -194,8 +244,26 @@
 
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script src="https://checkout.stripe.com/checkout.js"></script>
-
 <script type="text/javascript">
+
+ $(document).ready(function() {
+	 $("#conatct-Phone").on('blur', function() {
+		  validateUSNumber(this);
+		});
+		function validateUSNumber(selector) {
+			var a = $(selector).val();
+    		var filter = /^(1\s?)?((\([0-9]{3}\))|[0-9]{3})[\s\-]?[\0-9]{3}[\s\-]?[0-9]{4}$/;
+    		if (filter.test(a)) {
+        		$('.invalidContactNumber').hide();
+				$('#requestForPricing').prop("disabled",false);
+    		}
+    		else {
+			$('.invalidContactNumber').text("Invalid US Phone Number");
+        	$('.invalidContactNumber').show();
+			$('#requestForPricing').prop("disabled",true);
+    		}
+		 }
+ });
 
 	Stripe.setPublishableKey('pk_test_NeErELVu7Qbv59BWm0c7HQT1');
 
@@ -230,7 +298,35 @@
 		$('#_plan').val(2);
 		$('#__plan').val(2);
 	});
-
+                $('#price-request-form').submit(function (event) {
+                    event.preventDefault();
+                    var data = {
+                        "userName": $('#conatct-Name').val(),
+                        "userEmail": $('#conatct-Email').val(),
+                        "userPhone": $('#conatct-Phone').val(),
+                        "userMsg": $('#conatct-Message').val()
+                    };
+                    $.ajax({
+                        type: "post",
+                        url: "{{ route('priceRequest') }}",
+                        data: {
+                            userName: $('#conatct-Name').val(),
+                            userEmail: $('#conatct-Email').val(),
+                            userPhone: $('#conatct-Phone').val(),
+                            userMsg: $('#conatct-Message').val(),
+                        },
+                        success: function (response) {
+                            if(response == 'MessageSent'){
+                                $('#successMsg').append("Mail Send Successfully");
+                                console.log("Mail Send Successfully");
+                            } else {
+                                console.log("Sorry failed");
+                                $('#errorMsg').append("Sorry failed");
+                            }
+                        }
+                    });
+                    return false;
+                });
 </script>
 
 

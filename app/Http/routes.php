@@ -24,6 +24,10 @@ Route::get('/test12',function(){
     dd(env('PUBLISHABLE_KEY'));
 });
 
+Route::post('priceRequest', [
+    'uses' => 'HomeController@requestForPrice',
+    'as' => 'priceRequest',
+]);
 
 Route::get('/blog' , 'HomeController@blog');
 Route::get('/pricing' , 'HomeController@pricing');
