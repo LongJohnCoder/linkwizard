@@ -8,13 +8,13 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 }
 header("Access-Control-Allow-Origin: *");
 
-/* to check query string, 0 means no query string & 1 means url contains query string */
+/* to check query string */
 $query_string = '0';
 $query_link = '';
-if(!empty(Request::query()))
+if(!empty($_SERVER['QUERY_STRING']))
 {
     $query_string = '1';
-    $query_link = Request::query();
+    $query_link = $_SERVER['QUERY_STRING'];
 }
 
 @endphp
