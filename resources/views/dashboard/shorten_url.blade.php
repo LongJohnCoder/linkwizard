@@ -14,7 +14,6 @@
 <!-- Date time picker -->
 <script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>
 <link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-
 <style>
     /* hidden display div for link schedule panel */
 
@@ -27,8 +26,6 @@
         padding: 10px;
     }
 </style>
-
-
 <script>
     $(document).ready(function () {
         $('#datepicker').datetimepicker({
@@ -311,7 +308,6 @@
                         <input type="text" name="redirect_url" id="expirationUrl">
                     </div>
                 </div>
-
                 <div class="normal-box1">
                     <div class="normal-header">
                         <label class="custom-checkbox">Add Schedules for the link
@@ -383,8 +379,7 @@
                             {{--<button class="btn btn-sm btn-success">Next</button>--}}
                     </div>
                 </div>
-
-								{{csrf_field()}}
+				{{csrf_field()}}
                 <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
 							</form>
 
@@ -892,7 +887,6 @@ window.onload = function(){
                 $('#expirationTZ').prop('required', false);
             }
         }
-
         if(thisInstance.id === 'addSchedule'){
 		    if(thisInstance.checked){
 		        $('#scheduleArea').show();

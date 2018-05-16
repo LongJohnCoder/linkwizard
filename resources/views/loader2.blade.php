@@ -1,50 +1,81 @@
 @php
-$user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
-//dd($_SERVER);
-if (isset($_SERVER['HTTP_REFERER'])) {
-    $referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-} else {
-    $referer = parse_url("{{ route('getIndex') }}", PHP_URL_HOST);
-}
-header("Access-Control-Allow-Origin: *");
+    $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
+    //dd($_SERVER);
+    if (isset($_SERVER['HTTP_REFERER'])) {
+        $referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
+    } else {
+        $referer = parse_url("{{ route('getIndex') }}", PHP_URL_HOST);
+    }
+    header("Access-Control-Allow-Origin: *");
 
-/* to check query string */
-$query_string = '0';
-$query_link = '';
-if(!empty($_SERVER['QUERY_STRING']))
-{
-    $query_string = '1';
-    $query_link = $_SERVER['QUERY_STRING'];
-}
+    /* to check query string */
+    $query_string = '0';
+    $query_link = '';
+    // is_expiry the status of the 1 = no expiry 2 = expiry with redirection
+    $is_expire = 0;
+    $redirect_url = '';
+    if(!empty($_SERVER['QUERY_STRING']))
+    {
+        $query_string = '1';
+        $query_link = $_SERVER['QUERY_STRING'];
+    }
+
+    /* check if  url has expiry date */
+
+    if(!empty($url->date_time))
+    {
+        $date1 = date_create($url->date_time ,timezone_open($url->timezone));
+        $date2 = date_create(date('Y-m-d H:i:s'));
+        $diff=date_diff($date1,$date2);
+        if($date1>$date2)
+        {
+            /*Url Not Expired*/
+            $is_expire = 1;
+        }
+        else
+        {
+            /* Url Expired */
+            $is_expire = 2;
+            if(!is_null($url->redirect_url))
+            {
+                $redirect_url = $url->redirect_url;
+            }
+            else
+            {
+                $redirect_url = 'NULL'; /* default redirect page of expiry urls */
+            }
+        }
+
+    }
 
 @endphp
 
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+    <meta charset="utf-8">
 
-<meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
+    <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
 
-<link href="{{url('/')}}/public/loader/css/bootstrap.min.css" rel="stylesheet">
-<link href="{{url('/')}}/public/loader/css/style.css" rel="stylesheet">
-<script src="{{url('/')}}/public/loader/js/jquery.min.js"></script>
-<script src="{{url('/')}}/public/loader/js/bootstrap.min.js"></script>
+    <link href="{{url('/')}}/public/loader/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{url('/')}}/public/loader/css/style.css" rel="stylesheet">
+    <script src="{{url('/')}}/public/loader/js/jquery.min.js"></script>
+    <script src="{{url('/')}}/public/loader/js/bootstrap.min.js"></script>
 
     <meta name="robots" content="noindex,nofollow" />
 
     @if(strlen($url->title) > 0)
-      <title>{{$url->title}}</title>
+        <title>{{$url->title}}</title>
     @endif
     @if(strlen($url->meta_description) > 0)
-      <meta name="description" content="{{$url->meta_description}}">
+        <meta name="description" content="{{$url->meta_description}}">
     @endif
 
     @if(strlen($url->og_title) > 0)
-      <meta property="og:title" content="{{$url->og_title}}" />
+        <meta property="og:title" content="{{$url->og_title}}" />
     @endif
     @if(strlen($url->og_description) > 0)
-      <meta property="og:description" content="{{$url->og_description}}" />
+        <meta property="og:description" content="{{$url->og_description}}" />
     @endif
 
     {{--
@@ -55,11 +86,11 @@ if(!empty($_SERVER['QUERY_STRING']))
 
 
     @if(strlen($url->og_image) > 0)
-      <meta property="og:image" content="{{$url->og_image}}" />
+        <meta property="og:image" content="{{$url->og_image}}" />
     @endif
 
     @if(strlen($url->twitter_image) > 0)
-      <meta name="twitter:title" content="{{$url->twitter_image}}" />
+        <meta name="twitter:title" content="{{$url->twitter_image}}" />
     @endif
 
     {{--
@@ -69,23 +100,23 @@ if(!empty($_SERVER['QUERY_STRING']))
     --}}
 
     @if(strlen($url->twitter_description) > 0)
-      <meta name="twitter:description" content="{{$url->twitter_description}}" />
+        <meta name="twitter:description" content="{{$url->twitter_description}}" />
     @endif
     @if(strlen($url->twitter_image) > 0)
-      <meta name="twitter:image" content="{{$url->twitter_image}}" />
+        <meta name="twitter:image" content="{{$url->twitter_image}}" />
     @endif
 
-    
-    
+
+
 
 
     <meta name="twitter:card" content="summary"  />
     <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
     <link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
     <style type="text/css">
-    body {
-        font-family: 'Nunito';
-    }
+        body {
+            font-family: 'Nunito';
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
@@ -96,43 +127,43 @@ if(!empty($_SERVER['QUERY_STRING']))
     </style>
     @if(isset($url_features))
 
-      @if($url_features->fb_pixel_id != null)
-        @php
-          $fb_pixel_id = $url_features->fb_pixel_id;
-        @endphp
+        @if($url_features->fb_pixel_id != null)
+            @php
+                $fb_pixel_id = $url_features->fb_pixel_id;
+            @endphp
         <!-- Facebook Pixel Code -->
-          <script>
-          !function(f,b,e,v,n,t,s)
-          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-          n.queue=[];t=b.createElement(e);t.async=!0;
-          t.src=v;s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s)}(window, document,'script',
-          'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '{{$fb_pixel_id}}');
-          fbq('track', 'PageView');
-          </script>
-          <noscript>
-            <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{$fb_pixel_id}}&ev=PageView&noscript=1"/>
-          </noscript>
-          <!-- End Facebook Pixel Code -->
-      @endif
+            <script>
+                !function(f,b,e,v,n,t,s)
+                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                    n.queue=[];t=b.createElement(e);t.async=!0;
+                    t.src=v;s=b.getElementsByTagName(e)[0];
+                    s.parentNode.insertBefore(t,s)}(window, document,'script',
+                    'https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', '{{$fb_pixel_id}}');
+                fbq('track', 'PageView');
+            </script>
+            <noscript>
+                <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{$fb_pixel_id}}&ev=PageView&noscript=1"/>
+            </noscript>
+            <!-- End Facebook Pixel Code -->
+        @endif
 
-      @if($url_features->gl_pixel_id != null)
-        @php
-          $gl_pixel_id = $url_features->gl_pixel_id;
-        @endphp
+        @if($url_features->gl_pixel_id != null)
+            @php
+                $gl_pixel_id = $url_features->gl_pixel_id;
+            @endphp
         <!-- Google Analytics -->
-        <script>
-        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-        ga('create', '{{$gl_pixel_id}}', 'auto');
-        ga('send', 'pageview');
-        </script>
-        <script async src='https://www.google-analytics.com/analytics.js'></script>
-        <!-- End Google Analytics -->
+            <script>
+                window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+                ga('create', '{{$gl_pixel_id}}', 'auto');
+                ga('send', 'pageview');
+            </script>
+            <script async src='https://www.google-analytics.com/analytics.js'></script>
+            <!-- End Google Analytics -->
 
-      @endif
+        @endif
 
     @endif
 
@@ -141,52 +172,61 @@ if(!empty($_SERVER['QUERY_STRING']))
 <body>
 
 
-	<!-- Main Content Start -->
-	<div class="container">
-		<div class="centerdiv">
-			<div class="image-div">
-			@if($url->uploaded_path)
-				<img style="width:650px; height:380px" src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
-			@else
-				<img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
-			@endif
-			</div>
-            <br><br><br>
-
-            @if($url->redirecting_text_template)
-            <span class="text">{{$url->redirecting_text_template}}</span>
+<!-- Main Content Start -->
+<div class="container">
+    <div class="centerdiv">
+        <div class="image-div">
+            @if($url->uploaded_path)
+                <img style="width:650px; height:380px" src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
             @else
-			<span class="text">Please wait a snap while we take you to the actual website</span>
+                <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
             @endif
-			in <span id="txt_">{{$url->redirecting_time / 1000 }}</span> sec
-		</div>
-	</div>
+        </div>
+        <br><br><br>
 
-  {{--  redirecting js script  --}}
+        @if($url->redirecting_text_template)
+            <span class="text">{{$url->redirecting_text_template}}</span>
+        @else
+            <span class="text">Please wait a snap while we take you to the actual website</span>
+        @endif
+        in <span id="txt_">{{$url->redirecting_time / 1000 }}</span> sec
+        <p id="msg" style="color: #9f3a38;"></p>
+    </div>
+</div>
 
-	<script type="text/javascript">
 
-  var str = "{{$url->actual_url}}";
-  if(str.indexOf('https://') >= 0 || str.indexOf('http://') >=0 ) {
-    var URL_TO_REDIRECT = "{{$url->actual_url}}";
-  } else {
-    var URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
-  }
 
-  /* Url for query string */
-  if({{$query_string}}==1)
-  {
-    URL_TO_REDIRECT = URL_TO_REDIRECT+"?"+"{{$query_link}}";
-  }
-  /* Actual url */
-  if({{$query_string}}==0)
-  {
-    URL_TO_REDIRECT = URL_TO_REDIRECT;
-  }
+{{--  redirecting js script  --}}
+
+<script type="text/javascript">
+
+    var str = "{{$url->actual_url}}";
+    if(str.indexOf('https://') >= 0 || str.indexOf('http://') >=0 ) {
+        var URL_TO_REDIRECT = "{{$url->actual_url}}";
+    } else {
+        var URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
+    }
+
+    /* Url for query string */
+    if({{$query_string}}==1)
+    {
+        URL_TO_REDIRECT = URL_TO_REDIRECT+"?"+"{{$query_link}}";
+    }
+    /* Actual url */
+    if({{$query_string}}==0)
+    {
+        URL_TO_REDIRECT = URL_TO_REDIRECT;
+    }
+
+    /* expiry redirection check */
+    if({{$is_expire}}==2)
+    {
+        URL_TO_REDIRECT = "{{$redirect_url}}"
+    }
 
     $(document).ready(function() {
         var sec = '{{$url->redirecting_time}}' / 1000;
-		window.setInterval(function(){
+        window.setInterval(function(){
             sec--;
             if(sec >= 0){
                 $('#txt_').text(sec.toString());
@@ -194,14 +234,14 @@ if(!empty($_SERVER['QUERY_STRING']))
             else{
                 $('#txt_').text('');
             }
-		}, 1000);
+        }, 1000);
 
         $.ajax({
             url: '//freegeoip.net/json/',
             type: 'POST',
             dataType: 'jsonp',
             success: function(location) {
-              console.log(location);
+                console.log(location);
                 $.ajax({
                     type: 'POST',
                     url: "{{ route('postUserInfo') }}",
@@ -214,20 +254,27 @@ if(!empty($_SERVER['QUERY_STRING']))
                         _token: "{{ csrf_token() }}"
                     },
                     success: function(response){
-                    	console.log(response);
-                      setTimeout(function() {
-                        console.log(URL_TO_REDIRECT);
-  				              window.location.replace(URL_TO_REDIRECT.replace(/&amp;/g, '&'));
-        				            HoldOn.close();
-        				        }, "{{ $url->redirecting_time }}");
+                        console.log(response);
+                        setTimeout(function() {
+                            console.log(URL_TO_REDIRECT);
+                            if(URL_TO_REDIRECT=='NULL')
+                            {
+                                $('#msg').text('Sorry! the link has been expired');
                             }
-                        });
+                            if(URL_TO_REDIRECT!='NULL')
+                            {
+                                window.location.replace(URL_TO_REDIRECT);
+                            }
+                            HoldOn.close();
+                        }, "{{ $url->redirecting_time }}");
+                    }
+                });
             }
         });
     });
-	</script>
+</script>
 
-    <script>
+<script>
     (function(b, o, i, l, e, r) {
         b.GoogleAnalyticsObject = l;
         b[l] || (b[l] =
@@ -242,7 +289,7 @@ if(!empty($_SERVER['QUERY_STRING']))
     }(window, document, 'script', 'ga'));
     ga('create', 'UA-XXXXX-X');
     ga('send', 'pageview');
-    </script>
+</script>
 
 </body>
 </html>

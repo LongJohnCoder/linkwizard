@@ -1674,7 +1674,6 @@ class HomeController extends Controller
                 $url->redirect_url = NULL;
             }
         }
-
         //******  Day wise link schedule for shorten url  ******//
 
         if(isset($request->allowSchedule) && $request->allowSchedule == 'on')
@@ -1737,7 +1736,6 @@ class HomeController extends Controller
             }
 
         }
-
         if ($url->save()) {
 
             if(count($request->special_date)>0 && count($request->special_date_redirect_url)>0)
@@ -2814,6 +2812,7 @@ class HomeController extends Controller
 
     public function editUrl(Request $request)
     {
+
 //       $this->validate($request, [
 //           'id' => 'required',
 //           'edited_url' => 'required|url'

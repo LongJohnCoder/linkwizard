@@ -50,6 +50,10 @@ $key = 0;
                   <div class="col-md-3 col-sm-3">
                       <a href="{{$shrt_url}}" id="copylink">{{$shrt_url}}</a>
                   </div>
+                  <div class="col-md-7 col-sm-7">
+                      <button id="clipboard" class="btn btn-primary btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink" style="width:70px"><i class="fa fa-clipboard"></i> copy
+                      </button>
+                  </div>
               </div>
               <div class="row">
 								{{--dd(urlencode($url->title))--}}

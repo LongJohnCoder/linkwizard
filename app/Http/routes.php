@@ -365,3 +365,7 @@ Route::group(['domain' => config('settings.APP_REDIRECT_HOST') , ['middlewareGro
 
 
 
+/**
+* Edit url routing
+*/
+Route::post('/editurl', 'HomeController@editUrl')->name('edit_url');

@@ -230,6 +230,42 @@
 
 
 
+{{-- edit modal body --}}
+<div class="modal fade" id="editModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit URL</h4>
+            </div>
+            <form class="form-horizontal" action="{{route('edit_url')}}" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                    <h4 id="edit_modal_header"></h4>
+                    <input type="hidden" class="form-control" name="id" id="edit_modal_id" value="">
+                    <input type="text" name="edited_url" id="edit_modal_edited_url" class="form-control" value="" placeholder="Enter your url here">
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <table border="0">
+                            <tr width="100%">
+                                <td>
+                                    <input type="submit" class="btn btn-primary btn-sm" value="Confirm">
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 
 <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
 <script type="text/javascript">
@@ -242,7 +278,6 @@ $(document).ready(function(){
 </script>
 
 <script>
-
     // /* Date time picker */
     // $(document).ready(function () {
     //     $('#datepicker').datetimepicker({
