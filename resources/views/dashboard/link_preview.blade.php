@@ -47,14 +47,20 @@ $key = 0;
                 
               <div class="row">
                   <div class="col-md-2 col-sm-2"><strong>Redirection link:</strong></div>
-                  <div class="col-md-10 col-sm-10">
+                  <div class="col-md-3 col-sm-3">
                       <a href="{{$shrt_url}}" id="copylink">{{$shrt_url}}</a>
                   </div>
               </div>
               <div class="row">
 								{{--dd(urlencode($url->title))--}}
                 @php
-                  $actual_url = $url->protocol.'://'.$url->actual_url;
+                if (substr($url->actual_url, 0, 7) == "http://" || substr($url->actual_url, 0, 8) == "https://"){
+                        $actual_url = htmlspecialchars_decode($url->actual_url);
+                } else {
+                
+                 $actual_url = $url->protocol.'://'.htmlspecialchars_decode($url->actual_url);
+                }
+                  
                 @endphp
                   <div class="col-md-2 col-sm-2"><strong>Clicked link:</strong></div>
                   <div class="col-md-10 col-sm-10">

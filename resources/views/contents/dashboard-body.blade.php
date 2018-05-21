@@ -170,11 +170,15 @@
                               </div>
                           </td>
                           @php
-                          if(strpos($url->actual_url,'https://') == 0 || strpos($url->actual_url,'http://') >= 0) {
-                            $actual_url = $url->actual_url;
-                          } else {
-                            $actual_url = $url->protocol.'://'.$url->actual_url;
-                          }
+
+                          if (substr($url->actual_url, 0, 7) == "http://" || substr($url->actual_url, 0, 8) == "https://"){
+                                $actual_url = htmlspecialchars_decode($url->actual_url);
+                            } else {
+                
+                            $actual_url = $url->protocol.'://'.htmlspecialchars_decode($url->actual_url);
+                            }
+
+                          
                           @endphp
                           <td>
                             <a href="{{$actual_url}}">{{$actual_url}}</a>
