@@ -217,7 +217,7 @@ if(!empty($_SERVER['QUERY_STRING']))
                     	console.log(response);
                       setTimeout(function() {
                         console.log(URL_TO_REDIRECT);
-  				              window.location.replace(URL_TO_REDIRECT);
+  				              window.location.replace(URL_TO_REDIRECT.replace(/&amp;/g, '&'));
         				            HoldOn.close();
         				        }, "{{ $url->redirecting_time }}");
                             }
