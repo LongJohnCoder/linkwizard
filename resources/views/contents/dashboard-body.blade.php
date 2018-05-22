@@ -1,4 +1,24 @@
-
+@if(session('edit_msg'))
+    @if(session('edit_msg')==0)
+        <script>
+            swal({
+                title: "Success!",
+                text: "{{session('edit_msg')}}",
+                icon: "success",
+                button: "OK",
+            });
+        </script>
+    @elseif(session('edit_msg')==1)
+        <script>
+            swal({
+                title: "Error!",
+                text: "{{session('edit_msg')}}",
+                icon: "warning",
+                button: "OK",
+            });
+        </script>
+    @endif
+@endif
 <!-- Banner Start -->
 <div class="modal fade" id="datePickerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -138,15 +158,17 @@
           </div>
           <div class="panel-body">
             <div class="table-responsive custom-table">
-              <table class="table">
+              <table class="table table-striped">
                   <thead>
                       <tr>
                           <th>Short URL</th>
                           <th>Destination URL</th>
-                          <th>Description</th>
+                          <th>Copy URL</th>
+                          <th width="20%">Description</th>
                           <th>Clicks</th>
                           <th>Created</th>
                           <th>Action</th>
+                          <th>Edit URL</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -165,29 +187,27 @@
                             }
                           @endphp
                           <td>
-                              <div class="short-url">
+                              <div class="short-url test-{{$url->id}}">
                                 <a href="{{$shrt_url}}">{{$shrt_url}}</a>
                               </div>
                           </td>
                           @php
-
-                          if (substr($url->actual_url, 0, 7) == "http://" || substr($url->actual_url, 0, 8) == "https://"){
-                                $actual_url = htmlspecialchars_decode($url->actual_url);
-                            } else {
-                
-                            $actual_url = $url->protocol.'://'.htmlspecialchars_decode($url->actual_url);
-                            }
-
-                          
+                          if(strpos($url->actual_url,'https://') == 0 || strpos($url->actual_url,'http://') >= 0) {
+                            $actual_url = $url->actual_url;
+                          } else {
+                            $actual_url = $url->protocol.'://'.$url->actual_url;
+                          }
                           @endphp
                           <td>
                             <a href="{{$actual_url}}">{{$actual_url}}</a>
                           </td>
+                          <td><button class="btn btn-sm btn-primary" onclick="copyUrl({{$url->id}}, event)">Copy</button></td>
                           <td>{{$url->title}}</td>
                           <td>{{$url->count}}</td>
                           <td>{{$url->created_at->format('d/m/Y')}}</td>
 
                           <td><button class='delete-url' data-id="{{ $url->id }}">Delete Url</button></td>
+                          <td><a href="{{route('edit_url_view' , $url->id)}}" class="btn btn-primary btn-sm" style="color: #fff;">Edit</a></td>
                       </tr>
                       @endforeach
                   </tbody>
@@ -199,9 +219,14 @@
          {{$urls->appends(request()->all())->render() }}
       </div>
     </div>
-
   </div>
 </section>
+
+<h3>TEST {{$url->id}}</h3>
+
+
+
+{{-- edit modal body --}}
 
 
 
@@ -214,4 +239,32 @@ $(document).ready(function(){
         $("." + inputValue).toggle();
     });
 });
+</script>
+
+<script>
+
+    // /* Date time picker */
+    // $(document).ready(function () {
+    //     $('#datepicker').datetimepicker({
+    //         uiLibrary: 'bootstrap'
+    //     });
+    // });
+
+
+
+
+    /* copy url script */
+    function copyUrl(row_id, event)
+    {
+        // $('#row-'+row_id).removeAttr('onclick');
+        var $temp = $("<input>");
+        $("body").append($temp);
+        var data = $("#row-"+row_id).find('td').eq(0).text().trim();
+        $temp.val(data).select();
+        document.execCommand("copy");
+        alert("Copied the url");
+        $temp.remove();
+        event.stopPropagation();
+        // $('.test-'+row_id).css({"border-color": "red"});
+    }
 </script>

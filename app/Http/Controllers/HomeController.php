@@ -11,6 +11,7 @@ use App\Referer;
 use App\RefererUrl;
 use App\Subdomain;
 use App\Url;
+use App\UrlSpecialSchedule;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -1657,7 +1658,119 @@ class HomeController extends Controller
         $url = $this->fillUrlDescriptions($url , $request, $meta_data);
         $url->user_id = $userId;
 
+        //****** expiration values set in the `urls` table ******//
+
+        if (isset($request->allowExpiration) && $request->allowExpiration == 'on')
+        {
+            $date = date_create($request->date_time);
+            $url->date_time = $date;
+            $url->timezone = $request->timezone;
+            if(strlen($request->redirect_url)>0)
+            {
+                $url->redirect_url = $request->redirect_url;
+            }
+            else
+            {
+                $url->redirect_url = NULL;
+            }
+        }
+
+        //******  Day wise link schedule for shorten url  ******//
+
+        if(isset($request->allowSchedule) && $request->allowSchedule == 'on')
+        {
+            $url->is_scheduled = 'y';
+            if(!empty($request->day1) or strlen($request->day1)>0)
+            {
+                $url->day_one = $request->day1;
+            }else
+            {
+                $url->day_one = NULL;
+            }
+
+            if(!empty($request->day2) or strlen($request->day2)>0)
+            {
+                $url->day_two = $request->day2;
+            }else
+            {
+                $url->day_two = NULL;
+            }
+
+            if(!empty($request->day3) or strlen($request->day3)>0)
+            {
+                $url->day_three = $request->day3;
+            }else
+            {
+                $url->day_three = NULL;
+            }
+
+            if(!empty($request->day4) or strlen($request->day4)>0)
+            {
+                $url->day_four = $request->day4;
+            }else
+            {
+                $url->day_four = NULL;
+            }
+
+            if(!empty($request->day5) or strlen($request->day5)>0)
+            {
+                $url->day_five = $request->day5;
+            }else
+            {
+                $url->day_five = NULL;
+            }
+
+            if(!empty($request->day6) or strlen($request->day6)>0)
+            {
+                $url->day_six = $request->day6;
+            }else
+            {
+                $url->day_six = NULL;
+            }
+
+            if(!empty($request->day7) or strlen($request->day7)>0)
+            {
+                $url->day_seven = $request->day7;
+            }else
+            {
+                $url->day_seven = NULL;
+            }
+
+        }
+
         if ($url->save()) {
+
+            if(count($request->special_date)>0 && count($request->special_date_redirect_url)>0)
+            {
+                $spl_dt = [];
+                $spl_url = [];
+                for ($i=0; $i<count($request->special_date); $i++)
+                {
+                    if($request->special_date[$i]!='' or !empty($request->special_date))
+                    {
+                        $spl_dt[$i] = $request->special_date[$i];
+                    }
+
+                    if($request->special_date_redirect_url[$i]!='' or !empty($request->special_date_redirect_url[$i]))
+                    {
+                        $spl_url[$i] = $request->special_date_redirect_url[$i];
+                    }
+                }
+
+                if(count($spl_dt)>0)
+                {
+                    for ($j=0; $j<count($spl_dt); $j++)
+                    {
+                        $id = $url->id;
+                        $spl_date = $spl_dt[$j];
+                        $spcl_url = $spl_url[$j];
+                        $this->insert_special_schedule($id, $spl_date, $spcl_url);
+                    }
+                }
+
+            }
+
+
           if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
             //dd('here');
             $urlfeature = new UrlFeature();
@@ -1690,6 +1803,7 @@ class HomeController extends Controller
 
               return redirect(route('getLinkPreview',$url->id))->with('success', 'Url Shortened Successfully');
           }
+
         } else {
           //dd('here3');
             return redirect()->back()->with('error', 'Database connection error. Please try again after some time!');
@@ -1699,6 +1813,27 @@ class HomeController extends Controller
       catch(\Exception $e) {
         return redirect()->back()->with('error', $e->getMessage().' line :'.$e->getLine());
       }
+    }
+
+
+    /**
+     *  Special day schedule links insertion
+     */
+    public function insert_special_schedule($id, $spl_date, $spl_url)
+    {
+        try
+        {
+            $special_schedule = new UrlSpecialSchedule();
+            $special_schedule->url_id = $id;
+            $special_schedule->special_day = $spl_date;
+            $special_schedule->special_day_url = $spl_url;
+            $special_schedule->save();
+        }
+        catch (Exception $e)
+        {
+            echo $e->getMessage();
+        }
+
     }
 
     public function zf(Request $request)
@@ -2617,4 +2752,118 @@ class HomeController extends Controller
       }
     }
 
+    /**
+     *  Method for viewing edit_url
+     */
+    public function editUrlView($id=NULL)
+    {
+        $urls = Url::findOrFail($id);
+        if (Auth::check()) {
+            if (\Session::has('plan')) {
+                return redirect()->action('HomeController@getSubscribe');
+            } else {
+
+                $user = Auth::user();
+                $count = DB::table('urls')
+                    ->selectRaw('count(user_id) AS `count`')
+                    ->where('user_id', $user->id)
+                    ->groupBy('user_id')
+                    ->get();
+
+                $total_links = null;
+                if ($count) {
+                    $total_links = $count[0]->count;
+                    $limit = LinkLimit::where('user_id', $user->id)->first();
+                    if ($limit) {
+                        $limit->number_of_links = $total_links;
+                        $limit->save();
+                    }
+                }
+
+                if ($user->subscribed('main', 'tr5Advanced')) {
+                    $subscription_status = 'tr5Advanced';
+                    $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+
+                } elseif ($user->subscribed('main', 'tr5Basic')) {
+                    $subscription_status = 'tr5Basic';
+                    $limit = Limit::where('plan_code', 'tr5Basic')->first();
+                } else {
+                    $subscription_status = false;
+                    $limit = Limit::where('plan_code', 'tr5free')->first();
+                }
+
+                $urlTags = UrlTag::whereHas('urlTagMap.url', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                })->pluck('tag')->toArray();
+
+                return view('dashboard.edit_url', [
+                    'urlTags' => $urlTags,
+                    'total_links' => $total_links,
+                    'limit' => $limit,
+                    'subscription_status' => $subscription_status,
+                    'user' => $user,
+                    'type' => 'short',
+                    'urls' => $urls
+                ]);
+            }
+        }
+    }
+    /**
+     * Method for editing short url
+     */
+
+    public function editUrl(Request $request)
+    {
+//       $this->validate($request, [
+//           'id' => 'required',
+//           'edited_url' => 'required|url'
+//       ]);
+//       $id = $request->id;
+//       $edited_url = $request->edited_url;
+//       $meta_Data = $this->getPageMetaContents($request->edited_url);
+//       $explode_url = explode("://", $edited_url);
+//       $protocol = $explode_url[0];
+//       $actual_url = $explode_url[1];
+//       try
+//       {
+//           $url = Url::find($id);
+//           $url->protocol = $protocol;
+//           $url->actual_url = $actual_url;
+//           $url->title = $meta_Data['title'];
+//           $url->meta_description = $meta_Data['meta_description'];
+//           $url->og_title = $meta_Data['og_title'];
+//           $url->og_description = $meta_Data['og_description'];
+//           $url->og_url = $meta_Data['og_url'];
+//           $url->og_image = $meta_Data['og_image'];
+//           $url->twitter_title = $meta_Data['twitter_title'];
+//           $url->twitter_description = $meta_Data['twitter_description'];
+//           $url->twitter_url = $meta_Data['twitter_url'];
+//           $url->twitter_image = $meta_Data['twitter_image'];
+//           if($url->save())
+//           {
+//               return redirect()->route('getDashboard')->with('edit_msg', '0');
+//           }
+//           else
+//           {
+//               return redirect()->route('getDashboard')->with('edit_msg', '1');
+//           }
+//       }
+//       catch(Exception $e)
+//       {
+//           return redirect()->back();
+//       }
+    }
+
+    /**
+    * Add tab for special link schedule AJAX
+    */
+
+    public function add_schedule_tab()
+    {
+        return view('add_special_schedule');
+    }
+
 }
+
+
+

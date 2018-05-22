@@ -145,6 +145,18 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
             ]);
 
 
+            // Edit url routing
+
+            Route::get('/{id?}/edit_url_view', 'HomeController@editUrlView')->name('edit_url_view');
+
+
+            /**
+             *  add new tab for special link schedule for ajax
+             */
+
+            Route::get('/add_tab_schedule', 'HomeController@add_schedule_tab')->name('ajax_schedule_tab');
+
+
             Route::post('giveMyTags', [
               'uses'  =>  'HomeController@giveMyTags',
               'as'    =>  'giveMyTags'
@@ -350,3 +362,6 @@ Route::group(['domain' => config('settings.APP_REDIRECT_HOST') , ['middlewareGro
 //         'as' => 'getRequestedSubdomainUrl',
 //     ]);
 // });
+
+
+

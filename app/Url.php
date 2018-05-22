@@ -118,4 +118,13 @@ class Url extends Model
     {
         return $this->thisHasManyThrough('\App\UrlTag', '\App\UrlTagMap');
     }
+
+
+    /**
+    * One to one relation with UrlFeature model
+    */
+    public function urlFeature()
+    {
+        return $this->hasOne('App\UrlFeature', 'url_id');
+    }
 }

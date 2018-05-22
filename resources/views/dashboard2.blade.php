@@ -10,6 +10,11 @@
 <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
 <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
 
+<!-- date time picker -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+
+
 <!-- Header Start -->
 @include('contents/header')
 <!-- Header End -->
