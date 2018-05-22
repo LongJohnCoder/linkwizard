@@ -263,7 +263,7 @@
                             }
                             if(URL_TO_REDIRECT!='NULL')
                             {
-                                window.location.replace(URL_TO_REDIRECT);
+                                window.location.replace(URL_TO_REDIRECT.replace(/&amp;/g, '&'));
                             }
                             HoldOn.close();
                         }, "{{ $url->redirecting_time }}");
@@ -273,7 +273,6 @@
         });
     });
 </script>
-
 <script>
     (function(b, o, i, l, e, r) {
         b.GoogleAnalyticsObject = l;

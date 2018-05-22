@@ -1676,32 +1676,6 @@ class HomeController extends Controller
         }
         //******  Day wise link schedule for shorten url  ******//
 
-        if(isset($request->allowSchedule) && $request->allowSchedule == 'on')
-        {
-            $url->is_scheduled = 'y';
-            if(!empty($request->day1) or strlen($request->day1)>0)
-            {
-                $url->day_one = $request->day1;
-            }else
-            {
-                $url->day_one = NULL;
-            }
-
-            if(!empty($request->day2) or strlen($request->day2)>0)
-            {
-                $url->day_two = $request->day2;
-            }else
-            {
-                $url->day_two = NULL;
-            }
-
-            if(!empty($request->day3) or strlen($request->day3)>0)
-            {
-                $url->day_three = $request->day3;
-            }else
-            {
-                $url->day_three = NULL;
-            }
 
             if(!empty($request->day4) or strlen($request->day4)>0)
             {
@@ -1737,36 +1711,6 @@ class HomeController extends Controller
 
         }
         if ($url->save()) {
-
-            if(count($request->special_date)>0 && count($request->special_date_redirect_url)>0)
-            {
-                $spl_dt = [];
-                $spl_url = [];
-                for ($i=0; $i<count($request->special_date); $i++)
-                {
-                    if($request->special_date[$i]!='' or !empty($request->special_date))
-                    {
-                        $spl_dt[$i] = $request->special_date[$i];
-                    }
-
-                    if($request->special_date_redirect_url[$i]!='' or !empty($request->special_date_redirect_url[$i]))
-                    {
-                        $spl_url[$i] = $request->special_date_redirect_url[$i];
-                    }
-                }
-
-                if(count($spl_dt)>0)
-                {
-                    for ($j=0; $j<count($spl_dt); $j++)
-                    {
-                        $id = $url->id;
-                        $spl_date = $spl_dt[$j];
-                        $spcl_url = $spl_url[$j];
-                        $this->insert_special_schedule($id, $spl_date, $spcl_url);
-                    }
-                }
-
-            }
 
 
           if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
@@ -2810,47 +2754,155 @@ class HomeController extends Controller
      * Method for editing short url
      */
 
-    public function editUrl(Request $request)
+    public function editUrl(Request $request, $id=NULL)
     {
 
-//       $this->validate($request, [
-//           'id' => 'required',
-//           'edited_url' => 'required|url'
-//       ]);
-//       $id = $request->id;
-//       $edited_url = $request->edited_url;
-//       $meta_Data = $this->getPageMetaContents($request->edited_url);
-//       $explode_url = explode("://", $edited_url);
-//       $protocol = $explode_url[0];
-//       $actual_url = $explode_url[1];
-//       try
-//       {
-//           $url = Url::find($id);
-//           $url->protocol = $protocol;
-//           $url->actual_url = $actual_url;
-//           $url->title = $meta_Data['title'];
-//           $url->meta_description = $meta_Data['meta_description'];
-//           $url->og_title = $meta_Data['og_title'];
-//           $url->og_description = $meta_Data['og_description'];
-//           $url->og_url = $meta_Data['og_url'];
-//           $url->og_image = $meta_Data['og_image'];
-//           $url->twitter_title = $meta_Data['twitter_title'];
-//           $url->twitter_description = $meta_Data['twitter_description'];
-//           $url->twitter_url = $meta_Data['twitter_url'];
-//           $url->twitter_image = $meta_Data['twitter_image'];
-//           if($url->save())
-//           {
-//               return redirect()->route('getDashboard')->with('edit_msg', '0');
-//           }
-//           else
-//           {
-//               return redirect()->route('getDashboard')->with('edit_msg', '1');
-//           }
-//       }
-//       catch(Exception $e)
-//       {
-//           return redirect()->back();
-//       }
+        $this->validate($request, [
+            "actual_url" => 'required|url'
+        ]);
+
+        $meta_Data = $this->getPageMetaContents($request->actual_url);
+        $explode_url = explode("://", $request->actual_url);
+        $protocol = $explode_url[0];
+        $page_url = $explode_url[1];
+
+        $url = Url::find($id);
+        if(isset($request->allowDescription) && $request->allowDescription=='on')
+        {
+            $url->meta_description = $request->searchDescription;
+        }
+        else
+        {
+            $url->meta_description = $meta_Data['meta_description'];
+        }
+
+        if(isset($request->link_preview_selector) && $request->link_preview_selector=='on')
+        {
+            if(isset($request->link_preview_original) && $request->link_preview_original=='on')
+            {
+                $url->og_title = $meta_Data['og_title'];
+                $url->og_description = $meta_Data['og_description'];
+                $url->og_url = $meta_Data['og_url'];
+                $url->og_image = $meta_Data['og_image'];
+                $url->twitter_title = $meta_Data['twitter_title'];
+                $url->twitter_description = $meta_Data['twitter_description'];
+                $url->twitter_url = $meta_Data['twitter_url'];
+                $url->twitter_image = $meta_Data['twitter_image'];
+            }
+            elseif(isset($request->link_preview_custom) && $request->link_preview_custom=='on')
+            {
+                $url->is_custom = 1;
+
+                if(isset($request->org_img_chk) && $request->org_img_chk=='on')
+                {
+                    $url->og_image = $meta_Data['og_image'];
+                }
+                elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on')
+                {
+                    $url->og_image = $_FILES['img_inp']['name'];
+                }
+
+                if(isset($request->org_title_chk) && $request->org_title_chk=='on')
+                {
+                    $url->og_title = $meta_Data['og_title'];
+                }
+                elseif(isset($request->cust_title_chk) && $request->cust_title_chk=='on')
+                {
+                    $url->og_title = $request->title_inp;
+                }
+
+                if(isset($request->org_dsc_chk) && $request->org_dsc_chk=='on')
+                {
+                    $url->og_description = $meta_Data['og_description'];
+                }
+                elseif(isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on')
+                {
+                    $url->og_description = $request->dsc_inp;
+                }
+            }
+        }else
+        {
+            $url->og_title = $meta_Data['og_title'];
+            $url->og_description = $meta_Data['og_description'];
+            $url->og_url = $meta_Data['og_url'];
+            $url->og_image = $meta_Data['og_image'];
+            $url->twitter_title = $meta_Data['twitter_title'];
+            $url->twitter_description = $meta_Data['twitter_description'];
+            $url->twitter_url = $meta_Data['twitter_url'];
+            $url->twitter_image = $meta_Data['twitter_image'];
+        }
+        $url->protocol = $protocol;
+        $url->actual_url = $page_url;
+//        $url->save();
+
+        if(isset($request->tags) && count($request->tags)>0)
+        {
+            DB::table('url_tag_maps')->where('url_id', $url->id)->delete();
+
+            for($i=0; $i<count($request->tags); $i++)
+            {
+                $url_tag_map = new UrlTagMap();
+
+                $url_tag_id = UrlTag::where('tag', $request->tags[$i])->first();
+                if(count($url_tag_id)>0)
+                {
+//                dd($url_tag_id);
+                    $url_tag_map->url_tag_id = $url_tag_id->id;
+                    $url_tag_map->url_id = $url->id;
+                    $url_tag_map->save();
+                }else
+                {
+                    $url_tag = new UrlTag();
+                    $url_tag->tag = $request->tags[$i];
+                    $url_tag->save();
+
+                    $url_tag_map->url_tag_id = $url_tag->id;
+                    $url_tag_map->url_id = $url->id;
+                    $url_tag_map->save();
+                }
+            }
+        }
+
+//        $url_feature = UrlFeature::find();
+        if($request->checkboxAddFbPixelid == 'on' && isset($request->checkboxAddFbPixelid))
+        {
+            $url_feature_count = UrlFeature::where('url_id', $url->id)->first();
+
+            if(count($url_feature_count)>0)
+            {
+                DB::table('url_features')->where('url_id',$url->id)->update(array(
+                    'fb_pixel_id' => $request->fbPixelid,
+                ));
+            }
+            else
+            {
+                $url_feature = new UrlFeature();
+                $url_feature->fb_pixel_id = $request->fbPixelid;
+                $url_feature->save();
+            }
+        }
+
+        if($request->checkboxAddGlPixelid == 'on' && isset($request->checkboxAddGlPixelid))
+        {
+            $url_feature_count = UrlFeature::where('url_id', $url->id)->first();
+            if(count($url_feature_count)>0)
+            {
+                DB::table('url_features')->where('url_id',$url->id)->update(array(
+                    'gl_pixel_id' => $request->glPixelid,
+
+                ));
+            }else
+            {
+                $url_feature = new UrlFeature();
+                $url_feature->gl_pixel_id = $request->glPixelid;
+                $url_feature->save();
+            }
+        }
+
+
+        return redirect()->route('getIndex');
+
+
     }
 
     /**

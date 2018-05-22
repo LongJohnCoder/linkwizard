@@ -222,8 +222,6 @@
   </div>
 </section>
 
-<h3>TEST {{$url->id}}</h3>
-
 
 
 {{-- edit modal body --}}
