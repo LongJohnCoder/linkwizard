@@ -11,11 +11,10 @@
 |
 */
 
-//test route
+Route::pattern('domain', config('settings.APP_HOST').'|'.config('settings.APP_LOGIN_HOST'));
 
-Route::pattern('domain', config('settings.APP_HOST') . '|' . config('settings.APP_LOGIN_HOST'));
-
-Route::get('/test', function () {
+/**Test Route Start**/
+Route::get('/test', function(){
     $url = 'http://insidetech.monster.com/benefits/articles/8537-10-best-tech-blogs';
     dd(app('App\Http\Controllers\HomeController')->getPageMetaContents($url));
 });
@@ -23,37 +22,35 @@ Route::get('/test', function () {
 Route::get('/test12', function () {
     dd(env('PUBLISHABLE_KEY'));
 });
+/**Test Route Start**/
 
 Route::post('priceRequest', [
     'uses' => 'HomeController@requestForPrice',
     'as' => 'priceRequest',
 ]);
-
-Route::get('/blog', 'HomeController@blog');
-Route::get('/pricing', 'HomeController@pricing');
-Route::get('/features', 'HomeController@features');
-Route::get('/about', 'HomeController@about');
+Route::get('/blog' , 'HomeController@blog');
+Route::get('/pricing' , 'HomeController@pricing');
+Route::get('/features' , 'HomeController@features');
+Route::get('/about' , 'HomeController@about');
 
 /* API Routes */
-Route::group(['prefix' => 'api/v1'], function () {
-    Route::post('post-subscriber', [
-        'uses' => 'ApiController@createUserByEmail',
-        'as' => 'createUserByEmail'
+Route::group(['prefix' => 'api/v1'],function() {
+    Route::post('post-subscriber',[
+        'uses'  => 'ApiController@createUserByEmail',
+        'as'    => 'createUserByEmail'
     ]);
-    Route::post('delete-subscriber', [
-        'uses' => 'ApiController@deleteUserByEmail',
-        'as' => 'deleteUserByEmail'
+    Route::post('delete-subscriber',[
+        'uses'  => 'ApiController@deleteUserByEmail',
+        'as'    => 'deleteUserByEmail'
     ]);
-    Route::post('create-subscriber', [
-        'uses' => 'ApiController@createNewSubscriber',
-        'as' => 'createNewSubscriber'
+    Route::post('create-subscriber',[
+        'uses'  => 'ApiController@createNewSubscriber',
+        'as'    => 'createNewSubscriber'
     ]);
 });
-/* API routes ends here
+/* API routes ends here*/
 
 
-//before login this url is the base url
-//tr5.* for production */
 Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => 'web']], function () {
     Route::get('/', [
         'uses' => 'HomeController@getIndex',
@@ -61,52 +58,34 @@ Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => 'w
     ]);
 
     Route::get('forgot_password', [
-        'uses' => 'HomeController@forgotPassword',
-        'as' => 'forgotPassword'
+      'uses'  => 'HomeController@forgotPassword',
+      'as'    => 'forgotPassword'
     ]);
 
     Route::post('forgotPasswordEmail', [
-        'uses' => 'HomeController@forgotPasswordEmail',
-        'as' => 'forgotPasswordEmail'
+      'uses'  =>  'HomeController@forgotPasswordEmail',
+      'as'    =>  'forgotPasswordEmail'
     ]);
-
 
     Route::post('postShortUrlNoLogin', [
-        'uses' => 'HomeController@postShortUrlNoLogin',
-        'as' => 'postShortUrlNoLogin'
+      'uses'  =>  'HomeController@postShortUrlNoLogin',
+      'as'    =>  'postShortUrlNoLogin'
     ]);
-
 });
 
 //actual rooutes goes here
-Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups' => ['web', 'auth']]], function () {
-
+Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups' => ['web','auth']]], function () {
     Route::post('imgUploader', [
-        'uses' => 'HomeController@imgUploader',
-        'as' => 'imgUploader'
+        'uses'  =>  'HomeController@imgUploader',
+        'as'    =>  'imgUploader'
     ]);
-
-
-    Route::post('/check_custom', 'HomeController@check_custom');
-    Route::get('test', function () {
+    Route::post('/check_custom' , 'HomeController@check_custom');
+    Route::get('test' , function(){
         return view('test');
     });
-    Route::post('/test', 'HomeController@test');
-
-    Route::get('/api_test', 'HomeController@api_test');
-
-    Route::get('/short_url_api', 'HomeController@short_url_api');
-
-    // Route::get('/{url}', [
-    //     'uses' => 'HomeController@getRequestedUrl',
-    //     'as' => 'getRequestedUrl',
-    // ]);
-
-    // Route::get('/{subdirectory}/{url}', [
-    //     'uses' => 'HomeController@getRequestedSubdirectoryUrl',
-    //     'as' => 'getRequestedSubdirectoryUrl',
-    // ]);
-
+    Route::post('/test' , 'HomeController@test');
+    Route::get('/api_test' , 'HomeController@api_test');
+    Route::get('/short_url_api' , 'HomeController@short_url_api');
     Route::get('/{url}/date/{date}/analytics', [
         'uses' => 'HomeController@getAnalyticsByDate',
         'as' => 'getAnalyticsByDate',
@@ -133,32 +112,22 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
     ]);
 
     Route::group(['prefix' => 'app'], function () {
-
-
         Route::group(['prefix' => 'url'], function () {
-
             //search url with links
             Route::get('/{id}/link_preview', [
                 'uses' => 'HomeController@getLinkPreview',
                 'as' => 'getLinkPreview'
             ]);
 
-
             // Edit url routing
+            Route::get('/{id?}/edit_url_view', 'UrlController@editUrlView')->name('edit_url_view');
 
-            Route::get('/{id?}/edit_url_view', 'HomeController@editUrlView')->name('edit_url_view');
-
-
-            /**
-             *  add new tab for special link schedule for ajax
-             */
-
+            /**add new tab for special link schedule for ajax*/
             Route::get('/add_tab_schedule', 'HomeController@add_schedule_tab')->name('ajax_schedule_tab');
 
-
             Route::post('giveMyTags', [
-                'uses' => 'HomeController@giveMyTags',
-                'as' => 'giveMyTags'
+                'uses'  =>  'HomeController@giveMyTags',
+                'as'    =>  'giveMyTags'
             ]);
 
             Route::post('short', [
@@ -167,8 +136,8 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
             ]);
 
             Route::post('postShortUrlNoSession', [
-                'uses' => 'HomeController@postShortUrlNoSession',
-                'as' => 'postShortUrlNoSession'
+                'uses'  =>  'HomeController@postShortUrlNoSession',
+                'as'    =>  'postShortUrlNoSession'
             ]);
 
             Route::post('custom', [
@@ -233,35 +202,33 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
         });
 
         Route::group(['prefix' => 'user'], function () {
-
             //Settings section for an user
-            Route::group(['prefix' => 'settings'], function () {
+            Route::group(['prefix' => 'settings'], function(){
 
-                Route::get('reset-password-settings', [
-                    'uses' => 'HomeController@resetPasswordSettings',
-                    'as' => 'resetPasswordSettings'
+                Route::get('reset-password-settings',[
+                  'uses'  =>  'HomeController@resetPasswordSettings',
+                  'as'    =>  'resetPasswordSettings'
                 ]);
 
-                Route::post('set-password-settings', [
-                    'uses' => 'HomeController@setPasswordSettings',
-                    'as' => 'setPasswordSettings'
+                Route::post('set-password-settings',[
+                  'uses'  =>  'HomeController@setPasswordSettings',
+                  'as'    =>  'setPasswordSettings'
                 ]);
-
             });
 
             Route::post('shortenUrl', [
                 'uses' => 'HomeController@shortenUrl',
-                'as' => 'shortenUrl'
+                'as'   => 'shortenUrl'
             ]);
 
-            Route::get('create_shortened_link', [
-                'uses' => 'HomeController@createShortenedLink',
-                'as' => 'createShortenedLink'
+            Route::get('create_shortened_link',[
+                'uses'  => 'HomeController@createShortenedLink',
+                'as'    => 'createShortenedLink'
             ]);
 
-            Route::get('create_custom_link', [
-                'uses' => 'HomeController@createCustomLink',
-                'as' => 'createCustomLink'
+            Route::get('create_custom_link',[
+                'uses'  => 'HomeController@createCustomLink',
+                'as'    => 'createCustomLink'
             ]);
 
             Route::post('register', [
@@ -278,10 +245,6 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                 'uses' => 'HomeController@getLogout',
                 'as' => 'getLogout',
             ]);
-
-            // Route::get('dash',function(){
-            //   dd('here');
-            // });
 
             Route::get('dashboard', [
                 'uses' => 'HomeController@getDashboard',
@@ -330,13 +293,13 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
 
 
 //router for subdomains
-Route::group(['domain' => '{subdomain}.' . config('settings.APP_REDIRECT_HOST'), ['middlewareGroups' => ['web', 'auth']]], function () {
+Route::group(['domain' => '{subdomain}.'.config('settings.APP_REDIRECT_HOST'), ['middlewareGroups' => ['web','auth']]], function () {
     Route::get('/{url}', 'HomeController@getRequestedSubdomainUrl');
 });
 //routing for subdomains ends here
 
 //router for subdirectories
-Route::group(['domain' => config('settings.APP_REDIRECT_HOST'), ['middlewareGroups' => ['web', 'auth']]], function () {
+Route::group(['domain' => config('settings.APP_REDIRECT_HOST') , ['middlewareGroups' => ['web','auth']]], function () {
     //Route::get('/{url}', 'HomeController@getRequestedSubdomainUrl');
     Route::get('/{subdirectory}/{url}', [
         'uses' => 'HomeController@getRequestedSubdirectoryUrl',
@@ -349,23 +312,7 @@ Route::group(['domain' => config('settings.APP_REDIRECT_HOST'), ['middlewareGrou
     ]);
 });
 //routing for subdirectories ends here
+Route::post('/{id?}/editshorturl', 'UrlController@editUrl')->name('edit_short_url');
 
-
-// Route::group(['domain' => '{subdomain}.'.env('APP_HOST')], function () {
-//     Route::get('/', function ($subdomain) {
-//         return redirect()->route('getIndex');
-//     });
-//
-//     Route::get('/{url}', [
-//         'uses' => 'HomeController@getRequestedSubdomainUrl',
-//         'as' => 'getRequestedSubdomainUrl',
-//     ]);
-// });
-
-
-Route::post('/{id?}/editshorturl', 'HomeController@editUrl')->name('edit_short_url');
-
-/**
-* Edit url routing
-*/
-Route::post('/editurl', 'HomeController@editUrl')->name('edit_url');
+/*** Edit url routing*/
+Route::post('/editurl', 'UrlController@editUrl')->name('edit_url');

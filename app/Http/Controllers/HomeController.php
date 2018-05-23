@@ -1617,6 +1617,7 @@ class HomeController extends Controller
 
     public function postShortUrlTier5(Request $request)
     {
+      //print_r("<pre>");print_r($request->all());exit();
       try{
 
         if (\Auth::user())
@@ -1642,47 +1643,34 @@ class HomeController extends Controller
         $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
         //dd($checkboxAddFbPixelid, $fbPixelid , $checkboxAddGlPixelid, $glPixelid, $allowTags, $searchTags, $allowDescription, $searchDescription);
         //print_r("<pre>");print_r($request->all());exit();
-        if (strpos($request->actual_url[0], 'https://') == 0) {
-            $actual_url = str_replace('https://', null, $request->actual_url[0]);
+
+        if (strpos($request->actual_url, 'https://') == 0) {
+            $actual_url = str_replace('https://', null, $request->actual_url);
             $protocol = 'https';
         } else {
-            $actual_url = str_replace('http://', null, $request->actual_url[0]);
+            $actual_url = str_replace('http://', null, $request->actual_url);
             $protocol = 'http';
         }
 
-        if(!isset($request->actual_url[0]) || strlen(trim($request->actual_url[0])) == 0) {
+        if(!isset($request->actual_url) || strlen(trim($request->actual_url)) == 0) {
           return redirect()->back()->with('error', 'url cannot be empty!');
         }
 
-          /* set the flag for is_custom column */
+        $random_string = $this->randomString();
 
-          if(isset($request->link_preview_custom) && $request->link_preview_custom == 'on')
-          {
-              if((isset($request->cust_title_chk) &&  $request->cust_title_chk) or (isset($request->cust_img_chk) &&  $request->cust_img_chk) or (isset($request->cust_dsc_chk) &&  $request->cust_dsc_chk))
-              {
-                  $is_custom = 1;
-              }
-          }
-          else
-          {
-              $is_custom = 0;
-          }
-
-          $random_string = $this->randomString();
-
-          $url = new Url();
-          $url->actual_url = $actual_url;
-          $url->protocol = $protocol;
-          $url->shorten_suffix = $random_string;
-          $meta_data = $this->getPageMetaContents($request->actual_url);
-          $url = $this->fillUrlDescriptions($url , $request, $meta_data);
-          $url->user_id = $userId;
-          $url->is_custom = $is_custom;
+        $url = new Url();
+        $url->actual_url = $actual_url;
+        $url->protocol = $protocol;
+        $url->shorten_suffix = $random_string;
+        $meta_data = $this->getPageMetaContents($request->actual_url);
+        $url = $this->fillUrlDescriptions($url , $request, $meta_data);
+        $url->user_id = $userId;
 
         //****** expiration values set in the `urls` table ******//
 
-        if (isset($request->allowExpiration) && $request->allowExpiration == 'on'){
-            $date = date_create($request->date_time);
+        if (isset($request->allowExpiration) && $request->allowExpiration == 'on')
+        {
+            $date = strtotime($request->date_time);
             $url->date_time = $date;
             $url->timezone = $request->timezone;
             if(strlen($request->redirect_url)>0)
@@ -1729,7 +1717,7 @@ class HomeController extends Controller
                 $url->day_seven = NULL;
             }
 
-        
+    
         if ($url->save()) {
 
             /* Circular URLs support */
@@ -1815,7 +1803,8 @@ class HomeController extends Controller
             return redirect()->back()->with('error', 'Database connection error. Please try again after some time!');
             //return response()->json(['status' => 'error', 'msg' => 'Database connection error. Please try again after some time!']);
         }
-      }catch(\Exception $e) {
+      }
+      catch(\Exception $e) {
         return redirect()->back()->with('error', $e->getMessage().' line :'.$e->getLine());
       }
     }
@@ -2845,7 +2834,7 @@ class HomeController extends Controller
 
         $url->protocol = $protocol;
         $url->actual_url = $page_url;
-
+        $url->title = $meta_Data['title'];
         if(isset($request->allowDescription) && $request->allowDescription=='on')
         {
             $url->meta_description = $request->searchDescription;

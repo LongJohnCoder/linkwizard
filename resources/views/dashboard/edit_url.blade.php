@@ -1,422 +1,360 @@
 <!DOCTYPE html>
-
-<!-- head of th page -->
 <html lang="en">
-@include('contents/head')
-<body>
-<!-- head end -->
+    <!-- head of the page -->
+    @include('contents/head')
+    <!-- head end -->
 
-<link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
-<link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
-<script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
-<script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
-
-<!-- Date time picker -->
-<script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>
-<link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-
-<style>
-    /* hidden display div for link schedule panel */
-
-    .schedule-day
-    {
-        /*display: none;*/
-    }
-    #scheduleArea
-    {
-        padding: 10px;
-    }
-</style>
-
-
-<script>
-    $(document).ready(function () {
-        $('#datepicker').datetimepicker({
-            uiLibrary: 'bootstrap'
-        });
-    });
-</script>
-
-
-<!-- Header Start -->
-@include('contents/header')
-<!-- Header End -->
-
-<!-- search div -->
-
-<!-- search div ends -->
-
-<div class="main-dashboard-body">
-
-    <section class="main-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-
-                    <form id="url_short_frm" action="{{route('edit_short_url', $urls->id)}}" method="POST" enctype="multipart/form-data" files=true>
-                        <input type="hidden" value="{{$type}}" name="type">
-                        <input type="hidden" value="logedin" name="loggedin">
-                        <div class="normal-box ">
-                            <div class="row">
-                                <div class="col-md-3 col-sm-3">
-                                    <label>
-                                        Paste An Actual URL Here
-                                    </label>
-                                </div>
-                                <div class="col-md-9 col-sm-9">
-                                    <input id="givenActual_Url" type="text" name="actual_url" class="form-control long-url" value="{{$urls->protocol}}://{{$urls->actual_url}}">
-                                    <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                @if(strtolower($type) == 'custom')
+    <body>
+        <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
+        <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
+        <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
+        <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
+        <!-- Date time picker -->
+        <script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>
+        <link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+        <style>
+            #scheduleArea{
+                padding: 10px;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                $('#datepicker').datetimepicker({
+                    uiLibrary: 'bootstrap'
+                });
+            });
+        </script>
+        <!-- Header Start -->
+        @include('contents/header')
+        <!-- Header End -->
+        <div class="main-dashboard-body">
+            <section class="main-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <form id="url_short_frm" action="{{route('edit_short_url', $urls->id)}}" method="POST" enctype="multipart/form-data" files=true>
+                            <input type="hidden" value="{{$type}}" name="type">
+                            <input type="hidden" value="logedin" name="loggedin">
+                            <div class="normal-box ">
+                                <div class="row">
                                     <div class="col-md-3 col-sm-3">
-                                        <label>
-                                            Paste Your Customized Url Name
-                                        </label>
+                                        <label>Paste An Actual URL Here</label>
                                     </div>
                                     <div class="col-md-9 col-sm-9">
-                                        <div class="input-group">
-                                            <span class="input-group-addon">{{config('settings.APP_REDIRECT_HOST')}}/</span>
-                                            <input id="makeCustom_Url" type="text" name="custom_url" class="form-control long-url">
-                                        </div>
-                                        <div class="input-msg">*Required</div>
+                                        <input id="givenActual_Url" type="text" name="actual_url" class="form-control long-url" value="{{$urls->protocol}}://{{$urls->actual_url}}">
+                                        <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                                     </div>
-                                    <br>
+                                </div>
+                                <div class="row">
+                                    @if(strtolower($type) == 'custom')
+                                        <div class="col-md-3 col-sm-3">
+                                            <label>Paste Your Customized Url Name</label>
+                                        </div>
+                                        <div class="col-md-9 col-sm-9">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">{{config('settings.APP_REDIRECT_HOST')}}/</span>
+                                                <input id="makeCustom_Url" type="text" name="custom_url" class="form-control long-url">
+                                            </div>
+                                            <div class="input-msg">*Required</div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="normal-box1">
+                                <div class="normal-header">
+                                    <label class="custom-checkbox">Edit facebook pixel
+                                        <input type="checkbox" id="checkboxAddFbPixelid" name="checkboxAddFbPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo 'checked';}else{ echo 'none';}  ?> >
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="normal-body facebook-pixel" style="display: <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo 'block';}else{ echo 'none';}  ?>" >
+                                    <p>Paste Your Facebook-pixel-id Here</p>
+                                    <input type="text" name="fbPixelid" class="form-control" id="fbPixel_id" value="<?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo $urls->urlFeature->fb_pixel_id;}else{ echo '';}  ?>" >
+                                </div>
+                            </div>
+                            <div class="normal-box1">
+                                <div class="normal-header">
+                                    <label class="custom-checkbox">Edit google pixel
+                                        <input type="checkbox" id="checkboxAddGlPixelid" name="checkboxAddGlPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo 'checked';}else{ echo 'none';}  ?> >
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="normal-body google-pixel" style="display: <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo 'block';}else{ echo 'none';}  ?>" >
+                                    <p>Paste Your Google-pixel-id Here</p>
+                                    <input type="text" name="glPixelid" class="form-control" id="glPixel_id" value="<?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo $urls->urlFeature->gl_pixel_id;}else{ echo '';}  ?>" >
+                                </div>
+                            </div>
+                            <div class="normal-box1">
+                                <div class="normal-header">
+                                    <label class="custom-checkbox">Edit tags
+                                        <input type="checkbox" id="shortTagsEnable" name="allowTag" <?php if(count($urls->urlTagMap)>0){echo 'checked';}else{echo '';}?> >
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                @if(count($urls->urlTagMap)>0)
+                                    <div id="shortTags_Contents_chosen" class="chosen-container chosen-container-multi chosen-with-drop chosen-container-active" style="width: 48px; display: none;">
+                                        <ul class="chosen-choices">
+                                            
+                                        </ul>
+                                    </div>
                                 @endif
-                            </div>
-                        </div>
-                        <div class="normal-box1">
-                            <div class="normal-header">
-                                <label class="custom-checkbox">Add facebook pixel
-                                    <input type="checkbox" id="checkboxAddFbPixelid" name="checkboxAddFbPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo 'checked';}else{ echo 'none';}  ?> >
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="normal-body facebook-pixel" style="display: <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo 'block';}else{ echo 'none';}  ?>" >
-                                <p>Paste Your Facebook-pixel-id Here</p>
-                                <input type="text" name="fbPixelid" class="form-control" id="fbPixel_id" value="<?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo $urls->urlFeature->fb_pixel_id;}else{ echo '';}  ?>" >
-                            </div>
-                        </div>
+                                <div class="normal-body add-tags" style="display: <?php if(count($urls->urlTagMap)>0){echo 'block';}else{echo 'none';}?>">
+                                    <p>Mention tags for this link</p>
+                                    <div class="custom-tags-area" id="customTags_Area" >
+                                        <input type="hidden" id="hidden_preload_tag">
+                                        <select data-placeholder="" class="chosen-select chosen-select-header chosen-container" multiple tabindex="4" id="shortTags_Contents"  name="tags[]">
+                                            
 
-                        <div class="normal-box1">
-                            <div class="normal-header">
-                                <label class="custom-checkbox">Add google pixel
-                                    <input type="checkbox" id="checkboxAddGlPixelid" name="checkboxAddGlPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo 'checked';}else{ echo 'none';}  ?> >
-                                    <span class="checkmark"></span>
-                                </label>
+                                            @for ( $i =0 ;$i< count($urlTags);$i++)
+                                                <option value="{{ $urlTags[$i] }}">{{ $urlTags[$i] }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="normal-body google-pixel" style="display: <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo 'block';}else{ echo 'none';}  ?>" >
-                                <p>Paste Your Google-pixel-id Here</p>
-                                <input type="text" name="glPixelid" class="form-control" id="glPixel_id" value="<?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo $urls->urlFeature->gl_pixel_id;}else{ echo '';}  ?>" >
+                            <div class="normal-box1">
+                                <div class="normal-header">
+                                    <label class="custom-checkbox">Edit description
+                                        <input type="checkbox" id="descriptionEnable" name="allowDescription" <?php if(!empty($urls->meta_description)){echo 'checked';}?> >
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="normal-body add-description" id="descriptionArea" style="display: <?php if(!empty($urls->meta_description)){echo 'block';}else{ echo 'none';}?>">
+                                    <p>Mention description for this link</p>
+                                    <textarea id="descriptionContents" name="searchDescription" class = "form-control"><?php if(!empty($urls->meta_description)){echo $urls->meta_description;}else{ echo '';}?></textarea>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- <div class="normal-box1">
-                            <div class="normal-header">
-                                <label class="custom-checkbox">Add tags
-                                  <input type="checkbox" value="google-pixel">
-                                  <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="normal-body google-pixel">
-                                <p>Mention tags for this link</p>
-                                <input type="text" class="form-control">
-                            </div>
-                        </div> -->
-
-
-                        <div class="normal-box1">
-                            <div class="normal-header">
-                                <label class="custom-checkbox">Add tags
-                                    <input type="checkbox" id="shortTagsEnable" name="allowTag" <?php if(count($urls->urlTagMap)>0){echo 'checked';}else{echo '';}?> >
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            @if(count($urls->urlTagMap)>0)
-                                <div id="shortTags_Contents_chosen" class="chosen-container chosen-container-multi chosen-with-drop chosen-container-active" style="width: 48px; display: none;">
-                                    <ul class="chosen-choices">
-                                        
+                            <div class="normal-box1">
+                                <div class="normal-header">
+                                    <label class="custom-checkbox">Link Preview
+                                        <input type="checkbox" id="link_preview_selector" name="link_preview_selector" checked>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="normal-body link-preview" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>;">
+                                    <ul>
+                                        <li>
+                                            <label class="custom-checkbox">Use Original
+                                                <input type="checkbox" id="link_preview_original" name="link_preview_original" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </li>
+                                        <li>
+                                            <label class="custom-checkbox">Use Custom
+                                                <input type="checkbox" id="link_preview_custom" name="link_preview_custom" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </li>
                                     </ul>
-                                </div>
-                            @endif
-                            <div class="normal-body add-tags" style="display: <?php if(count($urls->urlTagMap)>0){echo 'block';}else{echo 'none';}?>">
-                                <p>Mention tags for this link</p>
-
-                                <div class="custom-tags-area" id="customTags_Area" >
-                                    <input type="hidden" id="hidden_preload_tag">
-                                    <select data-placeholder="" class="chosen-select chosen-select-header chosen-container" multiple tabindex="4" id="shortTags_Contents"  name="tags[]">
-                                        <option value=""></option>
-                                        @for ( $i =0 ;$i<count($urlTags);$i++)
-                                            <option value="{{ $urlTags[$i] }}">{{ $urlTags[$i] }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <div class="normal-box1">
-                            <div class="normal-header">
-                                <label class="custom-checkbox">Add description
-                                    <input type="checkbox" id="descriptionEnable" name="allowDescription" <?php if(!empty($urls->meta_description)){echo 'checked';}?> >
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="normal-body add-description" id="descriptionArea" style="display: <?php if(!empty($urls->meta_description)){echo 'block';}else{ echo 'none';}?>">
-                                <p>Mention description for this link</p>
-                                <textarea id="descriptionContents" name="searchDescription" class = "form-control"><?php if(!empty($urls->meta_description)){echo $urls->meta_description;}else{ echo '';}?></textarea>
-                            </div>
-                        </div>
-
-
-                        <div class="normal-box1">
-                            <div class="normal-header">
-                                <label class="custom-checkbox">Link Preview
-                                    <input type="checkbox" id="link_preview_selector" name="link_preview_selector" checked>
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="normal-body link-preview" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>;">
-                                <ul>
-                                    <li>
-                                        <label class="custom-checkbox">Use Original
-                                            <input type="checkbox" id="link_preview_original" name="link_preview_original" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="custom-checkbox">Use Custom
-                                            <input type="checkbox" id="link_preview_custom" name="link_preview_custom" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </li>
-                                </ul>
-                                <div class="use-custom" style="display: block;">
-
-                                    <div class="white-paneel">
-                                        <div class="white-panel-header">Image</div>
-                                        <div class="white-panel-body">
-                                            <ul>
-                                                <li>
-                                                    <label class="custom-checkbox">Use Original
-                                                        <input type="checkbox" id="org_img_chk" name="org_img_chk" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                                <li>
-                                                    <label class="custom-checkbox">Use Custom
-                                                        <input type="checkbox" id="cust_img_chk" name="cust_img_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                            <div class="use-custom1 img-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>">
-                                                <div class="row">
-                                                    <div class="col-md-10">
-                                                        <input type="file" class="form-control" id="img_inp" name="img_inp">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <?php
-                                                            if($urls->is_custom==1)
-                                                            {
-                                                                ?>
+                                    <div class="use-custom" style="display: block;">
+                                        <div class="white-paneel">
+                                            <div class="white-panel-header">Image</div>
+                                            <div class="white-panel-body">
+                                                <ul>
+                                                    <li>
+                                                        <label class="custom-checkbox">Use Original
+                                                            <input type="checkbox" id="org_img_chk" name="org_img_chk" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
+                                                            <span class="checkmark"></span>
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="custom-checkbox">Use Custom
+                                                            <input type="checkbox" id="cust_img_chk" name="cust_img_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
+                                                            <span class="checkmark"></span>
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                                <div class="use-custom1 img-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>">
+                                                    <div class="row">
+                                                        <div class="col-md-10">
+                                                            <input type="file" class="form-control" id="img_inp" name="img_inp">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <?php
+                                                                if($urls->is_custom==1){
+                                                            ?>
                                                                 <img src="{{$urls->og_image}}" class="img-responsive" style="width: 100px;">
-                                                                <?php
-                                                            }
-                                                        ?>
+                                                            <?php
+                                                                }
+                                                            ?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="white-paneel">
-                                        <div class="white-panel-header">Title</div>
-                                        <div class="white-panel-body">
-                                            <ul>
-                                                <li>
-                                                    <label class="custom-checkbox">Use Original
-                                                        <input type="checkbox" id="org_title_chk" name="org_title_chk" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                                <li>
-                                                    <label class="custom-checkbox">Use Custom
-                                                        <input type="checkbox" id="cust_title_chk" name="cust_title_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                            <div class="use-custom1 title-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>" >
-                                                <input type="text" class="form-control" id="title_inp" name="title_inp" value="<?php if($urls->is_custom==1){echo $urls->og_title;}else{echo '';}?>" >
+                                        <div class="white-paneel">
+                                            <div class="white-panel-header">Title</div>
+                                            <div class="white-panel-body">
+                                                <ul>
+                                                    <li>
+                                                        <label class="custom-checkbox">Use Original
+                                                            <input type="checkbox" id="org_title_chk" name="org_title_chk" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
+                                                            <span class="checkmark"></span>
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="custom-checkbox">Use Custom
+                                                            <input type="checkbox" id="cust_title_chk" name="cust_title_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
+                                                            <span class="checkmark"></span>
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                                <div class="use-custom1 title-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>" >
+                                                    <input type="text" class="form-control" id="title_inp" name="title_inp" value="<?php if($urls->is_custom==1){echo $urls->og_title;}else{echo '';}?>" >
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="white-paneel">
-                                        <div class="white-panel-header">Description</div>
-                                        <div class="white-panel-body">
-                                            <ul>
-                                                <li>
-                                                    <label class="custom-checkbox">Use Original
-                                                        <input type="checkbox" id="org_dsc_chk" name="org_dsc_chk" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                                <li>
-                                                    <label class="custom-checkbox">Use Custom
-                                                        <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                            <div class="use-custom2 dsc-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>" >
-                                                <textarea class="form-control" id="dsc_inp" name="dsc_inp">
-                                                    <?php if($urls->is_custom==1){echo trim($urls->og_description);}else{echo '';}?>
-                                                </textarea>
+                                        <div class="white-paneel">
+                                            <div class="white-panel-header">Description</div>
+                                            <div class="white-panel-body">
+                                                <ul>
+                                                    <li>
+                                                        <label class="custom-checkbox">Use Original
+                                                            <input type="checkbox" id="org_dsc_chk" name="org_dsc_chk" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
+                                                            <span class="checkmark"></span>
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="custom-checkbox">Use Custom
+                                                            <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
+                                                            <span class="checkmark"></span>
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                                <div class="use-custom2 dsc-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>" >
+                                                    <textarea class="form-control" id="dsc_inp" name="dsc_inp">
+                                                        <?php if($urls->is_custom==1){echo trim($urls->og_description);}else{echo '';}?>
+                                                    </textarea>
+                                                </div>
                                             </div>
                                         </div>
+
+
+                                        {{--
+                                        <div class="white-paneel">
+                                            <div class="white-panel-header">URL</div>
+                                            <div class="white-panel-body">
+                                                <ul>
+                                                    <li>
+                                                        <label class="custom-checkbox">Use Original
+                                                          <input checked type="checkbox" id="org_url_chk" name="org_url_chk">
+                                                          <span class="checkmark"></span>
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="custom-checkbox">Use Custom
+                                                          <input type="checkbox" id="cust_url_chk" name="cust_url_chk">
+                                                          <span class="checkmark"></span>
+                                                        </label>
+                                                    </li>
+                                                </ul>
+                                                <div class="use-custom3 url-inp">
+                                                    <input type="text" class="form-control" name="url_inp" id="url_inp">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        --}}
                                     </div>
-
-
-                                    {{--
-        <div class="white-paneel">
-            <div class="white-panel-header">URL</div>
-            <div class="white-panel-body">
-                <ul>
-                    <li>
-                        <label class="custom-checkbox">Use Original
-                          <input checked type="checkbox" id="org_url_chk" name="org_url_chk">
-                          <span class="checkmark"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="custom-checkbox">Use Custom
-                          <input type="checkbox" id="cust_url_chk" name="cust_url_chk">
-                          <span class="checkmark"></span>
-                        </label>
-                    </li>
-                </ul>
-                <div class="use-custom3 url-inp">
-                    <input type="text" class="form-control" name="url_inp" id="url_inp">
-                </div>
-            </div>
-        </div>
-                                    --}}
-
-
                                 </div>
                             </div>
+                           
+                            <div class="normal-box1">
+                                <div class="normal-header">
+                                    <label class="custom-checkbox">Edit Link Expiration 
+                                        <input type="checkbox" id="expirationEnable" name="allowExpiration" <?php if(!empty($urls->date_time)){echo 'checked';}?>>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="normal-body add-expiration" id="expirationArea" style="<?php if(!empty($urls->date_time)){echo 'display: block';}?>">
+                                    <p>Select date &amp; time for this link</p>
+                                    <input id="datepicker" width="370" name="date_time" value="<?php if(!empty($urls->date_time)){ $old_date_timestamp = strtotime($urls->date_time); $new_date = date('H:i m/d/Y', $old_date_timestamp); echo $new_date;} ?>"/>
+ 
+                                    <p>Select a timezone</p>
+
+                                    <select name="timezone" id="expirationTZ">
+                                        <option value="">Select from list</option>
+                                        <option value="America/New_York"  @if(($urls->timezone)=='America/New_York') {{'selected'}} @endif >Eastern Time</option>
+                                        <option value="America/Chicago" @if(($urls->timezone)=='America/Chicago') {{'selected'}} @endif >Central Time</option>
+                                        <option value="America/Denver"  @if(($urls->timezone)=='America/Denver') {{'selected'}} @endif >Mountain Time</option>
+                                        <option value="America/Los_Angeles" @if(($urls->timezone)=='America/Los_Angeles') {{'selected'}} @endif >Pacific Time</option>
+                                        <option value="America/Phoenix" @if(($urls->timezone)=='America/Phoenix') {{'selected'}} @endif >Mountain no DST</option>
+                                        <option value="America/Anchorage" @if(($urls->timezone)=='America/Anchorage') {{'selected'}} @endif >Alaska</option>
+                                        <option value="America/Adak" @if(($urls->timezone)=='America/Adak') {{'selected'}} @endif >Hawaii</option>
+                                        <option value="Hawaii no DST"  @if(($urls->timezone)=='Hawaii no DST') {{'selected'}} @endif >Pacific/Honolulu</option>
+                                    </select>
+                                    <p>Select a redirection page url after expiration</p>
+                                    <input type="text" name="redirect_url" id="expirationUrl" value="{{$urls->credirect_url}}">
+                                </div>
+                            </div>
+
+                            {{--Link Schedule--}}
+
+                            {{--<div class="normal-box1">--}}
+                                {{--<div class="normal-header">--}}
+                                    {{--<label class="custom-checkbox">Add Schedules for the link--}}
+                                        {{--<input type="checkbox" id="addSchedule" name="allowSchedule">--}}
+                                        {{--<span class="checkmark"></span>--}}
+                                    {{--</label>--}}
+                                {{--</div>--}}
+                                {{--<div class="" id="scheduleArea">--}}
+                                    {{--<div id="day-1">--}}
+                                        {{--<h5 class="text-muted text-center">Link For Monday</h5>--}}
+                                        {{--<input type="text" class="form-control" name="day1" id="day1" placeholder="Link for monday">--}}
+                                    {{--</div>--}}
+                                    {{--<div id="day-2" class="schedule-day">--}}
+                                        {{--<h5 class="text-muted text-center">Link For Tuesday</h5>--}}
+                                        {{--<input type="text" class="form-control" name="day2" id="day2" placeholder="Link for tuesday">--}}
+                                    {{--</div>--}}
+                                    {{--<div id="day-3" class="schedule-day">--}}
+                                        {{--<h5 class="text-muted text-center">Link For Wednesday</h5>--}}
+                                        {{--<input type="text" class="form-control" name="day2" id="day3" placeholder="Link for wednesday">--}}
+                                    {{--</div>--}}
+
+                                    {{--<div id="day-4" class="schedule-day">--}}
+                                        {{--<h5 class="text-muted text-center">Link For Thursday</h5>--}}
+                                        {{--<input type="text" class="form-control" name="day4" id="day4" placeholder="Link for thursday">--}}
+                                    {{--</div>--}}
+
+                                    {{--<div id="day-5" class="schedule-day">--}}
+                                        {{--<h5 class="text-muted text-center">Link For Friday</h5>--}}
+                                        {{--<input type="text" class="form-control" name="day5" id="day5" placeholder="Link for friday">--}}
+                                    {{--</div>--}}
+
+                                    {{--<div id="day-6" class="schedule-day">--}}
+                                        {{--<h5 class="text-muted text-center">Link For Saturday</h5>--}}
+                                        {{--<input type="text" class="form-control" name="day6" id="day6" placeholder="Link for saturday">--}}
+                                    {{--</div>--}}
+
+                                    {{--<div id="day-7" class="schedule-day">--}}
+                                        {{--<h5 class="text-muted text-center">Link For Sunday</h5>--}}
+                                        {{--<input type="text" class="form-control" name="day7" id="day7" placeholder="Link for sunday">--}}
+                                    {{--</div>--}}
+
+                                    {{--<button class="btn btn-sm btn-default">Previous</button>--}}
+                                    {{--<button class="btn btn-sm btn-success">Next</button>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                            {{csrf_field()}}
+                            <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
+                            </form>
                         </div>
-
-                        {{-- LINK Expiration --}}
-
-                        {{--<div class="normal-box1">--}}
-                            {{--<div class="normal-header">--}}
-                                {{--<label class="custom-checkbox">Add expiration date for the link--}}
-                                    {{--<input type="checkbox" id="expirationEnable" name="allowExpiration">--}}
-                                    {{--<span class="checkmark"></span>--}}
-                                {{--</label>--}}
-                            {{--</div>--}}
-                            {{--<div class="normal-body add-expiration" id="expirationArea">--}}
-                                {{--<p>Select date &amp; time for this link</p>--}}
-                                {{--<input id="datepicker" width="370" name="date_time"/>--}}
-                                {{--<p>Select a timezone</p>--}}
-                                {{--<select name="timezone" id="expirationTZ">--}}
-                                    {{--<option value="">Select from list</option>--}}
-                                    {{--<option value="America/New_York">Eastern Time</option>--}}
-                                    {{--<option value="America/Chicago">Central Time</option>--}}
-                                    {{--<option value="America/Denver">Mountain Time</option>--}}
-                                    {{--<option value="America/Los_Angeles">Pacific Time</option>--}}
-                                    {{--<option value="America/Phoenix">Mountain no DST</option>--}}
-                                    {{--<option value="America/Anchorage">Alaska</option>--}}
-                                    {{--<option value="America/Adak">Hawaii</option>--}}
-                                    {{--<option value="Hawaii no DST">Pacific/Honolulu</option>--}}
-                                {{--</select>--}}
-                                {{--<p>Select a redirection page url after expiration</p>--}}
-                                {{--<input type="text" name="redirect_url" id="expirationUrl">--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-
-                        {{--Link Schedule--}}
-
-                        {{--<div class="normal-box1">--}}
-                            {{--<div class="normal-header">--}}
-                                {{--<label class="custom-checkbox">Add Schedules for the link--}}
-                                    {{--<input type="checkbox" id="addSchedule" name="allowSchedule">--}}
-                                    {{--<span class="checkmark"></span>--}}
-                                {{--</label>--}}
-                            {{--</div>--}}
-                            {{--<div class="" id="scheduleArea">--}}
-
-                                {{--<div id="day-1">--}}
-                                    {{--<h5 class="text-muted text-center">Link For Monday</h5>--}}
-                                    {{--<input type="text" class="form-control" name="day1" id="day1" placeholder="Link for monday">--}}
-                                {{--</div>--}}
-
-                                {{--<div id="day-2" class="schedule-day">--}}
-                                    {{--<h5 class="text-muted text-center">Link For Tuesday</h5>--}}
-                                    {{--<input type="text" class="form-control" name="day2" id="day2" placeholder="Link for tuesday">--}}
-                                {{--</div>--}}
-
-                                {{--<div id="day-3" class="schedule-day">--}}
-                                    {{--<h5 class="text-muted text-center">Link For Wednesday</h5>--}}
-                                    {{--<input type="text" class="form-control" name="day2" id="day3" placeholder="Link for wednesday">--}}
-                                {{--</div>--}}
-
-                                {{--<div id="day-4" class="schedule-day">--}}
-                                    {{--<h5 class="text-muted text-center">Link For Thursday</h5>--}}
-                                    {{--<input type="text" class="form-control" name="day4" id="day4" placeholder="Link for thursday">--}}
-                                {{--</div>--}}
-
-                                {{--<div id="day-5" class="schedule-day">--}}
-                                    {{--<h5 class="text-muted text-center">Link For Friday</h5>--}}
-                                    {{--<input type="text" class="form-control" name="day5" id="day5" placeholder="Link for friday">--}}
-                                {{--</div>--}}
-
-                                {{--<div id="day-6" class="schedule-day">--}}
-                                    {{--<h5 class="text-muted text-center">Link For Saturday</h5>--}}
-                                    {{--<input type="text" class="form-control" name="day6" id="day6" placeholder="Link for saturday">--}}
-                                {{--</div>--}}
-
-                                {{--<div id="day-7" class="schedule-day">--}}
-                                    {{--<h5 class="text-muted text-center">Link For Sunday</h5>--}}
-                                    {{--<input type="text" class="form-control" name="day7" id="day7" placeholder="Link for sunday">--}}
-                                {{--</div>--}}
-
-                                {{--<button class="btn btn-sm btn-default">Previous</button>--}}
-                                {{--<button class="btn btn-sm btn-success">Next</button>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-
-                        {{csrf_field()}}
-                        <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
-                    </form>
-
-
+                    </div>
                 </div>
-            </div>
+            </section>
         </div>
-    </section>
-
-</div>
-
-
-
-@include('contents/footer')
-<!-- Choseen jquery  -->
-<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
-<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
-<script src="{{ URL::to('/').'/public/resources/js/chosen/chosen.jquery.js' }}" type="text/javascript"></script>
-<script src="{{ URL::to('/').'/public/resources/js/chosen/prism.js' }}" type="text/javascript" charset="utf-8"></script>
-<script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
-<!-- Choseen jquery  -->
-<style type="text/css">
-    .chosen-container-multi {
-        width:100% !important;
-    }
-</style>
+        @include('contents/footer')
+        <!-- Choseen jquery  -->
+        <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
+        <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
+        <script src="{{ URL::to('/').'/public/resources/js/chosen/chosen.jquery.js' }}" type="text/javascript"></script>
+        <script src="{{ URL::to('/').'/public/resources/js/chosen/prism.js' }}" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
+        <!-- Choseen jquery  -->
+        <style type="text/css">
+            .chosen-container-multi {
+                width:100% !important;
+            }
+        </style>
 <!-- ManyChat -->
 <script src="//widget.manychat.com/216100302459827.js" async="async">
 </script>
@@ -426,25 +364,28 @@
 <link href="{{ URL::to('/').'/public/css/fine-uploader-new.min.css' }}" rel="stylesheet" />
 
 <script type="text/javascript">
+    $("#shortTags_Contents").chosen(
+        {no_results_text: "No result found. Press enter to add "}
+    );
+   
 
-
-    $(".chosen-select").chosen({});
-    //$('.chosen-choices').prepend("<li class='search-choice'><span>aaaa</span><a class='search-choice-close' data-option-array-index='1'></a></li>");
-    @foreach($urls->urlTagMap as $urlTagArr)
-    @foreach($urlTagArr->urlTag as $key => $tags)
-
-    $('.chosen-choices').prepend("<li class='search-choice'><span>{{$tags->tag}}</span><a class='search-choice-close' data-option-array-index='{{$tags->id}}'></a></li>");
-    @endforeach
+    
+   @foreach($urls->urlTagMap as $urlTagArr)
+        @foreach($urlTagArr->urlTag as $key => $tags)
+           /* //$("#shortTags_Contents").text('okay').trigger("change");
+            $(".chosen-select-header").prepend($("<option>").val("{{$tags->tag}}").text("{{$tags->tag}}"));
+            $(".chosen-select-header").find($("<option>").val("{{$tags->tag}}").text("{{$tags->tag}}")).prop('selected', true);
+            $('.chosen-choices').prepend("<li class='search-choice'><span>{{$tags->tag}}</span><a class='search-choice-close' data-option-array-index='{{$tags->id}}'></a></li>");
+            $(".chosen-results").find($("<li>").text("{{$tags->tag}}")).removeClass('active-result');*/
+        @endforeach
     @endforeach
 
     $(".chosen-container").bind('keyup',function(e) {
-        if (e.which == 13 || e.which == 188)
-        {
+        if (e.which == 13 || e.which == 188){
             var lastChar = e.target.value.slice(-1);
             var strVal  = e.target.value;
             strVal = strVal.trim();
             if(strVal.length == 0) return false;
-
             if (lastChar == ',') {
                 strVal = strVal.slice(0, -1);
             }
@@ -454,9 +395,7 @@
             select.prepend(option);
             // Automatically select it
             select.find(option).prop('selected', true);
-
             select.trigger("chosen:updated");
-
         }
     });
 
@@ -878,7 +817,7 @@
                 $('#expirationArea').show();
                 //$('#descriptionContents').show();
                 $('#datepicker').prop('required', true);
-                $('#expirationTZ').prop('required', true);
+                //$('#expirationTZ').prop('required', true);
             } else {
                 $('#datepicker').val('');
                 $('#expirationTZ').val('');
