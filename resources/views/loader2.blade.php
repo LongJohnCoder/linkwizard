@@ -193,40 +193,48 @@
             }
 
             $(document).ready(function() {
-                var sec = '{{$url->redirecting_time}}' / 1000;
+                var sec = '{{$url->redirectingtime}}' / 1000;
                 window.setInterval(function(){
-                    sec--;
-                    if(sec >= 0){
-                        $('#txt_').text(sec.toString());
-                    }
-                    else{
-                        $('#txt_').text('');
-                    }
+                sec--;
+                if(sec >= 0){
+                $('#txt').text(sec.toString());
+                }
+                else{
+                $('#txt_').text('');
+                }
                 }, 1000);
 
                 $.ajax({
                     url: '//freegeoip.net/json/',
                     type: 'POST',
-                    url: "{{ route('postUserInfo') }}",
-                    data: {
-                        url: '{{ $url->id }}',
-                        country: location,
-                        platform: '{{ $user_agent['platform'] }}',
-                        browser: '{{ $user_agent['browser'] }}',
-                        referer: '{{ $referer }}',
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(response){
-                        console.log(response);
-                        setTimeout(function() {
-                            console.log(URL_TO_REDIRECT);
-                            if(URL_TO_REDIRECT=='NULL')
-                            {
-                                $('#msg').text('Sorry! the link has been expired');
-                            }
-                            if(URL_TO_REDIRECT!='NULL')
-                            {
-                                window.location.replace(URL_TO_REDIRECT.replace(/&amp;/g, '&'));
+                    dataType: 'jsonp',
+                    success: function(location) {
+                        console.log(location);
+                        $.ajax({
+                            type: 'POST',
+                            url: "{{ route('postUserInfo') }}",
+                            data: {
+                                url: '{{ $url->id }}',
+                                country: location,
+                                platform: '{{ $user_agent['platform'] }}',
+                                browser: '{{ $user_agent['browser'] }}',
+                                referer: '{{ $referer }}',
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(response){
+                                console.log(response);
+                                setTimeout(function() {
+                                    console.log(URL_TO_REDIRECT);
+                                    if(URL_TO_REDIRECT=='NULL')
+                                    {
+                                        $('#msg').text('Sorry! the link has been expired');
+                                    }
+                                    if(URL_TO_REDIRECT!='NULL')
+                                    {
+                                        window.location.replace(URL_TO_REDIRECT.replace(/&amp;/g, '&'));
+                                    }
+                                    HoldOn.close();
+                                }, "{{ $url->redirecting_time }}");
                             }
                         });
                     }
