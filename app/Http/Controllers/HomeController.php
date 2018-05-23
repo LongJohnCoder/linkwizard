@@ -1654,15 +1654,30 @@ class HomeController extends Controller
           return redirect()->back()->with('error', 'url cannot be empty!');
         }
 
+          /* set the flag for is_custom column */
+
+          if(isset($request->link_preview_custom) && $request->link_preview_custom == 'on')
+          {
+              if((isset($request->cust_title_chk) &&  $request->cust_title_chk) or (isset($request->cust_img_chk) &&  $request->cust_img_chk) or (isset($request->cust_dsc_chk) &&  $request->cust_dsc_chk))
+              {
+                  $is_custom = 1;
+              }
+          }
+          else
+          {
+              $is_custom = 0;
+          }
+
           $random_string = $this->randomString();
 
-        $url = new Url();
-        $url->actual_url = $actual_url;
-        $url->protocol = $protocol;
-        $url->shorten_suffix = $random_string;
-        $meta_data = $this->getPageMetaContents($request->actual_url[0]);
-        $url = $this->fillUrlDescriptions($url , $request, $meta_data);
-        $url->user_id = $userId;
+          $url = new Url();
+          $url->actual_url = $actual_url;
+          $url->protocol = $protocol;
+          $url->shorten_suffix = $random_string;
+          $meta_data = $this->getPageMetaContents($request->actual_url);
+          $url = $this->fillUrlDescriptions($url , $request, $meta_data);
+          $url->user_id = $userId;
+          $url->is_custom = $is_custom;
 
         //****** expiration values set in the `urls` table ******//
 
