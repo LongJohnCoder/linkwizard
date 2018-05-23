@@ -1,32 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- head start -->
-@include('contents/head')
-<!-- head end -->
-<body>
-    <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
-    <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
-    <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
-    <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
-    <!-- Date time picker -->
-    <script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>
-    <link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-    <style>
-        /* hidden display div for link schedule panel */
-        .schedule-day{
-            /*display: none;*/
-        }
-        #scheduleArea{
-            padding: 10px;
-        }
-    </style>
-    <script>
-        $(document).ready(function () {
-            $('#datepicker').datetimepicker({
-                uiLibrary: 'bootstrap'
+
+    <!-- head start -->
+	@include('contents/head')
+    <!-- head end -->
+    <body>
+        <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
+        <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
+        <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
+        <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
+        <!-- Date time picker -->
+        <script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>
+        <link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+        <style>
+            /* hidden display div for link schedule panel */
+            .schedule-day{
+                /*display: none;*/
+            }
+            #scheduleArea{
+                padding: 10px;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                $('#datepicker').datetimepicker({
+                    uiLibrary: 'bootstrap'
+                });
             });
-        });
-    </script>
+        </script>
 <!-- Header Start -->
 @include('contents/header')
 <!-- Header End -->

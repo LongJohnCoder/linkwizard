@@ -78,9 +78,7 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
 
-        public function editUrl(Request $request, $id=NULL)
-        {
-            
+        public function editUrl(Request $request, $id=NULL){
             $this->validate($request, [
                 "actual_url" => 'required|url'
             ]);
@@ -140,16 +138,14 @@
                     $url->twitter_url = $meta_Data['twitter_url'];
                     $url->twitter_image = $meta_Data['twitter_image'];
                 }
-                if(isset($request->link_preview_custom) && $request->link_preview_custom=='on')
-                {
+
+                if(isset($request->link_preview_custom) && $request->link_preview_custom=='on'){
                     $url->is_custom = 1;
 
                     if(isset($request->org_img_chk) && $request->org_img_chk=='on')
                     {
                         $url->og_image = $meta_Data['og_image'];
-                    }
-                    elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on')
-                    {
+                    }elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on'){
 
                         if($request->hasFile('img_inp'))
                         {
