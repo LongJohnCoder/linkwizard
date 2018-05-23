@@ -177,7 +177,7 @@
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-                            <div class="normal-body link-preview" style="display: <?php if($urls->is_custom==0){echo 'block';}else{echo 'none';}?>;">
+                            <div class="normal-body link-preview" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>;">
                                 <ul>
                                     <li>
                                         <label class="custom-checkbox">Use Original
@@ -273,7 +273,7 @@
                                             </ul>
                                             <div class="use-custom2 dsc-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>" >
                                                 <textarea class="form-control" id="dsc_inp" name="dsc_inp">
-                                                    <?php if($urls->is_custom==1){echo $urls->og_description;}else{echo '';}?>
+                                                    <?php if($urls->is_custom==1){echo trim($urls->og_description);}else{echo '';}?>
                                                 </textarea>
                                             </div>
                                         </div>

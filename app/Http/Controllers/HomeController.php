@@ -2756,7 +2756,6 @@ class HomeController extends Controller
 
     public function editUrl(Request $request, $id=NULL)
     {
-
         $this->validate($request, [
             "actual_url" => 'required|url'
         ]);
@@ -2767,6 +2766,10 @@ class HomeController extends Controller
         $page_url = $explode_url[1];
 
         $url = Url::find($id);
+
+        $url->protocol = $protocol;
+        $url->actual_url = $page_url;
+
         if(isset($request->allowDescription) && $request->allowDescription=='on')
         {
             $url->meta_description = $request->searchDescription;
@@ -2799,7 +2802,13 @@ class HomeController extends Controller
                 }
                 elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on')
                 {
-                    $url->og_image = $_FILES['img_inp']['name'];
+                    $image = $request->file('img_inp');
+
+                    $upload_path ='public/uploads/images';
+                    $imagename = uniqid() .'.'. $image->getClientOriginalExtension();
+                    $request->img_inp->move($upload_path, $imagename);
+                    $url->og_image = $imagename;
+
                 }
 
                 if(isset($request->org_title_chk) && $request->org_title_chk=='on')
@@ -2817,7 +2826,7 @@ class HomeController extends Controller
                 }
                 elseif(isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on')
                 {
-                    $url->og_description = $request->dsc_inp;
+                    $url->og_description = trim($request->dsc_inp);
                 }
             }
         }else
@@ -2831,13 +2840,13 @@ class HomeController extends Controller
             $url->twitter_url = $meta_Data['twitter_url'];
             $url->twitter_image = $meta_Data['twitter_image'];
         }
-        $url->protocol = $protocol;
-        $url->actual_url = $page_url;
-//        $url->save();
+
+        if($url->save())
+        {
 
         if(isset($request->tags) && count($request->tags)>0)
         {
-            DB::table('url_tag_maps')->where('url_id', $url->id)->delete();
+            DB::table('url_tag_maps')->where('url_id', $id)->delete();
 
             for($i=0; $i<count($request->tags); $i++)
             {
@@ -2846,9 +2855,8 @@ class HomeController extends Controller
                 $url_tag_id = UrlTag::where('tag', $request->tags[$i])->first();
                 if(count($url_tag_id)>0)
                 {
-//                dd($url_tag_id);
                     $url_tag_map->url_tag_id = $url_tag_id->id;
-                    $url_tag_map->url_id = $url->id;
+                    $url_tag_map->url_id = $id;
                     $url_tag_map->save();
                 }else
                 {
@@ -2857,20 +2865,18 @@ class HomeController extends Controller
                     $url_tag->save();
 
                     $url_tag_map->url_tag_id = $url_tag->id;
-                    $url_tag_map->url_id = $url->id;
+                    $url_tag_map->url_id = $id;
                     $url_tag_map->save();
                 }
             }
         }
 
-//        $url_feature = UrlFeature::find();
-        if($request->checkboxAddFbPixelid == 'on' && isset($request->checkboxAddFbPixelid))
+        if(isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == 'on')
         {
-            $url_feature_count = UrlFeature::where('url_id', $url->id)->first();
-
+            $url_feature_count = UrlFeature::where('url_id', $id)->first();
             if(count($url_feature_count)>0)
             {
-                DB::table('url_features')->where('url_id',$url->id)->update(array(
+                DB::table('url_features')->where('url_id',$id)->update(array(
                     'fb_pixel_id' => $request->fbPixelid,
                 ));
             }
@@ -2878,16 +2884,27 @@ class HomeController extends Controller
             {
                 $url_feature = new UrlFeature();
                 $url_feature->fb_pixel_id = $request->fbPixelid;
+                $url_feature->url_id = $id;
                 $url_feature->save();
+            }
+        }else
+        {
+            $url_feature_count = UrlFeature::where('url_id', $id)->first();
+            //dd($url->id);
+            if(count($url_feature_count)>0)
+            {
+                DB::table('url_features')->where('url_id',$id)->update(array(
+                    'fb_pixel_id' => NULL,
+                ));
             }
         }
 
-        if($request->checkboxAddGlPixelid == 'on' && isset($request->checkboxAddGlPixelid))
+        if(isset($request->checkboxAddGlPixelid) && $request->checkboxAddGlPixelid == 'on')
         {
-            $url_feature_count = UrlFeature::where('url_id', $url->id)->first();
+            $url_feature_count = UrlFeature::where('url_id', $id)->first();
             if(count($url_feature_count)>0)
             {
-                DB::table('url_features')->where('url_id',$url->id)->update(array(
+                DB::table('url_features')->where('url_id',$id)->update(array(
                     'gl_pixel_id' => $request->glPixelid,
 
                 ));
@@ -2895,14 +2912,25 @@ class HomeController extends Controller
             {
                 $url_feature = new UrlFeature();
                 $url_feature->gl_pixel_id = $request->glPixelid;
+                $url_feature->url_id = $id;
                 $url_feature->save();
+            }
+        }else
+        {
+            $url_feature_count = UrlFeature::where('url_id', $id)->first();
+            if(count($url_feature_count)>0)
+            {
+                DB::table('url_features')->where('url_id',$id)->update(array(
+                    'gl_pixel_id' => NULL,
+
+                ));
             }
         }
 
 
-        return redirect()->route('getIndex');
-
-
+            return redirect()->route('getDashboard')->with('edit_msg', '0');
+        }
+        return redirect()->route('getDashboard')->with('edit_msg', '1');
     }
 
     /**
