@@ -363,6 +363,8 @@ Route::group(['domain' => config('settings.APP_REDIRECT_HOST'), ['middlewareGrou
 // });
 
 
+Route::post('/{id?}/editshorturl', 'HomeController@editUrl')->name('edit_short_url');
+
 /**
 * Edit url routing
 */
