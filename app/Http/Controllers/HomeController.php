@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Browser;
+use App\CircularLink;
 use App\Country;
 use App\Limit;
 use App\LinkLimit;
@@ -353,6 +354,12 @@ class HomeController extends Controller
         $search = Url::where('shorten_suffix', $url)->first();
         $url_features = UrlFeature::where('url_id', $search->id)->first();
         if ($search) {
+            if ($search->no_of_circular_links > 1) {
+                $circularLinks = CircularLink::where('url_id', $search->id)->get();
+                $search->actual_url = $circularLinks[$search->link_hits_count % $search->no_of_circular_links]->actual_link;
+                $search->link_hits_count += 1;
+                $search->save();
+            }
             return view('loader2', ['url' => $search, 'url_features' => $url_features]);
         } else {
             abort(404);
@@ -1417,7 +1424,7 @@ class HomeController extends Controller
         $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
 
 
-        if (strpos($request->actual_url, 'https://') == 0) {
+        if (strpos($request->actual_url[0], 'https://') == 0) {
             $actual_url = str_replace('https://','', $request->url);
             $protocol = 'https';
         } else {
@@ -1832,7 +1839,7 @@ class HomeController extends Controller
         //print("<pre>");print_r($request->all());
         //die();
 
-        if(!isset($request->actual_url) || strlen(trim($request->actual_url)) == 0) {
+        if(!isset($request->actual_url[0]) || strlen(trim($request->actual_url[0])) == 0) {
           return redirect()->back()->with('error', 'url cannot be empty!');
           // return json_encode([
           //     'status' => 'url cannot be empty!',
@@ -1840,26 +1847,39 @@ class HomeController extends Controller
           //     ]);
         }
 
-        if (strpos($request->actual_url, 'https://') == 0) {
-            $actual_url = str_replace('https://', null, $request->actual_url);
+        if (strpos($request->actual_url[0], 'https://') == 0) {
+            $actual_url = str_replace('https://', null, $request->actual_url[0]);
             $protocol = 'https';
         } else {
-            $actual_url = str_replace('http://', null, $request->actual_url);
+            $actual_url = str_replace('http://', null, $request->actual_url[0]);
             $protocol = 'http';
         }
         $url = new Url();
         $url->actual_url      = $actual_url;
         $url->shorten_suffix  = $request->custom_url;
         $url->protocol        = $protocol;
-        //$_url = $this->getPageTitle($request->actual_url);
+        //$_url = $this->getPageTitle($request->actual_url[0]);
         //$url->title = $_url;
 
-        $meta_data  = $this->getPageMetaContents($request->actual_url);
+        $meta_data  = $this->getPageMetaContents($request->actual_url[0]);
         $url        = $this->fillUrlDescriptions($url , $request, $meta_data);
 
         $url->user_id = $userId;
         $url->is_custom = 1;
         if ($url->save()) {
+            /* Circular URLs support */
+            $noOfCircularLinks = count($request->input('actual_url'));
+            if ($noOfCircularLinks > 1) {
+                foreach ($request->input('actual_url') as $actualLink) {
+                    $circularLink = new CircularLink();
+                    $circularLink->url_id = $url->id;
+                    $circularLink->actual_link = $actualLink;
+                    $circularLink->save();
+                }
+                /* Update urls table accordingly */
+                $url->no_of_circular_links = $noOfCircularLinks;
+                $url->save();
+            }
 
           if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
 

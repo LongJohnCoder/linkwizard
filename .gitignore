@@ -8,4 +8,7 @@ Homestead.json
 /config/settings.php
 /public/uploads
 .htaccess
-.idea
+.idea/
+.vscode/
+.nbproject/
+
