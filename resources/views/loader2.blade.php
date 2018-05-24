@@ -1,4 +1,5 @@
 @php
+    //dd($url->day_four);
     $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
     //dd($_SERVER);
     if (isset($_SERVER['HTTP_REFERER'])) {
@@ -14,19 +15,136 @@
     // is_expiry the status of the 1 = no expiry 2 = expiry with redirection
     $is_expire = 0;
     $redirect_url = '';
+    // $is_schedule the flag to check whether the flag have any special schedule 1 = special 2 = weekly check and actual
+    $is_schedule = 2;
+
+    $check = 'someday';
     if(!empty($_SERVER['QUERY_STRING'])){
         $query_string = '1';
         $query_link = $_SERVER['QUERY_STRING'];
     }
 
     /* check if  url has expiry date */
-    if(!empty($url->date_time)){
+    if(!empty($url->date_time))
+    {
         date_default_timezone_set($url->timezone);
         $date1= date('Y-m-d H:i:s') ;
         $date2 = $url->date_time;
         if(strtotime($date1) < strtotime($date2)){
             /*Url Not Expired*/
             $is_expire = 1;
+
+            /* LINK SCHEDULES for links have expiry */
+
+            /* to check if there is any special schedule for this link */
+            if ($url->is_scheduled =='y' && count($url->urlSpecialSchedules)>0)
+            {
+                foreach($url->urlSpecialSchedules as $spl_url)
+                {
+                    if($spl_url->special_day == date('Y-m-d'))
+                    {
+                        $is_schedule = 1;
+                        $redirect_url = $spl_url->special_day_url;
+                    }else
+                    {
+                        $is_schedule = 2;
+                    }
+                }
+            }
+            /* weekly schedule */
+            if($is_schedule == 2)
+            {
+                if(date('N')=='1')
+                {
+                    if(!is_null($url->day_one))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_one;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='2')
+                {
+                    if(!is_null($url->day_two))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_two;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='3')
+                {
+                    if(!is_null($url->day_three))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_three;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='4')
+                {
+                    if(!is_null($url->day_four))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_four;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='5')
+                {
+                    if(!is_null($url->day_five))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_five;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='6')
+                {
+                    if(!is_null($url->day_six))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_six;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='7')
+                {
+                    if(!is_null($url->day_seven))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_seven;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+                }
+            }
         }else{
             /* Url Expired */
             $is_expire = 2;
@@ -39,6 +157,119 @@
                 $redirect_url = 'NULL'; /* default redirect page of expiry urls */
             }
         }
+    }else
+    {
+        $is_expire = 1;
+        /* LINK SCHEDULES for links have no expiry */
+            /* to check if there is any special schedule for this link */
+            if ($url->is_scheduled =='y' && count($url->urlSpecialSchedules)>0)
+            {
+                foreach($url->urlSpecialSchedules as $spl_url)
+                {
+                    if($spl_url->special_day == date('Y-m-d'))
+                    {
+                        $is_schedule = 1;
+                        $redirect_url = $spl_url->special_day_url;
+                    }else
+                    {
+                        $is_schedule = 2;
+                    }
+                }
+            }
+            /* weekly schedule */
+            if($is_schedule == 2)
+            {
+                if(date('N')=='1')
+                {
+                    if(!is_null($url->day_one))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_one;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='2')
+                {
+                    if(!is_null($url->day_two))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_two;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='3')
+                {
+                    if(!is_null($url->day_three))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_three;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='4')
+                {
+                    if(!is_null($url->day_four))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_four;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='5')
+                {
+                    if(!is_null($url->day_five))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_five;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='6')
+                {
+                    if(!is_null($url->day_six))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_six;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+
+                }
+                if(date('N')=='7')
+                {
+                    if(!is_null($url->day_seven))
+                    {
+                        $is_schedule = 2;
+                        $redirect_url = $url->day_seven;
+                    }
+                    else
+                    {
+                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                    }
+                }
+            }
     }
 @endphp
 <!DOCTYPE html>
@@ -189,19 +420,24 @@
 
             /* expiry redirection check */
             if({{$is_expire}}==2){
-                URL_TO_REDIRECT = "{{$redirect_url}}"
+                URL_TO_REDIRECT = "{{$redirect_url}}";
             }
 
+            /* non expiry, not expired, link scheduled redirection check */
+            if({{$is_expire}}==1)
+            {
+                URL_TO_REDIRECT = "{{$redirect_url}}";
+            }
             $(document).ready(function() {
                 var sec = '{{$url->redirectingtime}}' / 1000;
                 window.setInterval(function(){
-                sec--;
-                if(sec >= 0){
-                $('#txt').text(sec.toString());
-                }
-                else{
-                $('#txt_').text('');
-                }
+                    sec--;
+                    if(sec >= 0){
+                        $('#txt').text(sec.toString());
+                    }
+                    else{
+                        $('#txt_').text('');
+                    }
                 }, 1000);
 
                 $.ajax({
@@ -240,6 +476,7 @@
                     }
                 });
             });
+
         </script>
 
         <script>

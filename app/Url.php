@@ -127,4 +127,13 @@ class Url extends Model
     {
         return $this->hasOne('App\UrlFeature', 'url_id');
     }
+
+    /**
+    * One to many relation with UrlSpecialSchedule model
+    */
+    public function urlSpecialSchedules()
+    {
+        return $this->hasMany('App\UrlSpecialSchedule', 'url_id');
+    }
+
 }

@@ -1685,6 +1685,33 @@ class HomeController extends Controller
         //******  Day wise link schedule for shorten url  ******//
 
 
+        if(isset($request->allowSchedule) && $request->allowSchedule == 'on')
+        {
+            $url->is_scheduled = 'y';
+            if(!empty($request->day1) or strlen($request->day1)>0)
+            {
+                $url->day_one = $request->day1;
+            }else
+            {
+                $url->day_one = NULL;
+            }
+
+            if(!empty($request->day2) or strlen($request->day2)>0)
+            {
+                $url->day_two = $request->day2;
+            }else
+            {
+                $url->day_two = NULL;
+            }
+
+            if(!empty($request->day3) or strlen($request->day3)>0)
+            {
+                $url->day_three = $request->day3;
+            }else
+            {
+                $url->day_three = NULL;
+            }
+
             if(!empty($request->day4) or strlen($request->day4)>0)
             {
                 $url->day_four = $request->day4;
@@ -1716,9 +1743,46 @@ class HomeController extends Controller
             {
                 $url->day_seven = NULL;
             }
+        }
 
-    
-        if ($url->save()) {
+
+        if ($url->save())
+        {
+
+            /**
+            * Schedule for special day
+            */
+
+            if(!in_array('', $request->special_date) && !in_array('',$request->special_date_redirect_url)>0)
+            {
+                $spl_dt = [];
+                $spl_url = [];
+                for ($i=0; $i<count($request->special_date); $i++)
+                {
+                    if($request->special_date[$i]!== '' or !empty($request->special_date))
+                    {
+                        $spl_dt[$i] = $request->special_date[$i];
+                    }
+
+                    if($request->special_date_redirect_url[$i]!='' or !empty($request->special_date_redirect_url[$i]))
+                    {
+                        $spl_url[$i] = $request->special_date_redirect_url[$i];
+                    }
+                }
+
+
+                if(count($spl_dt)>0)
+                {
+                    for ($j=0; $j<count($spl_dt); $j++)
+                    {
+                        $id = $url->id;
+                        $spl_date = $spl_dt[$j];
+                        $spcl_url = $spl_url[$j];
+                        $this->insert_special_schedule($id, $spl_date, $spcl_url);
+                    }
+                }
+
+            }
 
             /* Circular URLs support */
             $noOfCircularLinks = count($request->input('actual_url'));
@@ -1811,7 +1875,7 @@ class HomeController extends Controller
 
 
     /**
-     *  Special day schedule links insertion
+     *  Special day schedule links insertion into table `url_special_schedules`
      */
     public function insert_special_schedule($id, $spl_date, $spl_url)
     {
