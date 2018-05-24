@@ -78,7 +78,8 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
 
-        public function editUrl(Request $request, $id=NULL){
+        public function editUrl(Request $request, $id=NULL)
+        {
             
             $this->validate($request, [
                 "actual_url" => 'required|url'
@@ -129,6 +130,7 @@
             {
                 if(isset($request->link_preview_original) && $request->link_preview_original=='on')
                 {
+                    $url->is_custom = 0;
                     $url->og_title = $meta_Data['og_title'];
                     $url->og_description = $meta_Data['og_description'];
                     $url->og_url = $meta_Data['og_url'];
@@ -138,7 +140,7 @@
                     $url->twitter_url = $meta_Data['twitter_url'];
                     $url->twitter_image = $meta_Data['twitter_image'];
                 }
-                elseif(isset($request->link_preview_custom) && $request->link_preview_custom=='on')
+                if(isset($request->link_preview_custom) && $request->link_preview_custom=='on')
                 {
                     $url->is_custom = 1;
 
@@ -148,12 +150,19 @@
                     }
                     elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on')
                     {
-                        $image = $request->file('img_inp');
 
-                        $upload_path ='public/uploads/images';
-                        $imagename = uniqid() .'.'. $image->getClientOriginalExtension();
-                        $request->img_inp->move($upload_path, $imagename);
-                        $url->og_image = $imagename;
+                        if($request->hasFile('img_inp'))
+                        {
+                            $image = $request->file('img_inp');
+                            $upload_path ='public/uploads/images';
+                            $imagename = uniqid() .'.'. $image->getClientOriginalExtension();
+                            $request->img_inp->move($upload_path, $imagename);
+                            $url->og_image = '/public/uploads/images/'.$imagename;
+                        }
+                        else
+                        {
+                            $url->og_image = NULL;
+                        }
 
                     }
 

@@ -125,7 +125,7 @@
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <label class="custom-checkbox">Link Preview
-                                        <input type="checkbox" id="link_preview_selector" name="link_preview_selector" checked>
+                                        <input type="checkbox" id="link_preview_selector" name="link_preview_selector" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
@@ -157,7 +157,7 @@
                                                     </li>
                                                     <li>
                                                         <label class="custom-checkbox">Use Custom
-                                                            <input type="checkbox" id="cust_img_chk" name="cust_img_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
+                                                            <input type="checkbox" id="cust_img_chk" name="cust_img_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> onclick="set_custom_prev_on(this.checked)" >
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </li>
@@ -192,7 +192,7 @@
                                                     </li>
                                                     <li>
                                                         <label class="custom-checkbox">Use Custom
-                                                            <input type="checkbox" id="cust_title_chk" name="cust_title_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
+                                                            <input type="checkbox" id="cust_title_chk" name="cust_title_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> onclick="set_custom_prev_on(this.checked)" >
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </li>
@@ -214,7 +214,7 @@
                                                     </li>
                                                     <li>
                                                         <label class="custom-checkbox">Use Custom
-                                                            <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
+                                                            <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> onclick="set_custom_prev_on(this.checked)" >
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </li>
@@ -391,6 +391,19 @@
             select.trigger("chosen:updated");
         }
     });
+
+    /* custom original checkbox set */
+    function set_custom_prev_on(chk)
+    {
+        if($('#cust_dsc_chk').is('checked')==true)
+        {
+            if(chk==true)
+            {
+                $("#link_preview_original").attr('checked', false);
+                $("#link_preview_custom").attr('checked', true);
+            }
+        }
+    }
 
     function ValidURL(str) {
 
