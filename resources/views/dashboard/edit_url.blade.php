@@ -103,8 +103,6 @@
                                     <div class="custom-tags-area" id="customTags_Area" >
                                         <input type="hidden" id="hidden_preload_tag">
                                         <select data-placeholder="" class="chosen-select chosen-select-header chosen-container" multiple tabindex="4" id="shortTags_Contents"  name="tags[]">
-                                            
-
                                             @for ( $i =0 ;$i< count($urlTags);$i++)
                                                 <option value="{{ $urlTags[$i] }}">{{ $urlTags[$i] }}</option>
                                             @endfor
@@ -267,7 +265,7 @@
                                 </div>
                                 <div class="normal-body add-expiration" id="expirationArea" style="<?php if(!empty($urls->date_time)){echo 'display: block';}?>">
                                     <p>Select date &amp; time for this link</p>
-                                    <input id="datepicker" width="370" name="date_time" value="<?php if(!empty($urls->date_time)){ $old_date_timestamp = strtotime($urls->date_time); $new_date = date('H:i m/d/Y', $old_date_timestamp); echo $new_date;} ?>"/>
+                                    <input id="datepicker" name="date_time" value="<?php if(!empty($urls->date_time)){ $old_date_timestamp = strtotime($urls->date_time); $new_date = date('H:i m/d/Y', $old_date_timestamp); echo $new_date;} ?>"/>
  
                                     <p>Select a timezone</p>
 
@@ -367,18 +365,13 @@
     $("#shortTags_Contents").chosen(
         {no_results_text: "No result found. Press enter to add "}
     );
-   
-
-    
-   @foreach($urls->urlTagMap as $urlTagArr)
-        @foreach($urlTagArr->urlTag as $key => $tags)
-           /* //$("#shortTags_Contents").text('okay').trigger("change");
-            $(".chosen-select-header").prepend($("<option>").val("{{$tags->tag}}").text("{{$tags->tag}}"));
-            $(".chosen-select-header").find($("<option>").val("{{$tags->tag}}").text("{{$tags->tag}}")).prop('selected', true);
-            $('.chosen-choices').prepend("<li class='search-choice'><span>{{$tags->tag}}</span><a class='search-choice-close' data-option-array-index='{{$tags->id}}'></a></li>");
-            $(".chosen-results").find($("<li>").text("{{$tags->tag}}")).removeClass('active-result');*/
+    var selectedTags = [];
+    @if(count($urlTags)>0)
+        @foreach($urlTags as $tags )
+           selectedTags.push('{{$tags}}');
         @endforeach
-    @endforeach
+    @endif
+    $('#shortTags_Contents').val(selectedTags).trigger('chosen:updated');
 
     $(".chosen-container").bind('keyup',function(e) {
         if (e.which == 13 || e.which == 188){
