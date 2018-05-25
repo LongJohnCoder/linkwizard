@@ -308,12 +308,10 @@
                         </label>
                     </div>
                     <div class="normal-body add-link-schedule" id="scheduleArea">
-
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#home">Daywise schedule</a></li>
                             <li><a data-toggle="tab" href="#menu1">Special schedule</a></li>
                         </ul>
-
                         <div class="tab-content">
                             <div id="home" class="tab-pane fade in active">
                                 <h4>Daywise schedule</h4>
@@ -346,104 +344,33 @@
                                     <input type="text" class="form-control" name="day7" id="day7" placeholder="Link for sunday">
                                 </div>
                             </div>
-                            <div class="normal-body add-expiration" id="expirationArea">
-                                <p>Select date &amp; time for this link</p>
-                                <input id="datepicker" width="100%" name="date_time"/>
-                                <p>Select a timezone</p>
-                                <select name="timezone" id="expirationTZ">
-                                    <option value="">Select from list</option>
-                                    <option value="America/New_York">Eastern Time</option>
-                                    <option value="America/Chicago">Central Time</option>
-                                    <option value="America/Denver">Mountain Time</option>
-                                    <option value="America/Los_Angeles">Pacific Time</option>
-                                    <option value="America/Phoenix">Mountain no DST</option>
-                                    <option value="America/Anchorage">Alaska</option>
-                                    <option value="America/Adak">Hawaii</option>
-                                    <option value="Hawaii no DST">Pacific/Honolulu</option>
-                                </select>
-                                <p>Select a redirection page url after expiration</p>
-                                <input type="text" name="redirect_url" id="expirationUrl">
+                            <div id="menu1" class="tab-pane fade">
+                                <h4>Special schedule</h4>
+                                <input type="hidden" id="special_url_count" value="0">
+                                <table width="100%" id="special_url_tab">
+                                    <tr id="special_url-0">
+                                        <td>
+                                            <input type="date" name="special_date[]" class="form-control">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="special_date_redirect_url[]" class="form-control" placeholder="Enter your url here">
+                                        </td>
+                                        <td>
+                                            {{--<a href="#">Delete</a>--}}
+                                        </td>
+                                    </tr>
+                                </table>
+                                <a class="btn btn-primary btn-sm" onclick="addMoreSpecialLink()">Add more</a>
                             </div>
                         </div>
-                        {{-- TODO: Don't delete following commented block --}}
-                        {{--<div class="normal-box1">--}}
-                            {{--<div class="normal-header">--}}
-                                {{--<label class="custom-checkbox">Add Schedules for the link--}}
-                                    {{--<input type="checkbox" id="addSchedule" name="allowSchedule">--}}
-                                    {{--<span class="checkmark"></span>--}}
-                                {{--</label>--}}
-                            {{--</div>--}}
-                            {{--<div class="normal-body add-link-schedule" id="scheduleArea">--}}
-                                {{--<ul class="nav nav-tabs">--}}
-                                    {{--<li class="active"><a data-toggle="tab" href="#home">Daywise schedule</a></li>--}}
-                                    {{--<li><a data-toggle="tab" href="#menu1">Special schedule</a></li>--}}
-                                {{--</ul>--}}
-                                {{--<div class="tab-content">--}}
-                                    {{--<div id="home" class="tab-pane fade in active">--}}
-                                        {{--<h4>Daywise schedule</h4>--}}
-                                        {{--<div id="day-1">--}}
-                                            {{--<h5 class="text-muted">Link For Monday</h5>--}}
-                                            {{--<input type="text" class="form-control" name="day1" id="day1"--}}
-                                                   {{--placeholder="Link for monday">--}}
-                                        {{--</div>--}}
-                                        {{--<div id="day-2" class="schedule-day">--}}
-                                            {{--<h5 class="text-muted">Link For Tuesday</h5>--}}
-                                            {{--<input type="text" class="form-control" name="day2" id="day2"--}}
-                                                   {{--placeholder="Link for tuesday">--}}
-                                        {{--</div>--}}
-                                        {{--<div id="day-3" class="schedule-day">--}}
-                                            {{--<h5 class="text-muted">Link For Wednesday</h5>--}}
-                                            {{--<input type="text" class="form-control" name="day2" id="day3"--}}
-                                                   {{--placeholder="Link for wednesday">--}}
-                                        {{--</div>--}}
-                                        {{--<div id="day-4" class="schedule-day">--}}
-                                            {{--<h5 class="text-muted">Link For Thursday</h5>--}}
-                                            {{--<input type="text" class="form-control" name="day4" id="day4"--}}
-                                                   {{--placeholder="Link for thursday">--}}
-                                        {{--</div>--}}
-                                        {{--<div id="day-5" class="schedule-day">--}}
-                                            {{--<h5 class="text-muted">Link For Friday</h5>--}}
-                                            {{--<input type="text" class="form-control" name="day5" id="day5"--}}
-                                                   {{--placeholder="Link for friday">--}}
-                                        {{--</div>--}}
-                                        {{--<div id="day-6" class="schedule-day">--}}
-                                            {{--<h5 class="text-muted">Link For Saturday</h5>--}}
-                                            {{--<input type="text" class="form-control" name="day6" id="day6"--}}
-                                                   {{--placeholder="Link for saturday">--}}
-                                        {{--</div>--}}
-                                        {{--<div id="day-7" class="schedule-day">--}}
-                                            {{--<h5 class="text-muted">Link For Sunday</h5>--}}
-                                            {{--<input type="text" class="form-control" name="day7" id="day7"--}}
-                                                   {{--placeholder="Link for sunday">--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--<div id="menu1" class="tab-pane fade">--}}
-                                        {{--<h4>Special schedule</h4>--}}
-                                        {{--<input type="hidden" id="special_url_count" value="0">--}}
-                                        {{--<table width="100%" id="special_url_tab">--}}
-                                            {{--<tr id="special_url-0">--}}
-                                                {{--<td>--}}
-                                                    {{--<input type="date" name="special_date[]" class="form-control">--}}
-                                                {{--</td>--}}
-                                                {{--<td>--}}
-                                                    {{--<input type="text" name="special_date_redirect_url[]"--}}
-                                                           {{--class="form-control" placeholder="Enter your url here">--}}
-                                                {{--</td>--}}
-                                                {{--<td>--}}
-                                                    {{--<a href="#">Delete</a>--}}
-                                                {{--</td>--}}
-                                            {{--</tr>--}}
-                                        {{--</table>--}}
-                                        {{--<a class="btn btn-primary btn-sm" onclick="addMoreSpecialLink()">Add more</a>--}}
-                                    {{--</div>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                            {{----}}
-                            {{--<button class="btn btn-sm btn-default">Previous</button>--}}{{-- --}}{{----}}
-                                    {{--<button class="btn btn-sm btn-success">Next</button>--}}
-                        {{--</div>--}}
-                        {{csrf_field()}}
-                        <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
+                    </div>
+
+                        {{--<button class="btn btn-sm btn-default">Previous</button>--}}
+                        {{--<button class="btn btn-sm btn-success">Next</button>--}}
+                </div>
+                        
+                {{csrf_field()}}
+                <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
                     </form>
                 </div>
             </div>

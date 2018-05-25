@@ -1643,15 +1643,15 @@ class HomeController extends Controller
         $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
         //dd($checkboxAddFbPixelid, $fbPixelid , $checkboxAddGlPixelid, $glPixelid, $allowTags, $searchTags, $allowDescription, $searchDescription);
         //print_r("<pre>");print_r($request->all());exit();
-        if (strpos($request->actual_url, 'https://') == 0) {
-            $actual_url = str_replace('https://', null, $request->actual_url);
+        if (strpos($request->actual_url[0], 'https://') == 0) {
+            $actual_url = str_replace('https://', null, $request->actual_url[0]);
             $protocol = 'https';
         } else {
-            $actual_url = str_replace('http://', null, $request->actual_url);
+            $actual_url = str_replace('http://', null, $request->actual_url[0]);
             $protocol = 'http';
         }
 
-        if(!isset($request->actual_url) || strlen(trim($request->actual_url)) == 0) {
+        if(!isset($request->actual_url[0]) || strlen(trim($request->actual_url[0])) == 0) {
           return redirect()->back()->with('error', 'url cannot be empty!');
         }
 
