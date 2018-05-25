@@ -2,7 +2,7 @@
 <html lang="en">
 
     <!-- head start -->
-	@include('contents/head')
+    @include('contents/head')
     <!-- head end -->
     <body>
         <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />

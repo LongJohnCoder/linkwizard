@@ -84,6 +84,9 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
         'as'    =>  'imgUploader'
     ]);
     Route::post('/check_custom' , 'HomeController@check_custom');
+
+    Route::post('/getallcountry', 'GeoLocationController@getAllCountry');
+    
     Route::get('test' , function(){
         return view('test');
     });
