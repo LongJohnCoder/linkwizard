@@ -1665,6 +1665,26 @@ class HomeController extends Controller
         $url = $this->fillUrlDescriptions($url , $request, $meta_data);
         $url->user_id = $userId;
 
+        /* Custom redirecting time for short url */
+
+          if(isset($request->allowCountDown) && $request->allowCountDown=='on')
+          {
+              if(!empty($request->redirecting_time) && $request->redirecting_time >= 1 && $request->redirecting_time <= 30)
+              {
+                  $url->redirecting_time = ($request->redirecting_time)*1000;
+              }
+              else
+              {
+                  $url->redirecting_time = 5000;
+              }
+          }
+          else
+          {
+              $url->redirecting_time = 5000;
+          }
+
+        /* End of Custom redirecting time for short url */
+
         //****** expiration values set in the `urls` table ******//
 
         if (isset($request->allowExpiration) && $request->allowExpiration == 'on')

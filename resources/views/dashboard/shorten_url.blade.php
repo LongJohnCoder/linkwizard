@@ -152,6 +152,18 @@
                         </div>
                         <div class="normal-box1">
                             <div class="normal-header">
+                                <label class="custom-checkbox">Add count down timer
+                                    <input type="checkbox" id="countDownEnable" name="allowCountDown">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="normal-body add-countDown" id="countDownArea">
+                                <p>Add countdown time for this link</p>
+                                <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="5">
+                            </div>
+                        </div>
+                        <div class="normal-box1">
+                            <div class="normal-header">
                                 <label class="custom-checkbox">Link Preview
                                     <input type="checkbox" id="link_preview_selector" name="link_preview_selector">
                                     <span class="checkmark"></span>
@@ -720,6 +732,18 @@
             }
         }
 
+        if (thisInstance.id === "countDownEnable")
+        {
+            if(thisInstance.checked){
+                $('#countDownArea').show();
+                $('#countDownContents').show();
+            } else{
+                $('#countDownArea').hide();
+                $('#countDownContents').val('');
+                $('#countDownContents').hide();
+            }
+        }
+
         if (thisInstance.id === "expirationEnable") {
             if (thisInstance.checked) {
                 $('#expirationArea').show();
@@ -781,6 +805,38 @@
         }
 
     }
+
+    /* countdown time frontend validiation */
+    $(document).ready(function(){
+        $('#countDownContents').bind('keyup change click' ,function(){
+            var countDownTime = $(this).val();
+            if(countDownTime.match(/[0-9]|\./))
+            {
+                if(countDownTime<=30 && countDownTime>=1)
+                {
+                    $('#countDownContents').val(countDownTime);
+                }
+                if(countDownTime>30)
+                {
+                    $('#countDownContents').val(30);
+                }
+                if(countDownTime<=0)
+                {
+                    $('#countDownContents').val(1);
+                }
+
+
+            }else
+            {
+                swal({
+                    type: 'warning',
+                    title: 'Notification',
+                    text: 'Countdown time should be numeric and minimum 1 & maximum 30.'
+                });
+                $('#countDownContents').val(5);
+            }
+        });
+    });
 
     $(document).ready(function () {
 

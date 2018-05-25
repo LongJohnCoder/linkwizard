@@ -101,6 +101,22 @@
             {
                 $url->meta_description = $meta_Data['meta_description'];
             }
+
+            if(isset($request->allowCountDown) && $request->allowCountDown=='on')
+            {
+                if(!empty($request->redirecting_time) && $request->redirecting_time >= 1 && $request->redirecting_time <= 30)
+                {
+                    $url->redirecting_time = ($request->redirecting_time)*1000;
+                }
+                else
+                {
+                    $url->redirecting_time = 5000;
+                }
+            }
+            else
+            {
+                $url->redirecting_time = 5000;
+            }
             
 
             if(isset($request->allowExpiration) && $request->allowExpiration=='on')

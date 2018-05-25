@@ -124,6 +124,18 @@
                             </div>
                             <div class="normal-box1">
                                 <div class="normal-header">
+                                    <label class="custom-checkbox">Edit count down timer
+                                        <input type="checkbox" id="countDownEnable" name="allowCountDown" <?php if($urls->redirecting_time != 5000 ){echo 'checked';}?> >
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="normal-body add-countDown" id="countDownArea" style="display: <?php if($urls->redirecting_time != 5000){echo 'block';}else{ echo 'none';}?>">
+                                    <p>Edit countdown time for this link</p>
+                                    <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="<?php if($urls->redirecting_time != 5000){echo ($urls->redirecting_time)/1000;}else{ echo 5;}?>" >
+                                </div>
+                            </div>
+                            <div class="normal-box1">
+                                <div class="normal-header">
                                     <label class="custom-checkbox">Link Preview
                                         <input type="checkbox" id="link_preview_selector" name="link_preview_selector" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
                                         <span class="checkmark"></span>
@@ -395,14 +407,12 @@
     /* custom original checkbox set */
     function set_custom_prev_on(chk)
     {
-        if($('#cust_dsc_chk').is('checked')==true)
+        if(chk==true)
         {
-            if(chk==true)
-            {
-                $("#link_preview_original").attr('checked', false);
-                $("#link_preview_custom").attr('checked', true);
-            }
+            $("#link_preview_original").attr('checked', false);
+            $("#link_preview_custom").attr('checked', true);
         }
+
     }
 
     function ValidURL(str) {
@@ -817,6 +827,18 @@
                 $('#descriptionArea').hide();
             }
         }
+        
+        if (thisInstance.id === "countDownEnable")
+        {
+            if(thisInstance.checked){
+                $('#countDownArea').show();
+                $('#countDownContents').show();
+            } else{
+                $('#countDownArea').hide();
+                $('#countDownContents').val('');
+                $('#countDownContents').hide();
+            }
+        }
 
         if (thisInstance.id === "expirationEnable") {
             if(thisInstance.checked) {
@@ -864,6 +886,38 @@
         }
 
     }
+
+    /* countdown time frontend validiation */
+    $(document).ready(function(){
+        $('#countDownContents').bind('keyup change click' ,function(){
+            var countDownTime = $(this).val();
+            if(countDownTime.match(/[0-9]|\./))
+            {
+                if(countDownTime<=30 && countDownTime>=1)
+                {
+                    $('#countDownContents').val(countDownTime);
+                }
+                if(countDownTime>30)
+                {
+                    $('#countDownContents').val(30);
+                }
+                if(countDownTime<=0)
+                {
+                    $('#countDownContents').val(1);
+                }
+
+
+            }else
+            {
+                swal({
+                    type: 'warning',
+                    title: 'Notification',
+                    text: 'Countdown time should be numeric and minimum 1 & maximum 30.'
+                });
+                $('#countDownContents').val(5);
+            }
+        });
+    });
 
     $(document).ready(function() {
 
