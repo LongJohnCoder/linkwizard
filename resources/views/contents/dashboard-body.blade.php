@@ -1,3 +1,76 @@
+<style>
+    {{--Style for button group for table--}}
+    #buttons {
+        margin-top: 18px;
+        overflow: hidden;
+        /*border: 1px dotted red;*/
+        /*width: 200px;*/
+    }
+
+    #buttons :first-child {
+        float: right;
+    }
+
+    #buttons :nth-child(2) {
+        margin-right: 1px;
+        float: right;
+        padding: 10px 25px;
+    }
+
+    #buttons :nth-child(3) {
+        margin-right: 1px;
+        float: right;
+        padding: 10px 25px;
+    }
+
+    #buttons button  {
+        background: #337ab7;
+        padding: 10px 25px;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 4px;
+        outline: none;
+        border: 1px solid #337ab7;
+    }
+
+    #buttons button:hover  {
+        color: #337ab7;
+        background-color: #f7f7f7;
+        /*border: 1px solid #337ab7;*/
+    }
+
+    #buttons a{
+        background: #337ab7;
+        padding: 10px 25px;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 4px;
+        outline: none;
+        border: 1px solid #337ab7;
+
+    }
+
+    #buttons a:hover  {
+        color: #337ab7 !important;
+        background-color: #f7f7f7;
+        /*border: 1px solid #337ab7;*/
+    }
+
+    .table tr a {
+        color: #555555;
+    }
+
+    .table tr {
+        color: #555555;
+    }
+
+    .table tr a:hover {
+        color: #6897bb;
+    }
+</style>
+
 @if(session('edit_msg'))
     @if(session('edit_msg')==0)
         <script>
@@ -157,18 +230,18 @@
             </div>
           </div>
           <div class="panel-body">
-            <div class="table-responsive custom-table">
-              <table class="table table-striped">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover">
                   <thead>
                       <tr>
                           <th>Short URL</th>
-                          <th>Destination URL</th>
-                          <th>Copy URL</th>
+                          <th width="20%">Destination URL</th>
+                          {{--<th>Copy URL</th>--}}
                           <th width="20%">Description</th>
                           <th>Clicks</th>
                           <th>Created</th>
-                          <th>Action</th>
-                          <th>Edit URL</th>
+                          <th width="20%">Action</th>
+                          {{--<th>Edit URL</th>--}}
                       </tr>
                   </thead>
                   <tbody>
@@ -187,27 +260,37 @@
                             }
                           @endphp
                           <td>
-                              <div class="short-url test-{{$url->id}}">
+                              <div class="short-url test-{{$url->id}}" style="border: none !important;">
                                 <a href="{{$shrt_url}}">{{$shrt_url}}</a>
                               </div>
                           </td>
                           @php
-                          if(strpos($url->actual_url,'https://') == 0 || strpos($url->actual_url,'http://') >= 0) {
-                            $actual_url = $url->actual_url;
-                          } else {
+                          if(strpos($url->actual_url,'https://') == 0 || strpos($url->actual_url,'http://') == 0) {
                             $actual_url = $url->protocol.'://'.$url->actual_url;
+                          } else {
+                            $actual_url = $url->actual_url;
                           }
                           @endphp
-                          <td>
-                            <a href="{{$actual_url}}">{{$actual_url}}</a>
+                          <td style="height: 100%;">
+                            <div><a href="{{$actual_url}}">{{$actual_url}}</a></div>
                           </td>
-                          <td><button class="btn btn-sm btn-primary" onclick="copyUrl({{$url->id}}, event)">Copy</button></td>
+                          {{--<td><button class="btn btn-sm btn-primary" onclick="copyUrl({{$url->id}}, event)">Copy</button></td>--}}
                           <td>{{$url->title}}</td>
                           <td>{{$url->count}}</td>
                           <td>{{$url->created_at->format('d/m/Y')}}</td>
 
-                          <td><button class='delete-url' data-id="{{ $url->id }}">Delete Url</button></td>
-                          <td><a href="{{route('edit_url_view' , $url->id)}}" class="btn btn-primary btn-sm" style="color: #fff;">Edit</a></td>
+                          <td>
+                              <div id="buttons">
+                                  <button class='' data-id="{{ $url->id }}" title="Delete Url"><i class="fa fa-trash"></i></button>
+                                  <a href="{{route('edit_url_view' , $url->id)}}" class="" style="color: #fff;" title="Edit Url"><i class="fa fa-edit"></i></a>
+                                  <button class="" onclick="copyUrl({{$url->id}}, event)" title="Copy Url"><i class="fa fa-copy"></i></button>
+                              </div>
+
+                              {{--<button class='delete-url' data-id="{{ $url->id }}"><i class="fa fa-trash"></i></button>--}}
+                              {{--<a href="{{route('edit_url_view' , $url->id)}}" class="btn btn-xs btn-danger" style="color: #fff;"><i class="fa fa-edit"></i></a>--}}
+                              {{--<button class="delete-url" onclick="copyUrl({{$url->id}}, event)"><i class="fa fa-copy"></i></button>--}}
+                          </td>
+                          {{--<td><a href="{{route('edit_url_view' , $url->id)}}" class="btn btn-primary btn-sm" style="color: #fff;">Edit</a></td>--}}
                       </tr>
                       @endforeach
                   </tbody>
@@ -295,7 +378,10 @@ $(document).ready(function(){
         var data = $("#row-"+row_id).find('td').eq(0).text().trim();
         $temp.val(data).select();
         document.execCommand("copy");
-        alert("Copied the url");
+        swal({
+            title: 'Copied!',
+            text: 'Successfully copied the shortend link',
+        });
         $temp.remove();
         event.stopPropagation();
         // $('.test-'+row_id).css({"border-color": "red"});

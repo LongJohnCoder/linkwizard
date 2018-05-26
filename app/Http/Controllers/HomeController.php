@@ -1643,7 +1643,7 @@ class HomeController extends Controller
         $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
         //dd($checkboxAddFbPixelid, $fbPixelid , $checkboxAddGlPixelid, $glPixelid, $allowTags, $searchTags, $allowDescription, $searchDescription);
         //print_r("<pre>");print_r($request->all());exit();
-        if (strpos($request->actual_url[0], 'https://') == 0) {
+        if (strpos($request->actual_url[0], 'https://') === 0) {
             $actual_url = str_replace('https://', null, $request->actual_url[0]);
             $protocol = 'https';
         } else {
