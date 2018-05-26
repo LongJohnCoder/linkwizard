@@ -240,7 +240,7 @@
                           <th width="20%">Description</th>
                           <th>Clicks</th>
                           <th>Created</th>
-                          <th width="20%">Action</th>
+                          <th width="30%">Action</th>
                           {{--<th>Edit URL</th>--}}
                       </tr>
                   </thead>
@@ -281,7 +281,7 @@
 
                           <td>
                               <div id="buttons">
-                                  <button class='' data-id="{{ $url->id }}" title="Delete Url"><i class="fa fa-trash"></i></button>
+                                  <button class='delete-url-btn' data-id="{{ $url->id }}" title="Delete Url"><i class="fa fa-trash"></i></button>
                                   <a href="{{route('edit_url_view' , $url->id)}}" class="" style="color: #fff;" title="Edit Url"><i class="fa fa-edit"></i></a>
                                   <button class="" onclick="copyUrl({{$url->id}}, event)" title="Copy Url"><i class="fa fa-copy"></i></button>
                               </div>
@@ -386,4 +386,49 @@ $(document).ready(function(){
         event.stopPropagation();
         // $('.test-'+row_id).css({"border-color": "red"});
     }
+
+    /* delete url script */
+    $(document).ready(function(){
+        $('.delete-url-btn').click(function(event){
+            event.stopPropagation();
+
+            /* sweet alert confirm */
+            var check = confirm('Are you sure you want to delete this link?');
+
+            if(check==true)
+            {
+                var delId = $(this).data('id');
+
+                $.get('{{route('delete_short_url')}}'+'/'+delId, function(data, status, xhr){
+                    if(xhr.status==200)
+                    {
+                        if(data==0)
+                        {
+                            swal({
+                                title: "Deleted",
+                                text: "You have successfully deleted the link!",
+                                icon: "success",
+                                button: "OK",
+                            },
+                                function(){
+                                    window.location.href = "{{route('getDashboard')}}";
+                                }
+                            );
+                        }
+                    }
+                });
+
+            }
+            else
+            {
+                alert('no delete');
+            }
+
+
+
+        });
+    })
+
+
+
 </script>

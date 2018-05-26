@@ -23,6 +23,7 @@
     use App\PasswordReset;
     use Mail;
     use App\Http\Requests\ForgotPasswordRequest;
+    use Mockery\Exception;
 
     class UrlController extends Controller{
         /**
@@ -374,6 +375,21 @@
             } catch(\Exception $e) {
                 return $meta;
             }
+        }
+
+        public function deleteUrl($id=NULL)
+        {
+            try
+            {
+                $url = Url::find($id);
+                $url->delete();
+                echo 0;
+            }
+            catch(Exception $e)
+            {
+                echo $e->getMessage();
+            }
+
         }
     }
 
