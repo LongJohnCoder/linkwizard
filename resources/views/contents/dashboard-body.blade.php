@@ -235,12 +235,12 @@
                   <thead>
                       <tr>
                           <th>Short URL</th>
-                          <th width="20%">Destination URL</th>
+                          <th >Destination URL</th>
                           {{--<th>Copy URL</th>--}}
-                          <th width="20%">Description</th>
+                          <th >Description</th>
                           <th>Clicks</th>
                           <th>Created</th>
-                          <th width="30%">Action</th>
+                          <th >Action</th>
                           {{--<th>Edit URL</th>--}}
                       </tr>
                   </thead>
@@ -271,7 +271,7 @@
                             $actual_url = $url->actual_url;
                           }
                           @endphp
-                          <td style="height: 100%;">
+                          <td >
                             <div><a href="{{$actual_url}}">{{$actual_url}}</a></div>
                           </td>
                           {{--<td><button class="btn btn-sm btn-primary" onclick="copyUrl({{$url->id}}, event)">Copy</button></td>--}}

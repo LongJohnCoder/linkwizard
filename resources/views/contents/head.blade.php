@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard</title>
 
-<!-- <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet"> -->
+<link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="{{url('/')}}/public/fonts/font-awesome/css/font-awesome.min.css">
 
@@ -12,7 +12,7 @@
 <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
 <meta name="author" content="Tier5 LLC" />
 <link href="{{config('settings.FAVICON')}}" rel="shortcut icon" type="image/ico">
-<link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" />
+<!-- <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" /> -->
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
 <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
