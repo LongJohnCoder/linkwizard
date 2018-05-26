@@ -45,7 +45,18 @@ function drawRegionsMap() {
 				};
 				var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
 				chart.draw(data, options);
+                google.visualization.events.addListener(chart, 'select', selectHandler);
+
+                function selectHandler() {
+                    var selectedItem = chart.getSelection()[0];
+                    if (selectedItem) {
+                      var value = data.getValue(selectedItem.row, selectedItem.column);
+                      alert('The user selected ' + value);
+                    }
+                }
         	}
 		}
 	});
 }
+
+
