@@ -7,20 +7,37 @@ $(document).ready(function () {
             $('#geo-location-body').hide();
         }
 	});
+
+    $('#allow-country').click(function(event){
+        event.preventDefault();
+        if(selectedContry.length >0){
+            $.ajax({
+                type: 'post',
+                url: "/getSelectedCountryDetails",
+                data: {_token: '{{csrf_token()}}',selectedContry:selectedContry},
+                success: function (response) {
+                    //var showSelected;
+                    //console.log(response);]
+                   /* if((response.data.length)>0){
+                        foreach(response.data as data){
+                            //var showSelected+="<div class='col-md-2'><input type='checkbox'></div><div class='col-md-8'></div><div class='col-md-2'></div>";
+                        }
+                    }*/
+                    $('#allowModal').modal('show');
+                }
+            });
+        }else{
+            swal(
+                'No Contry Selected',
+                'Please select the country first!',
+                'warning'
+            )
+        }
+        //console.log(selectedContry);
+    });
 });
 
-
-function abc(){
-	$.ajax({
-		type: 'post',
-        url: "/getallcountry",
-        data: {_token: '{{csrf_token()}}'},
-        success: function (response) {
-        	console.log(response);
-        }
-	});
-
-}
+var selectedContry=new Array();
 
  
 
@@ -39,6 +56,7 @@ function drawRegionsMap() {
         data: {_token: '{{csrf_token()}}'},
         success: function (response) {
         	if(response.code=200){
+                console.log(response.data);
         		var data = google.visualization.arrayToDataTable(response.data);
 				var options = {
 					width   : '100%',
@@ -50,9 +68,12 @@ function drawRegionsMap() {
                 function selectHandler() {
                     var selectedItem = chart.getSelection()[0];
                     if (selectedItem) {
-                      var value = data.getValue(selectedItem.row, selectedItem.column);
-                      alert('The user selected ' + value);
+                        var countryId=parseInt(selectedItem.row)+1;
+                        if(selectedContry.includes(countryId)==false){
+                            selectedContry.push(countryId); 
+                        }
                     }
+                    console.log(selectedContry);
                 }
         	}
 		}

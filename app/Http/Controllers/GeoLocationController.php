@@ -43,6 +43,27 @@
                 'data' => $location
             ));
     	}
+
+        public function getSelectedCountryDetails(Request $request){
+            $selectedCountry=array();
+            //return $request->all();
+            if(count($request->selectedContry)>0){
+                for($i=0; $i<count($request->selectedContry); $i++){
+                    $getCountry=Country::findOrFail($request->selectedContry[$i]);
+                    if($getCountry){
+                        $selectedCountry[$i]['id']=$getCountry->id;
+                        $selectedCountry[$i]['name']=$getCountry->name;
+                        $selectedCountry[$i]['code']=$getCountry->code;
+                    }
+                }
+            }
+
+            return \Response::json(array(
+                'status' => true,
+                'status_code' => 200,
+                'data' => $selectedCountry
+            ));
+        }
     }
 
        
