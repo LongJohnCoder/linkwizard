@@ -2408,35 +2408,15 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getDashboard(Request $request)
-    {
-        if (Auth::check())
-        {
-            if(\Session::has('plan'))
-            {
-                //return 18745;
+    public function getDashboard(Request $request){
+        if (Auth::check()){
+            if(\Session::has('plan')){
                 return redirect()->action('HomeController@getSubscribe');
+            }else{
+                $user = Auth::user();
+                $arr = $this->getAllDashboardElements($user, $request);
+                return view('dashboard2', $arr);
             }
-            else
-            {
-
-                  $user = Auth::user();
-                  $arr = $this->getAllDashboardElements($user, $request);
-                  return view('dashboard2', $arr);
-                    //for new
-                    // return view('dashboard_new', [
-                    //     'count_url' => $count_url,// dynamic
-                    //     'user' => $user,
-                    //     'urls' => $urls,// dynamic
-                    //     'subscription_status' => $subscription_status,
-                    //     'limit' => $limit,
-                    //     'total_links' => $total_links,
-                    //     'filter' => $filter,
-                    //     'dates' => $dates,
-                    //     '_plan' => \Session::has('plan') ? \Session::get('plan') : null,
-                    // ]);
-            }
-
         } else {
             Auth::logout();
             Session::flush();

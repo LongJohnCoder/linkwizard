@@ -60,7 +60,6 @@ html{
 body{
     position: relative;
     /*font-family:'OpenSans-Regular';*/
-    color: #C9C9C9;
     min-height: 100%;
     background: #ECF2F6;
     font-family: 'Roboto', sans-serif;
@@ -149,7 +148,6 @@ ul{
     font-family: 'OpenSans-Semibold';
     text-transform: uppercase;
     font-size: 16px;
-    width: 55%;
     margin: 20px 0;
 }
 
@@ -2522,8 +2520,7 @@ footer .social-icon a:last-child{
 
 
 .normal-body input.form-control{
-width: 50%;
-border-radius: 0;
+    border-radius: 0;
 }
 .normal-body textarea.form-control{
 
