@@ -1,5 +1,6 @@
 
 $(document).ready(function () {
+    $('#addGeoLocation, #allow-country, #allow-set-url, .allow-country-select').prop('checked', false);
 	$('#addGeoLocation').click(function(){
 		if (this.checked) {
             $('#geo-location-body').show();
@@ -9,32 +10,44 @@ $(document).ready(function () {
 	});
 
     $('#allow-country').click(function(event){
-        event.preventDefault();
-        if(selectedContry.length >0){
-            $.ajax({
-                type: 'post',
-                url: "/getSelectedCountryDetails",
-                data: {_token: '{{csrf_token()}}',selectedContry:selectedContry},
-                success: function (response) {
-                    //var showSelected;
-                    //console.log(response);]
-                   /* if((response.data.length)>0){
-                        foreach(response.data as data){
-                            //var showSelected+="<div class='col-md-2'><input type='checkbox'></div><div class='col-md-8'></div><div class='col-md-2'></div>";
-                        }
-                    }*/
-                    $('#allowModal').modal('show');
-                }
-            });
+        if($('#allow-country').is(':checked')==true){
+            if(selectedContry.length >0){
+                $.ajax({
+                    type: 'post',
+                    url: "/getSelectedCountryDetails",
+                    data: {_token: '{{csrf_token()}}',selectedContry:selectedContry},
+                    success: function (response) {
+                       //console.log(response);
+                       $('#after-allow-select').show();
+                       var SelectedCountryView="";
+                       for($i=0; $i < response.data.length; $i++){
+                            SelectedCountryView+="<li class='col-md-12 row'><div class='col-md-2 form-group'><input type='checkbox' class='allow-country-select' checked></div><div class='col-md-4 form-group'> "+response.data[$i]['name']+"</div><div class='col-md-6 form-group'><input type='text' class='form-control' placeholder='Please Provide Redirect Url'></li></div>";
+                       }
+                       $('#selected-country-view').html(SelectedCountryView);
+                    }
+                });
+            }else{
+                event.preventDefault();
+                swal(
+                    'No Contry Selected',
+                    'Please select the country first!',
+                    'warning'
+                )
+            }
         }else{
-            swal(
-                'No Contry Selected',
-                'Please select the country first!',
-                'warning'
-            )
+            $('#after-allow-select').hide();
         }
         //console.log(selectedContry);
     });
+
+    $('#allow-set-url').click(function(event){
+        if($('#allow-set-url').is(':checked')==true){
+            $('#selected-country-view').show();
+        }else{
+            $('#selected-country-view').hide();
+        }
+    });
+    
 });
 
 var selectedContry=new Array();
