@@ -2495,7 +2495,11 @@ class HomeController extends Controller
         $url = Url::find($request->url_id);
 
         if ($request->hasFile('brandLogo')) {
-            $upload_path ='uploads/brand_images';
+            if (!file_exists('public/uploads/brand_images'))
+            {
+                mkdir('public/uploads/brand_images', 777 , true);
+            }
+            $upload_path ='public/uploads/brand_images';
             $image_name = $request->brandLogo->getClientOriginalName();
             $request->brandLogo->move($upload_path, $image_name);
             $url->uploaded_path = $upload_path.'/'.$image_name;

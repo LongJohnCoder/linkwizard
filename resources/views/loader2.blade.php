@@ -390,11 +390,11 @@
         <br><br><br>
 
         @if($url->redirecting_text_template)
-            <span class="text">{{$url->redirecting_text_template}}</span>
+            <span class="text"><?php echo($url->redirecting_text_template)?></span>
         @else
             <span class="text">Please wait a snap while we take you to the actual website</span>
         @endif
-        in <span id="txt_">{{$url->redirecting_time / 1000 }}</span> sec
+        in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
         <p id="msg" style="color: #9f3a38;"></p>
     </div>
 </div>
