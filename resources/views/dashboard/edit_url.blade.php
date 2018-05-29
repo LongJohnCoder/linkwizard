@@ -9,20 +9,68 @@
         <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
         <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
         <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
-        <!-- Date time picker -->
+        <!-- Kendo date time picker -->
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
+
+        <script src="https://kendo.cdn.telerik.com/2018.2.516/js/jquery.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.all.min.js"></script>
+
+        <!-- gijgo datetime picker -->
         <script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>
         <link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+        <!-- BOOTSTRAP DATE TIME PICKER -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
         <style>
             #scheduleArea{
                 padding: 10px;
             }
         </style>
         <script>
+            /* date time for expiration */
             $(document).ready(function () {
-                $('#datepicker').datetimepicker({
-                    uiLibrary: 'bootstrap'
+                // create DateTimePicker from input HTML element
+               <?php
+                if($urls->date_time !== NULL)
+                {
+                    $expiryDate = $urls->date_time;
+                    $null_check = 0;
+                }
+                elseif($urls->date_time === NULL)
+                {
+                    $expiryDate = date('Y-m-d h:i:s A');
+                    $null_check = 1;
+                }
+                ?>
+
+                var expirtaionDateTime = "{{$expiryDate}}";
+                var t = expirtaionDateTime.split(/[- :]/);
+                var null_check = {{$null_check}};
+                $("#datepicker").kendoDateTimePicker({
+                    value: (null_check==0)?new Date(t[0], t[1] - 1, t[2], t[3] || 0, t[4] || 0, t[5] || 0):'',
+                    min: new Date(),
+                    dateInput: true,
+                    interval: 5
                 });
+                $("#datepicker").bind("click", function(){
+                    $(this).data("kendoDateTimePicker").open( function(){
+                        $("#datepicker").bind("click", function(){
+                            $(this).data("kendoTimePicker").open();
+
+                        });
+                    });
+                });
+
             });
+
+            // $(document).ready(function () {
+            //     var expiryDateTime = '';
+            //     $('#datepicker').datetimepicker('setStartDate', '12-06-2018');
+            // });
+
         </script>
         <!-- Header Start -->
         @include('contents/header')
@@ -277,7 +325,7 @@
                                 </div>
                                 <div class="normal-body add-expiration" id="expirationArea" style="<?php if(!empty($urls->date_time)){echo 'display: block';}?>">
                                     <p>Select date &amp; time for this link</p>
-                                    <input id="datepicker" name="date_time" value="<?php if(!empty($urls->date_time)){ $old_date_timestamp = strtotime($urls->date_time); $new_date = date('H:i m/d/Y', $old_date_timestamp); echo $new_date;} ?>"/>
+                                    <input id="datepicker" class="datepicker" name="date_time" value="<?php if(!empty($urls->date_time)){echo $urls->date_time;} ?>"/>
  
                                     <p>Select a timezone</p>
 
@@ -293,7 +341,7 @@
                                         <option value="Hawaii no DST"  @if(($urls->timezone)=='Hawaii no DST') {{'selected'}} @endif >Pacific/Honolulu</option>
                                     </select>
                                     <p>Select a redirection page url after expiration</p>
-                                    <input type="text" name="redirect_url" id="expirationUrl" value="{{$urls->credirect_url}}">
+                                    <input type="text" class="form-control" name="redirect_url" id="expirationUrl" value="{{$urls->redirect_url}}">
                                 </div>
                             </div>
 
@@ -530,7 +578,7 @@
         /*  expiration validation  */
         if($('#expirationEnable').prop('checked'))
         {
-            if($('#datetime').val()!='')
+            if($('#datepicker').val()!='')
             {
                 if($('#expirationTZ').val()!='')
                 {

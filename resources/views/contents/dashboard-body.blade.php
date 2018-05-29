@@ -5,21 +5,21 @@
     }
 </style>
 
-@if(session('edit_msg'))
-    @if(session('edit_msg')==0)
+@if(session()->has('edit_msg'))
+    @if(session()->get('edit_msg')==0)
         <script>
             swal({
                 title: "Success!",
-                text: "{{session('edit_msg')}}",
+                text: "URL has been successfully edited",
                 icon: "success",
                 button: "OK",
             });
         </script>
-    @elseif(session('edit_msg')==1)
+    @elseif(session()->get('edit_msg')==1)
         <script>
             swal({
                 title: "Error!",
-                text: "{{session('edit_msg')}}",
+                text: "Error occurred during the editing please try again",
                 icon: "warning",
                 button: "OK",
             });

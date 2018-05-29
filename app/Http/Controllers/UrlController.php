@@ -131,14 +131,14 @@
                     $url->redirect_url=$request->redirect_url;
                 }else{
                     $url->date_time=NULL;
-                    $url->timezone=" ";
-                    $url->redirect_url=" ";
+                    $url->timezone=NULL;
+                    $url->redirect_url=NULL;
 
                 }
             }else{
                     $url->date_time=NULL;
-                    $url->timezone=" ";
-                    $url->redirect_url=" ";
+                    $url->timezone=NULL;
+                    $url->redirect_url=NULL;
 
                 }
             if(isset($request->link_preview_selector) && $request->link_preview_selector=='on')

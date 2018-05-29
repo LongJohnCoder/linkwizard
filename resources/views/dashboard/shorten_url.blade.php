@@ -309,7 +309,7 @@
                             <option value="Hawaii no DST">Pacific/Honolulu</option>
                         </select>
                         <p>Select a redirection page url after expiration</p>
-                        <input type="text" name="redirect_url" id="expirationUrl">
+                        <input type="text" class="form-control" name="redirect_url" id="expirationUrl">
                     </div>
                 </div>
                 <div class="normal-box1">
@@ -498,7 +498,7 @@
         }
         /*  expiration validation  */
         if ($('#expirationEnable').prop('checked')) {
-            if ($('#datetime').val() != '') {
+            if ($('#datepicker').val() != '') {
                 if ($('#expirationTZ').val() != '') {
                 } else {
                     swal({
