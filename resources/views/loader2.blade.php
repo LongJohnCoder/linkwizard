@@ -380,7 +380,7 @@
 <!-- Main Content Start -->
 <div class="container">
     <div class="centerdiv">
-        <div class="image-div">
+        <div class="image-div"  style="height:auto;">
             @if($url->uploaded_path)
                 <img style="width:650px; height:380px" src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
             @else
@@ -390,7 +390,7 @@
         <br><br><br>
 
         @if($url->redirecting_text_template)
-            <span class="text"><?php echo($url->redirecting_text_template)?></span>
+            <div class="text"><?php echo($url->redirecting_text_template)?></div>
         @else
             <span class="text">Please wait a snap while we take you to the actual website</span>
         @endif

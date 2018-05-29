@@ -1434,6 +1434,40 @@ window.onload = function(){
               });
             });
         });
+
+
+            /* countdown time frontend validiation */
+            $(document).ready(function(){
+                $('#redirectingTime').bind('keyup change click' ,function(){
+                    var countDownTime = $(this).val();
+                    if(countDownTime.match(/[0-9]|\./))
+                    {
+                        if(countDownTime<=30 && countDownTime>=1)
+                        {
+                            $('#redirectingTime').val(countDownTime);
+                        }
+                        if(countDownTime>30)
+                        {
+                            $('#redirectingTime').val(30);
+                        }
+                        if(countDownTime<=0)
+                        {
+                            $('#redirectingTime').val(1);
+                        }
+
+
+                    }else
+                    {
+                        swal({
+                            type: 'warning',
+                            title: 'Notification',
+                            text: 'Countdown time should be numeric and minimum 1 & maximum 30.'
+                        });
+                        $('#redirectingTime').val(5);
+                    }
+                });
+            });
+
 		</script>
 
 </body>

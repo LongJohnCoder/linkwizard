@@ -147,7 +147,7 @@
                     </div>
                     <div class="form-group">
                         <label for="redirectingTime">Set redirecting time (in seconds)</label>
-                        <input type="number" min="0" max="60" id="redirectingTime" name="redirectingTime" class="form-control input-md" value="" />
+                        <input type="number" min="1" max="30" id="redirectingTime" name="redirectingTime" class="form-control input-md" value="" />
                     </div>
                     <div class="form-group">
                         <label for="redirectingTextTemplate">Set redirecting text template</label>

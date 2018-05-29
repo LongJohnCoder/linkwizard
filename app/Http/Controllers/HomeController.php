@@ -2500,7 +2500,7 @@ class HomeController extends Controller
                 mkdir('public/uploads/brand_images', 777 , true);
             }
             $upload_path ='public/uploads/brand_images';
-            $image_name = $request->brandLogo->getClientOriginalName();
+            $image_name = uniqid()."-".$request->brandLogo->getClientOriginalName();
             $request->brandLogo->move($upload_path, $image_name);
             $url->uploaded_path = $upload_path.'/'.$image_name;
         }
