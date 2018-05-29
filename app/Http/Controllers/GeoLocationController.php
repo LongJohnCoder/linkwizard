@@ -49,7 +49,7 @@
             //return $request->all();
             if(count($request->selectedContry)>0){
                 for($i=0; $i<count($request->selectedContry); $i++){
-                    $getCountry=Country::findOrFail($request->selectedContry[$i]);
+                    $getCountry=Country::where('name',$request->selectedContry[$i])->first();
                     if($getCountry){
                         $selectedCountry[$i]['id']=$getCountry->id;
                         $selectedCountry[$i]['name']=$getCountry->name;
