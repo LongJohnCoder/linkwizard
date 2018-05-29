@@ -353,7 +353,7 @@
         }
 
         .image-div img{
-            width: 40%;
+            width: 20%;
             height: auto;
             display: block;
             margin-left: auto;
