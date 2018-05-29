@@ -328,15 +328,40 @@
     <style type="text/css">
         body {
             font-family: 'Nunito';
+            min-height: 100%;
+            background: #fff !important;
+        }
+        .header{
+            padding: 20px;
+            background: #01579b;
+            width: 100%;
+        }
+
+        .sticky-foot{
+            padding: 20px;
+            background: #01579b;
+            width: 100%;
+            bottom: 0px;
+            position: fixed; 
+        }
+        .image-div,.production-div{
+            padding: 20px;
+            width: 100%;
+            height: auto;
+            text-align: center;
+            align-items: middle;
+        }
+
+        .image-div img{
+            width: 40%;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
-    <style type="text/css">
-        body{
-            background: #fff !important;
-        }
-    </style>
     @if(isset($url_features))
         @if($url_features->fb_pixel_id != null)
             @php
@@ -377,27 +402,30 @@
     @endif
 </head>
 <body>
-<!-- Main Content Start -->
-<div class="container">
-    <div class="centerdiv">
-        <div class="image-div">
+    <div class="header"></div>
+    <div class="row">
+
+        <div class="col-md-12  col-lg-12 image-div" >
             @if($url->uploaded_path)
-                <img style="width:650px; height:380px" src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
+                <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
             @else
                 <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
             @endif
         </div>
-        <br><br><br>
+        
+        <div class="col-md-12 col-lg-12 production-div">
+            @if($url->redirecting_text_template)
+                <span class="text"><?php echo($url->redirecting_text_template)?></span>
+            @else
+                <span class="text">Please wait a snap while we take you to the actual website</span>
+            @endif
+            in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
+            <p id="msg" style="color: #9f3a38;"></p>
+        </div>
 
-        @if($url->redirecting_text_template)
-            <span class="text"><?php echo($url->redirecting_text_template)?></span>
-        @else
-            <span class="text">Please wait a snap while we take you to the actual website</span>
-        @endif
-        in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
-        <p id="msg" style="color: #9f3a38;"></p>
     </div>
-</div>
+    <div class="sticky-foot"></div>
+
 {{--  redirecting js script  --}}
 
 <script type="text/javascript">
