@@ -27,6 +27,18 @@
             #scheduleArea{
                 padding: 10px;
             }
+            .schedule-tab tr td {
+                padding: 10px;
+            }
+            .special_url_tab tr {
+                margin: 5px !important;
+            }
+            .special_url_tab tr td {
+                padding: 5px;
+            }
+            .merge-tab tr td {
+                padding: 10px;
+            }
         </style>
         <script>
             $(document).ready(function () {
@@ -309,15 +321,26 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+
 
                 <div class="normal-box1">
                     <div class="normal-header">
-                        <label class="custom-checkbox">Add expiration date for the link
-                            <input type="checkbox" id="expirationEnable" name="allowExpiration">
-                            <span class="checkmark"></span>
-                        </label>
+                        <table class="merge-tab">
+                            <tr>
+                                <td>
+                                    <label class="custom-checkbox">Add expiration date for the link
+                                        <input type="checkbox" id="expirationEnable" name="allowExpiration">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <label class="custom-checkbox">Add schedules for the link
+                                        <input type="checkbox" id="addSchedule" name="allowSchedule">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                     <div class="normal-body add-expiration" id="expirationArea">
                         <p>Select date &amp; time for this link</p>
@@ -338,14 +361,7 @@
                         <p>Select a redirection page url after expiration</p>
                         <input type="text" class="form-control" name="redirect_url" id="expirationUrl">
                     </div>
-                </div>
-                <div class="normal-box1">
-                    <div class="normal-header">
-                        <label class="custom-checkbox">Add Schedules for the link
-                            <input type="checkbox" id="addSchedule" name="allowSchedule">
-                            <span class="checkmark"></span>
-                        </label>
-                    </div>
+                    <!-- Link schedule part html -->
                     <div class="normal-body add-link-schedule" id="scheduleArea">
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#home">Daywise schedule</a></li>
@@ -354,7 +370,7 @@
                         <div class="tab-content">
                             <div id="home" class="tab-pane fade in active">
                                 <div id="day-1">
-                                    <table width="100%" cellpadding="10" border="1">
+                                    <table class="schedule-tab" id="schedule-tab" width="100%" border="0">
                                         <tr>
                                             <td width="10%">
                                                 <h5 class="text-muted">Monday</h5>
@@ -415,9 +431,8 @@
                                 </div>
                             </div>
                             <div id="menu1" class="tab-pane fade">
-                                <h4>Special schedule</h4>
                                 <input type="hidden" id="special_url_count" value="0">
-                                <table width="100%" id="special_url_tab">
+                                <table width="100%" id="special_url_tab" class="special_url_tab">
                                     <tr id="special_url-0">
                                         <td>
                                             <input type="date" name="special_date[]" class="form-control">
@@ -426,17 +441,16 @@
                                             <input type="text" name="special_date_redirect_url[]" class="form-control" placeholder="Enter your url here">
                                         </td>
                                         <td>
-                                            {{--<a href="#">Delete</a>--}}
+                                            <span id="add_button_0">
+                                                <a class="btn btn-primary" onclick="addMoreSpecialLink(), dispButton(0)"><i class="fa fa-plus"></i></a>
+                                            </span>
                                         </td>
                                     </tr>
                                 </table>
-                                <a class="btn btn-primary btn-sm" onclick="addMoreSpecialLink()">Add more</a>
+                                {{--<a class="btn btn-primary btn-sm" onclick="addMoreSpecialLink()">Add more</a>--}}
                             </div>
                         </div>
                     </div>
-
-                        {{--<button class="btn btn-sm btn-default">Previous</button>--}}
-                        {{--<button class="btn btn-sm btn-success">Next</button>--}}
                 </div>
                         
                 {{csrf_field()}}
@@ -478,6 +492,52 @@
             $("#special_url_count").val(new_count);
         })
     }
+
+    function dispButton(id)
+    {
+        if(id==0)
+        {
+            $('#add_button_0').hide();
+        }
+        if(id>0)
+        {
+            $('#add_button_'+id).hide();
+            $('#delete_button_'+id).show();
+        }
+    }
+
+    function delTabRow(indx)
+    {
+        $('#special_url-'+indx).remove();
+    }
+
+    $(document).ready(function(){
+        $('#expirationEnable').click(function(){
+            if($(this).is(':checked'))
+            {
+                $('#addSchedule').prop('checked', false);
+                $('#scheduleArea').hide();
+                $('#day1').val('');
+                $('#day2').val('');
+                $('#day3').val('');
+                $('#day4').val('');
+                $('#day5').val('');
+                $('#day6').val('');
+                $('#day7').val('');
+            }
+        });
+
+        $('#addSchedule').click(function(){
+            if($(this).is(':checked'))
+            {
+                $('#expirationEnable').prop('checked', false);
+                $('#expirationArea').hide();
+                $('#datepicker').val('month/day/year hours:minutes AM/PM');
+                $('#expirationTZ').val('');
+                $('#expirationUrl').val('');
+            }
+        });
+    });
 
     $(".chosen-select").chosen({});
     $(".chosen-container").bind('keyup', function (e) {
@@ -556,7 +616,7 @@
         }
         /*  expiration validation  */
         if ($('#expirationEnable').prop('checked')) {
-            if ($('#datepicker').val() != '') {
+            if ($('#datepicker').val() != '' && $('#datepicker').val() != 'month/day/year hours:minutes AM/PM') {
                 if ($('#expirationTZ').val() != '') {
                 } else {
                     swal({

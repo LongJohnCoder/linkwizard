@@ -41,10 +41,11 @@
             {
                 foreach($url->urlSpecialSchedules as $spl_url)
                 {
-                    if($spl_url->special_day == date('Y-m-d'))
+                    if($spl_url->special_day === date('Y-m-d'))
                     {
                         $is_schedule = 1;
                         $redirect_url = $spl_url->special_day_url;
+                        break;
                     }else
                     {
                         $is_schedule = 2;
@@ -212,6 +213,7 @@
                     {
                         $is_schedule = 1;
                         $redirect_url = $spl_url->special_day_url;
+                        break;
                     }else
                     {
                         $is_schedule = 2;
