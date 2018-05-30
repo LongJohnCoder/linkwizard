@@ -25,6 +25,7 @@ use App\UrlTagMap;
 use App\PasswordReset;
 use Mail;
 use App\Http\Requests\ForgotPasswordRequest;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class HomeController extends Controller
 {
@@ -1690,7 +1691,8 @@ class HomeController extends Controller
         if (isset($request->allowExpiration) && $request->allowExpiration == 'on')
         {
             $date = strtotime($request->date_time);
-            $url->date_time = $date;
+            $date_time = date_create($request->date_time);
+            $url->date_time = $date_time;
             $url->timezone = $request->timezone;
             if(strlen($request->redirect_url)>0)
             {
@@ -2501,7 +2503,17 @@ class HomeController extends Controller
             }
             $upload_path ='public/uploads/brand_images';
             $image_name = uniqid()."-".$request->brandLogo->getClientOriginalName();
-            $request->brandLogo->move($upload_path, $image_name);
+            $data = getimagesize($request->brandLogo);
+            $width = $data[0];
+            $height = $data[1];
+
+            /* image resizing */
+            $temp_height = 450;
+            $abs_width = ceil(($width*$temp_height)/$height);
+            $abs_height = $temp_height;
+            $image_resize = Image::make($request->brandLogo->getRealPath());
+            $image_resize->resize($abs_width, $abs_height);
+            $image_resize->save($upload_path.'/'.$image_name);
             $url->uploaded_path = $upload_path.'/'.$image_name;
         }
         $url->redirecting_time = $request->redirectingTime * 1000;

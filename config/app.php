@@ -163,6 +163,7 @@ return [
          * Third party service provider
          */
         Greggilbert\Recaptcha\RecaptchaServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class
 
     ],
 
@@ -210,7 +211,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
-
+        'Image' => Intervention\Image\Facades\Image::class
     ],
 
 ];

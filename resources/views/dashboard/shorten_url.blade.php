@@ -10,8 +10,15 @@
         <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
         <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
         <!-- Date time picker -->
-        <script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>
-        <link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+        {{--<script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>--}}
+        {{--<link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />--}}
+
+        <!-- Kendo date time -->
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
+        <script src="https://kendo.cdn.telerik.com/2018.2.516/js/jquery.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.all.min.js"></script>
         <style>
             /* hidden display div for link schedule panel */
             .schedule-day{
@@ -23,8 +30,27 @@
         </style>
         <script>
             $(document).ready(function () {
-                $('#datepicker').datetimepicker({
-                    uiLibrary: 'bootstrap'
+                // create DateTimePicker from input HTML element
+
+                function onChange() {
+                   // var a = $(this).val();
+                    var kndDt = $('#datepicker').val();
+                   $("#dt2").val(kndDt);
+                }
+
+                $("#datepicker").kendoDateTimePicker({
+                    value: '',
+                    min: new Date(),
+                    dateInput: true,
+                    change: onChange
+                });
+                $("#datepicker").bind("click", function(){
+                    $(this).data("kendoDateTimePicker").open( function(){
+                        $("#datepicker").bind("click", function(){
+                            $(this).data("kendoTimePicker").open();
+
+                        });
+                    });
                 });
             });
         </script>
@@ -295,9 +321,10 @@
                     </div>
                     <div class="normal-body add-expiration" id="expirationArea">
                         <p>Select date &amp; time for this link</p>
-                        <input id="datepicker" width="100%" name="date_time"/>
+                        <input type="text" name="date_time" id="datepicker" width="100%">
+                        <input type="hidden" name="date_time" id="dt2">
                         <p>Select a timezone</p>
-                        <select name="timezone" id="expirationTZ">
+                        <select name="timezone" id="expirationTZ" class="form-control">
                             <option value="">Select from list</option>
                             <option value="America/New_York">Eastern Time</option>
                             <option value="America/Chicago">Central Time</option>
@@ -326,34 +353,65 @@
                         </ul>
                         <div class="tab-content">
                             <div id="home" class="tab-pane fade in active">
-                                <h4>Daywise schedule</h4>
                                 <div id="day-1">
-                                    <h5 class="text-muted">Link For Monday</h5>
-                                    <input type="text" class="form-control" name="day1" id="day1" placeholder="Link for monday">
-                                </div>
-                                <div id="day-2" class="schedule-day">
-                                    <h5 class="text-muted">Link For Tuesday</h5>
-                                    <input type="text" class="form-control" name="day2" id="day2" placeholder="Link for tuesday">
-                                </div>
-                                <div id="day-3" class="schedule-day">
-                                    <h5 class="text-muted">Link For Wednesday</h5>
-                                    <input type="text" class="form-control" name="day3" id="day3" placeholder="Link for wednesday">
-                                </div>
-                                <div id="day-4" class="schedule-day">
-                                    <h5 class="text-muted">Link For Thursday</h5>
-                                    <input type="text" class="form-control" name="day4" id="day4" placeholder="Link for thursday">
-                                </div>
-                                <div id="day-5" class="schedule-day">
-                                    <h5 class="text-muted">Link For Friday</h5>
-                                    <input type="text" class="form-control" name="day5" id="day5" placeholder="Link for friday">
-                                </div>
-                                <div id="day-6" class="schedule-day">
-                                    <h5 class="text-muted">Link For Saturday</h5>
-                                    <input type="text" class="form-control" name="day6" id="day6" placeholder="Link for saturday">
-                                </div>
-                                <div id="day-7" class="schedule-day">
-                                    <h5 class="text-muted">Link For Sunday</h5>
-                                    <input type="text" class="form-control" name="day7" id="day7" placeholder="Link for sunday">
+                                    <table width="100%" cellpadding="10" border="1">
+                                        <tr>
+                                            <td width="10%">
+                                                <h5 class="text-muted">Monday</h5>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="day1" id="day1">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5 class="text-muted">Tuesday</h5>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="day2" id="day2">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5 class="text-muted">Wednesday</h5>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="day3" id="day3">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5 class="text-muted">Thursday</h5>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="day4" id="day4">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5 class="text-muted">Friday</h5>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="day5" id="day5">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5 class="text-muted">Saturday</h5>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="day6" id="day6">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h5 class="text-muted">Sunday</h5>
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control" name="day7" id="day7">
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                             <div id="menu1" class="tab-pane fade">
@@ -750,12 +808,14 @@
                 //$('#descriptionContents').show();
                 $('#datepicker').prop('required', true);
                 $('#expirationTZ').prop('required', true);
+                var dt = $("#datepicker").val();
+                $("#dt2").val(dt);
             } else {
                 $('#datepicker').val('');
                 $('#expirationTZ').val('');
                 $('#expirationUrl').val('');
                 $('#expirationArea').hide();
-
+                $("#dt2").val('');
                 $('#datepicker').prop('required', false);
                 $('#expirationTZ').prop('required', false);
             }

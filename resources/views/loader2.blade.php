@@ -353,8 +353,9 @@
         }
 
         .image-div img{
-            width: 20%;
-            height: auto;
+            /*width: 20%;*/
+            /*height: auto;*/
+            /*max-height: 500px;*/
             display: block;
             margin-left: auto;
             margin-right: auto;
@@ -405,7 +406,7 @@
 <div class="header"></div>
 <div class="row">
 
-    <div class="col-md-12  col-lg-12 image-div" >
+    <div class="col-md-12 col-lg-12 image-div">
         @if($url->uploaded_path)
             <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
         @else
