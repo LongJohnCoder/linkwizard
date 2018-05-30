@@ -63,7 +63,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -76,7 +82,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -89,7 +101,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -102,7 +120,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -115,7 +139,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -128,7 +158,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -141,7 +177,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
                 }
             }
@@ -188,7 +230,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                       // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -201,7 +249,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -214,7 +268,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -227,7 +287,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -240,7 +306,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -253,7 +325,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                        // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
 
                 }
@@ -266,7 +344,13 @@
                     }
                     else
                     {
-                        $redirect_url = $url->protocol.'://'.$url->actual_url;
+                       // This line I've removed as it's including protocol again.
+                       // and you already have the protocol in the url
+                       // create separate method to check if protocol exists or not and if exists
+                       // return the actual url
+                       // or add the protocol and then retun the url
+                       //$redirect_url = $url->protocol.'://'.$url->actual_url;
+                        $redirect_url = $url->actual_url;
                     }
                 }
             }
@@ -431,11 +515,14 @@
 
 <script type="text/javascript">
     var str = "{{$url->actual_url}}";
-    if(str.indexOf('https:') >= 0 || str.indexOf('http:') >=0 ) {
+    var URL_TO_REDIRECT = "{{$url->actual_url}}";
+    // Check this condition properly
+    // it's not the way you check protocol
+    /*if(str.indexOf('https:') >= 0 || str.indexOf('http:') >=0 ) {
         var URL_TO_REDIRECT = "{{$url->actual_url}}";
     } else {
         var URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
-    }
+    }*/
 
     /* Url for query string */
     if({{$query_string}}==1){
