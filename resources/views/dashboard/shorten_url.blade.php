@@ -17,7 +17,7 @@
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
-        <script src="https://kendo.cdn.telerik.com/2018.2.516/js/jquery.min.js"></script>
+        {{--<script src="https://kendo.cdn.telerik.com/2018.2.516/js/jquery.min.js"></script>--}}
         <script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.all.min.js"></script>
         <style>
             /* hidden display div for link schedule panel */
