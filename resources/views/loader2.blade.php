@@ -431,7 +431,7 @@
 
 <script type="text/javascript">
     var str = "{{$url->actual_url}}";
-    if(str.indexOf('https://') >= 0 || str.indexOf('http://') >=0 ) {
+    if(str.indexOf('https:') >= 0 || str.indexOf('http:') >=0 ) {
         var URL_TO_REDIRECT = "{{$url->actual_url}}";
     } else {
         var URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
