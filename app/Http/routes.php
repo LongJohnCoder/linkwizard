@@ -86,7 +86,7 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
     Route::post('/check_custom' , 'HomeController@check_custom');
 
     Route::post('/getallcountry', 'GeoLocationController@getAllCountry');
-    Route::post('/getSelectedCountryDetails', 'GeoLocationController@getSelectedCountryDetails');
+    Route::post('/getCountryDetails', 'GeoLocationController@getCountryDetails');
     
     Route::get('test' , function(){
         return view('test');

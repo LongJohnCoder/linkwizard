@@ -1,6 +1,25 @@
 
 $(document).ready(function () {
-    $('#addGeoLocation, #allow-country, #allow-set-url, #block-country, .allow-country-select').prop('checked', false);
+    $('#addGeoLocation, #custom').prop('checked', false);
+    $('#geo-location-body').hide();
+    $('#selected-country').hide();
+    $('#show-selected-country').html();
+    $('#addGeoLocation').click(function(){
+        if (this.checked) {
+            $('#geo-location-body').show();
+        }else{
+            $('#geo-location-body').hide();
+        }
+    });
+
+    $('#custom').click(function(event){
+        if($('#custom').is(':checked')==true){
+            $('#selected-country').show();
+        }else{
+            $('#selected-country').hide();
+        }
+    });
+    /*$('#addGeoLocation, #allow-country, #allow-set-url, #block-country, .allow-country-select').prop('checked', false);
      $("#allow-country , #block-country").attr("disabled", true);
 	$('#addGeoLocation').click(function(){
 		if (this.checked) {
@@ -8,9 +27,9 @@ $(document).ready(function () {
         }else{
             $('#geo-location-body').hide();
         }
-	});
+	});*/
 
-    $('#allow-country').click(function(event){
+    /*$('#allow-country').click(function(event){
         if($('#allow-country').is(':checked')==true){
             if(selectedContry.length >0){
                 $.ajax({
@@ -41,9 +60,9 @@ $(document).ready(function () {
             $("#block-country").removeAttr("disabled");
         }
         //console.log(selectedContry);
-    });
+    });*/
 
-    $('#block-country').click(function(event){
+   /* $('#block-country').click(function(event){
         if($('#block-country').is(':checked')==true){
             if(selectedContry.length >0){
                 $.ajax({
@@ -72,16 +91,16 @@ $(document).ready(function () {
             $('#blocked-country-view').hide();
             $("#allow-country").removeAttr("disabled");
         }
-    });
+    });*/
 
-    $('#allow-set-url').click(function(event){
+   /* $('#allow-set-url').click(function(event){
         if($('#allow-set-url').is(':checked')==true){
             $('#selected-country-view').show();
         }else{
             $('#selected-country-view').hide();
         }
     });
-    
+    */
 });
 
 var selectedContry=new Array();
@@ -122,10 +141,18 @@ function drawRegionsMap() {
                     if (countryName) {
                         if(selectedContry.includes(countryName)==false){
                             selectedContry.push(countryName); 
+                      
+                            $.ajax({
+                                type: 'post',
+                                url: "/getCountryDetails",
+                                data: {_token: '{{csrf_token()}}',countryName:countryName},
+                                success: function (response) {
+                                    //console.log(response);
+                                    $('#show-selected-country').append(response);
+                                    //show-selected-country
+                                }
+                            });
                         }
-                    }
-                    if(selectedContry.length>0){
-                        $("#allow-country, #block-country").removeAttr("disabled");
                     }
                 }
         	}

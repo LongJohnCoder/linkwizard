@@ -64,6 +64,28 @@
                 'data' => $selectedCountry
             ));
         }
+
+        public function getCountryDetails(Request $request){
+            $getCountry=Country::where('name',$request->countryName)->first();
+            if($getCountry){
+                $selectedCountry['id']=$getCountry->id;
+                $selectedCountry['name']=$getCountry->name;
+                $selectedCountry['code']=$getCountry->code;
+                return view('dashboard.custom',compact('selectedCountry'));
+               /* return \Response::json(array(
+                    'status' => true,
+                    'status_code' => 200,
+                    'data' => $selectedCountry
+                ));*/
+            }else{
+                return \Response::json(array(
+                    'status' => false,
+                    'status_code' => 400,
+                    'message' => "No Country Found"
+                ));
+            }
+
+        }
     }
 
        
