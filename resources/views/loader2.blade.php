@@ -8,7 +8,6 @@
         $referer = parse_url("{{ route('getIndex') }}", PHP_URL_HOST);
     }
     header("Access-Control-Allow-Origin: *");
-
     /* to check query string */
     $query_string = '0';
     $query_link = '';
@@ -17,13 +16,11 @@
     $redirect_url = '';
     // $is_schedule the flag to check whether the flag have any special schedule 1 = special 2 = weekly check and actual
     $is_schedule = 2;
-
     $check = 'someday';
     if(!empty($_SERVER['QUERY_STRING'])){
         $query_string = '1';
         $query_link = $_SERVER['QUERY_STRING'];
     }
-
     /* check if  url has expiry date */
     if(!empty($url->date_time))
     {
@@ -33,15 +30,13 @@
         if(strtotime($date1) < strtotime($date2)){
             /*Url Not Expired*/
             $is_expire = 1;
-
             /* LINK SCHEDULES for links have expiry */
-
             /* to check if there is any special schedule for this link */
             if ($url->is_scheduled =='y' && count($url->urlSpecialSchedules)>0)
             {
                 foreach($url->urlSpecialSchedules as $spl_url)
                 {
-                    if($spl_url->special_day === date('Y-m-d'))
+                    if($spl_url->special_day == date('Y-m-d'))
                     {
                         $is_schedule = 1;
                         $redirect_url = $spl_url->special_day_url;
@@ -72,7 +67,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='2')
                 {
@@ -91,7 +85,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='3')
                 {
@@ -110,7 +103,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='4')
                 {
@@ -129,7 +121,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='5')
                 {
@@ -148,7 +139,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='6')
                 {
@@ -167,7 +157,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='7')
                 {
@@ -240,7 +229,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='2')
                 {
@@ -259,7 +247,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='3')
                 {
@@ -278,7 +265,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='4')
                 {
@@ -297,7 +283,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='5')
                 {
@@ -316,7 +301,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='6')
                 {
@@ -335,7 +319,6 @@
                        //$redirect_url = $url->protocol.'://'.$url->actual_url;
                         $redirect_url = $url->actual_url;
                     }
-
                 }
                 if(date('N')=='7')
                 {
@@ -374,34 +357,28 @@
     @if(strlen($url->meta_description) > 0)
         <meta name="description" content="{{$url->meta_description}}">
     @endif
-
     @if(strlen($url->og_title) > 0)
         <meta property="og:title" content="{{$url->og_title}}" />
     @endif
     @if(strlen($url->og_description) > 0)
         <meta property="og:description" content="{{$url->og_description}}" />
     @endif
-
     {{--
     @if(strlen($url->og_url) > 0)
       <meta property="og:url" content="{{$url->og_url}}" />
     @endif
     --}}
-
     @if(strlen($url->og_image) > 0)
         <meta property="og:image" content="{{$url->og_image}}" />
     @endif
-
     @if(strlen($url->twitter_image) > 0)
         <meta name="twitter:title" content="{{$url->twitter_image}}" />
     @endif
-
     {{--
     @if(strlen($url->twitter_url) > 0)
       <meta name="twitter:url" content="{{$url->twitter_url}}" />
     @endif
     --}}
-
     @if(strlen($url->twitter_description) > 0)
         <meta name="twitter:description" content="{{$url->twitter_description}}" />
     @endif
@@ -422,7 +399,6 @@
             background: #01579b;
             width: 100%;
         }
-
         .sticky-foot{
             padding: 20px;
             background: #01579b;
@@ -437,7 +413,6 @@
             text-align: center;
             align-items: middle;
         }
-
         .image-div img{
             /*width: 20%;*/
             /*height: auto;*/
@@ -472,7 +447,6 @@
             </noscript>
             <!-- End Facebook Pixel Code -->
         @endif
-
         @if($url_features->gl_pixel_id != null)
             @php
                 $gl_pixel_id = $url_features->gl_pixel_id;
@@ -491,7 +465,6 @@
 <body>
 <div class="header"></div>
 <div class="row">
-
     <div class="col-md-12 col-lg-12 image-div">
         @if($url->uploaded_path)
             <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
@@ -499,7 +472,6 @@
             <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
         @endif
     </div>
-
     <div class="col-md-12 col-lg-12 production-div">
         @if($url->redirecting_text_template)
             <span class="text"><?php echo($url->redirecting_text_template)?></span>
@@ -509,12 +481,9 @@
         in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
         <p id="msg" style="color: #9f3a38;"></p>
     </div>
-
 </div>
 <div class="sticky-foot"></div>
-
 {{--  redirecting js script  --}}
-
 <script type="text/javascript">
     var str = "{{$url->actual_url}}";
     var URL_TO_REDIRECT = "{{$url->actual_url}}";
@@ -527,20 +496,24 @@
         var URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
     }*/
 
+
+    //alert("{{$url->protocol}}");
+    //alert(str);
+    var URL_TO_REDIRECT = null;
+    if(str.indexOf('https:') >= 0 || str.indexOf('http:') >=0 ) {
+        URL_TO_REDIRECT = "{{$url->actual_url}}";
+    } else {
+        URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
+    }
+
     /* Url for query string */
     if({{$query_string}}==1){
         URL_TO_REDIRECT = URL_TO_REDIRECT+"?"+"{{$query_link}}";
     }
-    /* Actual url */
-    if({{$query_string}}==0){
-        URL_TO_REDIRECT = URL_TO_REDIRECT;
-    }
-
     /* expiry redirection check */
     if({{$is_expire}}==2){
         URL_TO_REDIRECT = "{{$redirect_url}}";
     }
-
     /* non expiry, not expired, link scheduled redirection check */
     if({{$is_expire}}==1)
     {
@@ -557,7 +530,6 @@
                 $('#txt_').text('');
             }
         }, 1000);
-
         $.ajax({
             url: '//freegeoip.net/json/',
             type: 'POST',
@@ -583,7 +555,13 @@
                             {
                                 $('#msg').text('Sorry! the link has been expired');
                             }
-                            if(URL_TO_REDIRECT!='NULL')
+                            else if(URL_TO_REDIRECT=='://')
+                            {
+                                //$('#msg').text('Sorry! no url is found');
+
+                                window.location.assign("{{route('error_url')}}")
+                            }
+                            else if(URL_TO_REDIRECT!='NULL' && URL_TO_REDIRECT!='://')
                             {
                                
                                 //window.location = "http://www.google.com"
@@ -598,9 +576,7 @@
             }
         });
     });
-
 </script>
-
 <script>
     (function(b, o, i, l, e, r) {
         b.GoogleAnalyticsObject = l;

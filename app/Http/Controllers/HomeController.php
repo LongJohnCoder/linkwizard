@@ -1643,17 +1643,37 @@ class HomeController extends Controller
         $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
         //dd($checkboxAddFbPixelid, $fbPixelid , $checkboxAddGlPixelid, $glPixelid, $allowTags, $searchTags, $allowDescription, $searchDescription);
         //print_r("<pre>");print_r($request->all());exit();
-        if (strpos($request->actual_url[0], 'https://') === 0) {
-            $actual_url = str_replace('https://', null, $request->actual_url[0]);
-            $protocol = 'https';
-        } else {
-            $actual_url = str_replace('http://', null, $request->actual_url[0]);
-            $protocol = 'http';
+        if(isset($request->allowSchedule) && $request->allowSchedule == 'on')
+        {
+            if (strpos($request->actual_url[0], 'https://') === 0) {
+                $actual_url = str_replace('https://', null, $request->actual_url[0]);
+                $protocol = 'https';
+            }elseif(strpos($request->actual_url[0], 'http://') === 0)
+            {
+                $actual_url = str_replace('http://', null, $request->actual_url[0]);
+                $protocol = 'http';
+            }
+            else
+            {
+                $actual_url = NULL;
+                $protocol = 'http';
+            }
+        }
+        else
+        {
+            if (strpos($request->actual_url[0], 'https://') === 0) {
+                $actual_url = str_replace('https://', null, $request->actual_url[0]);
+                $protocol = 'https';
+            }elseif(strpos($request->actual_url[0], 'http://') === 0)
+            {
+                $actual_url = str_replace('http://', null, $request->actual_url[0]);
+                $protocol = 'http';
+            }
         }
 
-        if(!isset($request->actual_url[0]) || strlen(trim($request->actual_url[0])) == 0) {
-          return redirect()->back()->with('error', 'url cannot be empty!');
-        }
+//        if(!isset($request->actual_url[0]) || strlen(trim($request->actual_url[0])) == 0) {
+//          return redirect()->back()->with('error', 'url cannot be empty!');
+//        }
 
         $random_string = $this->randomString();
 

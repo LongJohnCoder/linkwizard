@@ -58,12 +58,111 @@ $key = 0;
               <div class="row">
 								{{--dd(urlencode($url->title))--}}
                 @php
-                if (substr($url->actual_url, 0, 7) == "http://" || substr($url->actual_url, 0, 8) == "https://"){
-                        $actual_url = htmlspecialchars_decode($url->actual_url);
-                } else {
-                
-                 $actual_url = $url->protocol.'://'.htmlspecialchars_decode($url->actual_url);
-                }
+                    if($url->is_scheduled === 'y')
+                    {
+                        if(!empty($url->actual_url))
+                        {
+                            if(strpos($url->actual_url,'https://') == 0 || strpos($url->actual_url,'http://') == 0) {
+                                $actual_url = $url->protocol.'://'.$url->actual_url;
+                            }
+                            else
+                            {
+                                $actual_url = $url->actual_url;
+                            }
+                        }
+                        elseif(empty($url->actual_url))
+                        {
+                            /* check if there is special schedule available */
+                            // for true condition
+                            if(count($url->urlSpecialSchedules)>0)
+                            {
+                                foreach($url->urlSpecialSchedules as $spl_url)
+                                {
+                                    if($spl_url->special_day == date('Y-m-d'))
+                                    {
+                                        $actual_url = $spl_url->special_day_url;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        // daywise scheule
+
+                                        if(date('N')=='1')
+                                        {
+                                            $actual_url = $url->day_one;
+                                        }
+                                        if(date('N')=='2')
+                                        {
+                                            $actual_url = $url->day_two;
+                                        }
+                                        if(date('N')=='3')
+                                        {
+                                            $actual_url = $url->day_three;
+                                        }
+                                        if(date('N')=='4')
+                                        {
+                                            $actual_url = $url->day_four;
+                                        }
+                                        if(date('N')=='5')
+                                        {
+                                            $actual_url = $url->day_five;
+                                        }
+                                        if(date('N')=='6')
+                                        {
+                                            $actual_url = $url->day_six;
+                                        }
+                                        if(date('N')=='7')
+                                        {
+                                            $actual_url = $url->day_seven;
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // daywise scheule
+                                if(date('N')=='1')
+                                {
+                                    $actual_url = $url->day_one;
+                                }
+                                if(date('N')=='2')
+                                {
+                                    $actual_url = $url->day_two;
+                                }
+                                if(date('N')=='3')
+                                {
+                                    $actual_url = $url->day_three;
+                                }
+                                if(date('N')=='4')
+                                {
+                                    $actual_url = $url->day_four;
+                                }
+                                if(date('N')=='5')
+                                {
+                                    $actual_url = $url->day_five;
+                                }
+                                if(date('N')=='6')
+                                {
+                                    $actual_url = $url->day_six;
+                                }
+                                if(date('N')=='7')
+                                {
+                                    $actual_url = $url->day_seven;
+                                }
+                            }
+                        }
+                    }
+                    elseif($url->is_scheduled === 'n')
+                    {
+                        if(strpos($url->actual_url,'https://') == 0 || strpos($url->actual_url,'http://') == 0)
+                        {
+                            $actual_url = $url->protocol.'://'.$url->actual_url;
+                        }
+                        else
+                        {
+                            $actual_url = $url->actual_url;
+                        }
+                    }
                   
                 @endphp
                   <div class="col-md-2 col-sm-2"><strong>Clicked link:</strong></div>

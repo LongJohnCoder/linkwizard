@@ -129,6 +129,10 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
             /* dashboard delete short url  */
             Route::get('/delete_url/{id?}', 'UrlController@deleteUrl')->name('delete_short_url');
 
+            /* error 404 for linkscheduler */
+            Route::get('/error_url', function(){
+                return view('errors.404');
+            })->name('error_url');
 
             /**add new tab for special link schedule for ajax*/
             Route::get('/add_tab_schedule', 'HomeController@add_schedule_tab')->name('ajax_schedule_tab');
