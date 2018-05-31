@@ -1127,7 +1127,8 @@
     </script>
 @endif
 <script type="text/javascript">
-    $(document).ready(function () {
+    /*$(document).ready(function () {
+        console.log("fB"+FB);
 
         if (typeof(FB) != 'undefined' &&
             FB != null) {
@@ -1135,7 +1136,7 @@
         } else {
             alert('check browser settings to enable facebook sharing.. ');
         }
-    });
+    });*/
 </script>
 <script>
     (function (document) {

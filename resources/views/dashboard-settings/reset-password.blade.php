@@ -1121,12 +1121,12 @@ window.onload = function(){
 		<script type="text/javascript">
 			$(document).ready(function(){
 
-				if (typeof(FB) != 'undefined'
+				/*if (typeof(FB) != 'undefined'
 		     && FB != null ) {
 		    // run the app
 			} else {
 			    alert('check browser settings to enable facebook sharing.. ');
-			}
+			}*/
 			});
 		</script>
 
