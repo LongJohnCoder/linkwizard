@@ -516,6 +516,7 @@
 <script type="text/javascript">
     var str = "{{$url->actual_url}}";
     var URL_TO_REDIRECT = "{{$url->actual_url}}";
+    var protocl = "{{$url->protocol}}";
     // Check this condition properly
     // it's not the way you check protocol
     /*if(str.indexOf('https:') >= 0 || str.indexOf('http:') >=0 ) {
@@ -582,7 +583,11 @@
                             }
                             if(URL_TO_REDIRECT!='NULL')
                             {
-                                window.location.replace(URL_TO_REDIRECT.replace(/&amp;/g, '&'));
+                               
+                                //window.location = "http://www.google.com"
+                                
+                                window.location.replace(protocl+"://"+URL_TO_REDIRECT);
+                                //window.location.replace(URL_TO_REDIRECT.replace(/&amp;/g, '&'));
                             }
                             HoldOn.close();
                         }, "{{ $url->redirecting_time }}");
