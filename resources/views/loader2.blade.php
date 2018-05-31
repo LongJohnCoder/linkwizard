@@ -1,3 +1,4 @@
+
 @php
     //dd($url->day_four);
     $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
@@ -340,6 +341,14 @@
                 }
             }
     }
+
+if(!preg_match("~^(?:f|ht)tps?://~i", $redirect_url))
+    {
+        $redirect_url = $url->protocol.'://'.$redirect_url;
+    }else
+    {
+        $redirect_url = $redirect_url;
+    }
 @endphp
         <!DOCTYPE html>
 <html lang="en">
@@ -487,7 +496,7 @@
 <script type="text/javascript">
     var str = "{{$url->actual_url}}";
     var URL_TO_REDIRECT = "{{$url->actual_url}}";
-    var protocl = "{{$url->protocol}}";
+    var protocol = "{{$url->protocol}}";
     // Check this condition properly
     // it's not the way you check protocol
     /*if(str.indexOf('https:') >= 0 || str.indexOf('http:') >=0 ) {
@@ -505,7 +514,6 @@
     } else {
         URL_TO_REDIRECT = "{{$url->protocol}}"+'://'+"{{$url->actual_url}}";
     }
-
     /* Url for query string */
     if({{$query_string}}==1){
         URL_TO_REDIRECT = URL_TO_REDIRECT+"?"+"{{$query_link}}";
@@ -555,19 +563,15 @@
                             {
                                 $('#msg').text('Sorry! the link has been expired');
                             }
-                            else if(URL_TO_REDIRECT=='://')
+                            else if(URL_TO_REDIRECT=='http://')
                             {
-                                //$('#msg').text('Sorry! no url is found');
-
-                                window.location.assign("{{route('error_url')}}")
+                                $('#msg').text('Sorry! no url is found');
                             }
                             else if(URL_TO_REDIRECT!='NULL' && URL_TO_REDIRECT!='://')
                             {
-                               
-                                //window.location = "http://www.google.com"
-                                
-                                window.location.replace(protocl+"://"+URL_TO_REDIRECT);
-                                //window.location.replace(URL_TO_REDIRECT.replace(/&amp;/g, '&'));
+                                URL_TO_REDIRECT = URL_TO_REDIRECT.replace(/&amp;/g, '&');
+                                console.log(URL_TO_REDIRECT);
+                                window.location.href = URL_TO_REDIRECT.replace(/&amp;/g, '&');
                             }
                             HoldOn.close();
                         }, "{{ $url->redirecting_time }}");
