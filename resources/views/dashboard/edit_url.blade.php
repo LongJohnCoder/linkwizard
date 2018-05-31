@@ -316,7 +316,7 @@
                                 </div>
                             </div>
                            
-                            <div class="normal-box1">
+                            <!--{{--<div class="normal-box1">
                                 <div class="normal-header">
                                     <label class="custom-checkbox">Edit Link Expiration 
                                         <input type="checkbox" id="expirationEnable" name="allowExpiration" <?php if(!empty($urls->date_time)){echo 'checked';}?>>
@@ -425,7 +425,7 @@
                                     <p>Select a redirection page url after expiration</p>
                                     <input type="text" class="form-control" name="redirect_url" id="expirationUrl" value="{{$urls->redirect_url}}">
                                 </div>
-                            </div>
+                            </div> --}}-->
 
                             {{--Link Schedule--}}
 

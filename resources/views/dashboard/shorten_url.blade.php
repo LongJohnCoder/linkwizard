@@ -324,7 +324,7 @@
                         </div>
 
 
-                <div class="normal-box1">
+                {{-- <div class="normal-box1">
                     <div class="normal-header">
                         <table class="merge-tab">
                             <tr>
@@ -523,19 +523,24 @@
                                         <td>
                                             <input type="text" name="special_date_redirect_url[]" class="form-control" placeholder="Enter your url here">
                                         </td>
+<<<<<<< Updated upstream
                                         <td>
                                             <span id="add_button_0">
                                                 <a class="btn btn-primary" onclick="addMoreSpecialLink(), dispButton(0)"><i class="fa fa-plus"></i></a>
                                             </span>
                                         </td>
-                                    </tr>
-                                </table>
-                                {{--<a class="btn btn-primary btn-sm" onclick="addMoreSpecialLink()">Add more</a>--}}
-                            </div>
-                        </div>
+                                        <td> --}}
+                                            {{--<a href="#">Delete</a>--}}
+                                        {{-- </td>
                     </div>
                 </div>
 
+                    </div>--}}
+
+                        {{--<button class="btn btn-sm btn-default">Previous</button>--}}
+                        {{--<button class="btn btn-sm btn-success">Next</button>--}}
+                {{-- </div> --}} 
+                        
                 {{csrf_field()}}
                 <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
                     </form>
