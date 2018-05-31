@@ -28,63 +28,86 @@
 
     	//Method To Get All Country Name and Code
     	public function getAllCountry(Request $request){
-    		$getAllCountry=Country::select('name', 'code')->get();
-    		$location[0][0] = 'Country';
-        	$location[0][1] = 'Code';
-        	if(count($getAllCountry)>0){
-        		foreach ($getAllCountry as $key => $country) {
-            		$location[++$key][0] =$country->name;
-            		$location[$key][1] = $country->code;
-        		}
-        	}
-			return \Response::json(array(
-                'status' => true,
-                'status_code' => 200,
-                'data' => $location
-            ));
+            try{
+        		$getAllCountry=Country::select('name', 'code')->get();
+        		$location[0][0] = 'Country';
+            	$location[0][1] = 'Code';
+            	if(count($getAllCountry)>0){
+            		foreach ($getAllCountry as $key => $country) {
+                		$location[++$key][0] =$country->name;
+                		$location[$key][1] = $country->code;
+            		}
+            	}
+    			return \Response::json(array(
+                    'status' => true,
+                    'status_code' => 200,
+                    'data' => $location
+                ));
+            } catch (Exception $e) {
+                return \Response::json(array(
+                    'status' => false,
+                    'status_code' => 500,
+                    'message'   => $e->getMessage()
+                ));
+            }
     	}
 
         public function getSelectedCountryDetails(Request $request){
-            $selectedCountry=array();
-            //return $request->all();
-            if(count($request->selectedContry)>0){
-                for($i=0; $i<count($request->selectedContry); $i++){
-                    $getCountry=Country::where('name',$request->selectedContry[$i])->first();
-                    if($getCountry){
-                        $selectedCountry[$i]['id']=$getCountry->id;
-                        $selectedCountry[$i]['name']=$getCountry->name;
-                        $selectedCountry[$i]['code']=$getCountry->code;
+            try{
+                $selectedCountry=array();
+                //return $request->all();
+                if(count($request->selectedContry)>0){
+                    for($i=0; $i<count($request->selectedContry); $i++){
+                        $getCountry=Country::where('name',$request->selectedContry[$i])->first();
+                        if($getCountry){
+                            $selectedCountry[$i]['id']=$getCountry->id;
+                            $selectedCountry[$i]['name']=$getCountry->name;
+                            $selectedCountry[$i]['code']=$getCountry->code;
+                        }
                     }
                 }
-            }
 
-            return \Response::json(array(
-                'status' => true,
-                'status_code' => 200,
-                'data' => $selectedCountry
-            ));
-        }
-
-        public function getCountryDetails(Request $request){
-            $getCountry=Country::where('name',$request->countryName)->first();
-            if($getCountry){
-                $selectedCountry['id']=$getCountry->id;
-                $selectedCountry['name']=$getCountry->name;
-                $selectedCountry['code']=$getCountry->code;
-                return view('dashboard.custom',compact('selectedCountry'));
-               /* return \Response::json(array(
+                return \Response::json(array(
                     'status' => true,
                     'status_code' => 200,
                     'data' => $selectedCountry
-                ));*/
-            }else{
+                ));
+            } catch (Exception $e) {
                 return \Response::json(array(
                     'status' => false,
-                    'status_code' => 400,
-                    'message' => "No Country Found"
+                    'status_code' => 500,
+                    'message'   => $e->getMessage()
                 ));
             }
+        }
 
+        public function getCountryDetails(Request $request){
+            try{
+                $getCountry=Country::where('name',$request->countryName)->first();
+                if($getCountry){
+                    $selectedCountry['id']=$getCountry->id;
+                    $selectedCountry['name']=$getCountry->name;
+                    $selectedCountry['code']=$getCountry->code;
+                    return view('dashboard.custom',compact('selectedCountry'));
+                   /* return \Response::json(array(
+                        'status' => true,
+                        'status_code' => 200,
+                        'data' => $selectedCountry
+                    ));*/
+                }else{
+                    return \Response::json(array(
+                        'status' => false,
+                        'status_code' => 400,
+                        'message' => "No Country Found"
+                    ));
+                }
+            } catch (Exception $e) {
+                return \Response::json(array(
+                    'status' => false,
+                    'status_code' => 500,
+                    'message'   => $e->getMessage()
+                ));
+            }
         }
     }
 
