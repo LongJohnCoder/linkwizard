@@ -351,7 +351,6 @@ class HomeController extends Controller
      */
     public function getRequestedUrl($url)
     {
-        //dd($url);
         $search = Url::where('shorten_suffix', $url)->first();
         if ($search) {
             $url_features = UrlFeature::where('url_id', $search->id)->first();
@@ -3079,9 +3078,16 @@ class HomeController extends Controller
     * Add tab for special link schedule AJAX
     */
 
-    public function add_schedule_tab()
-    {
+    public function add_schedule_tab(){
         return view('add_special_schedule');
+    }
+
+
+    /**
+    * Redirect APP_REDIRECT_HOST to APP_HOST
+    */
+    public function redirectUrl(){
+        return redirect()->route('getIndex');
     }
 
 }
