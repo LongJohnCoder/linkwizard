@@ -353,8 +353,8 @@ class HomeController extends Controller
     {
         //dd($url);
         $search = Url::where('shorten_suffix', $url)->first();
-        $url_features = UrlFeature::where('url_id', $search->id)->first();
         if ($search) {
+            $url_features = UrlFeature::where('url_id', $search->id)->first();
             if ($search->no_of_circular_links > 1) {
                 $circularLinks = CircularLink::where('url_id', $search->id)->get();
                 $search->actual_url = $circularLinks[$search->link_hits_count % $search->no_of_circular_links]->actual_link;
