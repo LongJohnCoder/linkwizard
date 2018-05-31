@@ -10,6 +10,10 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::get(config('settings.APP_REDIRECT_HOST'),[
+        'uses' => 'HomeController@getIndex',
+        'as' => 'getIndex',
+    ]);
 
 Route::pattern('domain', config('settings.APP_HOST').'|'.config('settings.APP_LOGIN_HOST'));
 
@@ -313,6 +317,11 @@ Route::group(['domain' => config('settings.APP_REDIRECT_HOST') , ['middlewareGro
     Route::get('/{url}', [
         'uses' => 'HomeController@getRequestedUrl',
         'as' => 'getRequestedUrl',
+    ]);
+
+    Route::get('/', [
+        'uses' => 'HomeController@redirectUrl',
+        'as' => 'redirectUrl',
     ]);
 });
 //routing for subdirectories ends here
