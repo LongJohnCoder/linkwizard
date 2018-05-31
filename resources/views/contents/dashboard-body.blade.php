@@ -160,7 +160,7 @@
                                     <tr>
                                         <th class="width-modification">Short URL</th>
                                         <th class="width-modification">Destination URL</th>
-                                        <th class="width-modification"><span title="Open graph description of the page">Description</span></th>
+                                        <th class="width-modification"><span title="Description of the link">Description</span></th>
                                         <th>Clicks</th>
                                         <th>Created</th>
                                         <th >Action</th>
