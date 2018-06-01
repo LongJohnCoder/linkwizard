@@ -1791,7 +1791,7 @@ class HomeController extends Controller
             * Schedule for special day
             */
 
-            if(!in_array('', $request->special_date) && !in_array('',$request->special_date_redirect_url)>0)
+           /* if(!in_array('', $request->special_date) && !in_array('',$request->special_date_redirect_url)>0)
             {
                 $spl_dt = [];
                 $spl_url = [];
@@ -1820,7 +1820,7 @@ class HomeController extends Controller
                     }
                 }
 
-            }
+            }*/
 
             /* Circular URLs support */
             $noOfCircularLinks = count($request->input('actual_url'));
@@ -1835,37 +1835,6 @@ class HomeController extends Controller
                 $url->no_of_circular_links = $noOfCircularLinks;
                 $url->save();
             }
-
-            /* TODO: Don't remove - Scheduler Code */
-//            if(count($request->special_date)>0 && count($request->special_date_redirect_url)>0)
-//            {
-//                $spl_dt = [];
-//                $spl_url = [];
-//                for ($i=0; $i<count($request->special_date); $i++)
-//                {
-//                    if($request->special_date[$i]!='' or !empty($request->special_date))
-//                    {
-//                        $spl_dt[$i] = $request->special_date[$i];
-//                    }
-//
-//                    if($request->special_date_redirect_url[$i]!='' or !empty($request->special_date_redirect_url[$i]))
-//                    {
-//                        $spl_url[$i] = $request->special_date_redirect_url[$i];
-//                    }
-//                }
-//
-//                if(count($spl_dt)>0)
-//                {
-//                    for ($j=0; $j<count($spl_dt); $j++)
-//                    {
-//                        $id = $url->id;
-//                        $spl_date = $spl_dt[$j];
-//                        $spcl_url = $spl_url[$j];
-//                        $this->insert_special_schedule($id, $spl_date, $spcl_url);
-//                    }
-//                }
-//
-//            }
 
           if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
             //dd('here');
