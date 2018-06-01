@@ -12,7 +12,9 @@
             <ul>
             	<li><a href="/about">about</a></li>
             	<li><a href="/features">features</a></li>
-            	<li><a href="/pricing">pricing</a></li>
+                @if(!\Auth::check())
+            	   <li><a href="/pricing">pricing</a></li>
+                @endif
             	<li><a href="/blog">blog</a></li>
                 @if(!\Auth::check())
             			<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
@@ -27,7 +29,9 @@
             <ul>
             	<li><a href="/about">about</a></li>
             	<li><a href="/features">features</a></li>
-            	<li><a href="/pricing">pricing</a></li>
+            	@if(!\Auth::check())
+                    <li><a href="/pricing">pricing</a></li>
+                @endif
             	<li><a href="/blog">blog</a></li>
                 @if(!\Auth::check())
             			<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
