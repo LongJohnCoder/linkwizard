@@ -18,7 +18,7 @@
             			<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
             			<!--<li class="signup"><a href="#" data-toggle="modal" data-target="#signup" >signup</a></li>-->
                 @else
-                  <li><a href="{{route('getDashboard')}}">My Dashboard</a></li>
+                  <li><a href="{{ route('getDashboard') }}">My Dashboard</a></li>
                   <li><a href="{{ route('getLogout') }}" >Sign Out</a></li>
                 @endif
             </ul>
@@ -33,7 +33,7 @@
             			<li class="login"><a href="#" data-toggle="modal" data-target="#login">login</a></li>
             			<!--<li class="signup"><a href="#" data-toggle="modal" data-target="#signup">signup</a></li>-->
                 @else
-                  <li><a href="/app/user/dashboard">My Dashboard</a></li>
+                  <li><a href="{{ route('getDashboard') }}">My Dashboard</a></li>
                   <li><a href="{{ route('getLogout') }}" >Sign Out</a></li>
                 @endif
             </ul>
