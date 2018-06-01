@@ -27,6 +27,7 @@ return [
     ],
     'VIEW' => [
         'SHORT_LINK'  =>  'Add Short Link',
-        'CUSTOM_LINK' =>  'Add Wizard Link'
+        'CUSTOM_LINK' =>  'Add Wizard Link',
+        'ROTATING_LINK' => 'Add Rotating Link'
     ]
 ];

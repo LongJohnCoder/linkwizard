@@ -197,8 +197,12 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                 'as' => 'postEditUrlInfo',
             ]);
 
-            Route::post('userinfo', [
+            /*Route::post('userinfo', [
                 'uses' => 'HomeController@postUserInfo',
+                'as' => 'postUserInfo',
+            ]);*/
+            Route::post('userinfo', [
+                'uses' => 'UrlController@postUserInfo',
                 'as' => 'postUserInfo',
             ]);
 
@@ -210,6 +214,11 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
             Route::post('deleteShortenUrl', [
                 'uses' => 'HomeController@deleteShortenUrl',
                 'as' => 'deleteShortenUrl',
+            ]);
+
+            Route::post('check_suffix_availability', [
+                'uses' => 'UrlController@checkSuffixAvailability',
+                'as' => 'checkSuffixAvailability',
             ]);
         });
 
@@ -229,10 +238,10 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
             });
 
             Route::post('shortenUrl', [
-                'uses' => 'HomeController@shortenUrl',
+                'uses' => 'UrlController@creatShortUrl',
                 'as'   => 'shortenUrl'
             ]);
-
+            /*******************/
             Route::get('create_shortened_link',[
                 'uses'  => 'HomeController@createShortenedLink',
                 'as'    => 'createShortenedLink'
@@ -241,6 +250,11 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
             Route::get('create_custom_link',[
                 'uses'  => 'HomeController@createCustomLink',
                 'as'    => 'createCustomLink'
+            ]);
+            /*******************/
+            Route::get('create_link/{type}',[
+                'uses'  => 'UrlController@createLink',
+                'as'    => 'createLink'
             ]);
 
             Route::post('register', [
@@ -318,8 +332,13 @@ Route::group(['domain' => config('settings.APP_REDIRECT_HOST') , ['middlewareGro
         'as' => 'getRequestedSubdirectoryUrl',
     ]);
 
-    Route::get('/{url}', [
+   /* Route::get('/{url}', [
         'uses' => 'HomeController@getRequestedUrl',
+        'as' => 'getRequestedUrl',
+    ]);*/
+
+    Route::get('/{url}', [
+        'uses' => 'UrlController@getRequestedUrl',
         'as' => 'getRequestedUrl',
     ]);
 

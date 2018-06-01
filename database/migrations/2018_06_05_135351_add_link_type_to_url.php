@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateUrlsTableAddColumnHasCircularLinks extends Migration
+class AddLinkTypeToUrl extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,12 @@ class UpdateUrlsTableAddColumnHasCircularLinks extends Migration
      */
     public function up()
     {
-        Schema::table('urls', function ($table) {
-            $table->integer('no_of_circular_links')
-                ->default(1);
+        Schema::table('urls', function (Blueprint $table) {
+            $table->integer('link_type')
+                    ->default(0)
+                    ->nullable()
+                    ->comment('0-> Wizard URL, 1-> Rotating URL')
+                    ->after('is_custom');
         });
     }
 
@@ -25,8 +28,6 @@ class UpdateUrlsTableAddColumnHasCircularLinks extends Migration
      */
     public function down()
     {
-        Schema::table('urls', function ($table) {
-            $table->dropColumn(['no_of_circular_links']);
-        });
+        //
     }
 }

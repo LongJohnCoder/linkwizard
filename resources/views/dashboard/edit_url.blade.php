@@ -24,54 +24,7 @@
         <!-- BOOTSTRAP DATE TIME PICKER -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-        <style>
-            #scheduleArea{
-                padding: 10px;
-            }
-        </style>
-        <script>
-            /* date time for expiration */
-            $(document).ready(function () {
-                // create DateTimePicker from input HTML element
-               <?php
-                if($urls->date_time !== NULL)
-                {
-                    $expiryDate = $urls->date_time;
-                    $null_check = 0;
-                }
-                elseif($urls->date_time === NULL)
-                {
-                    $expiryDate = date('Y-m-d h:i:s A');
-                    $null_check = 1;
-                }
-                ?>
-
-                var expirtaionDateTime = "{{$expiryDate}}";
-                var t = expirtaionDateTime.split(/[- :]/);
-                var null_check = {{$null_check}};
-                $("#datepicker").kendoDateTimePicker({
-                    value: (null_check==0)?new Date(t[0], t[1] - 1, t[2], t[3] || 0, t[4] || 0, t[5] || 0):'',
-                    min: new Date(),
-                    dateInput: true,
-                    interval: 5
-                });
-                $("#datepicker").bind("click", function(){
-                    $(this).data("kendoDateTimePicker").open( function(){
-                        $("#datepicker").bind("click", function(){
-                            $(this).data("kendoTimePicker").open();
-
-                        });
-                    });
-                });
-
-            });
-
-            // $(document).ready(function () {
-            //     var expiryDateTime = '';
-            //     $('#datepicker').datetimepicker('setStartDate', '12-06-2018');
-            // });
-
-        </script>
+        
         <!-- Header Start -->
         @include('contents/header')
         <!-- Header End -->

@@ -9,46 +9,25 @@
 
 			<div class="col-md-8 col-sm-8">
 				<div class="top-right">
-					@if(count($limit) > 0)
-					{{--
-						<div class="createlink boder openpop">
-							<a href="javascript:void(0)" id="basic">
-								<!-- Create tier5 link --> +Add tier5 link</a>
-						</div>
-					--}}
-
+					
 					<div class="createlink boder openpop">
-						<a href="{{route('createShortenedLink')}}">
+						<a href="{{route('createLink',['type' => 'wizard'])}}">
 							@if(config('settings.VIEW.SHORT_LINK') !== null)
 						<!-- Create tier5 link --> +{{config('settings.VIEW.SHORT_LINK')}}</a>
 							@else
-								+Add short link
+								+Add Wizard link
+							@endif
+					</div>
+					<div class="createlink openpop">
+						<a href="{{route('createLink',['type' => 'rotating'])}}">
+							@if(config('settings.VIEW.ROTATING_LINK') !== null)
+						<!-- Create tier5 link --> +{{config('settings.VIEW.ROTATING_LINK')}}</a>
+							@else
+								+Add Rotating link
 							@endif
 					</div>
 
-					@endif
-					@if ($subscription_status != null)
-						 @if(count($limit) > 0)
-						 	{{--
-								<div class="createlink openpop">
-						 			<a href="javascript:void(0)" id="advanced"><!-- Create Custom link -->
-						 				+Add Custom link
-						 			</a>
-						 		</div>
-							--}}
-
-							<div class="createlink openpop">
-						 		<a href="{{route('createCustomLink')}}"><!-- Create Custom link -->
-									@if(config('settings.VIEW.CUSTOM_LINK') !== null)
-						 				+{{config('settings.VIEW.CUSTOM_LINK')}}
-									@else
-										+Add Custom link
-									@endif
-						 		</a>
-						 	</div>
-
-						 @endif
-					@endif
+					
 					<div class="hamburg-menu">
 	                  <a href="#" id="menu-icon" class="menu-icon">
 	                    <div class="span bar top" style="background-color: #fff;"></div>
