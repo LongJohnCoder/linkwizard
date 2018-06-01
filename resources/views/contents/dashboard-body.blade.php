@@ -3,6 +3,12 @@
     th, tr{
         color: #000000
     }
+    .url-description{
+        overflow-y: auto;
+        overflow-x: auto;
+        max-height: 100px;
+        max-width: 150px;
+    }
 </style>
 
 @if(session()->has('edit_msg'))
@@ -288,7 +294,7 @@
                                             }
                                         @endphp
                                         <td class="width-modification"><a href="{{$actual_url}}">{{$actual_url}}</a></td>
-                                        <td class="width-modification">{{$url->title}}</td>
+                                        <td class="width-modification"><div class="url-description">{{$url->meta_description}}</div></td>
                                         <td>{{$url->count}}</td>
                                         <td>{{$url->created_at->format('d/m/Y')}}</td>
                                         <td>

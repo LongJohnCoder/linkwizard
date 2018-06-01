@@ -50,8 +50,8 @@
 
         <div class="row banner-middle text-center">
             <div class="banner-content">
-                <h2>Make your links manageable.</h2>
-                <p style="margin: 80px">{{config('settings.AD.PLATFORM_NAME')}} {{config('settings.AD.HEADING')}}</p>
+                <h2>Business Owners: Meet Smart Links</h2>
+                <p style="margin: 80px">{{config('settings.AD.PLATFORM_NAME')}} {{--config('settings.AD.HEADING')--}} not only shortens your link into a "pretty" URL, but it also gives your business the tracking and protection you need to scale</p>
                 <div class="formArea">
                 <div class="formContainer">
                     <form id="shortenUrlForm" method="POST" action="{{route('postShortUrlNoLogin')}}" enctype="multipart/form-data" files=true>
@@ -238,14 +238,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h1>Shorten, compare and optimize all your links</h1>
-                    <p>Ready to start! Simple attractive and easy to use</p>
+                    <h1>Get Unprecedented and Total Control Over Your Links</h1>
+                    <p>Easily create links that track and route your visitors to EXACTLY where you want them to go.</p>
                     <div class="clear"></div>
                     <div class="col-md-4">
                         <div class="threeblock">
                             <img src="{{url('/')}}/public/images/link.png" class="img-responsive">
                             <h2>link</h2>
-                            <p>Lorem Ipsum is simply dummy text of the printing and industry.Lorem Ipsum has beenthe industry's.</p>
+                            <p>Create short, "pretty" links in seconds for your websites, documents, photos and videos.</p>
                             <a href="#">Learn more <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
                         </div>
                     </div>
@@ -253,15 +253,15 @@
                         <div class="threeblock">
                             <img src="{{url('/')}}/public/images/track.png" class="img-responsive">
                             <h2>Track</h2>
-                            <p>Lorem Ipsum is simply dummy text of the printing and industry.Lorem Ipsum has beenthe industry's.</p>
+                            <p>Get real-time data on who is clicking your links. Embed your Facebook and Google pixel.</p>
                             <a href="#">Learn more <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="threeblock">
                             <img src="{{url('/')}}/public/images/optimize.png" class="img-responsive">
-                            <h2>optimize</h2>
-                            <p>Lorem Ipsum is simply dummy text of the printing and industry.Lorem Ipsum has beenthe industry's.</p>
+                            <h2>Customize</h2>
+                            <p>Create customization links, embed password protection, and utilize geo-routing features (Coming Soon).</p>
                             <a href="#">Learn more <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
                         </div>
                     </div>
@@ -273,9 +273,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h2>About Link Management</h2>
+                    <h2>About Link Wizard</h2>
                     <hr>
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled</p>
+                    <p>Link Wizard is a very powerful link management software. It allows you to create custom short links, track link clicks and get in depth analytics. You can also add a Facebook Pixel or Google Pixel to any of your short links.</p>
                     <a href="#">Learn More</a>
                 </div>
                 <div class="col-md-6">
