@@ -136,4 +136,12 @@ class Url extends Model
         return $this->hasMany('App\UrlSpecialSchedule', 'url_id');
     }
 
+    /**
+    * One to many relation with CircularLink model
+    */
+    public function circularLink()
+    {
+        return $this->hasMany('App\CircularLink', 'url_id');
+    }
+
 }

@@ -229,10 +229,10 @@
                                 $circularLink->save();
                             }
                             /* Update urls table accordingly */
-                            $url->link_type = 1;
-                            $url->no_of_circular_links = $noOfCircularLinks;
-                            $url->save();
                         }
+                        $url->link_type = 1;
+                        $url->no_of_circular_links = $noOfCircularLinks;
+                        $url->save();
                     }
                     return redirect()->back()->with('success', 'Short Url Created!');
                 }else{
@@ -248,46 +248,55 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function editUrlView($id=NULL){
-            $urls = Url::findOrFail($id);
             if (Auth::check()) {
-                if (\Session::has('plan')) {
-                    return redirect()->action('HomeController@getSubscribe');
-                } else {
-                    $user = Auth::user();
-                    $count = DB::table('urls')->selectRaw('count(user_id) AS `count`')->where('user_id', $user->id)->groupBy('user_id')->get();
-                    $total_links = null;
-                    if ($count) {
-                        $total_links = $count[0]->count;
-                        $limit = LinkLimit::where('user_id', $user->id)->first();
-                        if ($limit) {
-                            $limit->number_of_links = $total_links;
-                            $limit->save();
-                        }
-                    }
-
-                    if ($user->subscribed('main', 'tr5Advanced')) {
-                        $subscription_status = 'tr5Advanced';
-                        $limit = Limit::where('plan_code', 'tr5Advanced')->first();
-                    } elseif ($user->subscribed('main', 'tr5Basic')) {
-                        $subscription_status = 'tr5Basic';
-                        $limit = Limit::where('plan_code', 'tr5Basic')->first();
+                try{
+                    if (\Session::has('plan')) {
+                          return redirect()->action('HomeController@getSubscribe');
                     } else {
-                        $subscription_status = false;
-                        $limit = Limit::where('plan_code', 'tr5free')->first();
+                        $user = Auth::user();
+                        $urls = Url::where('id',$id)->where('user_id',$user->id)->with('circularLink')->first();
+                        $count = DB::table('urls')->selectRaw('count(user_id) AS `count`')->where('user_id', $user->id)->groupBy('user_id')->get();
+                        $total_links = null;
+                        if ($count) {
+                            $total_links = $count[0]->count;
+                            $limit = LinkLimit::where('user_id', $user->id)->first();
+                            if ($limit) {
+                                $limit->number_of_links = $total_links;
+                                $limit->save();
+                            }
+                        }
+
+                        if ($user->subscribed('main', 'tr5Advanced')) {
+                            $subscription_status = 'tr5Advanced';
+                            $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+                        } elseif ($user->subscribed('main', 'tr5Basic')) {
+                            $subscription_status = 'tr5Basic';
+                            $limit = Limit::where('plan_code', 'tr5Basic')->first();
+                        } else {
+                            $subscription_status = false;
+                            $limit = Limit::where('plan_code', 'tr5free')->first();
+                        }
+                        $urlTags = UrlTag::whereHas('urlTagMap.url', function ($q) use ($user) {
+                            $q->where('user_id', $user->id);
+                        })->pluck('tag')->toArray();
+
+                        $selectedTags = UrlTagMap::where('url_id',$id)->with('urlTag')->get();
+                        return view('dashboard.edit_url', [
+                            'urlTags'              => $urlTags,
+                            'total_links'          => $total_links,
+                            'limit'                => $limit,
+                            'subscription_status'  => $subscription_status,
+                            'user'                 => $user,
+                            'type'                 => $urls->link_type,
+                            'selectedTags'         =>$selectedTags,
+                            'urls'                 => $urls
+                        ]);
                     }
-                    $urlTags = UrlTag::whereHas('urlTagMap.url', function ($q) use ($user) {
-                        $q->where('user_id', $user->id);
-                    })->pluck('tag')->toArray();
-                    return view('dashboard.edit_url', [
-                        'urlTags' => $urlTags,
-                        'total_links' => $total_links,
-                        'limit' => $limit,
-                        'subscription_status' => $subscription_status,
-                        'user' => $user,
-                        'type' => 'short',
-                        'urls' => $urls
-                    ]);
+                }catch(Exception $e){
+                    abort(404); 
                 }
+            }else{
+                abort(404);
             }
         }
 

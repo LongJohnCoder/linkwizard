@@ -37,30 +37,64 @@
                             <input type="hidden" value="{{$type}}" name="type">
                             <input type="hidden" value="logedin" name="loggedin">
                             <div class="normal-box ">
-                                <div class="row">
-                                    <div class="col-md-3 col-sm-3">
-                                        <label>Paste An Actual URL Here</label>
-                                    </div>
-                                    <div class="col-md-9 col-sm-9">
-                                        <input id="givenActual_Url" type="text" name="actual_url" class="form-control long-url" value="{{$urls->protocol}}://{{$urls->actual_url}}">
-                                        <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    @if(strtolower($type) == 'custom')
-                                        <div class="col-md-3 col-sm-3">
-                                            <label>Paste Your Customized Url Name</label>
-                                        </div>
-                                        <div class="col-md-9 col-sm-9">
-                                            <div class="input-group">
-                                                <span class="input-group-addon">{{config('settings.APP_REDIRECT_HOST')}}/</span>
-                                                <input id="makeCustom_Url" type="text" name="custom_url" class="form-control long-url">
+                                <div class="actualUrl">
+                                    @if($urls->link_type==1)
+                                        @if($urls->no_of_circular_links==1)
+                                            <div class="row">
+                                                <div class="col-md-2 col-sm-2">
+                                                    <label>Paste An Actual URL Here</label>
+                                                </div>
+                                                <div class="col-md-8 col-sm-8">
+                                                    <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}">
+                                                    <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
+                                                </div>
+                                                <div class="col-md-2 col-sm-2">
+                                                   <button id="addCircularURL" class="btn-sm btn-primary"><i class="fa fa-plus fa-fw"></i></button>
+                                                </div>
                                             </div>
-                                            <div class="input-msg">*Required</div>
+                                        @else
+                                            @if(isset($urls->circularLink) && (count($urls->circularLink)>0))
+                                                @for( $i=0; $i < count($urls->circularLink); $i++)
+                                                    <div class="row">
+                                                        <div class="col-md-2 col-sm-2">
+                                                            @if($i==0)
+                                                                <label>Paste An Actual URL Here</label>
+                                                            @else
+                                                                <label>Paste Another URL Here<label>
+                                                            @endif
+                                                        </div>
+                                                        <div class="col-md-8 col-sm-8">
+                                                            <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->circularLink[$i]->protocol}}://{{$urls->circularLink[$i]->actual_link}}">
+                                                            <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
+                                                        </div>
+                                                        <div class="col-md-2 col-sm-2">
+                                                            @if($i==0)
+                                                                <button id="addCircularURL" class="btn-sm btn-primary"><i class="fa fa-plus fa-fw"></i></button>
+                                                            @else
+                                                               <button type="button" class="btn-sm btn-primary remove-this-circular-url" ><i class="fa fa-minus fa-fw"></i></button>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endfor
+                                            @endif
+                                        @endif
+                                    @else
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-2">
+                                                <label>Paste An Actual URL Here</label>
+                                            </div>
+                                            <div class="col-md-8 col-sm-8">
+                                                <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}">
+                                                <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-2">
+                                               
+                                            </div>
                                         </div>
                                     @endif
                                 </div>
                             </div>
+
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <label class="custom-checkbox">Edit facebook pixel
