@@ -68,7 +68,7 @@
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <form id="url_short_frm" action="{{route('edit_short_url', $urls->id)}}" method="POST" enctype="multipart/form-data" files=true>
-                            <input type="hidden" value="{{$type}}" name="type">
+                            <input type="hidden" value="{{$type}}" name="type" id="type">
                             <input type="hidden" value="logedin" name="loggedin">
                             <div class="normal-box ">
                                 <div class="actualUrl">
@@ -80,7 +80,8 @@
                                                     <label>Paste An Actual URL Here</label>
                                                 </div>
                                                 <div class="col-md-8 col-sm-8">
-                                                    <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}">
+                                                    <input type="hidden" name="url_id[]" value="0">
+                                                    <input id="givenActual_Url" type="text" name="actual_url[]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}" placeholder="Please Provide A Valied Url Like http://www.example.com">
                                                     <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                                                 </div>
                                                 <div class="col-md-2 col-sm-2">
@@ -100,7 +101,7 @@
                                                         </div>
                                                         <div class="col-md-8 col-sm-8">
                                                             <input type="hidden" name="url_id[]" value="{{$urls->circularLink[$i]->id}}">
-                                                            <input id="givenActual_Url_{{$i}}" type="text" name="actual_url[]" class="form-control " value="{{$urls->circularLink[$i]->protocol}}://{{$urls->circularLink[$i]->actual_link}}">
+                                                            <input id="givenActual_Url_{{$i}}" type="text" name="actual_url[]" class="form-control " value="{{$urls->circularLink[$i]->protocol}}://{{$urls->circularLink[$i]->actual_link}}" placeholder="Please Provide A Valied Url Like http://www.example.com">
                                                             <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                                                         </div>
                                                         <div class="col-md-2 col-sm-2">
@@ -120,7 +121,7 @@
                                                 <label>Paste An Actual URL Here</label>
                                             </div>
                                             <div class="col-md-8 col-sm-8">
-                                                <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}">
+                                                <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}" placeholder="Please Provide A Valied Url Like http://www.example.com">
                                                 <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                                             </div>
                                             <div class="col-md-2 col-sm-2">
@@ -309,7 +310,7 @@
                                 </div>
                             </div>
                             {{csrf_field()}}
-                            <button type="submit" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
+                            <button type="submit" id="edit-short-url" class=" btn-shorten">Shorten URL</button>
                             </form>
                         </div>
                     </div>
@@ -350,24 +351,6 @@
     @endif
     $('#shortTags_Contents').val(selectedTag).trigger('chosen:updated');
 
-    $(".chosen-container").bind('keyup',function(e) {
-        if (e.which == 13 || e.which == 188){
-            var lastChar = e.target.value.slice(-1);
-            var strVal  = e.target.value;
-            strVal = strVal.trim();
-            if(strVal.length == 0) return false;
-            if (lastChar == ',') {
-                strVal = strVal.slice(0, -1);
-            }
-            var option = $("<option>").val(strVal).text(strVal);
-            var select = $(".chosen-select-header");
-            // Add the new option
-            select.prepend(option);
-            // Automatically select it
-            select.find(option).prop('selected', true);
-            select.trigger("chosen:updated");
-        }
-    });
 
     /* custom original checkbox set */
     function set_custom_prev_on(chk)
@@ -473,7 +456,7 @@
 
 
 
-    $("#shorten_url_btn").on('click',function(e){
+    /*$("#shorten_url_btn").on('click',function(e){
 
         if($("#cust_url_chk").prop('checked') && $("#link_preview_selector").prop('checked') && $("#link_preview_custom").prop('checked')) {
             var url_inp_len = $("#url_inp").val().trim().length;
@@ -493,7 +476,7 @@
         }
 
         /*  expiration validation  */
-        if($('#expirationEnable').prop('checked'))
+        /*if($('#expirationEnable').prop('checked'))
         {
             if($('#datepicker').val()!='')
             {
@@ -600,17 +583,17 @@
                 });
             }
         }
-    });
+    });*/
 
-    var appURL = "{{url('/')}}";
+    /*var appURL = "{{url('/')}}";
     appURL = appURL.replace('https://','');
-    appURL = appURL.replace('http://','');
+    appURL = appURL.replace('http://','');*/
 
 
-    window.onload = function(){
-        console.log('reached here');
+    /*window.onload = function(){*/
+        /*console.log('reached here');*/
         //giveMyTags();
-    }
+    /*}*/
 
     // var $select = $('#shortTagsContentss').selectize({
     // 				maxItems: null,
@@ -936,7 +919,7 @@
             $(this).removeClass("close");
         });
 
-        $('[data-toggle="tooltip"]').tooltip();
+      /*  $('[data-toggle="tooltip"]').tooltip();*/
         $('#hamburger').on('click', function () {
             $('.sidebar.right').addClass('open', true);
             $('.sidebar.right').removeClass('close', true);
@@ -983,7 +966,7 @@
     $(document).ready(function(){
 
 
-        $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+       /* $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
         $(".list-group ul li").click(function(){
             $(this).addClass("active");
@@ -992,7 +975,7 @@
             var index = $(this).index();
             $("div.tab-content").removeClass("active");
             $("div.tab-content").eq(index).addClass("active");
-        });
+        });*/
     });
 </script>
 
@@ -1078,24 +1061,7 @@
         endDate: '+0d'
     });
 </script>
-<script>
-    $(document).ready(function () {
-        $('#datePickerFrom').on('blur', function () {
-            var from = $(this).val();
-            if (from == null) {
-                $(this).focus();
-                $(this).parent().append('<p style="color: red">Start date can not be null.</p>');
-            }
-        });
-        $('#datePickerTo').on('blur', function () {
-            var to = $(this).val();
-            if (to ===null) {
-                $(this).focus();
-                $(this).parent().append('<p style="color: #f00">End cate can not be null.</p>');
-            }
-        });
-    });
-</script>
+
 <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 <script>
     (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=

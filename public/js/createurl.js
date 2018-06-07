@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    var facebookPixel=false;
+    var googlePixel=false;
+    var tag=false;
+    var description=false;
+    var countdown=false;
+    var linkpreview=false;
 	$('#custom_url_status').click(function(){
 		if($('#custom_url_status').is(':checked')){
 			$('#customized-url-div').show();
@@ -45,7 +51,7 @@ $(document).ready(function () {
 				'	<div class="col-md-8 col-sm-8">\n' +
 				'		<div class="form-group">'+
 				'			<input id="givenActual_Url_' + index + '" type="text" name="actual_url[' + index + ']"\n' +
-				'				class="form-control actual-url">\n' +
+				'				class="form-control actual-url" placeholder="Please Provide A Valied Url Like http://www.example.com">\n' +
 				'		</div>'+
 				'		<div class=" from-group input-msg">* This is where you paste your long URL that you\'d like\n' +
 				'			to shorten.\n' +
@@ -95,11 +101,12 @@ $(document).ready(function () {
             if (thisInstance.checked) {
                 $('.facebook-pixel').show();
                 $('#fbPixel_id').show();
+                facebookPixel=true;
             } else {
-
                 $('.facebook-pixel').hide();
                 $('#fbPixel_id').val('');
                 $('#fbPixel_id').hide();
+                facebookPixel=false;
             }
         }
 
@@ -108,17 +115,19 @@ $(document).ready(function () {
             if (thisInstance.checked) {
                 $('.google-pixel').show();
                 $('#glPixel_id').show();
+                googlePixel=true;
             } else {
                 $('.google-pixel').hide();
                 $('#glPixel_id').hide();
                 $('#glPixel_id').val('');
+                googlePixel=false;
             }
         }
 
         //Add Tag
         if (thisInstance.id === "shortTagsEnable") {
             if (thisInstance.checked) {
-
+                tag=true;
                 $('.add-tags').show();
                 $('#shortTags_Area').show();
             } else {
@@ -128,7 +137,7 @@ $(document).ready(function () {
                 var select = $(".chosen-select-header");
                 select.find('option').prop('selected', false);
                 select.trigger("chosen:updated");
-
+                tag=false;
             }
         }
 
@@ -137,10 +146,12 @@ $(document).ready(function () {
             if (thisInstance.checked) {
                 $('#descriptionArea').show();
                 $('#descriptionContents').show();
+                description=true;
             } else {
                 $('#descriptionContents').hide();
                 $('#descriptionContents').val('');
                 $('#descriptionArea').hide();
+                description=false;
             }
         }
 
@@ -149,10 +160,12 @@ $(document).ready(function () {
             if(thisInstance.checked){
                 $('#countDownArea').show();
                 $('#countDownContents').show();
+                countdown=true;
             } else{
                 $('#countDownArea').hide();
                 $('#countDownContents').val('');
                 $('#countDownContents').hide();
+                countdown=false;
             }
         }
 
@@ -160,8 +173,10 @@ $(document).ready(function () {
         if (thisInstance.id === "link_preview_selector" && thisInstance["name"] === "link_preview_selector") {
             if (thisInstance.checked) {
                 $('.link-preview').show();
+                linkpreview=true;
             } else {
                 $('.link-preview').hide();
+                linkpreview=false;
             }
         }
 
@@ -320,6 +335,70 @@ $(document).ready(function () {
             }
         }
 
+        if(facebookPixel==true){
+            var fbpxid=$('#fbPixel_id').val().trim();
+            if(!fbpxid){
+                swal({
+                    title: "Error",
+                    text: "If you want to active facebook pixel please provide a value!",
+                    type: "error",
+                    html: true
+                });
+                return false;
+            } 
+        }
+
+        if(googlePixel==true){
+            var gpxid=$('#glPixel_id').val().trim();
+            if(!gpxid){
+                swal({
+                    title: "Error",
+                    text: "If you want to active google pixel please provide a value!",
+                    type: "error",
+                    html: true
+                });
+                return false;
+            } 
+        }
+
+        if(tag==true){
+            var tags = $("#shortTags_Contents").chosen().val();
+            if(!tags){
+                swal({
+                    title: "Error",
+                    text: "If you want to active tags please select a tag!",
+                    type: "error",
+                    html: true
+                });
+                return false;
+            }
+        }
+
+        if(description==true){
+            var getdescription = $("#descriptionContents").val().trim();
+            if(!getdescription){
+                swal({
+                    title: "Error",
+                    text: "If you want to active description please provide some description!",
+                    type: "error",
+                    html: true
+                });
+                return false;
+            }
+        }
+
+        if(countdown==true){
+            var timer = $("#countDownContents").val().trim();
+            if(!timer){
+                swal({
+                    title: "Error",
+                    text: "If you want to provide custom time please provide time in seconds!",
+                    type: "error",
+                    html: true
+                });
+                return false;
+            }
+        }
         $("#url_short_frm").submit();
     });
 
@@ -344,3 +423,4 @@ $(document).ready(function () {
         }
     }
 });
+

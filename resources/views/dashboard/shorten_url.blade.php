@@ -7,6 +7,10 @@
     <body>
         <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
         <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
+        <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
+        <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
+        <link href="{{ URL::to('/').'/public/css/fineuploader-gallery.min.css' }}" rel="stylesheet"/>
+        <link href="{{ URL::to('/').'/public/css/fine-uploader-new.min.css' }}" rel="stylesheet"/>
         <style>
             #customized-url-div{
                 display: none;
@@ -41,7 +45,7 @@
                                             </div>
                                             <div class="col-md-8 col-sm-8">
                                                 <div class="form-group">
-                                                    <input id="givenActual_Url_0" type="text" name="actual_url[0]" class="form-control actual-url">
+                                                    <input id="givenActual_Url_0" type="text" name="actual_url[0]" class="form-control actual-url" placeholder="Please Provide A Valied Url Like http://www.example.com">
                                                 </div>
                                                 <div class="input-msg form-group">
                                                     * This is where you paste your long URL that you'd like to shorten.
@@ -118,7 +122,7 @@
                                 <div class="normal-box1">
                                     <div class="normal-header">
                                         <label class="custom-checkbox">Add tags
-                                            <input type="checkbox" id="shortTagsEnable" name="allowTag">
+                                            <input type="checkbox" id="shortTagsEnable" name="allowTag" >
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
@@ -299,79 +303,20 @@
         <!-- Footer End -->
 
         <!-- Choseen jquery  -->
-        <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
-        <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
         <script src="{{ URL::to('/').'/public/resources/js/chosen/chosen.jquery.js' }}" type="text/javascript"></script>
         <script src="{{ URL::to('/').'/public/resources/js/chosen/prism.js' }}" type="text/javascript" charset="utf-8"></script>
         <script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
-        <!-- Choseen jquery  -->
-        <!-- ManyChat -->
-        <script src="//widget.manychat.com/216100302459827.js" async="async"></script>
-        <script src="{{ URL::to('/').'/public/js/fineuploader.min.js' }}"></script>
-        <link href="{{ URL::to('/').'/public/css/fineuploader-gallery.min.css' }}" rel="stylesheet"/>
-        <link href="{{ URL::to('/').'/public/css/fine-uploader-new.min.css' }}" rel="stylesheet"/>
         <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
         <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
         <script src="{{ URL::to('/').'/public/js/createurl.js' }}"></script>
+        <!-- Choseen jquery  -->
+
+        <!-- ManyChat -->
+        <script src="//widget.manychat.com/216100302459827.js" async="async"></script>
+        <script src="{{ URL::to('/').'/public/js/fineuploader.min.js' }}"></script>
+       
         <script type="text/javascript">
-            /* Spcial Schedule tab add */
-
-           /* function addMoreSpecialLink() {
-                var special_url_count = $("#special_url_count").val();
-                var new_count = parseInt(special_url_count) + 1;
-                $.get("{{route('ajax_schedule_tab')}}?tab_count=" + new_count, function (data, status, xhr) {
-                    if (xhr.status == 200) {
-                        $('#special_url_tab').append(data);
-                    }
-                    $("#special_url_count").val(new_count);
-                })
-            }
-
-            function dispButton(id) {
-                if(id==0)
-                {
-                    $('#add_button_0').hide();
-                }
-                if(id>0)
-                {
-                    $('#add_button_'+id).hide();
-                    $('#delete_button_'+id).show();
-                }
-            }
-
-            function delTabRow(indx)
-            {
-                $('#special_url-'+indx).remove();
-            }
-*/
-    /*$(document).ready(function(){
-        $('#expirationEnable').click(function(){
-            if($(this).is(':checked'))
-            {
-                $('#addSchedule').prop('checked', false);
-                $('#scheduleArea').hide();
-                $('#day1').val('');
-                $('#day2').val('');
-                $('#day3').val('');
-                $('#day4').val('');
-                $('#day5').val('');
-                $('#day6').val('');
-                $('#day7').val('');
-            }
-        });
-
-        $('#addSchedule').click(function(){
-            if($(this).is(':checked'))
-            {
-                $('#expirationEnable').prop('checked', false);
-                $('#expirationArea').hide();
-                $('#datepicker').val('month/day/year hours:minutes AM/PM');
-                $('#expirationTZ').val('');
-                $('#expirationUrl').val('');
-            }
-        });
-    });*/
-
+    
     $(".chosen-select").chosen({});
     $(".chosen-container").bind('keyup', function (e) {
         if (e.which == 13 || e.which == 188) {
