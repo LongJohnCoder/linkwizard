@@ -9,6 +9,7 @@
         <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
         <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
         <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
+        <script src="{{ URL::to('/').'/public/js/editurl.js' }}"></script>
         <!-- Kendo date time picker -->
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
@@ -24,7 +25,40 @@
         <!-- BOOTSTRAP DATE TIME PICKER -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-        
+        @if(Session::has('success'))
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    swal({
+                        title: "Success",
+                        text: "{{Session::get('success')}}",
+                        type: "success",
+                        html: true
+                    });
+                });
+            </script>
+        @endif @if(Session::has('error'))
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    swal({
+                        title: "Error",
+                        text: "{{Session::get('error')}}",
+                        type: "error",
+                        html: true
+                    });
+                });
+            </script>
+        @endif @if ($errors->any())
+            <script>
+                $(document).ready(function () {
+                    swal({
+                        title: "Error",
+                        text: "@foreach ($errors->all() as $error){{ $error }}<br/>@endforeach",
+                        type: "error",
+                        html: true
+                    });
+                });
+            </script>
+        @endif
         <!-- Header Start -->
         @include('contents/header')
         <!-- Header End -->
@@ -38,6 +72,7 @@
                             <input type="hidden" value="logedin" name="loggedin">
                             <div class="normal-box ">
                                 <div class="actualUrl">
+                                    <input type="hidden" id="total_no_link" value="{{$urls->no_of_circular_links}}">
                                     @if($urls->link_type==1)
                                         @if($urls->no_of_circular_links==1)
                                             <div class="row">
@@ -64,7 +99,8 @@
                                                             @endif
                                                         </div>
                                                         <div class="col-md-8 col-sm-8">
-                                                            <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->circularLink[$i]->protocol}}://{{$urls->circularLink[$i]->actual_link}}">
+                                                            <input type="hidden" name="url_id[]" value="{{$urls->circularLink[$i]->id}}">
+                                                            <input id="givenActual_Url_{{$i}}" type="text" name="actual_url[]" class="form-control " value="{{$urls->circularLink[$i]->protocol}}://{{$urls->circularLink[$i]->actual_link}}">
                                                             <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                                                         </div>
                                                         <div class="col-md-2 col-sm-2">
@@ -148,13 +184,13 @@
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <label class="custom-checkbox">Edit description
-                                        <input type="checkbox" id="descriptionEnable" name="allowDescription" <?php if(!empty($urls->meta_description)){echo 'checked';}?> >
+                                        <input type="checkbox" id="descriptionEnable" name="allowDescription" <?php if(isset($urls->urlSearchInfo)){echo 'checked';}?> >
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
-                                <div class="normal-body add-description" id="descriptionArea" style="display: <?php if(!empty($urls->meta_description)){echo 'block';}else{ echo 'none';}?>">
+                                <div class="normal-body add-description" id="descriptionArea" style="display: <?php if(isset($urls->urlSearchInfo)){echo 'block';}else{ echo 'none';}?>">
                                     <p>Mention description for this link</p>
-                                    <textarea id="descriptionContents" name="searchDescription" class = "form-control"><?php if(!empty($urls->meta_description)){echo $urls->meta_description;}else{ echo '';}?></textarea>
+                                    <textarea id="descriptionContents" name="searchDescription" class = "form-control"><?php if(isset($urls->urlSearchInfo)){echo $urls->urlSearchInfo->description;}else{ echo '';}?></textarea>
                                 </div>
                             </div>
                             <div class="normal-box1">
@@ -172,56 +208,54 @@
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <label class="custom-checkbox">Link Preview
-                                        <input type="checkbox" id="link_preview_selector" name="link_preview_selector" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
+                                        <input type="checkbox" id="link_preview_selector" name="link_preview_selector"  
+                                        <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->usability==1){echo 'checked'; } }else{echo '';}?>>
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
-                                <div class="normal-body link-preview" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>;">
+                                <div class="normal-body link-preview" style="display: <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->usability==1){echo 'block'; } }else{echo 'none';}?>">
                                     <ul>
                                         <li>
                                             <label class="custom-checkbox">Use Original
-                                                <input type="checkbox" id="link_preview_original" name="link_preview_original" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
+                                                <input type="checkbox" id="link_preview_original" name="link_preview_original" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->main==0){echo 'checked'; } }else{echo '';}?> >
                                                 <span class="checkmark"></span>
                                             </label>
                                         </li>
                                         <li>
                                             <label class="custom-checkbox">Use Custom
-                                                <input type="checkbox" id="link_preview_custom" name="link_preview_custom" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> >
+                                                <input type="checkbox" id="link_preview_custom" name="link_preview_custom"<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->main==1){echo 'checked'; } }else{echo '';}?> >
                                                 <span class="checkmark"></span>
                                             </label>
                                         </li>
                                     </ul>
-                                    <div class="use-custom" style="display: block;">
+                                    <div class="use-custom" style="display :<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->main==1){echo 'block'; } }else{echo 'none';}?>">
                                         <div class="white-paneel">
                                             <div class="white-panel-header">Image</div>
                                             <div class="white-panel-body">
                                                 <ul>
                                                     <li>
                                                         <label class="custom-checkbox">Use Original
-                                                            <input type="checkbox" id="org_img_chk" name="org_img_chk" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
+                                                            <input type="checkbox" id="org_img_chk" name="org_img_chk" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==0){echo 'checked'; } }else{echo '';}?> >
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </li>
                                                     <li>
                                                         <label class="custom-checkbox">Use Custom
-                                                            <input type="checkbox" id="cust_img_chk" name="cust_img_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> onclick="set_custom_prev_on(this.checked)" >
+                                                            <input type="checkbox" id="cust_img_chk" name="cust_img_chk" onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==1){echo 'checked'; } }else{echo '';}?>>
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </li>
                                                 </ul>
-                                                <div class="use-custom1 img-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>">
+                                                <div class="use-custom1 img-inp" style="display:<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==1){echo 'block'; } }else{echo 'none';}?>">
                                                     <div class="row">
                                                         <div class="col-md-10">
                                                             <input type="file" class="form-control" id="img_inp" name="img_inp">
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <?php
-                                                                if($urls->is_custom==1){
-                                                            ?>
+                                                                <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==1){ ?>
                                                                 <img src="{{$urls->og_image}}" class="img-responsive" style="width: 100px;">
-                                                            <?php
-                                                                }
-                                                            ?>
+                                                                <?php } }?>
+                                                           
                                                         </div>
                                                     </div>
                                                 </div>
@@ -233,19 +267,19 @@
                                                 <ul>
                                                     <li>
                                                         <label class="custom-checkbox">Use Original
-                                                            <input type="checkbox" id="org_title_chk" name="org_title_chk" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
+                                                            <input type="checkbox" id="org_title_chk" name="org_title_chk"  <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->title==0){echo 'checked'; } }else{echo '';}?>>
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </li>
                                                     <li>
                                                         <label class="custom-checkbox">Use Custom
-                                                            <input type="checkbox" id="cust_title_chk" name="cust_title_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> onclick="set_custom_prev_on(this.checked)" >
+                                                            <input type="checkbox" id="cust_title_chk" name="cust_title_chk" onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->title==1){echo 'checked'; } }else{echo '';}?> >
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </li>
                                                 </ul>
-                                                <div class="use-custom1 title-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>" >
-                                                    <input type="text" class="form-control" id="title_inp" name="title_inp" value="<?php if($urls->is_custom==1){echo $urls->og_title;}else{echo '';}?>" >
+                                                <div class="use-custom1 title-inp" style="display:<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->title==1){echo 'block'; } }else{echo 'none';}?>">
+                                                    <input type="text" class="form-control" id="title_inp" name="title_inp" value="<?php echo $urls->og_title;?>" >
                                                 </div>
                                             </div>
                                         </div>
@@ -255,214 +289,27 @@
                                                 <ul>
                                                     <li>
                                                         <label class="custom-checkbox">Use Original
-                                                            <input type="checkbox" id="org_dsc_chk" name="org_dsc_chk" <?php if($urls->is_custom==0){echo 'checked';}else{echo '';}?> >
+                                                            <input type="checkbox" id="org_dsc_chk" name="org_dsc_chk"  <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->description==0){echo 'checked'; } }else{echo '';}?> >
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </li>
                                                     <li>
                                                         <label class="custom-checkbox">Use Custom
-                                                            <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk" <?php if($urls->is_custom==1){echo 'checked';}else{echo '';}?> onclick="set_custom_prev_on(this.checked)" >
+                                                            <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk"  onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->description==1){echo 'checked'; } }else{echo '';}?>>
                                                             <span class="checkmark"></span>
                                                         </label>
                                                     </li>
                                                 </ul>
-                                                <div class="use-custom2 dsc-inp" style="display: <?php if($urls->is_custom==1){echo 'block';}else{echo 'none';}?>" >
-                                                    <textarea class="form-control" id="dsc_inp" name="dsc_inp">
-                                                        <?php if($urls->is_custom==1){echo trim($urls->og_description);}else{echo '';}?>
-                                                    </textarea>
+                                                <div class="use-custom2 dsc-inp" style="display:<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->description==1){echo 'block'; } }else{echo 'none';}?>">
+                                                    <textarea class="form-control" id="dsc_inp" name="dsc_inp"><?php echo trim($urls->og_description);?></textarea>
                                                 </div>
                                             </div>
                                         </div>
-
-
-                                        {{--
-                                        <div class="white-paneel">
-                                            <div class="white-panel-header">URL</div>
-                                            <div class="white-panel-body">
-                                                <ul>
-                                                    <li>
-                                                        <label class="custom-checkbox">Use Original
-                                                          <input checked type="checkbox" id="org_url_chk" name="org_url_chk">
-                                                          <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <label class="custom-checkbox">Use Custom
-                                                          <input type="checkbox" id="cust_url_chk" name="cust_url_chk">
-                                                          <span class="checkmark"></span>
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                                <div class="use-custom3 url-inp">
-                                                    <input type="text" class="form-control" name="url_inp" id="url_inp">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        --}}
                                     </div>
                                 </div>
                             </div>
-                           
-                            <!--{{--<div class="normal-box1">
-                                <div class="normal-header">
-                                    <label class="custom-checkbox">Edit Link Expiration 
-                                        <input type="checkbox" id="expirationEnable" name="allowExpiration" <?php if(!empty($urls->date_time)){echo 'checked';}?>>
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                                <div class="normal-body add-expiration" id="expirationArea" style="<?php if(!empty($urls->date_time)){echo 'display: block';}?>">
-                                    <p>Select date &amp; time for this link</p>
-                                    <input id="datepicker" class="datepicker" name="date_time" value="<?php if(!empty($urls->date_time)){echo $urls->date_time;} ?>"/>
- 
-                                    <p>Select a timezone</p>
-
-                                    <select name="timezone" id="expirationTZ">
-                                        <option value="">Please select a timezone</option>
-                                        <option value="Pacific/Midway">(GMT-11:00) Midway Island, Samoa</option>
-                                        <option value="America/Adak">(GMT-10:00) Hawaii-Aleutian</option>
-                                        <option value="Etc/GMT+10">(GMT-10:00) Hawaii</option>
-                                        <option value="Pacific/Marquesas">(GMT-09:30) Marquesas Islands</option>
-                                        <option value="Pacific/Gambier">(GMT-09:00) Gambier Islands</option>
-                                        <option value="America/Anchorage">(GMT-09:00) Alaska</option>
-                                        <option value="America/Ensenada">(GMT-08:00) Tijuana, Baja California</option>
-                                        <option value="Etc/GMT+8">(GMT-08:00) Pitcairn Islands</option>
-                                        <option value="America/Los_Angeles">(GMT-08:00) Pacific Time (US & Canada)</option>
-                                        <option value="America/Denver">(GMT-07:00) Mountain Time (US & Canada)</option>
-                                        <option value="America/Chihuahua">(GMT-07:00) Chihuahua, La Paz, Mazatlan</option>
-                                        <option value="America/Dawson_Creek">(GMT-07:00) Arizona</option>
-                                        <option value="America/Belize">(GMT-06:00) Saskatchewan, Central America</option>
-                                        <option value="America/Cancun">(GMT-06:00) Guadalajara, Mexico City, Monterrey</option>
-                                        <option value="Chile/EasterIsland">(GMT-06:00) Easter Island</option>
-                                        <option value="America/Chicago">(GMT-06:00) Central Time (US & Canada)</option>
-                                        <option value="America/New_York">(GMT-05:00) Eastern Time (US & Canada)</option>
-                                        <option value="America/Havana">(GMT-05:00) Cuba</option>
-                                        <option value="America/Bogota">(GMT-05:00) Bogota, Lima, Quito, Rio Branco</option>
-                                        <option value="America/Caracas">(GMT-04:30) Caracas</option>
-                                        <option value="America/Santiago">(GMT-04:00) Santiago</option>
-                                        <option value="America/La_Paz">(GMT-04:00) La Paz</option>
-                                        <option value="Atlantic/Stanley">(GMT-04:00) Faukland Islands</option>
-                                        <option value="America/Campo_Grande">(GMT-04:00) Brazil</option>
-                                        <option value="America/Goose_Bay">(GMT-04:00) Atlantic Time (Goose Bay)</option>
-                                        <option value="America/Glace_Bay">(GMT-04:00) Atlantic Time (Canada)</option>
-                                        <option value="America/St_Johns">(GMT-03:30) Newfoundland</option>
-                                        <option value="America/Araguaina">(GMT-03:00) UTC-3</option>
-                                        <option value="America/Montevideo">(GMT-03:00) Montevideo</option>
-                                        <option value="America/Miquelon">(GMT-03:00) Miquelon, St. Pierre</option>
-                                        <option value="America/Godthab">(GMT-03:00) Greenland</option>
-                                        <option value="America/Argentina/Buenos_Aires">(GMT-03:00) Buenos Aires</option>
-                                        <option value="America/Sao_Paulo">(GMT-03:00) Brasilia</option>
-                                        <option value="America/Noronha">(GMT-02:00) Mid-Atlantic</option>
-                                        <option value="Atlantic/Cape_Verde">(GMT-01:00) Cape Verde Is.</option>
-                                        <option value="Atlantic/Azores">(GMT-01:00) Azores</option>
-                                        <option value="Europe/Belfast">(GMT) Greenwich Mean Time : Belfast</option>
-                                        <option value="Europe/Dublin">(GMT) Greenwich Mean Time : Dublin</option>
-                                        <option value="Europe/Lisbon">(GMT) Greenwich Mean Time : Lisbon</option>
-                                        <option value="Europe/London">(GMT) Greenwich Mean Time : London</option>
-                                        <option value="Africa/Abidjan">(GMT) Monrovia, Reykjavik</option>
-                                        <option value="Europe/Amsterdam">(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna</option>
-                                        <option value="Europe/Belgrade">(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague</option>
-                                        <option value="Europe/Brussels">(GMT+01:00) Brussels, Copenhagen, Madrid, Paris</option>
-                                        <option value="Africa/Algiers">(GMT+01:00) West Central Africa</option>
-                                        <option value="Africa/Windhoek">(GMT+01:00) Windhoek</option>
-                                        <option value="Asia/Beirut">(GMT+02:00) Beirut</option>
-                                        <option value="Africa/Cairo">(GMT+02:00) Cairo</option>
-                                        <option value="Asia/Gaza">(GMT+02:00) Gaza</option>
-                                        <option value="Africa/Blantyre">(GMT+02:00) Harare, Pretoria</option>
-                                        <option value="Asia/Jerusalem">(GMT+02:00) Jerusalem</option>
-                                        <option value="Europe/Minsk">(GMT+02:00) Minsk</option>
-                                        <option value="Asia/Damascus">(GMT+02:00) Syria</option>
-                                        <option value="Europe/Moscow">(GMT+03:00) Moscow, St. Petersburg, Volgograd</option>
-                                        <option value="Africa/Addis_Ababa">(GMT+03:00) Nairobi</option>
-                                        <option value="Asia/Tehran">(GMT+03:30) Tehran</option>
-                                        <option value="Asia/Dubai">(GMT+04:00) Abu Dhabi, Muscat</option>
-                                        <option value="Asia/Yerevan">(GMT+04:00) Yerevan</option>
-                                        <option value="Asia/Kabul">(GMT+04:30) Kabul</option>
-                                        <option value="Asia/Yekaterinburg">(GMT+05:00) Ekaterinburg</option>
-                                        <option value="Asia/Tashkent">(GMT+05:00) Tashkent</option>
-                                        <option value="Asia/Kolkata">(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi</option>
-                                        <option value="Asia/Katmandu">(GMT+05:45) Kathmandu</option>
-                                        <option value="Asia/Dhaka">(GMT+06:00) Astana, Dhaka</option>
-                                        <option value="Asia/Novosibirsk">(GMT+06:00) Novosibirsk</option>
-                                        <option value="Asia/Rangoon">(GMT+06:30) Yangon (Rangoon)</option>
-                                        <option value="Asia/Bangkok">(GMT+07:00) Bangkok, Hanoi, Jakarta</option>
-                                        <option value="Asia/Krasnoyarsk">(GMT+07:00) Krasnoyarsk</option>
-                                        <option value="Asia/Hong_Kong">(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi</option>
-                                        <option value="Asia/Irkutsk">(GMT+08:00) Irkutsk, Ulaan Bataar</option>
-                                        <option value="Australia/Perth">(GMT+08:00) Perth</option>
-                                        <option value="Australia/Eucla">(GMT+08:45) Eucla</option>
-                                        <option value="Asia/Tokyo">(GMT+09:00) Osaka, Sapporo, Tokyo</option>
-                                        <option value="Asia/Seoul">(GMT+09:00) Seoul</option>
-                                        <option value="Asia/Yakutsk">(GMT+09:00) Yakutsk</option>
-                                        <option value="Australia/Adelaide">(GMT+09:30) Adelaide</option>
-                                        <option value="Australia/Darwin">(GMT+09:30) Darwin</option>
-                                        <option value="Australia/Brisbane">(GMT+10:00) Brisbane</option>
-                                        <option value="Australia/Hobart">(GMT+10:00) Hobart</option>
-                                        <option value="Asia/Vladivostok">(GMT+10:00) Vladivostok</option>
-                                        <option value="Australia/Lord_Howe">(GMT+10:30) Lord Howe Island</option>
-                                        <option value="Etc/GMT-11">(GMT+11:00) Solomon Is., New Caledonia</option>
-                                        <option value="Asia/Magadan">(GMT+11:00) Magadan</option>
-                                        <option value="Pacific/Norfolk">(GMT+11:30) Norfolk Island</option>
-                                        <option value="Asia/Anadyr">(GMT+12:00) Anadyr, Kamchatka</option>
-                                        <option value="Pacific/Auckland">(GMT+12:00) Auckland, Wellington</option>
-                                        <option value="Etc/GMT-12">(GMT+12:00) Fiji, Kamchatka, Marshall Is.</option>
-                                        <option value="Pacific/Chatham">(GMT+12:45) Chatham Islands</option>
-                                        <option value="Pacific/Tongatapu">(GMT+13:00) Nuku'alofa</option>
-                                        <option value="Pacific/Kiritimati">(GMT+14:00) Kiritimati</option>
-                                    </select>
-                                    <p>Select a redirection page url after expiration</p>
-                                    <input type="text" class="form-control" name="redirect_url" id="expirationUrl" value="{{$urls->redirect_url}}">
-                                </div>
-                            </div> --}}-->
-
-                            {{--Link Schedule--}}
-
-                            {{--<div class="normal-box1">--}}
-                                {{--<div class="normal-header">--}}
-                                    {{--<label class="custom-checkbox">Add Schedules for the link--}}
-                                        {{--<input type="checkbox" id="addSchedule" name="allowSchedule">--}}
-                                        {{--<span class="checkmark"></span>--}}
-                                    {{--</label>--}}
-                                {{--</div>--}}
-                                {{--<div class="" id="scheduleArea">--}}
-                                    {{--<div id="day-1">--}}
-                                        {{--<h5 class="text-muted text-center">Link For Monday</h5>--}}
-                                        {{--<input type="text" class="form-control" name="day1" id="day1" placeholder="Link for monday">--}}
-                                    {{--</div>--}}
-                                    {{--<div id="day-2" class="schedule-day">--}}
-                                        {{--<h5 class="text-muted text-center">Link For Tuesday</h5>--}}
-                                        {{--<input type="text" class="form-control" name="day2" id="day2" placeholder="Link for tuesday">--}}
-                                    {{--</div>--}}
-                                    {{--<div id="day-3" class="schedule-day">--}}
-                                        {{--<h5 class="text-muted text-center">Link For Wednesday</h5>--}}
-                                        {{--<input type="text" class="form-control" name="day2" id="day3" placeholder="Link for wednesday">--}}
-                                    {{--</div>--}}
-
-                                    {{--<div id="day-4" class="schedule-day">--}}
-                                        {{--<h5 class="text-muted text-center">Link For Thursday</h5>--}}
-                                        {{--<input type="text" class="form-control" name="day4" id="day4" placeholder="Link for thursday">--}}
-                                    {{--</div>--}}
-
-                                    {{--<div id="day-5" class="schedule-day">--}}
-                                        {{--<h5 class="text-muted text-center">Link For Friday</h5>--}}
-                                        {{--<input type="text" class="form-control" name="day5" id="day5" placeholder="Link for friday">--}}
-                                    {{--</div>--}}
-
-                                    {{--<div id="day-6" class="schedule-day">--}}
-                                        {{--<h5 class="text-muted text-center">Link For Saturday</h5>--}}
-                                        {{--<input type="text" class="form-control" name="day6" id="day6" placeholder="Link for saturday">--}}
-                                    {{--</div>--}}
-
-                                    {{--<div id="day-7" class="schedule-day">--}}
-                                        {{--<h5 class="text-muted text-center">Link For Sunday</h5>--}}
-                                        {{--<input type="text" class="form-control" name="day7" id="day7" placeholder="Link for sunday">--}}
-                                    {{--</div>--}}
-
-                                    {{--<button class="btn btn-sm btn-default">Previous</button>--}}
-                                    {{--<button class="btn btn-sm btn-success">Next</button>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
                             {{csrf_field()}}
-                            <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
+                            <button type="submit" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
                             </form>
                         </div>
                     </div>
@@ -494,13 +341,14 @@
     $("#shortTags_Contents").chosen(
         {no_results_text: "No result found. Press enter to add "}
     );
-    var selectedTags = [];
-    @if(count($urlTags)>0)
-        @foreach($urlTags as $tags )
-           selectedTags.push('{{$tags}}');
+    var selectedTag = [];
+
+    @if(count($selectedTags)>0)
+        @foreach($selectedTags as $tags )
+           selectedTag.push('{{$tags->urlTag[0]->tag}}');
         @endforeach
     @endif
-    $('#shortTags_Contents').val(selectedTags).trigger('chosen:updated');
+    $('#shortTags_Contents').val(selectedTag).trigger('chosen:updated');
 
     $(".chosen-container").bind('keyup',function(e) {
         if (e.which == 13 || e.which == 188){
@@ -599,10 +447,10 @@
     // 	x :
     // }
 
-    var shortenUrlFunc = function() {
+   /* var shortenUrlFunc = function() {
         var urlToHit = @if($type == 'short') "{{ route('postShortUrlTier5') }}" @elseif($type == 'custom')  "{{ route('postCustomUrlTier5') }}" @endif;
 
-        var actualUrl = $('#givenActual_Url').val();
+        var actualUrl = $('#givenActual_Url').val();*/
 
         // var _URL = window.URL || window.webkitURL;
         // $("#img_inp").change(function (e) {
@@ -616,12 +464,12 @@
         //     }
         // });
 
-        var customUrl = null;
+        /*var customUrl = null;
         @if($type == 'custom')
             customUrl = $('#makeCustom_Url').val();
         @endif
         $("#url_short_frm").submit();
-    }
+    }*/
 
 
 

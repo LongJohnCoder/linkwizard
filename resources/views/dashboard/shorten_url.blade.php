@@ -7,20 +7,6 @@
     <body>
         <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
         <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
-        <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
-        <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
-        <script src="{{ URL::to('/').'/public/js/createurl.js' }}"></script>
-
-        <!-- Date time picker -->
-        {{--<script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>--}}
-        {{--<link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />--}}
-
-        <!-- Kendo date time -->
-        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
-        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
-        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
-        {{--<script src="https://kendo.cdn.telerik.com/2018.2.516/js/jquery.min.js"></script>--}}
-        <script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.all.min.js"></script>
         <style>
             #customized-url-div{
                 display: none;
@@ -324,6 +310,9 @@
         <script src="{{ URL::to('/').'/public/js/fineuploader.min.js' }}"></script>
         <link href="{{ URL::to('/').'/public/css/fineuploader-gallery.min.css' }}" rel="stylesheet"/>
         <link href="{{ URL::to('/').'/public/css/fine-uploader-new.min.css' }}" rel="stylesheet"/>
+        <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
+        <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
+        <script src="{{ URL::to('/').'/public/js/createurl.js' }}"></script>
         <script type="text/javascript">
             /* Spcial Schedule tab add */
 

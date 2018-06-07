@@ -127,20 +127,8 @@
                 $linkPreview          = isset($request->link_preview_selector) && $request->link_preview_selector == true ? true : false;
                 $linkPreviewCustom    = isset($request->link_preview_custom) && $request->link_preview_custom == true ? true : false;
                 $linkPreviewOriginal  = isset($request->link_preview_original) && $request->link_preview_original == true ? true : false;
-            
-                if($linkPreview){
-                    if($linkPreviewCustom){
-                        if($request->hasFile('img_inp')) {
-                            $imgFile        = $request->file('img_inp');
-                            $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
-                            $actualFileExtension = $imgFile->getClientOriginalExtension();
-                            $validExtensionRegex = '/(jpg|jpeg|png)/i';
-                            if (!preg_match($validExtensionRegex, $actualFileExtension)) {
-                                return redirect()->back()->with('error','Image should be in jpg, jpeg or png format');
-                            }
-                        }
-                    }
-                }
+                
+                
             
                 //Facebook pixel id
                 $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
@@ -153,41 +141,87 @@
                 //Tag
                 $allowTags            = isset($request->allowTag) && $request->allowTag == true ? true : false;
                 $searchTags           = isset($request->tags) && count($request->tags) > 0 ? $request->tags : null;
-                
-                //Descriptions
+
+                //Description
                 $allowDescription     = isset($request->allowDescription) && $request->allowDescription == true ? true : false;
                 $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
 
-                //CountDown Time Before Redirecting
-                $allowCountDown       = isset($request->allowCountDown) && $request->allowCountDown == true ? true : false;
-                $getCountValue        = isset($request->redirecting_time) && strlen($request->redirecting_time) > 0 ? $request->redirecting_time : null;
-
-                //Get Meta Data
-                $meta_data = $this->getPageMetaContents($request->actual_url);
                 //Create Short Url Suffix
                 $random_string = $this->randomString();
 
-                $url                  = new Url();
-                $url->title           = 
-                $url->actual_url      = $actualUrl;
-                $url->protocol        = $protocol;
-                $url->user_id         = $userId;
-                
+                $url                   = new Url();
+                $url->actual_url       = $actualUrl;
+                $url->protocol         = $protocol;
+                $url->user_id          = $userId;
+
+                // Add CountDowntimer
+                if(isset($request->allowCountDown) && ($request->allowCountDown == "on")){
+                    $url->redirecting_time = ($request->redirecting_time*1000);
+                }else{
+                   $url->redirecting_time = 5000; 
+                }
+            
+                if($linkPreview){
+                    $linkprev['usability']=1;
+                    if($linkPreviewOriginal){
+                        $linkprev['main']=0;
+                        $linkprev['title']=0;
+                        $linkprev['image']=0;
+                        $linkprev['description']=0;
+                    }
+                    if($linkPreviewCustom){
+                        $linkprev['main']=1;
+                        
+                        if(isset($request->org_img_chk) && $request->org_img_chk=='on'){
+                            $linkprev['image']=0;
+                        }elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on'){
+                            $linkprev['image']=1;
+                        }
+
+                        if(isset($request->org_title_chk) && $request->org_title_chk=='on'){
+                            $linkprev['title']=0;
+                        }elseif(isset($request->cust_title_chk) && $request->cust_title_chk=='on'){
+                            $linkprev['title']=1;
+                        }
+
+                        if(isset($request->org_dsc_chk) && $request->org_dsc_chk=='on'){
+                            $linkprev['description']=0;
+                        }elseif(isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on'){
+                            $linkprev['description']=1;
+                        }
+
+
+
+                        if($request->hasFile('img_inp')) {
+                            $imgFile        = $request->file('img_inp');
+                            $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
+                            $actualFileExtension = $imgFile->getClientOriginalExtension();
+                            $validExtensionRegex = '/(jpg|jpeg|png)/i';
+                            if (!preg_match($validExtensionRegex, $actualFileExtension)) {
+                                return redirect()->back()->with('error','Image should be in jpg, jpeg or png format');
+                            }
+                        }
+                    }
+
+                    //Get Meta Data
+                    $meta_data = $this->getPageMetaContents($request->actual_url[0]);
+                    $url = $this->fillUrlDescriptions($url , $request, $meta_data);
+                }else{
+                    $linkprev['usability']=0;
+                    $linkprev['main']=0;
+                    $linkprev['title']=0;
+                    $linkprev['image']=0;
+                    $linkprev['description']=0;
+                }
+
+                $url->link_preview_type = json_encode($linkprev);
                 if(isset($request->custom_url_status)&& ($request->custom_url_status=='on')){
                     $url->is_custom         =1;
                     $url->shorten_suffix    = $request->custom_url;
                 }else{
                     $url->shorten_suffix    = $random_string;
                 }
-
-                if($allowCountDown){
-                    $url->redirecting_time = ($request->redirecting_time)*1000;
-                }else{
-                    $url->redirecting_time = 5000;
-                }
-
-                $url = $this->fillUrlDescriptions($url , $request, $meta_data);
-
+                 
                 if($url->save()){
                     //If facebook pixel, Google Pixel
                     if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
@@ -254,7 +288,7 @@
                           return redirect()->action('HomeController@getSubscribe');
                     } else {
                         $user = Auth::user();
-                        $urls = Url::where('id',$id)->where('user_id',$user->id)->with('circularLink')->first();
+                        $urls = Url::where('id',$id)->where('user_id',$user->id)->with('circularLink')->with('urlSearchInfo')->first();
                         $count = DB::table('urls')->selectRaw('count(user_id) AS `count`')->where('user_id', $user->id)->groupBy('user_id')->get();
                         $total_links = null;
                         if ($count) {
@@ -288,9 +322,10 @@
                             'subscription_status'  => $subscription_status,
                             'user'                 => $user,
                             'type'                 => $urls->link_type,
-                            'selectedTags'         =>$selectedTags,
+                            'selectedTags'         => $selectedTags,
                             'urls'                 => $urls
                         ]);
+
                     }
                 }catch(Exception $e){
                     abort(404); 
@@ -305,225 +340,190 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function editUrl(Request $request, $id=NULL){
-            $this->validate($request, [
-                "actual_url" => 'required|url'
-            ]);
+            //dd($request->all());
+            if (Auth::check()) {
+                try{
+                    //Check atleast one url exist or not
+                    if(isset($request->actual_url[0]) && $request->actual_url[0]!=""){
+                        if (strpos($request->actual_url[0], 'https://') === 0) {
+                            $actualUrl = str_replace('https://', null, $request->actual_url[0]);
+                            $protocol  = 'https';
+                        }elseif(strpos($request->actual_url[0], 'http://') === 0){
+                            $actualUrl = str_replace('http://', null, $request->actual_url[0]);
+                            $protocol  = 'http';
+                        }else{
+                            $actualUrl = $request->actual_url[0];
+                            $protocol  = 'http';
+                        }
+                    }else{
+                        return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
+                    }
+                    //Tag
+                    $allowTags            = isset($request->allowTag) && $request->allowTag == true ? true : false;
+                    $searchTags           = isset($request->tags) && count($request->tags) > 0 ? $request->tags : null;
 
-            $meta_Data = $this->getPageMetaContents($request->actual_url);
-            $explode_url = explode("://", $request->actual_url);
-            $protocol = $explode_url[0];
-            $page_url = $explode_url[1];
+                    //Description
+                    $allowDescription     = isset($request->allowDescription) && $request->allowDescription == true ? true : false;
+                    $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
+                    
+                    $url = Url::find($id);
+                    $url->protocol = $protocol;
+                    $url->actual_url = $actualUrl;
 
-            $url = Url::find($id);
+                    // Edit Description
+                    if(isset($request->allowDescription) && ($request->allowDescription == "on")){
+                        $url->meta_description = $request->searchDescription;
+                    }else{
+                       $url->meta_description = ""; 
+                    }
+                    // Edit CountDowntimer
+                    if(isset($request->allowCountDown) && ($request->allowCountDown == "on")){
+                        $url->redirecting_time = ($request->redirecting_time*1000);
+                    }else{
+                       $url->redirecting_time = 5000; 
+                    }
+                    //Edit Link Preview
+                    $linkPreview          = isset($request->link_preview_selector) && $request->link_preview_selector == true ? true : false;
+                    $linkPreviewCustom    = isset($request->link_preview_custom) && $request->link_preview_custom == true ? true : false;
+                    $linkPreviewOriginal  = isset($request->link_preview_original) && $request->link_preview_original == true ? true : false;
+                    
+                    if($linkPreview){
+                        $linkprev['usability']=1;
+                        if($linkPreviewOriginal){
+                            $linkprev['main']=0;
+                            $linkprev['title']=0;
+                            $linkprev['image']=0;
+                            $linkprev['description']=0;
+                        }
+                        if($linkPreviewCustom){
+                            $linkprev['main']=1;
+                            
+                            if(isset($request->org_img_chk) && $request->org_img_chk=='on'){
+                                $linkprev['image']=0;
+                            }elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on'){
+                                $linkprev['image']=1;
+                            }
 
-            $url->protocol = $protocol;
-            $url->actual_url = $page_url;
-            $url->title = $meta_Data['title'];
-            if(isset($request->allowDescription) && $request->allowDescription=='on')
-            {
-                $url->meta_description = $request->searchDescription;
-            }
-            else
-            {
-                $url->meta_description = $meta_Data['meta_description'];
-            }
+                            if(isset($request->org_title_chk) && $request->org_title_chk=='on'){
+                                $linkprev['title']=0;
+                            }elseif(isset($request->cust_title_chk) && $request->cust_title_chk=='on'){
+                                $linkprev['title']=1;
+                            }
 
-            if(isset($request->allowCountDown) && $request->allowCountDown=='on')
-            {
-                if(!empty($request->redirecting_time) && $request->redirecting_time >= 1 && $request->redirecting_time <= 30)
-                {
-                    $url->redirecting_time = ($request->redirecting_time)*1000;
-                }
-                else
-                {
-                    $url->redirecting_time = 5000;
-                }
-            }
-            else
-            {
-                $url->redirecting_time = 5000;
-            }
-            
+                            if(isset($request->org_dsc_chk) && $request->org_dsc_chk=='on'){
+                                $linkprev['description']=0;
+                            }elseif(isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on'){
+                                $linkprev['description']=1;
+                            }
 
-            if(isset($request->allowExpiration) && $request->allowExpiration=='on')
-            {
-                if(isset($request->date_time)){
 
-                    $date = date_create($request->date_time);
-                    $new_date = $date;
-                    $url->date_time=$new_date;
-                    $url->timezone=$request->timezone;
-                    $url->redirect_url=$request->redirect_url;
-                }else{
-                    $url->date_time=NULL;
-                    $url->timezone=NULL;
-                    $url->redirect_url=NULL;
 
+                            if($request->hasFile('img_inp')) {
+                                $imgFile        = $request->file('img_inp');
+                                $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
+                                $actualFileExtension = $imgFile->getClientOriginalExtension();
+                                $validExtensionRegex = '/(jpg|jpeg|png)/i';
+                                if (!preg_match($validExtensionRegex, $actualFileExtension)) {
+                                    return redirect()->back()->with('error','Image should be in jpg, jpeg or png format');
+                                }
+                            }
+                        }
+
+                        //Get Meta Data
+                        $meta_data = $this->getPageMetaContents($request->actual_url[0]);
+                        $url = $this->fillUrlDescriptions($url , $request, $meta_data);  
+                    }else{
+                        $url->link_preview_type=NULL;
+                        $url->og_title=NULL;
+                        $url->og_description  =NULL;
+                        $url->og_url  =NULL;
+                        $url->og_image  =NULL;
+                        $url->twitter_title  =NULL;
+                        $url->twitter_description  =NULL;
+                        $url->twitter_url  =NULL;
+                        $url->twitter_image  =NULL;
+                        $linkprev['usability']=0;
+                        $linkprev['main']=0;
+                        $linkprev['title']=0;
+                        $linkprev['image']=0;
+                        $linkprev['description']=0;
+                    }
+                    $url->link_preview_type = json_encode($linkprev);
+
+                    if((isset($request->checkboxAddFbPixelid)&&($request->checkboxAddFbPixelid=='on')) || ((isset($request->checkboxAddGlPixelid)&&($request->checkboxAddGlPixelid=='on')))) {
+                        $checkFeature=UrlFeature::where('url_id',$id)->first();
+                        if($checkFeature){
+                           $urlfeature = UrlFeature::where('url_id',$id)->first();
+                        }else{
+                            $urlfeature = new UrlFeature();
+                            $urlfeature->url_id =$id;
+                        }
+                        if(isset($request->checkboxAddFbPixelid)&&($request->checkboxAddFbPixelid=='on')){
+                            $urlfeature->fb_pixel_id = $request->fbPixelid;
+                        }else{
+                            $urlfeature->fb_pixel_id="";
+                        }
+                        if(isset($request->checkboxAddGlPixelid)&&($request->checkboxAddGlPixelid=='on')){
+                            $urlfeature->gl_pixel_id = $request->glPixelid;
+                        }else{
+                            $urlfeature->gl_pixel_id ="";
+                        }
+                        if(!$urlfeature->save()) {
+                            return redirect()->back()->with('error', 'Short Url Features Not Saved! Try Again!');
+                        }
+                    }else{
+                        $deleteFeature=UrlFeature::where('url_id',$id)->delete();
+                    }
+
+                    //Check Rotating Link 
+                    if($request->type==1){
+                        $noOfLink=count($request->actual_url);
+                        $url->no_of_circular_links=$noOfLink;
+                        if($noOfLink>1){
+                            $currentRotatingLinks=CircularLink::where('url_id',$url->id)->pluck('id')->toArray();
+                            $updatedRotatingLinks=$request->url_id;
+                            $removableLinks=(array_diff($currentRotatingLinks,$updatedRotatingLinks));
+                            $deletedLinks=CircularLink::whereIn('id', $removableLinks)->delete(); 
+                            for($i=0; $i < $noOfLink; $i++){
+                                if($request->url_id[$i]!=0){
+                                    $circularLink = CircularLink::find($request->url_id[$i]);
+                                }else{
+                                    $circularLink = new CircularLink();
+                                    $circularLink->url_id = $url->id;
+                                }
+
+                                if (strpos($request->actual_url[$i], 'https://') === 0) {
+                                    $actualCirularUrl = str_replace('https://', null, $request->actual_url[$i]);
+                                    $cirularProtocol  = 'https';
+                                }elseif(strpos($request->actual_url[$i], 'http://') === 0){
+                                    $actualCirularUrl = str_replace('http://', null, $request->actual_url[$i]);
+                                    $cirularProtocol  = 'http';
+                                }else{
+                                    $actualCirularUrl = $request->actual_url[$i];
+                                    $cirularProtocol  = 'http';
+                                }
+                                $circularLink->actual_link = $actualCirularUrl;
+                                $circularLink->protocol = $cirularProtocol;
+                                $circularLink->save();
+                            }
+                        }
+
+                    }
+
+                    //Edit Tags
+                    $tag=$this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
+                    
+                    if($url->save()){
+                        return redirect()->back()->with('success', 'Url Updated!');
+                    }else{
+                        return redirect()->back()->with('error', 'Try Again');
+                    }
+                }catch(Exception $e){
+                    return redirect()->back()->with('error', 'Try Again'); 
                 }
             }else{
-                    $url->date_time=NULL;
-                    $url->timezone=NULL;
-                    $url->redirect_url=NULL;
-
-                }
-            if(isset($request->link_preview_selector) && $request->link_preview_selector=='on')
-            {
-                if(isset($request->link_preview_original) && $request->link_preview_original=='on')
-                {
-                    $url->is_custom = 0;
-                    $url->og_title = $meta_Data['og_title'];
-                    $url->og_description = $meta_Data['og_description'];
-                    $url->og_url = $meta_Data['og_url'];
-                    $url->og_image = $meta_Data['og_image'];
-                    $url->twitter_title = $meta_Data['twitter_title'];
-                    $url->twitter_description = $meta_Data['twitter_description'];
-                    $url->twitter_url = $meta_Data['twitter_url'];
-                    $url->twitter_image = $meta_Data['twitter_image'];
-                }
-
-                if(isset($request->link_preview_custom) && $request->link_preview_custom=='on'){
-                    $url->is_custom = 1;
-
-                    if(isset($request->org_img_chk) && $request->org_img_chk=='on')
-                    {
-                        $url->og_image = $meta_Data['og_image'];
-                    }elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on'){
-
-                        if($request->hasFile('img_inp'))
-                        {
-                            $image = $request->file('img_inp');
-                            $upload_path ='public/uploads/images';
-                            $imagename = uniqid() .'.'. $image->getClientOriginalExtension();
-                            $request->img_inp->move($upload_path, $imagename);
-                            $url->og_image = '/public/uploads/images/'.$imagename;
-                        }
-                        else
-                        {
-                            $url->og_image = NULL;
-                        }
-
-                    }
-
-                    if(isset($request->org_title_chk) && $request->org_title_chk=='on')
-                    {
-                        $url->og_title = $meta_Data['og_title'];
-                    }
-                    elseif(isset($request->cust_title_chk) && $request->cust_title_chk=='on')
-                    {
-                        $url->og_title = $request->title_inp;
-                    }
-
-                    if(isset($request->org_dsc_chk) && $request->org_dsc_chk=='on')
-                    {
-                        $url->og_description = $meta_Data['og_description'];
-                    }
-                    elseif(isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on')
-                    {
-                        $url->og_description = trim($request->dsc_inp);
-                    }
-                }
-            }else
-            {
-                $url->og_title = $meta_Data['og_title'];
-                $url->og_description = $meta_Data['og_description'];
-                $url->og_url = $meta_Data['og_url'];
-                $url->og_image = $meta_Data['og_image'];
-                $url->twitter_title = $meta_Data['twitter_title'];
-                $url->twitter_description = $meta_Data['twitter_description'];
-                $url->twitter_url = $meta_Data['twitter_url'];
-                $url->twitter_image = $meta_Data['twitter_image'];
+                abort(404);
             }
-
-            if($url->save())
-            {
-
-            if(isset($request->tags) && count($request->tags)>0)
-            {
-                DB::table('url_tag_maps')->where('url_id', $id)->delete();
-
-                for($i=0; $i<count($request->tags); $i++)
-                {
-                    $url_tag_map = new UrlTagMap();
-
-                    $url_tag_id = UrlTag::where('tag', $request->tags[$i])->first();
-                    if(count($url_tag_id)>0)
-                    {
-                        $url_tag_map->url_tag_id = $url_tag_id->id;
-                        $url_tag_map->url_id = $id;
-                        $url_tag_map->save();
-                    }else
-                    {
-                        $url_tag = new UrlTag();
-                        $url_tag->tag = $request->tags[$i];
-                        $url_tag->save();
-
-                        $url_tag_map->url_tag_id = $url_tag->id;
-                        $url_tag_map->url_id = $id;
-                        $url_tag_map->save();
-                    }
-                }
-            }
-
-            if(isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == 'on')
-            {
-                $url_feature_count = UrlFeature::where('url_id', $id)->first();
-                if(count($url_feature_count)>0)
-                {
-                    DB::table('url_features')->where('url_id',$id)->update(array(
-                        'fb_pixel_id' => $request->fbPixelid,
-                    ));
-                }
-                else
-                {
-                    $url_feature = new UrlFeature();
-                    $url_feature->fb_pixel_id = $request->fbPixelid;
-                    $url_feature->url_id = $id;
-                    $url_feature->save();
-                }
-            }else
-            {
-                $url_feature_count = UrlFeature::where('url_id', $id)->first();
-                //dd($url->id);
-                if(count($url_feature_count)>0)
-                {
-                    DB::table('url_features')->where('url_id',$id)->update(array(
-                        'fb_pixel_id' => NULL,
-                    ));
-                }
-            }
-
-            if(isset($request->checkboxAddGlPixelid) && $request->checkboxAddGlPixelid == 'on')
-            {
-                $url_feature_count = UrlFeature::where('url_id', $id)->first();
-                if(count($url_feature_count)>0)
-                {
-                    DB::table('url_features')->where('url_id',$id)->update(array(
-                        'gl_pixel_id' => $request->glPixelid,
-
-                    ));
-                }else
-                {
-                    $url_feature = new UrlFeature();
-                    $url_feature->gl_pixel_id = $request->glPixelid;
-                    $url_feature->url_id = $id;
-                    $url_feature->save();
-                }
-            }else
-            {
-                $url_feature_count = UrlFeature::where('url_id', $id)->first();
-                if(count($url_feature_count)>0)
-                {
-                    DB::table('url_features')->where('url_id',$id)->update(array(
-                        'gl_pixel_id' => NULL,
-
-                    ));
-                }
-            }
-
-
-                return redirect()->route('getDashboard')->with('edit_msg', '0');
-            }
-            return redirect()->route('getDashboard')->with('edit_msg', '1');
         }
 
         /**
@@ -587,7 +587,7 @@
                             break;
                         }
 
-                        switch($m->getAttribute('name')) {
+                        /*switch($m->getAttribute('name')) {
                           //meta data attributes for instagram
 
                           case 'description':
@@ -597,7 +597,7 @@
                           default:
                             # code...
                             break;
-                        }
+                        }*/
                     }
                 }
                 return $meta;
@@ -627,6 +627,7 @@
          */
         private function setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$urlId) {
             $urlTagMap = [];
+            $deletePrevTag=UrlTagMap::where('url_id',$urlId)->delete();
             if($allowTags && count($searchTags) > 0) {
                 foreach ($searchTags as $key => $tag) {
                   if(strlen(trim($tag)) == 0) continue;
@@ -639,10 +640,14 @@
             }
 
             if($allowDescription && strlen(trim($searchDescription)) > 0) {
-                $urlSearchInfo = new UrlSearchInfo;
-                $urlSearchInfo->url_id = $urlId;
+                if(!$urlSearchInfo=UrlSearchInfo::where('url_id',$urlId)->first()){
+                    $urlSearchInfo = new UrlSearchInfo;
+                    $urlSearchInfo->url_id = $urlId;
+                }
                 $urlSearchInfo->description = trim($searchDescription);
                 $urlSearchInfo->save();
+            }else{
+                $deleteDescription=UrlSearchInfo::where('url_id',$urlId)->delete();
             }
             return;
         }
@@ -671,23 +676,24 @@
          * @return string
          */
         public function fillUrlDescriptions(Url $url ,Request $request, $meta_data) {
-            $url->title           = $meta_data['title'];
-            $url->og_image        = $meta_data['og_image'];
-            $url->og_description  = $meta_data['og_description'];
-            $url->og_url          = $meta_data['og_url'];
-            $url->og_title        = $meta_data['og_title'];
+
+            $url->title             = $meta_data['title'];
+            $url->og_image          = $meta_data['og_image'];
+            $url->og_description    = $meta_data['og_description'];
+            $url->og_url            = $meta_data['og_url'];
+            $url->og_title          = $meta_data['og_title'];
+            $url->meta_description  = $meta_data['og_description'];
             //twitter data
             $url->twitter_image         = $meta_data['twitter_image'] == null ? $meta_data['og_image'] : $meta_data['twitter_image'];
             $url->twitter_description   = $meta_data['twitter_description'];
             $url->twitter_url           = $meta_data['twitter_url'];
             $url->twitter_title         = $meta_data['twitter_title'];
-            //meta description
-            $url->meta_description = $meta_data['meta_description'];
-
+            
             if(isset($request->link_preview_selector) && strtolower(trim($request->link_preview_selector)) == 'on') {
-                if(isset($request->link_preview_custom) && strtolower(trim($request->link_preview_custom)) == 'on') {
-
-                    if($request->cust_title_chk && strlen($request->title_inp) > 0) {
+                if(isset($request->link_preview_original) && strtolower(trim($request->link_preview_original)) == 'on') {
+                    return $url;
+                }else if(isset($request->link_preview_custom) && strtolower(trim($request->link_preview_custom)) == 'on') {
+                   if($request->cust_title_chk && strlen($request->title_inp) > 0) {
                         $url->title         =   $request->title_inp;
                         $url->og_title      =   $request->title_inp;
                         $url->twitter_title =   $request->title_inp;
@@ -698,13 +704,13 @@
                     }
 
                     if($request->cust_dsc_chk && strlen($request->dsc_inp) > 0) {
-                        $url->meta_description      =   $request->dsc_inp;
                         $url->og_description        =   $request->dsc_inp;
                         $url->twitter_description   =   $request->dsc_inp;
+                        $url->meta_description      =   $request->dsc_inp;
                     } else {
-                        $url->meta_description      =   $meta_data['title'];
                         $url->og_description        =   $meta_data['og_description'];
                         $url->twitter_description   =   $meta_data['twitter_description'];
+                        $url->meta_description      =   $meta_data['og_description'];
                     }
 
                     if($request->cust_url_chk && strlen($request->url_inp) > 0) {
@@ -716,28 +722,32 @@
                     }
 
                     if($request->cust_img_chk && $request->hasFile('img_inp')) {
+                        $imgFile        = $request->file('img_inp');
+                        $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
+                        $actualFileExtension = $imgFile->getClientOriginalExtension();
+                        $validExtensionRegex = '/(jpg|jpeg|png)/i';
+                        $uploadPath = getcwd().'/'.config('settings.UPLOAD_IMG');
+                        $newFileName = rand(1000, 9999) . "-" . date('U');
+                        $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
 
-                            $imgFile        = $request->file('img_inp');
-                            $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
-                            $actualFileExtension = $imgFile->getClientOriginalExtension();
-                            $validExtensionRegex = '/(jpg|jpeg|png)/i';
-                            $uploadPath = getcwd().'/'.config('settings.UPLOAD_IMG');
-                            $newFileName = rand(1000, 9999) . "-" . date('U');
-                            $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
-
-                            $url->og_image            =   config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/'.config('settings.UPLOAD_IMG').$newFileName.'.'.$actualFileExtension;
-                            $url->twitter_image       =   config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/'.config('settings.UPLOAD_IMG').$newFileName.'.'.$actualFileExtension;
-                          } else {
-                            $url->og_image            =   $meta_data['og_image'];;
+                        $url->og_image            =   config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/'.config('settings.UPLOAD_IMG').$newFileName.'.'.$actualFileExtension;
+                        $url->twitter_image       =   config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/'.config('settings.UPLOAD_IMG').$newFileName.'.'.$actualFileExtension;
+                    } else {
+                        if(isset($url->og_image) && ($url->og_image!=NULL)){
+                            $url->og_image            =   $url->og_image;
+                            $url->twitter_image       =   $url->og_image;
+                        }else{
+                            $url->og_image            =   $meta_data['og_image'];
                             $url->twitter_image       =   $meta_data['twitter_url'];
-                          }
+                        }
+                        
+                    }
                   return $url;
                 }
                 else {
                   return $url;
                 }
             }
-            return $url;
         }
 
         /*Redirect To Main Url*/
