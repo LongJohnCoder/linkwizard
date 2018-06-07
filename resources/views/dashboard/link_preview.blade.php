@@ -51,7 +51,7 @@ $key = 0;
                       <a href="{{$shrt_url}}" id="copylink">{{$shrt_url}}</a>
                   </div>
                   <div class="col-md-7 col-sm-7">
-                      <button id="clipboard" class="btn btn-primary btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink" style="width:70px"><i class="fa fa-clipboard"></i> copy
+                      <button id="clipboard" class="btn-primary btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink" style="width:70px"><i class="fa fa-clipboard"></i> copy
                       </button>
                   </div>
               </div>
@@ -173,7 +173,7 @@ $key = 0;
               <hr>
               <div class="tag">
                 <ul>
-                  <li>
+                  <!-- <li>
                       <button id="clipboard" class="btn btn-default btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink" style="width:70px"><i class="fa fa-clipboard"></i> copy
                       </button>
                   </li>
@@ -184,7 +184,7 @@ $key = 0;
                   </li>
                   <li>
                     <button id="edit-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-pencil"></i> edit</button>
-                  </li>
+                  </li> -->
                   <li>
                     <button id="fb-share-btn" class="btn btn-default btn-sm btngrpthree" style="width:70px"><i class="fa fa-facebook"></i> share</button>
                   </li>

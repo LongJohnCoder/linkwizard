@@ -41,7 +41,7 @@
                                             </div>
                                             <div class="col-md-8 col-sm-8">
                                                 <div class="form-group">
-                                                    <input id="givenActual_Url_0" type="text" name="actual_url[0]" class="form-control">
+                                                    <input id="givenActual_Url_0" type="text" name="actual_url[0]" class="form-control actual-url">
                                                 </div>
                                                 <div class="input-msg form-group">
                                                     * This is where you paste your long URL that you'd like to shorten.
@@ -287,7 +287,7 @@
                                 </div>
                                 <!--Add Link Preview End-->
                                 {{csrf_field()}}
-                                <button type="button" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
+                                <button type="submit" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
                             </form>
                         </div>
                     </div>
@@ -316,7 +316,7 @@
         <script type="text/javascript">
             /* Spcial Schedule tab add */
 
-            function addMoreSpecialLink() {
+           /* function addMoreSpecialLink() {
                 var special_url_count = $("#special_url_count").val();
                 var new_count = parseInt(special_url_count) + 1;
                 $.get("{{route('ajax_schedule_tab')}}?tab_count=" + new_count, function (data, status, xhr) {
@@ -343,8 +343,8 @@
             {
                 $('#special_url-'+indx).remove();
             }
-
-    $(document).ready(function(){
+*/
+    /*$(document).ready(function(){
         $('#expirationEnable').click(function(){
             if($(this).is(':checked'))
             {
@@ -370,7 +370,7 @@
                 $('#expirationUrl').val('');
             }
         });
-    });
+    });*/
 
     $(".chosen-select").chosen({});
     $(".chosen-container").bind('keyup', function (e) {
@@ -395,7 +395,7 @@
         }
     });
 
-    var notValidURLs = "";
+   /* var notValidURLs = "";
     function ValidURL(URLs) {
         notValidURLs = URLs.filter(function (URL) {
             return URL.indexOf("http://") < 0 && URL.indexOf("https://") < 0;
@@ -415,9 +415,9 @@
         } else {
             return true;
         }
-    }
+    }*/
 
-    var shortenUrlFunc = function () {
+    /*var shortenUrlFunc = function () {
         @if($type == 'short')
         var urlToHit = 
             "{{ route('postShortUrlTier5') }}"
@@ -430,8 +430,8 @@
             customUrl = $('#makeCustom_Url').val();
         @endif
         //$("#url_short_frm").submit();
-    }
-    $("#shorten_url_btn").on('click', function (e) {
+    }*/
+   /* $("#shorten_url_btn").on('click', function (e) {
         if ($("#cust_url_chk").prop('checked') && $("#link_preview_selector").prop('checked') && $("#link_preview_custom").prop('checked')) {
             var url_inp_len = $("#url_inp").val().trim().length;
             var url_inp = $("#url_inp").val();
@@ -448,7 +448,7 @@
                 return false;
             }
         }
-        /*  expiration validation  */
+        
         if ($('#expirationEnable').prop('checked')) {
             if ($('#datepicker').val() != '' && $('#datepicker').val() != 'month/day/year hours:minutes AM/PM') {
                 if ($('#expirationTZ').val() != '') {
@@ -523,7 +523,7 @@
                 }
             });
         } else {
-            /* link schedule check */
+            
             if($('#addSchedule').prop('checked')==false)
             {
                 // alert($('#addSchedule').prop('checked'))
@@ -545,11 +545,11 @@
                 shortenUrlFunc();
             }
         }
-    });
+    });*/
 
-    var appURL = "{{url('/')}}";
+   /* var appURL = "{{url('/')}}";
     appURL = appURL.replace('https://', '');
-    appURL = appURL.replace('http://', '');
+    appURL = appURL.replace('http://', '');*/
     
 
     $(document).ready(function () {
@@ -721,7 +721,7 @@
 <script>
 </script>
 <script src="{{ URL('/')}}/public/resources/js/bootstrap-datepicker.min.js"></script>
-<script>
+<!-- <script>
     $('.input-daterange').datepicker({
         format: 'yyyy-mm-dd',
         calendarWeeks: true,
@@ -732,8 +732,8 @@
         //startDate: '-1m',
         endDate: '+0d'
     });
-</script>
-<script>
+</script> -->
+<!-- <script>
     $(document).ready(function () {
         $('#datePickerFrom').on('blur', function () {
             var from = $(this).val();
@@ -750,7 +750,7 @@
             }
         });
     });
-</script>
+</script> -->
 <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 <script>
     (function (b, o, i, l, e, r) {

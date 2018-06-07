@@ -340,7 +340,6 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function editUrl(Request $request, $id=NULL){
-            //dd($request->all());
             if (Auth::check()) {
                 try{
                     //Check atleast one url exist or not
