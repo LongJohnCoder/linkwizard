@@ -329,6 +329,8 @@
                                 }
                             }
 
+                            $spl_dt = array_values($spl_dt);
+                            $spl_url = array_values($spl_url);
                             if(count($spl_dt)>0 && count($spl_url)>0){
                                 for ($j=0; $j<count($spl_dt); $j++){
                                     if($spl_dt[$j]){
