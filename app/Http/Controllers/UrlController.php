@@ -331,10 +331,12 @@
 
                             if(count($spl_dt)>0 && count($spl_url)>0){
                                 for ($j=0; $j<count($spl_dt); $j++){
-                                    $id = $url->id;
-                                    $spl_date = $spl_dt[$j];
-                                    $spcl_url = $spl_url[$j];
-                                    $this->insert_special_schedule($id, $spl_date, $spcl_url);
+                                    if($spl_dt[$j]){
+                                        $id = $url->id;
+                                        $spl_date = $spl_dt[$j];
+                                        $spcl_url = $spl_url[$j];
+                                        $this->insert_special_schedule($id, $spl_date, $spcl_url);
+                                    }
                                 }
                             }
                         }
