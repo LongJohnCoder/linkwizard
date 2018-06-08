@@ -386,7 +386,10 @@ $(document).ready(function () {
                     }
                     /* check schedule flag */
                     //alert(checkEmptySchedule+'-------'+scheduleCheckBox);
-                    checkLinkSchedule(checkEmptySchedule, scheduleCheckBox);
+                    var preventSubmit = checkLinkSchedule(checkEmptySchedule, scheduleCheckBox);
+                    if(preventSubmit==false){
+                        return false;
+                    }
                 }else{
                     swal({
                         title: "Error",
