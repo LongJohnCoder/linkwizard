@@ -51,7 +51,7 @@ $(document).ready(function () {
 				'	<div class="col-md-8 col-sm-8">\n' +
 				'		<div class="form-group">'+
 				'			<input id="givenActual_Url_' + index + '" type="text" name="actual_url[' + index + ']"\n' +
-				'				class="form-control actual-url" placeholder="Please Provide A Valied Url Like http://www.example.com">\n' +
+				'				class="form-control actual-url" placeholder="Please Provide A Valid Url Like http://www.example.com">\n' +
 				'		</div>'+
 				'		<div class=" from-group input-msg">* This is where you paste your long URL that you\'d like\n' +
 				'			to shorten.\n' +

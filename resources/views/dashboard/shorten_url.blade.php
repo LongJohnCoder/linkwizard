@@ -66,7 +66,7 @@
                                             </div>
                                             <div class="col-md-8 col-sm-8">
                                                 <div class="form-group">
-                                                    <input id="givenActual_Url_0" type="text" name="actual_url[0]" class="form-control actual-url" placeholder="Please Provide A Valied Url Like http://www.example.com">
+                                                    <input id="givenActual_Url_0" type="text" name="actual_url[0]" class="form-control actual-url" placeholder="Please Provide A Valid Url Like http://www.example.com">
                                                 </div>
                                                 <div class="input-msg form-group">
                                                     * This is where you paste your long URL that you'd like to shorten.
@@ -334,7 +334,7 @@
                                     <div class="normal-body add-expiration" id="expirationArea">
                                         <p>Select date &amp; time for this link</p>
                                         <input type="text" name="date_time" id="datepicker" width="100%">
-                                        <input type="hidden" name="date_time" id="dt2">
+                                       <!--  <input type="hidden" name="date_time" id="dt2"> -->
                                         <p>Select a timezone</p>
                                         <select name="timezone" id="expirationTZ" class="form-control">
                                             <option value="">Please select a timezone</option>

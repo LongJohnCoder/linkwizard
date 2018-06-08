@@ -94,7 +94,6 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function creatShortUrl(Request $request){
-            //dd($request->all());
             try{
                 if (\Auth::user())
                     $userId = \Auth::user()->id;
@@ -173,9 +172,7 @@
 
                 //** expiration values set in the urls table **//
                 if (isset($request->allowExpiration) && $request->allowExpiration == 'on'){
-                    $date = strtotime($request->date_time);
-                    $date_time = date_create($request->date_time);
-                    $url->date_time = $date_time;
+                    $url->date_time = date_format(date_create($request->date_time), 'Y-m-d H:i:s');
                     $url->timezone = $request->timezone;
                     if(strlen($request->redirect_url)>0 && preg_match("~^(?:f|ht)tps?://~i", $request->redirect_url)){
                         $url->redirect_url = $request->redirect_url;
@@ -930,16 +927,49 @@
                 }
             }
 
-            $search = Url::where('shorten_suffix', $request->suffix)->first();
-            $redirectUrl=$search->protocol.'://'.$search->actual_url; 
-            if ($search->no_of_circular_links > 1) {
-                $circularLinks= CircularLink::where('url_id', $search->id)->get();
-                $search->actual_url       = $circularLinks[($search->count) % $search->no_of_circular_links]->actual_link;
-                $search->protocol         = $circularLinks[($search->count) % $search->no_of_circular_links]->protocol;
+            $search = Url::where('shorten_suffix', $request->suffix)->with('urlSpecialSchedules','url_link_schedules')->first();
+            if($search->link_type==0){
+                //Check Url Expire
+                if(($search->date_time!="") && ($search->timezone!="")){
+                    date_default_timezone_set($search->timezone);
+                    $date1= date('Y-m-d H:i:s') ;
+                    $date2 = $search->date_time;
+                    if(strtotime($date1) < strtotime($date2)){
+                        $getUrl=$this->schedulSpecialDay($search);
+                        /*Url Not Expired*/
+                        $redirectUrl=$getUrl['url'];
+                        $redirectstatus=$getUrl['status']=0;;
+                        $message=$getUrl['message'];
+                    }else{
+                        /* Url Expired */
+                        if($search->redirect_url!=""){
+                            $redirectUrl=$search->redirect_url;
+                            $redirectstatus=0;
+                            $message="";
+                        }else{
+                            $redirectUrl=NULL;
+                            $redirectstatus=1;
+                            $message="The Url Is Expired";
+                        }
+                    }
+                }else{
+                    $getUrl=$this->schedulSpecialDay($search);
+                    $redirectUrl=$getUrl['url'];
+                    $redirectstatus=$getUrl['status']=0;;
+                    $message=$getUrl['message'];
+                }
+                //Check Special Date
+            }else if($search->link_type==1){
+                $redirectUrl=$search->protocol.'://'.$search->actual_url; 
+                if ($search->no_of_circular_links > 1) {
+                    $circularLinks= CircularLink::where('url_id', $search->id)->get();
+                    $search->actual_url       = $circularLinks[($search->count) % $search->no_of_circular_links]->actual_link;
+                    $search->protocol         = $circularLinks[($search->count) % $search->no_of_circular_links]->protocol;
+                }
+                $search->save();
+                $redirectstatus=0;
+                $message="";
             }
-            $search->save();
-            $redirectstatus=0;
-            $message="";
             return response()->json(['status' => $status,'redirecturl'=>$redirectUrl,'redirectstatus'=>$redirectstatus,'message'=>$message]);
         }
 
@@ -991,6 +1021,47 @@
             }catch (Exception $e){
                 echo $e->getMessage();
             }
+        }
+
+        public function schedulSpecialDay($url){
+            if(count($url->urlSpecialSchedules)>0){
+                for($i=0; $i < count($url->urlSpecialSchedules); $i++){
+                    if($url->urlSpecialSchedules[$i]->special_day==date('Y-m-d')){
+                        $redirect['status']=0;
+                        $redirect['url']=$url->urlSpecialSchedules->special_day_url;
+                        $redirect['message']="";
+                        return $redirect;
+                    }
+                }
+                $redirect=$this->schedularWeeklyDaywise($url);
+                return $redirect;
+            }else{
+                $redirect=$this->schedularWeeklyDaywise($url);
+                return $redirect;
+            }
+        }
+
+        /* weekly schedule */
+        public function schedularWeeklyDaywise($url){
+            if($url->is_scheduled =='y' && count($url->url_link_schedules)>0){
+                $day = date('N');
+                foreach($url->url_link_schedules as $schedule){
+                    if ($schedule->day==$day){
+                        $redirect['status']=0;
+                        $redirect['url']=$schedule->protocol.'://'.$schedule->url;
+                        $redirect['message']="";
+                    }else{
+                        $redirect['status']=1;
+                        $redirect['url']=NULL;
+                        $redirect['message']="No Link Available To Redirect For Today";
+                    }
+                }
+            }else{
+                $redirect['status']=0;
+                $redirect['url']=$url->protocol.'://'.$url->actual_url;
+                $redirect['message']="";
+            }
+            return $redirect;
         }
     }
 

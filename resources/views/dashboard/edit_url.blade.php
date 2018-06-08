@@ -65,7 +65,7 @@
                                                 </div>
                                                 <div class="col-md-8 col-sm-8">
                                                     <input type="hidden" name="url_id[]" value="0">
-                                                    <input id="givenActual_Url" type="text" name="actual_url[]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}" placeholder="Please Provide A Valied Url Like http://www.example.com">
+                                                    <input id="givenActual_Url" type="text" name="actual_url[]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}" placeholder="Please Provide A Valid Url Like http://www.example.com">
                                                     <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                                                 </div>
                                                 <div class="col-md-2 col-sm-2">
@@ -85,7 +85,7 @@
                                                         </div>
                                                         <div class="col-md-8 col-sm-8">
                                                             <input type="hidden" name="url_id[]" value="{{$urls->circularLink[$i]->id}}">
-                                                            <input id="givenActual_Url_{{$i}}" type="text" name="actual_url[]" class="form-control " value="{{$urls->circularLink[$i]->protocol}}://{{$urls->circularLink[$i]->actual_link}}" placeholder="Please Provide A Valied Url Like http://www.example.com">
+                                                            <input id="givenActual_Url_{{$i}}" type="text" name="actual_url[]" class="form-control " value="{{$urls->circularLink[$i]->protocol}}://{{$urls->circularLink[$i]->actual_link}}" placeholder="Please Provide A Valid Url Like http://www.example.com">
                                                             <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                                                         </div>
                                                         <div class="col-md-2 col-sm-2">
@@ -105,7 +105,7 @@
                                                 <label>Paste An Actual URL Here</label>
                                             </div>
                                             <div class="col-md-8 col-sm-8">
-                                                <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}" placeholder="Please Provide A Valied Url Like http://www.example.com">
+                                                <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}" placeholder="Please Provide A Valid Url Like http://www.example.com">
                                                 <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                                             </div>
                                             <div class="col-md-2 col-sm-2">
