@@ -144,4 +144,13 @@ class Url extends Model
         return $this->hasMany('App\CircularLink', 'url_id');
     }
 
+/**
+
+* One to many relationship with UrlLinkSchedule model
+*/
+public function url_link_schedules()
+{
+    return $this->hasMany('App\UrlLinkSchedule', 'url_id');
+}
+
 }

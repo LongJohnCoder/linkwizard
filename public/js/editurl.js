@@ -103,7 +103,13 @@ $(document).ready(function () {
         }else{
             return false;
         }
-         $("#url_short_frm").submit();
+
+        if($("#checkboxAddFbPixelid").prop('checked') == true){
+            alert('True');
+        }else{
+            alert("False");
+        }
+        // $("#url_short_frm").submit();
     });
 
     function ValidURL(str) {
@@ -120,7 +126,5 @@ $(document).ready(function () {
             return true;
         }
     }
-
-   
 });
 

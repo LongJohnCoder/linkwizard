@@ -3,28 +3,12 @@
     <!-- head of the page -->
     @include('contents/head')
     <!-- head end -->
-
     <body>
         <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
         <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
         <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
         <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
         <script src="{{ URL::to('/').'/public/js/editurl.js' }}"></script>
-        <!-- Kendo date time picker -->
-        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
-        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
-        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
-
-        <script src="https://kendo.cdn.telerik.com/2018.2.516/js/jquery.min.js"></script>
-        <script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.all.min.js"></script>
-
-        <!-- gijgo datetime picker -->
-        <script src="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/js/gijgo.min.js" type="text/javascript"></script>
-        <link href="https://cdn.rawgit.com/atatanasov/gijgo/master/dist/combined/css/gijgo.min.css" rel="stylesheet" type="text/css" />
-
-        <!-- BOOTSTRAP DATE TIME PICKER -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
         @if(Session::has('success'))
             <script type="text/javascript">
                 $(document).ready(function () {
@@ -135,7 +119,7 @@
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <label class="custom-checkbox">Edit facebook pixel
-                                        <input type="checkbox" id="checkboxAddFbPixelid" name="checkboxAddFbPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo 'checked';}else{ echo 'none';}  ?> >
+                                        <input type="checkbox" id="checkboxAddFbPixelid" name="checkboxAddFbPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo 'checked';}  ?> >
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
@@ -147,7 +131,7 @@
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <label class="custom-checkbox">Edit google pixel
-                                        <input type="checkbox" id="checkboxAddGlPixelid" name="checkboxAddGlPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo 'checked';}else{ echo 'none';}  ?> >
+                                        <input type="checkbox" id="checkboxAddGlPixelid" name="checkboxAddGlPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo 'checked';} ?> >
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
@@ -159,7 +143,7 @@
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <label class="custom-checkbox">Edit tags
-                                        <input type="checkbox" id="shortTagsEnable" name="allowTag" <?php if(count($urls->urlTagMap)>0){echo 'checked';}else{echo '';}?> >
+                                        <input type="checkbox" id="shortTagsEnable" name="allowTag" <?php if(count($urls->urlTagMap)>0){echo 'checked';}?> >
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
@@ -210,7 +194,7 @@
                                 <div class="normal-header">
                                     <label class="custom-checkbox">Link Preview
                                         <input type="checkbox" id="link_preview_selector" name="link_preview_selector"  
-                                        <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->usability==1){echo 'checked'; } }else{echo '';}?>>
+                                        <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->usability==1){echo 'checked'; } }?>>
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>

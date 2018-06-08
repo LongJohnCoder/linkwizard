@@ -273,23 +273,129 @@ $(document).ready(function () {
                 $('#dsc_inp').val('');
             }
         }
+
+        //Expire Link
+        if (thisInstance.id === "expirationEnable") {
+            if (thisInstance.checked) {
+                $('#expirationArea').show();
+                $('#datepicker').prop('required', true);
+                $('#expirationTZ').prop('required', true);
+                var dt = $("#datepicker").val();
+                $("#dt2").val(dt);
+            } else {
+                $('#datepicker').val('');
+                $('#expirationTZ').val('');
+                $('#expirationUrl').val('');
+                $('#expirationArea').hide();
+                $("#dt2").val('');
+                $('#datepicker').prop('required', false);
+                $('#expirationTZ').prop('required', false);
+            }
+            $('#scheduleArea').hide();
+        }
+
+        if (thisInstance.id === 'addSchedule') {
+            if (thisInstance.checked) {
+                $('#scheduleArea').show();  
+            } else {
+                $('#scheduleArea').hide();
+                $('#day1').val('');
+                $('#day2').val('');
+                $('#day3').val('');
+                $('#day4').val('');
+                $('#day5').val('');
+                $('#day6').val('');
+                $('#day7').val('');
+            }
+        }
     }
 
     //Validate Create URL before submit
     $('#shorten_url_btn').click(function(event){
         event.preventDefault();
+
         //Actual Link Validation
         var getUrlType=$('#type').val();
         if(getUrlType==0){
             var originalUrl=$('#givenActual_Url_0').val().trim();
             if(!originalUrl){
-                swal({
-                    title: "Error",
-                    text: "Need a Actual URL to create a short Url",
-                    type: "error",
-                    html: true
-                });
-                return false;
+                if($('#addSchedule').prop('checked')==true){
+                    /* check if no schedule is given n = no schedule, y = schedule given */
+                    var checkEmptySchedule = 'n';
+                    /* check schedule checkbox check = checked, uncheck = not checked */
+                    var scheduleCheckBox = 'check';
+                    /* actual URL check */
+
+                    /* check for daywise schedule */
+                    for(var i=1; i<=7; i++){
+                        var dayScheduleValue = $('#day'+i).val();
+                        if(dayScheduleValue!='' && dayScheduleValue.length>0){
+                            checkEmptySchedule = 'y';
+                            scheduleCheckBox = 'check';
+                            break;
+                        }else{
+                            checkEmptySchedule = 'n';
+                            scheduleCheckBox = 'uncheck';
+                        }
+                    }
+
+                    /* check for special schedule */
+
+                    if(checkEmptySchedule=='n'){
+                        var splCount = $('#special_url_count').val();
+                        if(splCount > 0){
+                            for(var i=0; i<parseInt(splCount); i++){
+                                try{
+                                    var dtPicker= $('#schedule_datepicker_'+i).val();
+                                    var splUrl = $('#special_url_'+i).val();
+                                    if(dtPicker.trim()!='' && splUrl.trim()!=''){
+                                        scheduleCheckBox = 'check';
+                                        checkEmptySchedule = 'y';
+                                        break;
+                                    }else{
+                                        scheduleCheckBox = 'uncheck';
+                                    }
+                                }catch(err){
+                                    /* error message */
+                                    var dtPicker= $('#schedule_datepicker_0').val();
+                                    var splUrl = $('#special_url_0').val();
+                                    if(dtPicker.trim()!='' && splUrl.trim()!=''){
+                                        scheduleCheckBox = 'check';
+                                        checkEmptySchedule = 'y';
+                                    }else{
+                                        scheduleCheckBox = 'uncheck';
+                                    }
+                                }
+                            }
+                        }else{
+                            var dtPicker= $('#schedule_datepicker_0').val();
+                            var splUrl = $('#special_url_0').val();
+                            if(dtPicker.trim()!='' && splUrl.trim()!=''){
+                                scheduleCheckBox = 'check';
+                                checkEmptySchedule = 'y';
+                            }else{
+                                scheduleCheckBox = 'uncheck';
+                            }
+                        }
+                    }
+
+                    var trueURL = $('#givenActual_Url_0').val();
+                    if(trueURL.trim()!='' && trueURL.length>0){
+                        checkEmptySchedule = 'y';
+                        //var scheduleCheckBox = 'uncheck';
+                    }
+                    /* check schedule flag */
+                    //alert(checkEmptySchedule+'-------'+scheduleCheckBox);
+                    checkLinkSchedule(checkEmptySchedule, scheduleCheckBox);
+                }else{
+                    swal({
+                        title: "Error",
+                        text: "Need a Actual URL to create a short Url",
+                        type: "error",
+                        html: true
+                    });
+                    return false;
+                }
             }else{
                 ValidURL(originalUrl);
             }
@@ -399,6 +505,30 @@ $(document).ready(function () {
                 return false;
             }
         }
+
+        // expiration validation /
+        if ($('#expirationEnable').prop('checked')) {
+            if ($('#datepicker').val() != '' && $('#datepicker').val() != 'month/day/year hours:minutes AM/PM') {
+                if ($('#expirationTZ').val() == '') {
+                    swal({
+                        type: "warning",
+                        title: null,
+                        text: "Please pick a timezone & time for link expiration",
+                        html: true
+                    });
+                    return false;
+                }
+            } else {
+                swal({
+                    type: "warning",
+                    title: null,
+                    text: "Please pick a time for link expiration",
+                    html: true
+                });
+                return false;
+            }
+        }
+
         $("#url_short_frm").submit();
     });
 
@@ -422,5 +552,140 @@ $(document).ready(function () {
             return true;
         }
     }
+
+    // checking if schedule is given or not /
+
+    function checkLinkSchedule(scheduleFlag, checkBox){
+        if(scheduleFlag=='y'){
+            if(checkBox=='uncheck'){
+                $('#addSchedule').prop('checked', false);
+                $('#scheduleArea').hide();
+            }
+        }else{
+            swal({
+                title: 'Sorry!',
+                text: 'Please either enter a Actual URL or schedule URL',
+                type: 'warning'
+            });
+            return false;
+        }
+    }
+    // create DateTimePicker from input HTML element
+    
+
+    $("#datepicker").kendoDateTimePicker({
+        value: '',
+        min: new Date(),
+        dateInput: true,
+        interval: 5,
+        change: onChange
+    });
+
+    $("#datepicker").bind("click", function(){
+        $(this).data("kendoDateTimePicker").open( function(){
+            $("#datepicker").bind("click", function(){
+                $(this).data("kendoTimePicker").open();
+            });
+        });
+    });
+    
+    function onChange(){
+        var scheDt = $("#schedule_datepicker_0").val();
+        $('#scd_id_0').val(scheDt);
+    }
+
+    $("#schedule_datepicker_0").kendoDatePicker({
+        value: '',
+        min: new Date(),
+        change: onChange,
+        dateInput: false
+    });
+    
+
+
+    $('#expirationEnable').click(function(){
+        if($(this).is(':checked')){
+            $('#addSchedule').prop('checked', false);
+            $('#scheduleArea').hide();
+            $('#day1').val('');
+            $('#day2').val('');
+            $('#day3').val('');
+            $('#day4').val('');
+            $('#day5').val('');
+            $('#day6').val('');
+            $('#day7').val('');
+        }
+
+        /* empty special schedule */
+        var splCount = $('#special_url_count').val();
+        if(splCount>0){
+            var countRow = 1;
+            for(var i=0; i<splCount; i++){
+                $('#special_url-'+countRow).remove();
+                countRow = parseInt(countRow)+1;
+            }
+        }
+
+        $('#schedule_datepicker_0').val('');
+        $('#scd_id_0').val('');
+        $('#special_url_0').val('');
+    });
+
+    $('#addSchedule').click(function(){
+        if($(this).is(':checked')){
+            $('#expirationEnable').prop('checked', false);
+            $('#expirationArea').hide();
+            $('#datepicker').val('month/day/year hours:minutes AM/PM');
+            $('#expirationTZ').val('');
+            $('#expirationUrl').val('');
+        }
+    });
+
 });
+
+//Day-wise url validation /
+    function checkUrl(urlVal){
+        if(urlVal.length>0){
+            var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!-\/]))?/;
+            if(!pattern.test(urlVal)){
+                swal({
+                    type: 'error',
+                    title: 'Invalid URL!',
+                    text: 'Text given instead of an URL',
+                })
+            }else{
+                var urlCount = urlVal.split(":");
+                if(urlCount.length!=2){
+                    swal({
+                        type: 'error',
+                        title: 'Invalid URL!',
+                        text: 'Text given instead of an URL',
+                    })
+                }
+            }
+        }
+    }
+
+     // Add more tab for special schedules /
+    function dispButton(id){
+        if(id>0){
+            $('#add_button_'+id).hide();
+            $('#delete_button_'+id).show();
+        }
+    }
+
+    function onChange() {
+        // var a = $(this).val();
+        var kndDt = $('#datepicker').val();
+        $("#dt2").val(kndDt);
+    }
+
+    // Delete special day tab /
+    function delTabRow(indx){
+        $('#special_url-'+indx).remove();
+    }
+
+
+
+
 
