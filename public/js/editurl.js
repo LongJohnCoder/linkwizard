@@ -104,13 +104,50 @@ $(document).ready(function () {
             return false;
         }
 
-        if($("#checkboxAddFbPixelid").prop('checked') == true){
-            alert('True');
-        }else{
-            alert("False");
-        }
-        // $("#url_short_frm").submit();
+        $("#url_short_frm").submit();
     });
+
+    $('#expirationEnable').click(function(){
+        if($(this).is(':checked')) {
+            $('#addSchedule').prop('checked', false);
+            $('#scheduleArea').hide();
+            $('#day1').val('');
+            $('#day2').val('');
+            $('#day3').val('');
+            $('#day4').val('');
+            $('#day5').val('');
+            $('#day6').val('');
+            $('#day7').val('');
+
+            /* empty special schedule */
+            var splCount = $('#special_url_count').val();
+            if(splCount>0)
+            {
+                var countRow = 1;
+                for(var i=1; i<splCount; i++)
+                {
+                    $('#special_url-'+countRow).remove();
+                    countRow = parseInt(countRow)+1;
+                }
+            }
+
+            $('#schedule_datepicker_0').val('');
+            $('#scd_id_0').val('');
+            $('#special_url_0').val('');
+        }
+    });
+
+    $('#addSchedule').click(function(){
+        if($(this).is(':checked'))
+        {
+            $('#expirationEnable').prop('checked', false);
+            $('#expirationArea').hide();
+            $('#datepicker').val('month/day/year hours:minutes AM/PM');
+            $('#expirationTZ').val('');
+            $('#expirationUrl').val('');
+        }
+    });
+  
 
     function ValidURL(str) {
         var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
@@ -126,5 +163,111 @@ $(document).ready(function () {
             return true;
         }
     }
+
+
+            var rowCount = $('#db_spl_url_count').val();
+
+            if(rowCount > 0)
+            {
+                for(var i=0; i<rowCount; i++)
+                {
+                    $("#schedule_datepicker_"+i).kendoDatePicker({
+                        value: '',
+                        min: new Date(),
+                        dateInput: false
+                    });
+
+                    $('#schedule_datepicker_'+i).bind('change', function(){
+                        var actualId =  $(this).prop('id');
+                        var numId = actualId.replace('schedule_datepicker_', '');
+                        numId = numId.trim();
+
+                        var new_count = $("#special_url_count").val();
+                        if(new_count>0)
+                        {
+                            for(var j=0; j <new_count; j++)
+                            {
+                                if($('#schedule_datepicker_'+j).length>0 && $(this).val() == $('#schedule_datepicker_'+j).val())
+                                {
+                                    swal("Sorry!", "Date already given as schedule please pick another one", "warning");
+                                    $('#schedule_datepicker_'+numId).val('');
+                                    $('#scd_id_'+numId).val('');
+                                    break;
+                                }
+                                else
+                                {
+                                    $('#scd_id_'+numId).val($(this).val());
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            else if(rowCount==0)
+            {
+                $("#schedule_datepicker_0").kendoDatePicker({
+                    value: '',
+                    min: new Date(),
+                    dateInput: false
+                });
+
+                $('#schedule_datepicker_0').bind('change', function(){
+                    $('#scd_id_0').val($(this).val())
+                });
+            }
+        
 });
+
+
+function checkUrl(urlVal)
+{
+if(urlVal.length>0)
+{
+var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!-\/]))?/;
+if(!pattern.test(urlVal))
+{
+swal({
+type: 'error',
+title: 'Invalid URL!',
+text: 'Text given instead of an URL',
+})
+}
+else
+{
+var urlCount = urlVal.split(":");
+if(urlCount.length!=2)
+{
+swal({
+type: 'error',
+title: 'Invalid URL!',
+text: 'Text given instead of an URL',
+})
+}
+}
+}
+}
+
+
+
+/* Add more tab for special schedules */
+
+function dispButton(id)
+{
+    /*if(id==0)
+    {
+        $('#add_button_0').hide();
+    }*/
+    if(id>0)
+    {
+        $('#add_button_'+id).hide();
+        $('#delete_button_'+id).show();
+    }
+}
+
+/* Delete special day tab */
+function delTabRow(indx)
+{
+    $('#special_url-'+indx).remove();
+}
+
 

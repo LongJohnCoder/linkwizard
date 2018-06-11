@@ -871,6 +871,7 @@
             $("div.tab-content").eq(index).addClass("active");
         });
     });
+    
 </script>
 <script>
     $(document).ready(function () {

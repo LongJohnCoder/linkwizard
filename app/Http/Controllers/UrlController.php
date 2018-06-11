@@ -130,15 +130,11 @@
                         return redirect()->back()->with('error', 'This Url Is Already Taken');
                     }
                 }
-
-
                 //Link Preview
                 $linkPreview          = isset($request->link_preview_selector) && $request->link_preview_selector == true ? true : false;
                 $linkPreviewCustom    = isset($request->link_preview_custom) && $request->link_preview_custom == true ? true : false;
                 $linkPreviewOriginal  = isset($request->link_preview_original) && $request->link_preview_original == true ? true : false;
                 
-                
-            
                 //Facebook pixel id
                 $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
                 $fbPixelid            = isset($request->fbPixelid) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null;
@@ -180,9 +176,6 @@
                         $url->redirect_url = NULL;
                     }
                 }
-
-                
-            
                 if($linkPreview){
                     $linkprev['usability']=1;
                     if($linkPreviewOriginal){
@@ -211,9 +204,6 @@
                         }elseif(isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on'){
                             $linkprev['description']=1;
                         }
-
-
-
                         if($request->hasFile('img_inp')) {
                             $imgFile        = $request->file('img_inp');
                             $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
@@ -224,7 +214,6 @@
                             }
                         }
                     }
-
                     //Get Meta Data
                     $meta_data = $this->getPageMetaContents($request->actual_url[0]);
                     $url = $this->fillUrlDescriptions($url , $request, $meta_data);
@@ -309,11 +298,9 @@
                             $link_schedule_array[6] = $request->day7;
                             $this->url_link_schedules($link_schedule_array, $url->id);
                         }
-
                         /**
                         * Schedule for special day
                         */
-
                         if(isset($request->allowSchedule) && $request->allowSchedule == 'on'){
                             $spl_dt = [];
                             $spl_url = [];
@@ -337,9 +324,6 @@
                                     $spl_url[] = NULL;
                                 }
                             }
-
-//                            $spl_dt = array_values($spl_dt);
-//                            $spl_url = array_values($spl_url);
                             if(count($spl_dt)>0 && count($spl_url)>0){
                                 for ($j=0; $j<count($spl_dt); $j++){
                                     if($spl_dt[$j]!='0000-00-00' && preg_match("~^(?:f|ht)tps?://~i", $spl_url[$j])){
@@ -424,6 +408,7 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function editUrl(Request $request, $id=NULL){
+            //dd($request->all());
             if (Auth::check()) {
                 try{
                     //Check atleast one url exist or not
@@ -591,6 +576,82 @@
                             }
                         }
 
+                    }
+
+                    if($request->type==0){
+                        /* link expiration edit */
+                        if(isset($request->allowExpiration) && $request->allowExpiration=='on'){
+                            if(isset($request->date_time)){
+                                $url->date_time=date_format(date_create($request->date_time), 'Y-m-d');
+                                $url->timezone=$request->timezone;
+                                //$url->redirect_url=$request->redirect_url;
+                                if(strlen($request->redirect_url)>0 && preg_match("~^(?:f|ht)tps?://~i", $request->redirect_url)){
+                                    $url->redirect_url = $request->redirect_url;
+                                }else{
+                                    $url->redirect_url = NULL;
+                                }
+                            }else{
+                                $url->date_time=NULL;
+                                $url->timezone=NULL;
+                                $url->redirect_url=NULL;
+
+                            }
+                        }else{
+                            $url->date_time=NULL;
+                            $url->timezone=NULL;
+                            $url->redirect_url=NULL;
+                        }
+
+                        /*link schedule edit*/
+
+                        if(isset($request->allowSchedule) && $request->allowSchedule=='on') {
+                            $url->is_scheduled = 'y';
+                            /* special schedule pre existing check */
+
+                            // special schedule already exist
+                            if($url->urlSpecialSchedules->count() > 0){
+                                $request->special_date = array_values(array_unique($request->special_date));
+                                $request->special_date_redirect_url = array_values($request->special_date_redirect_url);
+                                $this->specialScheduleInsertion($request->special_date, $request->special_date_redirect_url, $id);
+                            }else{
+                                $this->specialScheduleInsertion($request->special_date, $request->special_date_redirect_url, $id);
+                            }
+
+                            /* day-wise schedule pre existing check */
+
+                            // day-wise schedule already exist
+                            if($url->url_link_schedules->count() > 0){
+                                $link_schedule_array[0] = $request->day1;
+                                $link_schedule_array[1] = $request->day2;
+                                $link_schedule_array[2] = $request->day3;
+                                $link_schedule_array[3] = $request->day4;
+                                $link_schedule_array[4] = $request->day5;
+                                $link_schedule_array[5] = $request->day6;
+                                $link_schedule_array[6] = $request->day7;
+                                $this->url_link_schedules($link_schedule_array, $url->id);
+                            }else{
+                                $link_schedule_array[0] = $request->day1;
+                                $link_schedule_array[1] = $request->day2;
+                                $link_schedule_array[2] = $request->day3;
+                                $link_schedule_array[3] = $request->day4;
+                                $link_schedule_array[4] = $request->day5;
+                                $link_schedule_array[5] = $request->day6;
+                                $link_schedule_array[6] = $request->day7;
+                                $this->url_link_schedules($link_schedule_array, $url->id);
+                            }
+                        } else{
+                            $url->is_scheduled = 'n';
+                            if($url->urlSpecialSchedules->count() > 0)
+                            {
+                                $splUrl = UrlSpecialSchedule::where('url_id', $id);
+                                $splUrl->delete();
+                            }
+
+                            if($url->url_link_schedules->count() > 0) {
+                                $dayUrl = UrlLinkSchedule::where('url_id', $id);
+                                $dayUrl->delete();
+                            }
+                        }
                     }
 
                     //Edit Tags
@@ -1019,21 +1080,29 @@
         }
 
         /**
-
-         *  Special day schedule links insertion into table `url_special_schedules`
-         */
-        public function insert_special_schedule($id, $spl_date, $spl_url){
-            try{
-                if(preg_match("~^(?:f|ht)tps?://~i", $spl_url)){
-                    $special_schedule = new UrlSpecialSchedule();
-                    $special_schedule->url_id = $id;
-                    $special_schedule->special_day = $spl_date;
-                    $special_schedule->special_day_url = $spl_url;
-                    $special_schedule->save();
+        * Inserting special date & urls
+        */
+        public function insert_special_schedule($id, $spl_date, $spl_url)
+        {
+            try
+            {
+                for($i=0; $i<count($spl_date); $i++)
+                {
+                    if(preg_match("~^(?:f|ht)tps?://~i", $spl_url[$i]))
+                    {
+                        $special_schedule = new UrlSpecialSchedule();
+                        $special_schedule->url_id = $id;
+                        $special_schedule->special_day = $spl_date[$i];
+                        $special_schedule->special_day_url = $spl_url[$i];
+                        $special_schedule->save();
+                    }
                 }
-            }catch (Exception $e){
+            }
+            catch (Exception $e)
+            {
                 echo $e->getMessage();
             }
+
         }
 
         public function schedulSpecialDay($url){
@@ -1075,6 +1144,52 @@
                 $redirect['message']="";
             }
             return $redirect;
+        }
+
+        /**
+            *  Validating special urls & dates
+            */
+        public function specialScheduleInsertion($special_date, $special_date_redirect_url, $url_id){
+            $spl_dt = [];
+            $spl_url = [];
+
+            $special_dt = [];
+            $special_url = [];
+            for ($i=0; $i<count($special_date); $i++){
+                if($special_date[$i]!== "" or !empty($special_date[$i])){
+                    $spl_dt[] = date_format(date_create($special_date[$i]), 'Y-m-d');
+                }
+            }
+
+            for ($j=0; $j<count($special_date_redirect_url); $j++){
+                if($special_date_redirect_url[$j]!="" or !empty($special_date_redirect_url[$j])){
+                    $spl_url[] = $special_date_redirect_url[$j];
+                }
+            }
+
+            if(count($spl_dt)>0 && count($spl_url)>0){
+                for ($j=0; $j<count($spl_dt); $j++){
+                    $splDay = UrlSpecialSchedule::where('url_id', $url_id)
+                                                ->where('special_day', $spl_dt[$j])
+                                                ->first();
+                    if(count($splDay)>0){
+                        if($splDay->special_day_url!==$spl_url[$j]){
+                            $splDay->special_day_url = $spl_url[$j];
+                            $splDay->save();
+                        }
+                    }elseif(count($splDay)==0){
+                        $special_dt[] = $spl_dt[$j];
+                        $special_url [] =  $spl_url[$j];
+                    }
+                }
+            }
+            $deleteOldSchedule = UrlSpecialSchedule::where('url_id', $url_id)
+                                                ->whereNotIn('special_day', $spl_dt);
+            $deleteOldSchedule->delete();
+            $id = $url_id;
+            $spl_date = $special_dt;
+            $spcl_url = $special_url;
+            $this->insert_special_schedule($id, $spl_date, $spcl_url);
         }
     }
 
