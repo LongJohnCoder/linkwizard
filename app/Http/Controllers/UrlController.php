@@ -317,23 +317,32 @@
                         if(isset($request->allowSchedule) && $request->allowSchedule == 'on'){
                             $spl_dt = [];
                             $spl_url = [];
+                            $request->special_date = array_values(array_unique($request->special_date));
+                            $request->special_date_redirect_url = array_values($request->special_date_redirect_url);
                             for ($i=0; $i<count($request->special_date); $i++){
                                 if($request->special_date[$i]!== "" or !empty($request->special_date[$i])){
                                     $spl_dt[] = date_format(date_create($request->special_date[$i]), 'Y-m-d');
+                                }
+                                else
+                                {
+                                    $spl_dt[] = date('0000-00-00');
                                 }
                             }
 
                             for ($j=0; $j<count($request->special_date_redirect_url); $j++){
                                 if($request->special_date_redirect_url[$j]!="" or !empty($request->special_date_redirect_url[$j])){
                                     $spl_url[] = $request->special_date_redirect_url[$j];
+                                }else
+                                {
+                                    $spl_url[] = NULL;
                                 }
                             }
 
-                            $spl_dt = array_values($spl_dt);
-                            $spl_url = array_values($spl_url);
+//                            $spl_dt = array_values($spl_dt);
+//                            $spl_url = array_values($spl_url);
                             if(count($spl_dt)>0 && count($spl_url)>0){
                                 for ($j=0; $j<count($spl_dt); $j++){
-                                    if($spl_dt[$j]){
+                                    if($spl_dt[$j]!='0000-00-00' && preg_match("~^(?:f|ht)tps?://~i", $spl_url[$j])){
                                         $id = $url->id;
                                         $spl_date = $spl_dt[$j];
                                         $spcl_url = $spl_url[$j];
