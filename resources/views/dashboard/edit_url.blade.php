@@ -128,7 +128,7 @@
                                                 <label>Paste An Actual URL Here</label>
                                             </div>
                                             <div class="col-md-8 col-sm-8">
-                                                <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="{{$urls->protocol}}://{{$urls->actual_url}}" placeholder="Please Provide A Valid Url Like http://www.example.com">
+                                                <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="<?php echo($urls->actual_url!==NULL) ? $urls->protocol.'://'.$urls->actual_url : ''  ?>" placeholder="Please Provide A Valid Url Like http://www.example.com">
                                                 <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
                                             </div>
                                             <div class="col-md-2 col-sm-2">
@@ -329,7 +329,7 @@
                                                 </td>
                                                 <td>
                                                     <label class="custom-checkbox">Add schedules for the link
-                                                        <input type="checkbox" id="addSchedule" name="allowSchedule" <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'n')? '' : 'checked' ?> >
+                                                        <input type="checkbox" id="addSchedule" name="allowSchedule" <?php echo (empty($urls->date_time) && $urls->is_scheduled == 'y')? 'checked' : '' ?> >
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </td>
@@ -337,7 +337,7 @@
                                         </table>
                                     </div>
                                    <!-- expiration part html -->
-                                    <div class="normal-body add-expiration" id="expirationArea" style="display: <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'n')? 'block' : '' ?> ">
+                                    <div class="normal-body add-expiration" id="expirationArea" style="display: <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'y')? 'block' : 'none' ?> ">
                                         <p>Select date &amp; time for this link</p>
                                         <input type="text" name="date_time" id="datepicker" width="100%" value="<?php if(!empty($urls->date_time)){echo $urls->date_time;} ?>">
                                         <p>Select a timezone</p>
@@ -438,7 +438,7 @@
                                         <input type="text" class="form-control" name="redirect_url" id="expirationUrl" value="<?php echo(!empty($urls->redirect_url))? $urls->redirect_url : '' ?>" onchange="checkUrl(this.value)">
                                     </div>
                                     <!-- Link schedule part html -->
-                                    <div class="normal-body add-link-schedule" id="scheduleArea" style="display: <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'n')? '' : 'block' ?>">
+                                    <div class="normal-body add-link-schedule" id="scheduleArea" style="display: <?php echo (empty($urls->date_time) && $urls->is_scheduled == 'y')? 'block' : 'none' ?>">
                                         <ul class="nav nav-tabs">
                                             <li class="<?php echo ($urls->urlSpecialSchedules->count() > 0)?'' : 'active' ?>"><a data-toggle="tab" href="#home">Daywise schedule</a></li>
                                             <li class="<?php echo ($urls->urlSpecialSchedules->count() > 0)? 'active' : '' ?>"><a data-toggle="tab" href="#menu1">Special schedule</a></li>
@@ -555,98 +555,6 @@
 
                                     </div>
 
-                                </div>
-                                    <!-- Link schedule part html -->
-                                    <div class="normal-body add-link-schedule" id="scheduleArea">
-                                        <ul class="nav nav-tabs">
-                                            <li class="active"><a data-toggle="tab" href="#home">Daywise schedule</a></li>
-                                            <li><a data-toggle="tab" href="#menu1">Special schedule</a></li>
-                                        </ul>
-                                        <div class="tab-content">
-                                            <div id="home" class="tab-pane fade in active">
-                                                <div id="day-1">
-                                                    <table class="schedule-tab" id="schedule-tab" width="100%" border="0">
-                                                        <tr>
-                                                            <td width="10%">
-                                                                <h5 class="text-muted">Monday</h5>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="day1" id="day1" onchange="checkUrl(this.value)">
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <h5 class="text-muted">Tuesday</h5>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="day2" id="day2" onchange="checkUrl(this.value)">
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <h5 class="text-muted">Wednesday</h5>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="day3" id="day3" onchange="checkUrl(this.value)">
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <h5 class="text-muted">Thursday</h5>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="day4" id="day4" onchange="checkUrl(this.value)">
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <h5 class="text-muted">Friday</h5>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="day5" id="day5" onchange="checkUrl(this.value)">
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <h5 class="text-muted">Saturday</h5>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="day6" id="day6" onchange="checkUrl(this.value)">
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <h5 class="text-muted">Sunday</h5>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control" name="day7" id="day7" onchange="checkUrl(this.value)">
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <div id="menu1" class="tab-pane fade">
-                                                <input type="hidden" id="special_url_count" value="0">
-                                                <table width="100%" id="special_url_tab" class="special_url_tab table-hover" border="0">
-                                                    <tr id="special_url-0">
-                                                        <td width="25%">
-                                                            <input id="schedule_datepicker_0" class="schedule_datepicker"  class="form-control">
-                                                            <input type="hidden" id="scd_id_0" name="special_date[0]">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" id="special_url_0" name="special_date_redirect_url[]" class="form-control" placeholder="Enter your url here" onchange="checkUrl(this.value)">
-                                                        </td>
-
-                                                        <td width="5%">
-                                                            <span id="add_button_0">
-                                                                <a class="btn btn-primary" onclick="addMoreSpecialLink(), dispButton(0)"><i class="fa fa-plus"></i></a>
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                                 @endif
                             {{csrf_field()}}

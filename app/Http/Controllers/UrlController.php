@@ -117,6 +117,10 @@
                         if(isset($request->allowSchedule) && $request->allowSchedule != 'on'){
                             return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect Or Link Scheduler Will Be There.');
                         }
+                        else{
+                            $actualUrl = NULL;
+                            $protocol  = 'http';
+                        }
                     }else{
                         return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
                     } 
@@ -232,7 +236,12 @@
                 }else{
                     $url->shorten_suffix    = $random_string;
                 }
-                 
+                if(isset($request->allowSchedule) && $request->allowSchedule == 'on'){
+                    $url->is_scheduled = 'y';
+                }else
+                {
+                    $url->is_scheduled = 'n';
+                }
                 if($url->save()){
                     //If facebook pixel, Google Pixel
                     if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
@@ -254,9 +263,7 @@
 
                     //** Day wise link schedule for shorten url **//
                     $link_schedule_array = [];
-                    if(isset($request->allowSchedule) && $request->allowSchedule == 'on'){
-                        $url->is_scheduled = 'y';
-                    }
+
                 
                     //Check For Circular Url
                     if($request->type==1){
@@ -335,6 +342,7 @@
                                 }
                             }
                         }
+                        $url->save();
                     }
                     return redirect()->back()->with('success', 'Short Url Created!');
                 }else{
@@ -411,7 +419,7 @@
             //dd($request->all());
             if (Auth::check()) {
                 try{
-                    //Check atleast one url exist or not
+                    //Redirect Link
                     if(isset($request->actual_url[0]) && $request->actual_url[0]!=""){
                         if (strpos($request->actual_url[0], 'https://') === 0) {
                             $actualUrl = str_replace('https://', null, $request->actual_url[0]);
@@ -424,7 +432,19 @@
                             $protocol  = 'http';
                         }
                     }else{
-                        return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
+                        if($request->type==0){
+                            if(isset($request->allowSchedule) && $request->allowSchedule != 'on'){
+                                return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect Or Link Scheduler Will Be There.');
+                            }
+                            else{
+                                $actualUrl = NULL;
+                                $protocol  = 'http';
+                            }
+                        }else{
+                            return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
+                        }
+                        $actualUrl = NULL;
+                        $protocol  = 'http';
                     }
                     //Tag
                     $allowTags            = isset($request->allowTag) && $request->allowTag == true ? true : false;
@@ -582,6 +602,7 @@
                         /* link expiration edit */
                         if(isset($request->allowExpiration) && $request->allowExpiration=='on'){
                             if(isset($request->date_time)){
+                                $url->is_scheduled = 'n';
                                 $url->date_time=date_format(date_create($request->date_time), 'Y-m-d');
                                 $url->timezone=$request->timezone;
                                 //$url->redirect_url=$request->redirect_url;
@@ -1009,10 +1030,11 @@
                     $date1= date('Y-m-d H:i:s') ;
                     $date2 = $search->date_time;
                     if(strtotime($date1) < strtotime($date2)){
+
                         $getUrl=$this->schedulSpecialDay($search);
                         /*Url Not Expired*/
                         $redirectUrl=$getUrl['url'];
-                        $redirectstatus=$getUrl['status']=0;;
+                        $redirectstatus=$getUrl['status']=0;
                         $message=$getUrl['message'];
                     }else{
                         /* Url Expired */
@@ -1029,7 +1051,7 @@
                 }else{
                     $getUrl=$this->schedulSpecialDay($search);
                     $redirectUrl=$getUrl['url'];
-                    $redirectstatus=$getUrl['status']=0;;
+                    $redirectstatus=$getUrl['status']=0;
                     $message=$getUrl['message'];
                 }
                 //Check Special Date
@@ -1060,28 +1082,144 @@
         public function saveLinkSchedule($request, $urlId){
         }
 
-        /*** Daywise url schedule with model UrlLinkSchedule*/
-        public function url_link_schedules($schedule = [], $id=0){
-            for($i=0; $i<count($schedule); $i++){
-                if(!empty($schedule[$i]) && strlen($schedule[$i])>0){
-                    if(preg_match("~^(?:f|ht)tps?://~i", $schedule[$i])){
-                        $schedule_link = explode('://', $schedule[$i]);
-                        $protocol = $schedule_link[0];
-                        $redirectedUrl = $schedule_link[1];
-                        $urlLinkSchedule = new UrlLinkSchedule();
-                        $urlLinkSchedule->url_id = $id;
-                        $urlLinkSchedule->url = $redirectedUrl;
-                        $urlLinkSchedule->protocol = $protocol;
-                        $urlLinkSchedule->day = ($i+1);
-                        $urlLinkSchedule->save();
+        /**
+         *  Validating special urls & dates
+         */
+        public function specialScheduleInsertion($special_date, $special_date_redirect_url, $url_id)
+        {
+            $spl_dt = [];
+            $spl_url = [];
+            $special_date = array_values(array_unique($special_date));
+            $special_date_redirect_url = array_values($special_date_redirect_url);
+            $special_dt = [];
+            $special_url = [];
+            for ($i=0; $i<count($special_date); $i++)
+            {
+                if($special_date[$i]!== "" or !empty($special_date[$i]))
+                {
+                    $spl_dt[] = date_format(date_create($special_date[$i]), 'Y-m-d');
+                }
+                else
+                {
+                    $spl_dt[] = '0000-00-00';
+                }
+            }
+
+            for ($j=0; $j<count($special_date_redirect_url); $j++)
+            {
+
+                if($special_date_redirect_url[$j]!="" or !empty($special_date_redirect_url[$j]))
+                {
+                    $spl_url[] = $special_date_redirect_url[$j];
+                }
+                else
+                {
+                    $spl_url[] = NULL;
+                }
+            }
+
+            if(count($spl_dt)>0 && count($spl_url)>0)
+            {
+                for ($j=0; $j<count($spl_dt); $j++)
+                {
+                    if($spl_dt[$j]!='0000-00-00' && preg_match("~^(?:f|ht)tps?://~i", $spl_url[$j]))
+                    {
+                        $splDay = UrlSpecialSchedule::where('url_id', $url_id)
+                            ->where('special_day', $spl_dt[$j])
+                            ->first();
+                        if(count($splDay)>0)
+                        {
+                            if($splDay->special_day_url!==$spl_url[$j])
+                            {
+                                //$special_dt[] = $spl_dt[$j];
+                                //$special_url [] =  $spl_url[$j];
+
+                                $splDay->special_day_url = $spl_url[$j];
+                                $splDay->save();
+                            }
+                        }
+                        elseif(count($splDay)==0)
+                        {
+                            $special_dt[] = $spl_dt[$j];
+                            $special_url [] =  $spl_url[$j];
+                        }
                     }
                 }
             }
+            //dd($spl_dt);
+            $deleteOldSchedule = UrlSpecialSchedule::where('url_id', $url_id)
+                ->whereNotIn('special_day', $spl_dt);
+            $deleteOldSchedule->delete();
+
+            $id = $url_id;
+            $spl_date = $special_dt;
+            $spcl_url = $special_url;
+            $this->insert_special_schedule($id, $spl_date, $spcl_url);
         }
 
         /**
-        * Inserting special date & urls
-        */
+         * Daywise url schedule with model UrlLinkSchedule
+         */
+        public function url_link_schedules($schedule = [], $id=0)
+        {
+            $newScheduleArray = [];
+            $oldScheduleArray = [];
+            foreach ($schedule as $key=>$schUrl)
+            {
+                $daySchedule = UrlLinkSchedule::where('url_id', $id)
+                    ->where('day', $key+1)
+                    ->first();
+                if(count($daySchedule)>0)
+                {
+                    if($daySchedule->protocol.'://'.$daySchedule->url !== $schUrl && $schUrl!=="")
+                    {
+                        $fullURL = explode('://', $schUrl);
+                        $daySchedule->url = $fullURL[1];
+                        $daySchedule->protocol = $fullURL[0];
+                        $daySchedule->save();
+                        $oldScheduleArray[] = ($key+1);
+                    }
+                    elseif($daySchedule->protocol.'://'.$daySchedule->url === $schUrl && $schUrl!=="")
+                    {
+                        $oldScheduleArray[] = ($key+1);
+                    }
+                }
+                elseif(count($daySchedule)==0)
+                {
+                    if(!empty($schUrl) && strlen($schUrl)>0)
+                    {
+                        if(preg_match("~^(?:f|ht)tps?://~i", $schUrl))
+                        {
+                            $newScheduleArray [] = ($key+1).'|'.$schUrl;
+                            $oldScheduleArray[] = ($key+1);
+                        }
+                    }
+                }
+            }
+            //dd($oldScheduleArray);
+            for($i=0; $i<count($newScheduleArray); $i++)
+            {
+                if(!empty($newScheduleArray[$i]) && strlen($newScheduleArray[$i])>0)
+                {
+                    $dayAndUrl = explode('|', $newScheduleArray[$i]);
+                    $schedule_link = explode('://', $dayAndUrl[1]);
+                    $protocol = $schedule_link[0];
+                    $redirectedUrl = $schedule_link[1];
+                    $urlLinkSchedule = new UrlLinkSchedule();
+                    $urlLinkSchedule->url_id = $id;
+                    $urlLinkSchedule->url = $redirectedUrl;
+                    $urlLinkSchedule->protocol = $protocol;
+                    $urlLinkSchedule->day = $dayAndUrl[0];
+                    $urlLinkSchedule->save();
+                }
+            }
+            $deleteOldSchedule = UrlLinkSchedule::where('url_id', $id)
+                ->whereNotIn('day', $oldScheduleArray);
+            $deleteOldSchedule->delete();
+        }
+        /**
+         * Inserting special date & urls
+         */
         public function insert_special_schedule($id, $spl_date, $spl_url)
         {
             try
@@ -1106,13 +1244,15 @@
         }
 
         public function schedulSpecialDay($url){
-            if(count($url->urlSpecialSchedules)>0){
-                for($i=0; $i < count($url->urlSpecialSchedules); $i++){
-                    if($url->urlSpecialSchedules[$i]->special_day==date('Y-m-d')){
+            $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->id)->get();
+            if(count($urlSpecialSchedules)>0){
+                for($i=0; $i < count($urlSpecialSchedules); $i++){
+                    if($urlSpecialSchedules->special_day==date('Y-m-d')){
                         $redirect['status']=0;
-                        $redirect['url']=$url->urlSpecialSchedules->special_day_url;
+                        $redirect['url']=$urlSpecialSchedules->special_day_url;
                         $redirect['message']="";
                         return $redirect;
+                        break;
                     }
                 }
                 $redirect=$this->schedularWeeklyDaywise($url);
@@ -1125,13 +1265,15 @@
 
         /* weekly schedule */
         public function schedularWeeklyDaywise($url){
-            if($url->is_scheduled =='y' && count($url->url_link_schedules)>0){
+            $url_link_schedules = UrlLinkSchedule::where('url_id', $url->id)->get();
+            if($url->is_scheduled =='y' && count($url_link_schedules)>0){
                 $day = date('N');
-                foreach($url->url_link_schedules as $schedule){
+                foreach($url_link_schedules as $schedule){
                     if ($schedule->day==$day){
                         $redirect['status']=0;
                         $redirect['url']=$schedule->protocol.'://'.$schedule->url;
                         $redirect['message']="";
+                        break;
                     }else{
                         $redirect['status']=1;
                         $redirect['url']=NULL;
@@ -1144,52 +1286,6 @@
                 $redirect['message']="";
             }
             return $redirect;
-        }
-
-        /**
-            *  Validating special urls & dates
-            */
-        public function specialScheduleInsertion($special_date, $special_date_redirect_url, $url_id){
-            $spl_dt = [];
-            $spl_url = [];
-
-            $special_dt = [];
-            $special_url = [];
-            for ($i=0; $i<count($special_date); $i++){
-                if($special_date[$i]!== "" or !empty($special_date[$i])){
-                    $spl_dt[] = date_format(date_create($special_date[$i]), 'Y-m-d');
-                }
-            }
-
-            for ($j=0; $j<count($special_date_redirect_url); $j++){
-                if($special_date_redirect_url[$j]!="" or !empty($special_date_redirect_url[$j])){
-                    $spl_url[] = $special_date_redirect_url[$j];
-                }
-            }
-
-            if(count($spl_dt)>0 && count($spl_url)>0){
-                for ($j=0; $j<count($spl_dt); $j++){
-                    $splDay = UrlSpecialSchedule::where('url_id', $url_id)
-                                                ->where('special_day', $spl_dt[$j])
-                                                ->first();
-                    if(count($splDay)>0){
-                        if($splDay->special_day_url!==$spl_url[$j]){
-                            $splDay->special_day_url = $spl_url[$j];
-                            $splDay->save();
-                        }
-                    }elseif(count($splDay)==0){
-                        $special_dt[] = $spl_dt[$j];
-                        $special_url [] =  $spl_url[$j];
-                    }
-                }
-            }
-            $deleteOldSchedule = UrlSpecialSchedule::where('url_id', $url_id)
-                                                ->whereNotIn('special_day', $spl_dt);
-            $deleteOldSchedule->delete();
-            $id = $url_id;
-            $spl_date = $special_dt;
-            $spcl_url = $special_url;
-            $this->insert_special_schedule($id, $spl_date, $spcl_url);
         }
     }
 
