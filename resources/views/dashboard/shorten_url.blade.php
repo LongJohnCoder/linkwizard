@@ -524,12 +524,122 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!--Box For Adding Geo Location-->
+                                <div class="normal-box1">
+                                    <div class="normal-header">
+                                        <label class="custom-checkbox">Add Geo Location
+                                            <input type="checkbox" id="addGeoLocation" name="addGeoLocation">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                    <div class="normal-body" id="geo-location-body">
+                                        <label>Set Geo Location</label>
+                                        <div class="row">
+                                            <div class="col-md-12 form-group">
+                                                <div id="map-div" style="width: 100%;">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <input type="checkbox" name="allow-all" id="allow-all" checked>
+                                                Allow All
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <input type="checkbox" name="deny-all" id="deny-all">
+                                                Deny All
+                                            </div>
+                                            <!-- <div class="col-md-6 form-group">
+                                                <input type="radio" name="allow" value="0" checked> Allow All
+                                            </div>
+                                            <div class="col-md-6 form-group">
+                                                <input type="radio" name="allow" value="0"> Deny All
+                                            </div>
+                                            <div class="col-md-12 form-group">
+                                                <input type="checkbox" name="custom" id="custom"> Costomize 
+                                            </div>
+                                            <div class="col-md-12 row" id="selected-country">
+                                                <div class="col-md-12">
+                                                    Select country you want to customize.
+                                                </div>
+                                                <div class="col-md-12" id="show-selected-country">
+                                                    <div class="col-md-3">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                    </div> 
+                                                </div>
+                                            </div> -->
+                                            <!-- <div class="col-md-12 form-group">
+                                                <ul class="allow-disallow-country tree" id='navigation' >
+                                                    <li id="allow-select"><p> <input type="checkbox" id="allow-country"> Allow </p>
+                                                        <ul id="after-allow-select" class="row">
+                                                            <li class="col-md-12"><p><input type="checkbox" id="allow-set-url"> Set Redirect URL</p>
+                                                                <ul id="selected-country-view" class="row">
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li id="block-select"> <input type="checkbox" id="block-country"> Block
+                                                        <ul id="blocked-country-view" class="row">
+                                                            
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
                                 @endif
                                 <!--Add Link Preview End-->
                                 {{csrf_field()}}
                                 <button type="submit" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
                             </form>
                         </div>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" role="dialog" id="allow-country-modal">
+                        <div class="modal-dialog modal-lg">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title"></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row" id="allow-block">
+                                        <div class="col-md-6">
+                                            <input type="checkbox" name=""> Allow
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="checkbox" name=""> Redirect
+                                        </div>
+                                        <div class="col-md-12">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="submit" class="btn btn-success">Save</button>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="deny-block">
+                                        <div class="col-md-6">
+                                            <input type="checkbox" name=""> Deny
+                                        </div>
+                                        <div class="col-md-6">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <button type="submit" class="btn btn-success">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                      </div>
                     </div>
                 </div>
             </section>
@@ -1005,6 +1115,6 @@
         }
     });*/
 </script>
-
+ <script src="{{ URL::to('/').'/public/js/addurlshortner.js' }}"></script>
 </body>
 </html>

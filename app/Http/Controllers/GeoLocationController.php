@@ -88,12 +88,12 @@
                     $selectedCountry['id']=$getCountry->id;
                     $selectedCountry['name']=$getCountry->name;
                     $selectedCountry['code']=$getCountry->code;
-                    return view('dashboard.custom',compact('selectedCountry'));
-                   /* return \Response::json(array(
+                    //return view('dashboard.custom',compact('selectedCountry'));
+                    return \Response::json(array(
                         'status' => true,
                         'status_code' => 200,
                         'data' => $selectedCountry
-                    ));*/
+                    ));
                 }else{
                     return \Response::json(array(
                         'status' => false,

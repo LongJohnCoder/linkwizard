@@ -13,16 +13,33 @@ $(document).ready(function () {
         }
     });
 
-    $('#custom').click(function(event){
+    /*$('#custom').click(function(event){
         if($('#custom').is(':checked')==true){
             $('#selected-country').show();
         }else{
             $('#selected-country').hide();
         }
+    });*/
+    
+    $('#allow-all').change(function() {
+        if($(this).is(":checked")) {
+            $('#deny-all').prop('checked', false);
+        }else{
+             $('#deny-all').prop('checked', true);
+        }   
+    });
+
+    $('#deny-all').change(function() {
+        if($(this).is(":checked")) {
+            $('#allow-all').prop('checked', false);
+        }else{
+            $('#allow-all').prop('checked', true);
+        }   
     });
 });
 
 var selectedContry=new Array();
+var getselectedContry=new Array();
 
  
 
@@ -59,20 +76,27 @@ function drawRegionsMap() {
                         var selectionIdx = chart.getSelection()[0].row;
                         var countryName = data.getValue(selectionIdx, 0);
                         if (countryName) {
-                            if(selectedContry.includes(countryName)==false){
-                                selectedContry.push(countryName); 
-                                $.ajax({
-                                    type: 'post',
-                                    url: "/getCountryDetails",
-                                    data: {_token: '{{csrf_token()}}',countryName:countryName},
-                                    success: function (response) {
-                                        $('#show-selected-country').append(response);
+                            $.ajax({
+                                type: 'post',
+                                url: "/getCountryDetails",
+                                data: {_token: '{{csrf_token()}}',countryName:countryName},
+                                success: function (response) {
+                                    //console.log(response)
+                                    if(response.status_code==200){
+                                            var items = [
+                                                ["countryId", response.data.id],
+                                                ["countryName", response.data.name],
+                                                ["countryCode", response.data.code],
+                                                ["allow", ""],
+                                                ["deny", ""],
+                                                ["redirect", ""]
+                                            ];
+                                        selectedContry.push(items);
+                                        console.log(selectedContry);
+                                        $('#allow-country-modal').modal('show');
                                     }
-                                });
-                                if(selectedContry.length >0){
-                                    $('#custom').removeAttr("disabled");
                                 }
-                            }
+                            });
                         }
                     }
                 }
