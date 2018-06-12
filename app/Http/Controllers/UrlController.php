@@ -23,6 +23,7 @@
     use App\UrlTag;
     use App\UrlTagMap;
     use App\PasswordReset;
+    use App\Geolocation;
     use Mail;
     use App\Http\Requests\ForgotPasswordRequest;
     use Mockery\Exception;
@@ -388,6 +389,17 @@
                                     }
                                 }
                             }
+                        }
+
+                        /**Geo Location**/
+                        if(isset($request->addGeoLocation) && $request->addGeoLocation == 'on'){
+                            if(isset($request->allow_all) && $request->allow_all == 'on'){
+                                $url->geolocation=0;
+                            }
+                            if(isset($request->deny_all) && $request->deny_all == 'on'){
+                                $url->geolocation=1;
+                            }
+                            $this->addGeoLocation($request, $url->id);
                         }
                         $url->save();
                     }
@@ -1402,6 +1414,86 @@
                 $redirect['message']="";
             }
             return $redirect;
+        }
+
+        /**
+            *  Validating special urls & dates
+            */
+        public function specialScheduleInsertion($special_date, $special_date_redirect_url, $url_id){
+            $spl_dt = [];
+            $spl_url = [];
+
+            $special_dt = [];
+            $special_url = [];
+            for ($i=0; $i<count($special_date); $i++){
+                if($special_date[$i]!== "" or !empty($special_date[$i])){
+                    $spl_dt[] = date_format(date_create($special_date[$i]), 'Y-m-d');
+                }
+            }
+
+            for ($j=0; $j<count($special_date_redirect_url); $j++){
+                if($special_date_redirect_url[$j]!="" or !empty($special_date_redirect_url[$j])){
+                    $spl_url[] = $special_date_redirect_url[$j];
+                }
+            }
+
+            if(count($spl_dt)>0 && count($spl_url)>0){
+                for ($j=0; $j<count($spl_dt); $j++){
+                    $splDay = UrlSpecialSchedule::where('url_id', $url_id)
+                                                ->where('special_day', $spl_dt[$j])
+                                                ->first();
+                    if(count($splDay)>0){
+                        if($splDay->special_day_url!==$spl_url[$j]){
+                            $splDay->special_day_url = $spl_url[$j];
+                            $splDay->save();
+                        }
+                    }elseif(count($splDay)==0){
+                        $special_dt[] = $spl_dt[$j];
+                        $special_url [] =  $spl_url[$j];
+                    }
+                }
+            }
+            $deleteOldSchedule = UrlSpecialSchedule::where('url_id', $url_id)
+                                                ->whereNotIn('special_day', $spl_dt);
+            $deleteOldSchedule->delete();
+            $id = $url_id;
+            $spl_date = $special_dt;
+            $spcl_url = $special_url;
+            $this->insert_special_schedule($id, $spl_date, $spcl_url);
+        }
+
+        public function addGeoLocation($request,$urlId){
+            try{
+                if(count($request->denyCountryName)>0){
+                    for($i=0; $i<count($request->denyCountryName); $i++ ){
+                        $geoLocation = new Geolocation();
+                        $geoLocation->url_id= $urlId;
+                        $geoLocation->country_name=$request->denyCountryName[$i];
+                        $geoLocation->country_code=$request->denyCountryCode[$i];
+                        $geoLocation->allow=$request->allowed[$i];
+                        $geoLocation->deny=$request->denied[$i];
+                        if($request->redirectUrl[$i]==''){
+                            $geoLocation->redirection=0;
+                        }else{
+                           $geoLocation->redirection=1; 
+                        }
+                        $geoLocation->url=$request->redirectUrl[$i];
+                        $geoLocation->save();
+                    }
+
+                }
+                /*return \Response::json(array(
+                    'status' => true,
+                    'status_code' => 200,
+                   
+                ));*/
+            } catch (Exception $e) {
+                return \Response::json(array(
+                    'status' => false,
+                    'status_code' => 500,
+                    'message'   => $e->getMessage()
+                ));
+            }
         }
     }
 

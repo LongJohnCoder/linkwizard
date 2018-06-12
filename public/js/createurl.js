@@ -738,7 +738,8 @@ $(document).ready(function () {
                     type: 'error',
                     title: 'Invalid URL!',
                     text: 'Text given instead of an URL',
-                })
+                });
+                return false;
             }else{
                 var urlCount = urlVal.split(":");
                 if(urlCount.length!=2){
@@ -746,7 +747,8 @@ $(document).ready(function () {
                         type: 'error',
                         title: 'Invalid URL!',
                         text: 'Text given instead of an URL',
-                    })
+                    });
+                    return false;
                 }
             }
         }

@@ -44,6 +44,9 @@
             .schedule_datepicker{
                 width: 100%;
             }
+            #deny-block{
+                padding: 20px;
+            }
         </style>
 
         <!-- Header Start -->
@@ -541,13 +544,18 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6 form-group">
-                                                <input type="checkbox" name="allow-all" id="allow-all" checked>
+                                                <input type="checkbox" name="allow_all" id="allow-all" checked>
                                                 Allow All
                                             </div>
                                             <div class="col-md-6 form-group">
-                                                <input type="checkbox" name="deny-all" id="deny-all">
+                                                <input type="checkbox" name="deny_all" id="deny-all">
                                                 Deny All
                                             </div>
+                                            <div class="col-md-12 form-group" id="allowable-country">
+                                            </div>
+                                            <div class="col-md-12 form-group" id="denied-country">
+                                            </div>
+                                           
                                             <!-- <div class="col-md-6 form-group">
                                                 <input type="radio" name="allow" value="0" checked> Allow All
                                             </div>
@@ -608,40 +616,79 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title"></h4>
+                                    <h4 class="modal-title">Allow</h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row" id="allow-block">
-                                        <div class="col-md-6">
-                                            <input type="checkbox" name=""> Allow
+                                        <div class="col-md-2 col-lg-2">
+                                            <h4 id="allowed-country-name"></h4>
+                                            <input type="hidden" id="allowed-country-id" value="">
+                                            <input type="hidden" id="allowed-country-code" value="">
                                         </div>
-                                        <div class="col-md-6">
-                                            <input type="checkbox" name=""> Redirect
+                                        <div class="col-md-1 col-lg-1">
+                                            <input type="checkbox" name="allow-country" id="allow-country" style="width:50%">
+                                        </div>
+                                        <div class="col-md-1 col-lg-1">
+                                            <h4>Allow</h4>
+                                        </div>
+                                        <div class="col-md-1 col-lg-1">
+                                            <input type="checkbox" name="allow-redirect-url-checkbox" id="allow-redirect-url-checkbox" style="width:50%">
+                                        </div>
+                                        <div class="col-md-1 col-lg-1">
+                                            <h4>Redirect</h4>
+                                        </div>
+                                        <div class="col-md-6 col-lg-6 form-group">
+                                            <input type="text" name="" id="redirect-url-allow" class="form-control" style="display:none;" placeholder="Enter Redirect Url" onchange="checkUrl(this.value)">
+                                        </div>
+                                        <div class="col-md-12 col-lg-12">
                                         </div>
                                         <div class="col-md-12">
-                                        </div>
-                                        <div class="col-md-12">
-                                            <button type="submit" class="btn btn-success">Save</button>
-                                        </div>
-                                    </div>
-                                    <div class="row" id="deny-block">
-                                        <div class="col-md-6">
-                                            <input type="checkbox" name=""> Deny
-                                        </div>
-                                        <div class="col-md-6">
-                                        </div>
-                                        <div class="col-md-12">
-                                            <button type="submit" class="btn btn-success">Save</button>
+                                            <button type="submit" class="btn btn-success" id="allow-the-country">Save</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
-                      </div>
+                        </div>
                     </div>
-                </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" role="dialog" id="deny-country-modal">
+                        <div class="modal-dialog modal-lg">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Deny</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row" id="deny-block">
+                                        <div class="col-md-4 col-lg-4">
+                                            <h3 id="denied-country-name"></h3>
+                                            <input type="hidden" name="deny-country-code" id="deny-country-code" value="">
+                                            <input type="hidden" name="deny-country-id" id="deny-country-id" value="">
+                                        </div>
+                                        <div class="col-md-1 col-lg-1">
+                                            <input type="checkbox" name="deny-country" id="deny-country" style="width:60%">
+                                        </div>
+                                        <div class="col-md-7 col-lg-7">
+                                            <h3> Deny </h3>
+                                        </div>
+                                        <div class="col-md-12 col-lg-12 form-group">
+                                            <button class="btn btn-success" id="deny-the-country">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+
             </section>
         </div>
         <!-- Footer Start -->
