@@ -1419,7 +1419,7 @@
         /**
             *  Validating special urls & dates
             */
-        public function specialScheduleInsertion($special_date, $special_date_redirect_url, $url_id){
+      /*  public function specialScheduleInsertion($special_date, $special_date_redirect_url, $url_id){
             $spl_dt = [];
             $spl_url = [];
 
@@ -1460,7 +1460,7 @@
             $spl_date = $special_dt;
             $spcl_url = $special_url;
             $this->insert_special_schedule($id, $spl_date, $spcl_url);
-        }
+        }*/
 
         public function addGeoLocation($request,$urlId){
             try{
