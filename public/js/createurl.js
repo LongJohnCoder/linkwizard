@@ -313,7 +313,6 @@ $(document).ready(function () {
     //Validate Create URL before submit
     $('#shorten_url_btn').click(function(event){
         event.preventDefault();
-
         //Actual Link Validation
         var getUrlType=$('#type').val();
         if(getUrlType==0){
@@ -473,16 +472,11 @@ $(document).ready(function () {
                         return false;
                     }
                 }else{
-                    swal({
-                        title: "Error",
-                        text: "Need a Actual URL to create a short Url",
-                        type: "error",
-                        html: true
-                    });
-                    return false;
+                    ValidURL(originalUrl);
                 }
             }
             else{
+
                 ValidURL(originalUrl);
             }
         }else if(getUrlType==1){

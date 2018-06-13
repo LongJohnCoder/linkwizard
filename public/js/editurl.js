@@ -251,13 +251,7 @@ $(document).ready(function () {
                         return false;
                     }
                 }else{
-                    swal({
-                        title: "Error",
-                        text: "Need a Actual URL to create a short Url",
-                        type: "error",
-                        html: true
-                    });
-                    return false;
+                    ValidURL(originalUrl);
                 }
             }
             else{
