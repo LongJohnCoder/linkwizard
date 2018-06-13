@@ -1197,8 +1197,8 @@
                             $message=$getUrl['message'];
                         }
                     }else if($search->geolocation==1){
-                        $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
-                        if($getDenyed >0){
+                        $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->first();
+                        if(count($getDenyed) >0){
                             if($getDenyed->redirection==0){
                                 $getUrl=$this->schedulSpecialDay($search);
                                 $redirectUrl=$getUrl['url'];
@@ -1532,7 +1532,11 @@
                         $geoLocation->country_name=$request->denyCountryName[$i];
                         $geoLocation->country_code=$request->denyCountryCode[$i];
                         $geoLocation->allow=$request->allowed[$i];
-                        $geoLocation->deny=$request->denied[$i];
+                        if(!empty($request->denied[$i]) || $request->denied[$i]!=NULL){
+                            $geoLocation->deny=$request->denied[$i];
+                        }else{
+                            $geoLocation->deny = 0;
+                        }
                         if($request->redirectUrl[$i]==''){
                             $geoLocation->redirection=0;
                         }else{
