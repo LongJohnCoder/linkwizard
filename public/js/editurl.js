@@ -1,4 +1,19 @@
 $(document).ready(function () {
+    google.charts.load('current', {
+        'packages':['geochart'],
+        // Note: you will need to get a mapsApiKey for your project.
+        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+    });
+
+    if($('#allow-all').is(":checked")) {
+      google.charts.setOnLoadCallback(drawRegionsAllowMap); 
+    }else if($('#deny-all').is(":checked")){
+        
+    }else{
+       
+    }
+
 	//Rotating Link Add
     var blockIndex = parseInt(($("#total_no_link").val())-1);
 
@@ -36,6 +51,23 @@ $(document).ready(function () {
     $('body').on('click', '.remove-this-circular-url', function () {
         $(this).parent().parent().remove();
     });
+    $('#allow-all').click(function() {
+        if($(this).is(":checked")) {
+            $('#deny-all').prop('checked', false);
+        }else{
+            $('#deny-all').prop('checked', true);
+        }   
+    });
+
+    $('#deny-all').click(function() {
+        if($(this).is(":checked")) {
+            $('#allow-all').prop('checked', false);
+        }else{
+            $('#allow-all').prop('checked', true);
+        }   
+    });
+
+    
 
     $(".chosen-select").chosen({});
     $(".chosen-container").bind('keyup', function (e) {
@@ -440,6 +472,56 @@ function dispButton(id)
 function delTabRow(indx)
 {
     $('#special_url-'+indx).remove();
+}
+
+function drawselectedRegionsMap(values){
+    $.ajax({
+        type: 'post',
+        url: "/getDenyCountryInAllowAll",
+        data: {data:values,_token: '{{csrf_token()}}'},
+        success: function (response) {
+            if(response.code=200){
+                var data = google.visualization.arrayToDataTable(response.data);
+                var options = {
+                    backgroundColor: '#f5f5f5',
+                    defaultColor: '#EC6B69',    
+                    width   : '100%',
+                    hight   : '100%',
+                    keepAspectRatio: false,
+                    margin  : 15,
+                    border  : 15,
+                    marginColor : 'black',
+                    datalessRegionColor:'#95D981'
+                };
+                var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
+                chart.draw(data, options);
+                /*google.visualization.events.addListener(chart, 'select', selectHandler);
+
+                function selectHandler() {
+                    if(chart.getSelection().length >0){
+                        var selectionIdx = chart.getSelection()[0].row;
+                        var countryName = data.getValue(selectionIdx, 0);
+                        if (countryName) {
+                            $.ajax({
+                                type: 'post',
+                                url: "/getCountryDetails",
+                                data: {_token: '{{csrf_token()}}',countryName:countryName},
+                                success: function (response) {
+                                    //console.log(response)
+                                    if(response.status_code==200){
+                                        $('#allowed-country-name').html(response.data.name);
+                                        $('#allowed-country-code').val(response.data.code);
+                                        $('#allowed-country-id').val(response.data.id);
+                                        $('#allow-country-modal').modal('show');
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }*/
+            }
+        }
+    });
 }
 
 

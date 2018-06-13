@@ -1,5 +1,6 @@
 
 $(document).ready(function () {
+   
     $('#addGeoLocation, #custom').prop('checked', false);
     $('#custom').attr("disabled", true);
     $('#geo-location-body').hide();
@@ -19,13 +20,7 @@ $(document).ready(function () {
         }
     });
 
-    /*$('#custom').click(function(event){
-        if($('#custom').is(':checked')==true){
-            $('#selected-country').show();
-        }else{
-            $('#selected-country').hide();
-        }
-    });*/
+    
     
     $('#allow-all').change(function() {
         if($(this).is(":checked")) {
@@ -156,14 +151,14 @@ function drawselectedRegionsMap(values){
                 var data = google.visualization.arrayToDataTable(response.data);
                 var options = {
                     backgroundColor: '#f5f5f5',
-                    defaultColor: '#bf0000',    
+                    defaultColor: '#EC6B69',    
                     width   : '100%',
                     hight   : '100%',
                     keepAspectRatio: false,
                     margin  : 15,
                     border  : 15,
                     marginColor : 'black',
-                    datalessRegionColor:'#228B22'
+                    datalessRegionColor:'#95D981'
                 };
                 var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
                 chart.draw(data, options);
@@ -206,14 +201,14 @@ function drawselectedDenyRegionsMap(values){
                 var data = google.visualization.arrayToDataTable(response.data);
                 var options = {
                     backgroundColor: '#f5f5f5',
-                    defaultColor: '#228B22',    
+                    defaultColor: '#95D981',    
                     width   : '100%',
                     hight   : '100%',
                     keepAspectRatio: false,
                     margin  : 15,
                     border  : 15,
                     marginColor : 'black',
-                    datalessRegionColor:'#bf0000'
+                    datalessRegionColor:'#EC6B69'
                 };
                 var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
                 chart.draw(data, options);
@@ -256,7 +251,7 @@ function drawRegionsMap() {
         		var data = google.visualization.arrayToDataTable(response.data);
 				var options = {
                     backgroundColor: '#f5f5f5',
-                    defaultColor: '#228B22', 
+                    defaultColor: '#95D981', 
 					width   : '100%',
                     hight   : '100%',
                     keepAspectRatio: false,
@@ -305,7 +300,7 @@ function drawRegionsDenyMap() {
                 var data = google.visualization.arrayToDataTable(response.data);
                 var options = {
                     backgroundColor: '#f5f5f5',
-                    defaultColor: '#bf0000',    
+                    defaultColor: '#EC6B69',    
                     width   : '100%',
                     hight   : '100%',
                     keepAspectRatio: false,

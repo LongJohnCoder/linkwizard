@@ -423,7 +423,7 @@
                           return redirect()->action('HomeController@getSubscribe');
                     } else {
                         $user = Auth::user();
-                        $urls = Url::where('id',$id)->where('user_id',$user->id)->with('circularLink')->with('urlSearchInfo')->first();
+                        $urls = Url::where('id',$id)->where('user_id',$user->id)->with('circularLink')->with('urlSearchInfo')->with('getGeoLocation')->first();
                         $count = DB::table('urls')->selectRaw('count(user_id) AS `count`')->where('user_id', $user->id)->groupBy('user_id')->get();
                         $total_links = null;
                         if ($count) {
@@ -1136,12 +1136,40 @@
                     $date1= date('Y-m-d H:i:s') ;
                     $date2 = $search->date_time;
                     if(strtotime($date1) < strtotime($date2)){
+                         /*Url Not Expired*/
+                        if($search->geolocation==""){
+                            $getUrl=$this->schedulSpecialDay($search);
+                            $redirectUrl=$getUrl['url'];
+                            $redirectstatus=$getUrl['status'];
+                            $message=$getUrl['message'];
+                        }else{
+                            if($search->geolocation==0){
+                                $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
 
-                        $getUrl=$this->schedulSpecialDay($search);
-                        /*Url Not Expired*/
-                        $redirectUrl=$getUrl['url'];
-                        $redirectstatus=$getUrl['status']=0;
-                        $message=$getUrl['message'];
+                                if($getDenyed >0){
+                                    $redirectUrl="";
+                                    $redirectstatus=1;
+                                    $message="This URL is not accessable from your country";
+                                }else{
+                                    $getUrl=$this->schedulSpecialDay($search);
+                                    $redirectUrl=$getUrl['url'];
+                                    $redirectstatus=$getUrl['status']=0;
+                                    $message=$getUrl['message'];
+                                }
+                            }else if($search->geolocation==1){
+                                $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
+                                if($getDenyed >0){
+                                    $getUrl=$this->schedulSpecialDay($search);
+                                    $redirectUrl=$getUrl['url'];
+                                    $redirectstatus=$getUrl['status']=0;
+                                    $message=$getUrl['message'];
+                                }else{
+                                    $redirectUrl="";
+                                    $redirectstatus=1;
+                                    $message="This URL is not accessable from your country";
+                                }
+                            }
+                        }
                     }else{
                         /* Url Expired */
                         if($search->redirect_url!=""){
@@ -1155,10 +1183,43 @@
                         }
                     }
                 }else{
-                    $getUrl=$this->schedulSpecialDay($search);
-                    $redirectUrl=$getUrl['url'];
-                    $redirectstatus=$getUrl['status']=0;
-                    $message=$getUrl['message'];
+                    if($search->geolocation==0){
+                        $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
+
+                        if($getDenyed >0){
+                            $redirectUrl="";
+                            $redirectstatus=1;
+                            $message="This URL is not accessable from your country";
+                        }else{
+                            $getUrl=$this->schedulSpecialDay($search);
+                            $redirectUrl=$getUrl['url'];
+                            $redirectstatus=$getUrl['status']=0;
+                            $message=$getUrl['message'];
+                        }
+                    }else if($search->geolocation==1){
+                        $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
+                        if($getDenyed >0){
+                            if($getDenyed->redirection==0){
+                                $getUrl=$this->schedulSpecialDay($search);
+                                $redirectUrl=$getUrl['url'];
+                                $redirectstatus=$getUrl['status']=0;
+                                $message=$getUrl['message'];
+                            }else{
+                                $redirectUrl=$getDenyed->url;
+                                $redirectstatus=$getUrl['status']=0;
+                                $message="";
+                            }
+                        }else{
+                            $redirectUrl="";
+                            $redirectstatus=1;
+                            $message="This URL is not accessable from your country";
+                        }
+                    }else{
+                        $getUrl=$this->schedulSpecialDay($search);
+                        $redirectUrl=$getUrl['url'];
+                        $redirectstatus=$getUrl['status'];
+                        $message=$getUrl['message'];
+                    }   
                 }
                 //Check Special Date
             }else if($search->link_type==1){

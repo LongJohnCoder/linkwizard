@@ -555,50 +555,6 @@
                                             </div>
                                             <div class="col-md-12 form-group" id="denied-country">
                                             </div>
-                                           
-                                            <!-- <div class="col-md-6 form-group">
-                                                <input type="radio" name="allow" value="0" checked> Allow All
-                                            </div>
-                                            <div class="col-md-6 form-group">
-                                                <input type="radio" name="allow" value="0"> Deny All
-                                            </div>
-                                            <div class="col-md-12 form-group">
-                                                <input type="checkbox" name="custom" id="custom"> Costomize 
-                                            </div>
-                                            <div class="col-md-12 row" id="selected-country">
-                                                <div class="col-md-12">
-                                                    Select country you want to customize.
-                                                </div>
-                                                <div class="col-md-12" id="show-selected-country">
-                                                    <div class="col-md-3">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                    </div> 
-                                                </div>
-                                            </div> -->
-                                            <!-- <div class="col-md-12 form-group">
-                                                <ul class="allow-disallow-country tree" id='navigation' >
-                                                    <li id="allow-select"><p> <input type="checkbox" id="allow-country"> Allow </p>
-                                                        <ul id="after-allow-select" class="row">
-                                                            <li class="col-md-12"><p><input type="checkbox" id="allow-set-url"> Set Redirect URL</p>
-                                                                <ul id="selected-country-view" class="row">
-                                                                </ul>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li id="block-select"> <input type="checkbox" id="block-country"> Block
-                                                        <ul id="blocked-country-view" class="row">
-                                                            
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </div> -->
                                         </div>
                                     </div>
                                 </div>

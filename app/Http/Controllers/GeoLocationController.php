@@ -135,6 +135,18 @@
                 ));
             }
         }
+
+        public function getDenyCountryInAllowAll(Request $request){
+            try{
+                dd($request->all());
+            }catch(Exception $e){
+                return \Response::json(array(
+                    'status' => false,
+                    'status_code' => 500,
+                    'message'   => $e->getMessage()
+                ));
+            }
+        }
     }
 
        

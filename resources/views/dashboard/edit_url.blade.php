@@ -317,7 +317,7 @@
                                 </div>
                             </div>
                              @if($type==0)
-                                <div class="normal-box1">
+                            <div class="normal-box1">
                                     <div class="normal-header">
                                         <table class="merge-tab">
                                             <tr>
@@ -554,9 +554,67 @@
                                         </div>
 
                                     </div>
-
+                            </div>
+                            <!--Box For Adding Geo Location-->
+                            <!--<div class="normal-box1">
+                                <div class="normal-header">
+                                    <label class="custom-checkbox">Edit Geo Location
+                                        <input type="checkbox" id="editGeoLocation" name="editGeoLocation" <?php if(isset($urls->geolocation)){echo 'checked';}?>>
+                                        <span class="checkmark"></span>
+                                    </label>
                                 </div>
-                                @endif
+                                <div class="normal-body" id="geo-location-body" style="display:<?php if(isset($urls->geolocation)){echo 'block';}else{echo 'none';}?>">
+                                    <label>Geo Location</label>
+                                    <div class="row">
+                                        <div class="col-md-12 form-group">
+                                            <div id="map-div" style="width: 100%;">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <input type="checkbox" name="allow_all" id="allow-all" @if(isset($urls->geolocation) && ($urls->geolocation==0)) {{'checked'}} @elseif(!isset($urls->geolocation)){{'checked'}} @elseif(isset($urls->geolocation) && ($urls->geolocation=="")){{'checked'}} @endif>
+                                            Allow All
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <input type="checkbox" name="deny_all" id="deny-all" @if(isset($urls->geolocation) && ($urls->geolocation==1)) {{'checked'}} @endif>
+                                            Deny All
+                                        </div>
+                                        <div class="col-md-12 form-group" id="allowable-country">
+                                        @if(isset($urls->geolocation) && ($urls->geolocation==1))
+                                            @if($urls->getGeoLocation->count() > 0)
+                                                @foreach ($urls->getGeoLocation as $locationDetails)
+                                                    <div>
+                                                        <input type='text' name='denyCountryName[]' value='{{$locationDetails->country_name}}'>
+                                                    </div>
+
+                                                @endforeach
+                                            @endif
+                                        <!-- <div><input type='hidden' name='denyCountryName[]' value='"+countryName+"'>"+
+                                            "<input type='hidden' name='denyCountryCode[]' value='"+countryCode+"'>"+
+                                            "<input type='hidden' name='denyCountryId[]' value='"+countryId+"'>"+
+                                            "<input type='hidden' name='allowed[]' value='1'>"+
+                                            "<input type='hidden' name='redirect[]' value='"+redirect+"'>"+
+                                            "<input type='hidden' name='redirectUrl[]' value='"+url+"'>"+
+                                        "</div>
+ -
+                                        @endif
+                                        </div>
+                                        <div class="col-md-12 form-group" id="denied-country">
+                                        @if(isset($urls->geolocation) && ($urls->geolocation==0))
+                                            @if($urls->getGeoLocation->count() > 0)
+                                                @foreach ($urls->getGeoLocation as $locationDetails)
+                                                    <div>
+                                                        <input type='text' name='denyCountryName[]' value='{{$locationDetails->country_name}}'>
+                                                    </div>
+
+                                                @endforeach
+                                            @endif
+
+                                        @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+                            @endif
                             {{csrf_field()}}
                             <button type="submit" id="edit-short-url" class=" btn-shorten">Shorten URL</button>
                             </form>
@@ -636,6 +694,9 @@ function addMoreSpecialLink() {
 
 
     $(document).ready(function () {
+
+    
+
 // create DateTimePicker from input HTML element
 <?php
 if($urls->date_time !== NULL)
@@ -1182,6 +1243,18 @@ $null_check = 1;
             } else {
                 //$('#link_preview_').hide();
                 $('.use-custom').hide();
+            }
+        }
+
+        if(thisInstance.id === 'editGeoLocation') {
+            if(thisInstance.checked) {
+                $('#geo-location-body').show();
+                if($('#allow-all').is(":checked")) {
+                }
+                else if($('#deny-all').is(":checked")) {
+                }
+            } else {
+                $('#geo-location-body').hide();
             }
         }
 

@@ -153,4 +153,9 @@ public function url_link_schedules()
     return $this->hasMany('App\UrlLinkSchedule', 'url_id');
 }
 
+public function getGeoLocation()
+{
+    return $this->hasMany('App\Geolocation', 'url_id');
+}
+
 }

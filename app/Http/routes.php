@@ -88,6 +88,7 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
     Route::post('/getallcountry', 'GeoLocationController@getAllCountry');
     Route::post('/getCountryDetails', 'GeoLocationController@getCountryDetails');
     Route::post('/getnotSelectedcountry', 'GeoLocationController@getnotSelectedcountry');
+    Route::post('/getDenyCountryInAllowAll', 'GeoLocationController@getDenyCountryInAllowAll');
     
     
     Route::get('test' , function(){
