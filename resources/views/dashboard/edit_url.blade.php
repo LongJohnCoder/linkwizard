@@ -337,7 +337,7 @@
                                         </table>
                                     </div>
                                    <!-- expiration part html -->
-                                    <div class="normal-body add-expiration" id="expirationArea" style="display: <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'y')? 'block' : 'none' ?> ">
+                                    <div class="normal-body add-expiration" id="expirationArea" style="display: <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'n')? 'block' : 'none' ?> ">
                                         <p>Select date &amp; time for this link</p>
                                         <input type="text" name="date_time" id="datepicker" width="100%" value="<?php if(!empty($urls->date_time)){echo $urls->date_time;} ?>">
                                         <p>Select a timezone</p>

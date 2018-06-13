@@ -187,6 +187,8 @@
                                     <tr onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">
                                         <td class="width-modification"><a href="{{$shrt_url}}" target="_blank">{{$shrt_url}}</a></td>
                                         @php
+                                            $actual_url = '';
+                                            $has_spl_url = 'n';
                                             if($url->is_scheduled === 'y')
                                             {
                                                 if(!empty($url->actual_url))
@@ -210,74 +212,36 @@
                                                             if($spl_url->special_day == date('Y-m-d'))
                                                             {
                                                                 $actual_url = $spl_url->special_day_url;
+                                                                $has_spl_url = 'y';
                                                                 break;
                                                             }
                                                             else
                                                             {
-                                                                // daywise scheule
-
-                                                                if(date('N')=='1')
-                                                                {
-                                                                    $actual_url = $url->day_one;
-                                                                }
-                                                                if(date('N')=='2')
-                                                                {
-                                                                    $actual_url = $url->day_two;
-                                                                }
-                                                                if(date('N')=='3')
-                                                                {
-                                                                    $actual_url = $url->day_three;
-                                                                }
-                                                                if(date('N')=='4')
-                                                                {
-                                                                    $actual_url = $url->day_four;
-                                                                }
-                                                                if(date('N')=='5')
-                                                                {
-                                                                    $actual_url = $url->day_five;
-                                                                }
-                                                                if(date('N')=='6')
-                                                                {
-                                                                    $actual_url = $url->day_six;
-                                                                }
-                                                                if(date('N')=='7')
-                                                                {
-                                                                    $actual_url = $url->day_seven;
-                                                                }
+                                                                $has_spl_url = 'n';
+                                                                $actual_url = '';
                                                             }
                                                         }
                                                     }
-                                                    else
+                                                    if(count($url->url_link_schedules)>0 && $has_spl_url == 'n')
                                                     {
-                                                        // daywise scheule
-                                                        if(date('N')=='1')
+                                                        // day-wise schedule
+                                                        $day = date('N');
+                                                        foreach ($url->url_link_schedules as $schedule)
                                                         {
-                                                            $actual_url = $url->day_one;
+                                                            if($schedule->day==$day)
+                                                            {
+                                                                $actual_url = $schedule->protocol.'://'.$schedule->url;
+                                                                break;
+                                                            }
+                                                            else
+                                                            {
+                                                                $actual_url = '';
+                                                            }
                                                         }
-                                                        if(date('N')=='2')
-                                                        {
-                                                            $actual_url = $url->day_two;
-                                                        }
-                                                        if(date('N')=='3')
-                                                        {
-                                                            $actual_url = $url->day_three;
-                                                        }
-                                                        if(date('N')=='4')
-                                                        {
-                                                            $actual_url = $url->day_four;
-                                                        }
-                                                        if(date('N')=='5')
-                                                        {
-                                                            $actual_url = $url->day_five;
-                                                        }
-                                                        if(date('N')=='6')
-                                                        {
-                                                            $actual_url = $url->day_six;
-                                                        }
-                                                        if(date('N')=='7')
-                                                        {
-                                                            $actual_url = $url->day_seven;
-                                                        }
+                                                    }
+                                                    if(count($url->url_link_schedules)==0 && count($url->urlSpecialSchedules)==0)
+                                                    {
+                                                        $actual_url = '';
                                                     }
                                                 }
                                             }
@@ -292,6 +256,7 @@
                                                     $actual_url = $url->actual_url;
                                                 }
                                             }
+
                                         @endphp
                                         <td class="width-modification"><a href="{{$actual_url}}">{{$actual_url}}</a></td>
                                         <td class="width-modification"><div class="url-description">{{$url->meta_description}}</div></td>

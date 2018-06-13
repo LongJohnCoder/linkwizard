@@ -145,7 +145,90 @@ $(document).ready(function () {
                     });
                     return false;
                 }
-            }else{
+            }
+            else if(originalUrl){
+                if($('#addSchedule').prop('checked')==true){
+                    /* check if no schedule is given n = no schedule, y = schedule given */
+                    var checkEmptySchedule = 'n';
+                    /* check schedule checkbox check = checked, uncheck = not checked */
+                    var scheduleCheckBox = 'check';
+                    /* actual URL check */
+
+                    /* check for daywise schedule */
+                    for(var i=1; i<=7; i++){
+                        var dayScheduleValue = $('#day'+i).val();
+                        if(dayScheduleValue!='' && dayScheduleValue.length>0){
+                            checkEmptySchedule = 'y';
+                            scheduleCheckBox = 'check';
+                            break;
+                        }else{
+                            checkEmptySchedule = 'n';
+                            scheduleCheckBox = 'uncheck';
+                        }
+                    }
+
+                    /* check for special schedule */
+
+                    if(checkEmptySchedule=='n'){
+                        var splCount = $('#special_url_count').val();
+                        if(splCount > 0){
+                            for(var i=0; i<parseInt(splCount); i++){
+                                try{
+                                    var dtPicker= $('#schedule_datepicker_'+i).val();
+                                    var splUrl = $('#special_url_'+i).val();
+                                    if(dtPicker.trim()!='' && splUrl.trim()!=''){
+                                        scheduleCheckBox = 'check';
+                                        checkEmptySchedule = 'y';
+                                        break;
+                                    }else{
+                                        scheduleCheckBox = 'uncheck';
+                                    }
+                                }catch(err){
+                                    /* error message */
+                                    var dtPicker= $('#schedule_datepicker_0').val();
+                                    var splUrl = $('#special_url_0').val();
+                                    if(dtPicker.trim()!='' && splUrl.trim()!=''){
+                                        scheduleCheckBox = 'check';
+                                        checkEmptySchedule = 'y';
+                                    }else{
+                                        scheduleCheckBox = 'uncheck';
+                                    }
+                                }
+                            }
+                        }else{
+                            var dtPicker= $('#schedule_datepicker_0').val();
+                            var splUrl = $('#special_url_0').val();
+                            if(dtPicker.trim()!='' && splUrl.trim()!=''){
+                                scheduleCheckBox = 'check';
+                                checkEmptySchedule = 'y';
+                            }else{
+                                scheduleCheckBox = 'uncheck';
+                            }
+                        }
+                    }
+
+                    var trueURL = $('#givenActual_Url_0').val();
+                    if(trueURL.trim()!='' && trueURL.length>0){
+                        checkEmptySchedule = 'y';
+                        //var scheduleCheckBox = 'uncheck';
+                    }
+                    /* check schedule flag */
+                    //alert(checkEmptySchedule+'-------'+scheduleCheckBox);
+                    var preventSubmit = checkLinkSchedule(checkEmptySchedule, scheduleCheckBox);
+                    if(preventSubmit==false){
+                        return false;
+                    }
+                }else{
+                    swal({
+                        title: "Error",
+                        text: "Need a Actual URL to create a short Url",
+                        type: "error",
+                        html: true
+                    });
+                    return false;
+                }
+            }
+            else{
                 ValidURL(originalUrl);
             }
         }else if(getUrlType==1){

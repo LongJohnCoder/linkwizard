@@ -163,6 +163,33 @@
                 $url->protocol         = $protocol;
                 $url->user_id          = $userId;
 
+                //Get Meta Data from browser if user did not provide
+                if(preg_match("~^(?:f|ht)tps?://~i", $request->actual_url[0])){
+                    $meta_data = $this->getPageMetaContents($request->actual_url[0]);
+                    $url2 = $this->fillUrlDescriptions($url, $request, $meta_data);
+                    $url_image_name_get = $url2;
+                    $og_image = NULL;
+                    if(count($url2)>0){
+                        $og_image = $url_image_name_get->og_image;
+                    }else{
+                        $og_image = $meta_data['og_image'];
+                    }
+                }else{
+                    //$url->title = NULL;
+                    $og_image = NULL;
+                    $meta_data['title'] = NULL;
+                    $meta_data['meta_description']= NULL;
+                    $meta_data['og_image']= NULL;
+                    $meta_data['og_url']= NULL;
+                    $meta_data['og_description']= NULL;
+                    $meta_data['og_title']= NULL;
+                    $meta_data['twitter_image']= NULL;
+                    $meta_data['twitter_url']= NULL;
+                    $meta_data['twitter_description']= NULL;
+                    $meta_data['twitter_title']= NULL;
+                }
+
+
                 // Add CountDowntimer
                 if(isset($request->allowCountDown) && ($request->allowCountDown == "on")){
                     $url->redirecting_time = ($request->redirecting_time*1000);
@@ -199,34 +226,54 @@
 
                         if(isset($request->org_title_chk) && $request->org_title_chk=='on'){
                             $linkprev['title']=0;
+                            $url->og_title = $meta_data['og_title'];
                         }elseif(isset($request->cust_title_chk) && $request->cust_title_chk=='on'){
                             $linkprev['title']=1;
+                            $url->og_title = $request->title_inp;
                         }
 
                         if(isset($request->org_dsc_chk) && $request->org_dsc_chk=='on'){
                             $linkprev['description']=0;
+                            $url->og_description = $meta_data['og_description'];
                         }elseif(isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on'){
                             $linkprev['description']=1;
+                            $url->og_description = $request->dsc_inp;
                         }
                         if($request->hasFile('img_inp')) {
                             $imgFile        = $request->file('img_inp');
                             $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
                             $actualFileExtension = $imgFile->getClientOriginalExtension();
                             $validExtensionRegex = '/(jpg|jpeg|png)/i';
+                            $url->og_image = $og_image;
                             if (!preg_match($validExtensionRegex, $actualFileExtension)) {
                                 return redirect()->back()->with('error','Image should be in jpg, jpeg or png format');
                             }
                         }
+
                     }
-                    //Get Meta Data
-                    $meta_data = $this->getPageMetaContents($request->actual_url[0]);
-                    $url = $this->fillUrlDescriptions($url , $request, $meta_data);
+                    $url->meta_description = $meta_data['meta_description'];
+                    $url->og_url = $meta_data['og_url'];
+                    $url->twitter_image = $meta_data['twitter_image'];
+                    $url->twitter_url = $meta_data['twitter_url'];
+                    $url->twitter_description = $meta_data['twitter_description'];
+                    $url->twitter_title = $meta_data['twitter_title'];
                 }else{
                     $linkprev['usability']=0;
                     $linkprev['main']=0;
                     $linkprev['title']=0;
                     $linkprev['image']=0;
                     $linkprev['description']=0;
+
+                    // url details from method getPageMetaContents
+                    $url->meta_description = $meta_data['meta_description'];
+                    $url->og_image = $meta_data['og_image'];
+                    $url->og_url = $meta_data['og_url'];
+                    $url->og_description = $meta_data['og_description'];
+                    $url->og_title = $meta_data['og_title'];
+                    $url->twitter_image = $meta_data['twitter_image'];
+                    $url->twitter_url = $meta_data['twitter_url'];
+                    $url->twitter_description = $meta_data['twitter_description'];
+                    $url->twitter_title = $meta_data['twitter_title'];
                 }
 
                 $url->link_preview_type = json_encode($linkprev);
@@ -337,14 +384,14 @@
                                         $id = $url->id;
                                         $spl_date = $spl_dt[$j];
                                         $spcl_url = $spl_url[$j];
-                                        $this->insert_special_schedule($id, $spl_date, $spcl_url);
+                                        $this->insert_special_schedule_add($id, $spl_date, $spcl_url);
                                     }
                                 }
                             }
                         }
                         $url->save();
                     }
-                    return redirect()->back()->with('success', 'Short Url Created!');
+                    return redirect()->route('getDashboard')->with('success', 'Short Url Created!');
                 }else{
                     return redirect()->back()->with('error', 'Short Url Not Created! Try Again!');
                 }
@@ -457,6 +504,33 @@
                     $url = Url::find($id);
                     $url->protocol = $protocol;
                     $url->actual_url = $actualUrl;
+                    $actual_og_image = $url->og_image;
+
+                    //Get Meta Data from browser if user did not provide
+                    if(preg_match("~^(?:f|ht)tps?://~i", $request->actual_url[0])){
+                        $meta_data = $this->getPageMetaContents($request->actual_url[0]);
+                        $url2 = $this->fillUrlDescriptions($url, $request, $meta_data);
+                        $url_image_name_get = $url2;
+                        $og_image = NULL;
+                        if(count($url2)>0){
+                            $og_image = $url_image_name_get->og_image;
+                        }else{
+                            $og_image = $meta_data['og_image'];
+                        }
+                    }else{
+                        //$url->title = NULL;
+                        $og_image = NULL;
+                        $meta_data['title'] = NULL;
+                        $meta_data['meta_description']= NULL;
+                        $meta_data['og_image']= NULL;
+                        $meta_data['og_url']= NULL;
+                        $meta_data['og_description']= NULL;
+                        $meta_data['og_title']= NULL;
+                        $meta_data['twitter_image']= NULL;
+                        $meta_data['twitter_url']= NULL;
+                        $meta_data['twitter_description']= NULL;
+                        $meta_data['twitter_title']= NULL;
+                    }
 
                     // Edit Description
                     if(isset($request->allowDescription) && ($request->allowDescription == "on")){
@@ -490,18 +564,23 @@
                                 $linkprev['image']=0;
                             }elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on'){
                                 $linkprev['image']=1;
+                                $url->og_image = $actual_og_image;
                             }
 
                             if(isset($request->org_title_chk) && $request->org_title_chk=='on'){
                                 $linkprev['title']=0;
+                                $url->og_title = $meta_data['og_title'];
                             }elseif(isset($request->cust_title_chk) && $request->cust_title_chk=='on'){
                                 $linkprev['title']=1;
+                                $url->og_title = $request->title_inp;
                             }
 
                             if(isset($request->org_dsc_chk) && $request->org_dsc_chk=='on'){
                                 $linkprev['description']=0;
+                                $url->og_description = $meta_data['og_description'];
                             }elseif(isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on'){
                                 $linkprev['description']=1;
+                                $url->og_description = $request->dsc_inp;
                             }
 
 
@@ -510,18 +589,22 @@
                                 $imgFile        = $request->file('img_inp');
                                 $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
                                 $actualFileExtension = $imgFile->getClientOriginalExtension();
+                                $url->og_image = $og_image;
                                 $validExtensionRegex = '/(jpg|jpeg|png)/i';
                                 if (!preg_match($validExtensionRegex, $actualFileExtension)) {
                                     return redirect()->back()->with('error','Image should be in jpg, jpeg or png format');
                                 }
                             }
                         }
-
-                        //Get Meta Data
-                        $meta_data = $this->getPageMetaContents($request->actual_url[0]);
-                        $url = $this->fillUrlDescriptions($url , $request, $meta_data);  
+                        $url->meta_description = $meta_data['meta_description'];
+                        $url->og_url = $meta_data['og_url'];
+                        $url->twitter_image = $meta_data['twitter_image'];
+                        $url->twitter_url = $meta_data['twitter_url'];
+                        $url->twitter_description = $meta_data['twitter_description'];
+                        $url->twitter_title = $meta_data['twitter_title'];
                     }else{
-                        $url->link_preview_type=NULL;
+
+                        /*$url->link_preview_type=NULL;
                         $url->og_title=NULL;
                         $url->og_description  =NULL;
                         $url->og_url  =NULL;
@@ -529,7 +612,18 @@
                         $url->twitter_title  =NULL;
                         $url->twitter_description  =NULL;
                         $url->twitter_url  =NULL;
-                        $url->twitter_image  =NULL;
+                        $url->twitter_image  =NULL;*/
+
+                        // url details from method getPageMetaContents
+                        $url->meta_description = $meta_data['meta_description'];
+                        $url->og_image = $meta_data['og_image'];
+                        $url->og_url = $meta_data['og_url'];
+                        $url->og_description = $meta_data['og_description'];
+                        $url->og_title = $meta_data['og_title'];
+                        $url->twitter_image = $meta_data['twitter_image'];
+                        $url->twitter_url = $meta_data['twitter_url'];
+                        $url->twitter_description = $meta_data['twitter_description'];
+                        $url->twitter_title = $meta_data['twitter_title'];
                         $linkprev['usability']=0;
                         $linkprev['main']=0;
                         $linkprev['title']=0;
@@ -603,7 +697,7 @@
                         if(isset($request->allowExpiration) && $request->allowExpiration=='on'){
                             if(isset($request->date_time)){
                                 $url->is_scheduled = 'n';
-                                $url->date_time=date_format(date_create($request->date_time), 'Y-m-d');
+                                $url->date_time=date_format(date_create($request->date_time), 'Y-m-d H:i:s');
                                 $url->timezone=$request->timezone;
                                 //$url->redirect_url=$request->redirect_url;
                                 if(strlen($request->redirect_url)>0 && preg_match("~^(?:f|ht)tps?://~i", $request->redirect_url)){
@@ -679,7 +773,7 @@
                     $tag=$this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
                     
                     if($url->save()){
-                        return redirect()->back()->with('success', 'Url Updated!');
+                        return redirect()->route('getDashboard')->with('success', 'Url Updated!');
                     }else{
                         return redirect()->back()->with('error', 'Try Again');
                     }
@@ -1218,7 +1312,7 @@
             $deleteOldSchedule->delete();
         }
         /**
-         * Inserting special date & urls
+         * Inserting special date & urls in edit
          */
         public function insert_special_schedule($id, $spl_date, $spl_url)
         {
@@ -1243,13 +1337,35 @@
 
         }
 
+        /**
+        * Inserting special date & urls in create
+        */
+        public function insert_special_schedule_add($id=0, $spl_date='0000-00-00', $spl_url=NULL)
+        {
+            try
+            {
+                if(preg_match("~^(?:f|ht)tps?://~i", $spl_url))
+                {
+                    $special_schedule = new UrlSpecialSchedule();
+                    $special_schedule->url_id = $id;
+                    $special_schedule->special_day = $spl_date;
+                    $special_schedule->special_day_url = $spl_url;
+                    $special_schedule->save();
+                }
+            }catch (Exception $e)
+            {
+                echo $e->getMessage();
+            }
+        }
+
+
         public function schedulSpecialDay($url){
             $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->id)->get();
             if(count($urlSpecialSchedules)>0){
-                for($i=0; $i < count($urlSpecialSchedules); $i++){
-                    if($urlSpecialSchedules->special_day==date('Y-m-d')){
+                foreach ($urlSpecialSchedules as $key=>$urlSplUrl){
+                    if($urlSplUrl->special_day==date('Y-m-d')){
                         $redirect['status']=0;
-                        $redirect['url']=$urlSpecialSchedules->special_day_url;
+                        $redirect['url']=$urlSplUrl->special_day_url;
                         $redirect['message']="";
                         return $redirect;
                         break;
