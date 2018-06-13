@@ -1,22 +1,18 @@
 $(document).ready(function () {
     google.charts.load('current', {
         'packages':['geochart'],
-        // Note: you will need to get a mapsApiKey for your project.
-        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
         'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
     });
-
+     
+    //If Geolocation Is Active
     if($('#allow-all').is(":checked")) {
-      google.charts.setOnLoadCallback(drawRegionsAllowMap); 
+        google.charts.setOnLoadCallback(drawRegionsAllowMap);
     }else if($('#deny-all').is(":checked")){
-        
-    }else{
-       
+        google.charts.setOnLoadCallback(drawRegionsDenyMap);
     }
 
 	//Rotating Link Add
     var blockIndex = parseInt(($("#total_no_link").val())-1);
-
     $('#addCircularURL').click(function (event) {
         event.preventDefault();
         $('.actualUrl').append(nextCircularURLBlock(++blockIndex));
@@ -51,25 +47,41 @@ $(document).ready(function () {
     $('body').on('click', '.remove-this-circular-url', function () {
         $(this).parent().parent().remove();
     });
+
+    //Click On Allow All Checkbox in geolocation
     $('#allow-all').click(function() {
         if($(this).is(":checked")) {
             $('#deny-all').prop('checked', false);
+            $('#allowable-country').html("");
+            $('#denied-country').html("");
+             google.charts.setOnLoadCallback(drawRegionsAllowMap);
         }else{
             $('#deny-all').prop('checked', true);
+            $('#allowable-country').html("");
+            $('#denied-country').html("");
+            google.charts.setOnLoadCallback(drawRegionsDenyMap);
         }   
     });
 
+    //Click On Deny All Checkbox in geolocation
     $('#deny-all').click(function() {
         if($(this).is(":checked")) {
             $('#allow-all').prop('checked', false);
+            $('#allowable-country').html("");
+            $('#denied-country').html("");
+            google.charts.setOnLoadCallback(drawRegionsDenyMap);
         }else{
             $('#allow-all').prop('checked', true);
+            $('#allowable-country').html("");
+            $('#denied-country').html("");
+            google.charts.setOnLoadCallback(drawRegionsAllowMap);
         }   
     });
 
-    
-
+    //Add Tag
     $(".chosen-select").chosen({});
+
+    //Add Tag
     $(".chosen-container").bind('keyup', function (e) {
         if (e.which == 13 || e.which == 188) {
             var lastChar = e.target.value.slice(-1);
@@ -92,6 +104,7 @@ $(document).ready(function () {
         }
     });
 
+    //validation on submit
     $('#edit-short-url').click(function(event){
         event.preventDefault();
         var getUrlType=$('#type').val();
@@ -104,7 +117,6 @@ $(document).ready(function () {
                     /* check schedule checkbox check = checked, uncheck = not checked */
                     var scheduleCheckBox = 'check';
                     /* actual URL check */
-
                     /* check for daywise schedule */
                     for(var i=1; i<=7; i++){
                         var dayScheduleValue = $('#day'+i).val();
@@ -284,7 +296,6 @@ $(document).ready(function () {
         }else{
             return false;
         }
-
         $("#url_short_frm").submit();
     });
 
@@ -299,19 +310,15 @@ $(document).ready(function () {
             $('#day5').val('');
             $('#day6').val('');
             $('#day7').val('');
-
             /* empty special schedule */
             var splCount = $('#special_url_count').val();
-            if(splCount>0)
-            {
+            if(splCount>0){
                 var countRow = 1;
-                for(var i=1; i<splCount; i++)
-                {
+                for(var i=1; i<splCount; i++){
                     $('#special_url-'+countRow).remove();
                     countRow = parseInt(countRow)+1;
                 }
             }
-
             $('#schedule_datepicker_0').val('');
             $('#scd_id_0').val('');
             $('#special_url_0').val('');
@@ -319,8 +326,7 @@ $(document).ready(function () {
     });
 
     $('#addSchedule').click(function(){
-        if($(this).is(':checked'))
-        {
+        if($(this).is(':checked')){
             $('#expirationEnable').prop('checked', false);
             $('#expirationArea').hide();
             $('#datepicker').val('month/day/year hours:minutes AM/PM');
@@ -329,7 +335,6 @@ $(document).ready(function () {
         }
     });
   
-
     function ValidURL(str) {
         var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
         if(!pattern.test(str)) {
@@ -346,7 +351,6 @@ $(document).ready(function () {
     }
 
     // checking if schedule is given or not /
-
     function checkLinkSchedule(scheduleFlag, checkBox){
         if(scheduleFlag=='y'){
             if(checkBox=='uncheck'){
@@ -363,159 +367,277 @@ $(document).ready(function () {
         }
     }
 
-            var rowCount = $('#db_spl_url_count').val();
+    var rowCount = $('#db_spl_url_count').val();
 
-            if(rowCount > 0)
-            {
-                for(var i=0; i<rowCount; i++)
-                {
-                    $("#schedule_datepicker_"+i).kendoDatePicker({
-                        value: '',
-                        min: new Date(),
-                        dateInput: false
-                    });
+    if(rowCount > 0){
+        for(var i=0; i<rowCount; i++){
+            $("#schedule_datepicker_"+i).kendoDatePicker({
+                value: '',
+                min: new Date(),
+                dateInput: false
+            });
 
-                    $('#schedule_datepicker_'+i).bind('change', function(){
-                        var actualId =  $(this).prop('id');
-                        var numId = actualId.replace('schedule_datepicker_', '');
-                        numId = numId.trim();
+            $('#schedule_datepicker_'+i).bind('change', function(){
+                var actualId =  $(this).prop('id');
+                var numId = actualId.replace('schedule_datepicker_', '');
+                numId = numId.trim();
+                var new_count = $("#special_url_count").val();
+                if(new_count>0){
+                    for(var j=0; j <new_count; j++){
+                        if($('#schedule_datepicker_'+j).length>0 && $(this).val() == $('#schedule_datepicker_'+j).val() && numId!=j){
+                            swal("Sorry!", "Date already given as schedule please pick another one", "warning");
+                            $('#schedule_datepicker_'+numId).val('');
+                            $('#scd_id_'+numId).val('');
+                            break;
+                        }
+                        else{
+                            $('#scd_id_'+numId).val($(this).val());
+                        }
+                    }
+                }
+            });
+        }
+    }else if(rowCount==0){
+        $("#schedule_datepicker_0").kendoDatePicker({
+            value: '',
+            min: new Date(),
+            dateInput: false
+        });
+        $('#schedule_datepicker_0').bind('change', function(){
+            $('#scd_id_0').val($(this).val())
+        });
+    }
 
-                        var new_count = $("#special_url_count").val();
-                        if(new_count>0)
-                        {
-                            for(var j=0; j <new_count; j++)
-                            {
-                                if($('#schedule_datepicker_'+j).length>0 && $(this).val() == $('#schedule_datepicker_'+j).val() && numId!=j)
-                                {
-                                    swal("Sorry!", "Date already given as schedule please pick another one", "warning");
-                                    $('#schedule_datepicker_'+numId).val('');
-                                    $('#scd_id_'+numId).val('');
-                                    break;
-                                }
-                                else
-                                {
-                                    $('#scd_id_'+numId).val($(this).val());
+    function drawRegionsAllowMap() {
+        var values = [];
+        $("input[name='denyCountryName[]']").each(function() {
+            values.push($(this).val());
+        });
+        $.ajax({
+            type: 'post',
+            url: "/getDenyCountryInAllowAll",
+            data: {data:values,_token: '{{csrf_token()}}'},
+            success: function (response) {
+                if(response.code=200){
+                    var data = google.visualization.arrayToDataTable(response.data);
+                    var options = {
+                        backgroundColor: '#FFFF',
+                        defaultColor: '#95D981', 
+                        width   : '100%',
+                        hight   : '100%',
+                        keepAspectRatio: false,
+                        margin  : 15,
+                        border  : 15,
+                        marginColor : 'black',
+                        colorAxis: {colors: ['#EC6B69','#95D981']},
+                    };
+                    var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
+                    chart.draw(data, options);
+                    google.visualization.events.addListener(chart, 'select', selectHandler);
+
+                    function selectHandler() {
+                        if(chart.getSelection().length >0){
+                            var selectionIdx = chart.getSelection()[0].row;
+                            var countryName = data.getValue(selectionIdx, 0);
+                            if (countryName) {
+                                if (countryName) {
+                                    if($("#" + countryName).length == 0) {
+                                        $.ajax({
+                                            type: 'post',
+                                            url: "/getCountryDetails",
+                                            data: {_token: '{{csrf_token()}}',countryName:countryName},
+                                            success: function (response) {
+                                                //console.log(response)
+                                                if(response.status_code==200){
+                                                    $('#denied-country-name').html(response.data.name);
+                                                    $('#deny-country-code').val(response.data.code);
+                                                    $('#deny-country-id').val(response.data.id);
+                                                    $('#deny-country-modal').modal('show');
+                                                }
+                                            }
+                                        });
+                                    }else{
+                                        $("#"+countryName).remove();
+                                        google.charts.setOnLoadCallback(drawRegionsAllowMap);
+                                    }
                                 }
                             }
                         }
-                    });
+                    }
                 }
             }
-            else if(rowCount==0)
-            {
-                $("#schedule_datepicker_0").kendoDatePicker({
-                    value: '',
-                    min: new Date(),
-                    dateInput: false
-                });
+        });
+    };
 
-                $('#schedule_datepicker_0').bind('change', function(){
-                    $('#scd_id_0').val($(this).val())
+    $('#deny-the-country').click(function(){
+        var countryName=$('#denied-country-name').text().trim();
+        var countryCode=$('#deny-country-code').val().trim();
+        var countryId=$('#deny-country-id').val().trim();
+        if(countryName && countryCode && countryId){
+            if($("#deny-country").is(':checked')){
+                var deny="<div id='"+countryName+"'><input type='hidden' name='denyCountryName[]' value='"+countryName+"'>"+
+                            "<input type='hidden' name='denyCountryCode[]' value='"+countryCode+"'>"+
+                            "<input type='hidden' name='denyCountryId[]' value='"+countryId+"'>"+
+                            "<input type='hidden' name='allowed[]' value='0'>"+
+                            "<input type='hidden' name='denied[]' value='1'>"+
+                            "<input type='hidden' name='redirectUrl[]' value=''>"+
+                        "</div>";
+                $('#denied-country').append(deny);
+                $('#deny-country-modal').modal('hide');
+                var values = [];
+                $("input[name='denyCountryName[]']").each(function() {
+                    values.push($(this).val());
                 });
+                google.charts.setOnLoadCallback(drawRegionsAllowMap);
+            }else{
+                swal("Alert", "Nothing To Save");
             }
-        
+        }else{
+           swal("Something Wrong", "Try Again!");
+        }
+    });
+
+    $('#allow-the-country').click(function(){
+        var countryName=$('#allowed-country-name').text().trim();
+        var countryCode=$('#allowed-country-code').val().trim();
+        var countryId=$('#allowed-country-id').val().trim();
+        if(countryName && countryCode && countryId){
+            if($("#allow-country").is(':checked')){
+                if($("#allow-redirect-url-checkbox").is(':checked')){
+                    var redirect=1;
+                    var url=$('#redirect-url-allow').val().trim();
+                    if(!url){
+                       swal("Alert", "You Need To Provide Some Redirect URL!");
+                       return false;
+                    }
+                }else{
+                    var redirect=0;
+                    var url='';
+                }
+                var deny="<div id='"+countryName+"'><input type='hidden' name='denyCountryName[]' value='"+countryName+"'>"+
+                            "<input type='hidden' name='denyCountryCode[]' value='"+countryCode+"'>"+
+                            "<input type='hidden' name='denyCountryId[]' value='"+countryId+"'>"+
+                            "<input type='hidden' name='allowed[]' value='1'>"+
+                            "<input type='hidden' name='redirect[]' value='"+redirect+"'>"+
+                            "<input type='hidden' name='redirectUrl[]' value='"+url+"'>"+
+                        "</div>";
+                $('#allowable-country').append(deny);
+                $('#allow-country-modal').modal('hide')
+                google.charts.setOnLoadCallback(drawRegionsDenyMap);
+
+            }else{
+                swal("Alert", "Nothing To Save");
+            }
+        }else{
+           swal("Something Wrong", "Try Again!");
+        }
+    });
+
+    $('#allow-redirect-url-checkbox').click(function(){
+        if($(this).is(":checked")) {
+            $('#redirect-url-allow').css('display', 'block');
+            $('#redirect-url-allow').focus();
+        }else{
+            $('#redirect-url-allow').css('display', 'none');
+        }  
+    });    
 });
 
 
-function checkUrl(urlVal)
-{
-if(urlVal.length>0)
-{
-var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!-\/]))?/;
-if(!pattern.test(urlVal))
-{
-swal({
-type: 'error',
-title: 'Invalid URL!',
-text: 'Text given instead of an URL',
-})
+function checkUrl(urlVal){
+    if(urlVal.length>0){
+        var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!-\/]))?/;
+        if(!pattern.test(urlVal)){
+            swal({
+                type: 'error',
+                title: 'Invalid URL!',
+                text: 'Text given instead of an URL',
+            })
+        }else{
+            var urlCount = urlVal.split(":");
+            if(urlCount.length!=2){
+                swal({
+                    type: 'error',
+                    title: 'Invalid URL!',
+                    text: 'Text given instead of an URL',
+                });
+            }
+        }
+    }
 }
-else
-{
-var urlCount = urlVal.split(":");
-if(urlCount.length!=2)
-{
-swal({
-type: 'error',
-title: 'Invalid URL!',
-text: 'Text given instead of an URL',
-})
-}
-}
-}
-}
-
-
 
 /* Add more tab for special schedules */
-
-function dispButton(id)
-{
-    /*if(id==0)
-    {
-        $('#add_button_0').hide();
-    }*/
-    if(id>0)
-    {
+function dispButton(id){
+    if(id>0){
         $('#add_button_'+id).hide();
         $('#delete_button_'+id).show();
     }
 }
 
 /* Delete special day tab */
-function delTabRow(indx)
-{
+function delTabRow(indx){
     $('#special_url-'+indx).remove();
 }
 
-function drawselectedRegionsMap(values){
+
+function drawRegionsDenyMap() {
+    var values = [];
+    $("input[name='denyCountryName[]']").each(function() {
+        values.push($(this).val());
+    });
+
     $.ajax({
         type: 'post',
         url: "/getDenyCountryInAllowAll",
-        data: {data:values,_token: '{{csrf_token()}}'},
+        data: {data: values, _token: '{{csrf_token()}}'},
         success: function (response) {
             if(response.code=200){
                 var data = google.visualization.arrayToDataTable(response.data);
                 var options = {
-                    backgroundColor: '#f5f5f5',
-                    defaultColor: '#EC6B69',    
+                    backgroundColor: '#FFFF',
+                    defaultColor: '#EC6B69', 
                     width   : '100%',
                     hight   : '100%',
                     keepAspectRatio: false,
                     margin  : 15,
                     border  : 15,
                     marginColor : 'black',
-                    datalessRegionColor:'#95D981'
+                    colorAxis: {colors: ['#95D981','#EC6B69']},
                 };
                 var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
                 chart.draw(data, options);
-                /*google.visualization.events.addListener(chart, 'select', selectHandler);
+                google.visualization.events.addListener(chart, 'select', selectHandler);
 
                 function selectHandler() {
                     if(chart.getSelection().length >0){
                         var selectionIdx = chart.getSelection()[0].row;
                         var countryName = data.getValue(selectionIdx, 0);
                         if (countryName) {
-                            $.ajax({
-                                type: 'post',
-                                url: "/getCountryDetails",
-                                data: {_token: '{{csrf_token()}}',countryName:countryName},
-                                success: function (response) {
+                            if($("#" + countryName).length == 0) {
+                                $.ajax({
+                                    type: 'post',
+                                    url: "/getCountryDetails",
+                                    data: {_token: '{{csrf_token()}}',countryName:countryName},
+                                    success: function (response) {
                                     //console.log(response)
-                                    if(response.status_code==200){
-                                        $('#allowed-country-name').html(response.data.name);
-                                        $('#allowed-country-code').val(response.data.code);
-                                        $('#allowed-country-id').val(response.data.id);
-                                        $('#allow-country-modal').modal('show');
+                                        if(response.status_code==200){
+                                            $('#allowed-country-name').html(response.data.name);
+                                            $('#allowed-country-code').val(response.data.code);
+                                            $('#allowed-country-id').val(response.data.id);
+                                            $('#allow-country-modal').modal('show');
+                                        }
+
                                     }
-                                }
-                            });
+                                });
+                            }else{
+                                $("#"+countryName).remove();
+                                google.charts.setOnLoadCallback(drawRegionsDenyMap);
+                            }
                         }
                     }
-                }*/
+                }
             }
         }
     });
 }
-
 

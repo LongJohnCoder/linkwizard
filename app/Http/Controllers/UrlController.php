@@ -475,7 +475,6 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function editUrl(Request $request, $id=NULL){
-            //dd($request->all());
             if (Auth::check()) {
                 try{
                     //Redirect Link
@@ -728,7 +727,20 @@
                             $url->timezone=NULL;
                             $url->redirect_url=NULL;
                         }
-
+                        /*Geo Location Edit*/
+                        if(isset($request->editGeoLocation) && $request->editGeoLocation=='on') {
+                            $deleteGeolocation=Geolocation::where('url_id',$url->id)->delete();
+                            if(isset($request->allow_all) && $request->allow_all=='on') {
+                                $url->geolocation=0;
+                            }
+                            if(isset($request->deny_all) && $request->deny_all=='on') {
+                                $url->geolocation=1;
+                            }
+                            $addGeoloc=$this->addGeoLocation($request,$url->id);
+                        }else{
+                            $deleteGeolocation=Geolocation::where('url_id',$url->id)->delete();
+                            $url->geolocation=NULL;
+                        } 
                         /*link schedule edit*/
 
                         if(isset($request->allowSchedule) && $request->allowSchedule=='on') {
@@ -1199,6 +1211,7 @@
                     }else if($search->geolocation==1){
                         $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->first();
                         if(count($getDenyed) >0){
+
                             if($getDenyed->redirection==0){
                                 $getUrl=$this->schedulSpecialDay($search);
                                 $redirectUrl=$getUrl['url'];

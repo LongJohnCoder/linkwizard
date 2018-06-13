@@ -138,7 +138,39 @@
 
         public function getDenyCountryInAllowAll(Request $request){
             try{
-                dd($request->all());
+                $selectedCountry=array();
+                $selectedCountry[0][0] = 'Country';
+                $selectedCountry[0][1] = 'Code';
+                $getCountry=Country::select('id','name', 'code')->get();
+                if($getCountry){
+                    foreach ($getCountry as $key => $country) {
+                        if($request->data!=""){
+                            if (in_array($country->name,$request->data)){
+                                $value=0;
+                            }else{
+                                $value=1; 
+                            }
+                        }else{
+                            $value=1; 
+                        }
+                        $selectedCountry[++$key][0]=$country->name;
+                        $selectedCountry[$key][1]=$value;
+
+                        /*$selectedCountry[$key]['id']=$country->id;
+                        $selectedCountry[$key]['code']=$country->code;*/
+                    }
+                    return \Response::json(array(
+                        'status' => true,
+                        'status_code' => 200,
+                        'data' => $selectedCountry
+                    ));
+                }else{
+                    return \Response::json(array(
+                        'status' => false,
+                        'status_code' => 400,
+                        'message' => "No Country Found"
+                    ));
+                }
             }catch(Exception $e){
                 return \Response::json(array(
                     'status' => false,
