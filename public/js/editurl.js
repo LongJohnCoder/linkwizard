@@ -1,15 +1,50 @@
 $(document).ready(function () {
+    /*$('#element').mousedown(function(event) {
+    switch (event.which) {
+        case 1:
+            alert('Left Mouse button pressed.');
+            break;
+        case 2:
+            alert('Middle Mouse button pressed.');
+            break;
+        case 3:
+            alert('Right Mouse button pressed.');
+            break;
+        default:
+            alert('You have a strange Mouse!');
+    }
+});*/
+
     google.charts.load('current', {
         'packages':['geochart'],
         'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
     });
      
     //If Geolocation Is Active
-    if($('#allow-all').is(":checked")) {
-        google.charts.setOnLoadCallback(drawRegionsAllowMap);
-    }else if($('#deny-all').is(":checked")){
-        google.charts.setOnLoadCallback(drawRegionsDenyMap);
+    if($('#editGeoLocation').is(":checked")) {
+        if($('#allow-all').is(":checked")) {
+            google.charts.setOnLoadCallback(drawRegionsAllowMap);
+        }else if($('#deny-all').is(":checked")){
+            google.charts.setOnLoadCallback(drawRegionsDenyMap);
+        }
+        $('#geo-location-body').show();
+    }else{
+        $('#geo-location-body').hide();
     }
+
+    $('#editGeoLocation').click(function(){
+        if($('#editGeoLocation').is(":checked")) {
+            $('#geo-location-body').show();
+            if($('#allow-all').is(":checked")) {
+                google.charts.setOnLoadCallback(drawRegionsAllowMap);
+            }else if($('#deny-all').is(":checked")){
+                google.charts.setOnLoadCallback(drawRegionsDenyMap);
+            }
+        }else{
+            $('#geo-location-body').hide();
+        }
+    });
+
 
 	//Rotating Link Add
     var blockIndex = parseInt(($("#total_no_link").val())-1);
@@ -419,7 +454,13 @@ $(document).ready(function () {
             data: {data:values,_token: '{{csrf_token()}}'},
             success: function (response) {
                 if(response.code=200){
-                    var data = google.visualization.arrayToDataTable(response.data);
+                    var arr = Object.values(response.data);
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Country');
+                    data.addColumn('number', 'Status');
+                    // A column for custom tooltip content
+                    data.addColumn({type: 'string', role: 'tooltip'});
+                    data.addRows(arr);
                     var options = {
                         backgroundColor: '#FFFF',
                         defaultColor: '#95D981', 
@@ -428,6 +469,7 @@ $(document).ready(function () {
                         keepAspectRatio: false,
                         margin  : 15,
                         border  : 15,
+                        legend  : 'none',
                         marginColor : 'black',
                         colorAxis: {colors: ['#EC6B69','#95D981']},
                     };
@@ -592,7 +634,13 @@ function drawRegionsDenyMap() {
         data: {data: values, _token: '{{csrf_token()}}'},
         success: function (response) {
             if(response.code=200){
-                var data = google.visualization.arrayToDataTable(response.data);
+                var arr = Object.values(response.data);
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Country');
+                data.addColumn('number', 'Status');
+                // A column for custom tooltip content
+                data.addColumn({type: 'string', role: 'tooltip'});
+                data.addRows(arr);
                 var options = {
                     backgroundColor: '#FFFF',
                     defaultColor: '#EC6B69', 
@@ -601,6 +649,7 @@ function drawRegionsDenyMap() {
                     keepAspectRatio: false,
                     margin  : 15,
                     border  : 15,
+                    legend: 'none',
                     marginColor : 'black',
                     colorAxis: {colors: ['#95D981','#EC6B69']},
                 };

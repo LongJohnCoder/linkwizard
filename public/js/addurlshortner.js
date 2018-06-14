@@ -124,107 +124,6 @@ google.charts.load('current', {
     'packages':['geochart'],
     'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
 });
-google.charts.setOnLoadCallback(drawRegionsMap);
-
-/*function drawselectedRegionsMap(values){
-    $.ajax({
-        type: 'post',
-        url: "/getnotSelectedcountry",
-        data: {data:values,_token: '{{csrf_token()}}'},
-        success: function (response) {
-            if(response.code=200){
-                var data = google.visualization.arrayToDataTable(response.data);
-                var options = {
-                    backgroundColor: '#f5f5f5',
-                    defaultColor: '#EC6B69',    
-                    width   : '100%',
-                    hight   : '100%',
-                    keepAspectRatio: false,
-                    margin  : 15,
-                    border  : 15,
-                    marginColor : 'black',
-                    datalessRegionColor:'#95D981'
-                };
-                var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
-                chart.draw(data, options);
-                google.visualization.events.addListener(chart, 'select', selectHandler);
-
-                function selectHandler() {
-                    if(chart.getSelection().length >0){
-                        var selectionIdx = chart.getSelection()[0].row;
-                        var countryName = data.getValue(selectionIdx, 0);
-                        if (countryName) {
-                            $.ajax({
-                                type: 'post',
-                                url: "/getCountryDetails",
-                                data: {_token: '{{csrf_token()}}',countryName:countryName},
-                                success: function (response) {
-                                    //console.log(response)
-                                    if(response.status_code==200){
-                                        $('#allowed-country-name').html(response.data.name);
-                                        $('#allowed-country-code').val(response.data.code);
-                                        $('#allowed-country-id').val(response.data.id);
-                                        $('#allow-country-modal').modal('show');
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-
-function drawselectedDenyRegionsMap(values){
-    $.ajax({
-        type: 'post',
-        url: "/getnotSelectedcountry",
-        data: {data:values,_token: '{{csrf_token()}}'},
-        success: function (response) {
-            if(response.code=200){
-                var data = google.visualization.arrayToDataTable(response.data);
-                var options = {
-                    backgroundColor: '#f5f5f5',
-                    defaultColor: '#95D981',    
-                    width   : '100%',
-                    hight   : '100%',
-                    keepAspectRatio: false,
-                    margin  : 15,
-                    border  : 15,
-                    marginColor : 'black',
-                    datalessRegionColor:'#EC6B69'
-                };
-                var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
-                chart.draw(data, options);
-                google.visualization.events.addListener(chart, 'select', selectHandler);
-
-                function selectHandler() {
-                    if(chart.getSelection().length >0){
-                        var selectionIdx = chart.getSelection()[0].row;
-                        var countryName = data.getValue(selectionIdx, 0);
-                        if (countryName) {
-                            $.ajax({
-                                type: 'post',
-                                url: "/getCountryDetails",
-                                data: {_token: '{{csrf_token()}}',countryName:countryName},
-                                success: function (response) {
-                                    //console.log(response)
-                                    if(response.status_code==200){
-                                        $('#denied-country-name').html(response.data.name);
-                                        $('#deny-country-code').val(response.data.code);
-                                        $('#deny-country-id').val(response.data.id);
-                                        $('#deny-country-modal').modal('show');
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-        }
-    });
-}*/
 
 function drawRegionsMap() {
     var values = [];
@@ -238,7 +137,13 @@ function drawRegionsMap() {
         data: {data:values,_token: '{{csrf_token()}}'},
         success: function (response) {
         	if(response.code=200){
-        		var data = google.visualization.arrayToDataTable(response.data);
+                var arr = Object.values(response.data);
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Country');
+                data.addColumn('number', 'Status');
+                // A column for custom tooltip content
+                data.addColumn({type: 'string', role: 'tooltip'});
+                data.addRows(arr);
 				var options = {
                     backgroundColor: '#FFFF',
                     defaultColor: '#95D981', 
@@ -247,6 +152,7 @@ function drawRegionsMap() {
                     keepAspectRatio: false,
                     margin  : 15,
                     border  : 15,
+                    legend: 'none',
                     marginColor : 'black',
                     colorAxis: {colors: ['#EC6B69','#95D981']},
                 };
@@ -297,7 +203,13 @@ function drawRegionsDenyMap() {
         data: {data:values,_token: '{{csrf_token()}}'},
         success: function (response) {
             if(response.code=200){
-                var data = google.visualization.arrayToDataTable(response.data);
+                var arr = Object.values(response.data);
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Country');
+                data.addColumn('number', 'Status');
+                // A column for custom tooltip content
+                data.addColumn({type: 'string', role: 'tooltip'});
+                data.addRows(arr);
                 var options = {
                     backgroundColor: '#FFFF',
                     defaultColor: '#EC6B69', 
@@ -306,6 +218,7 @@ function drawRegionsDenyMap() {
                     keepAspectRatio: false,
                     margin  : 15,
                     border  : 15,
+                    legend: 'none',
                     marginColor : 'black',
                     colorAxis: {colors: ['#95D981','#EC6B69']},
                 };

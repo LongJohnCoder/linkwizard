@@ -51,6 +51,11 @@ Route::group(['prefix' => 'api/v1'],function() {
         'uses'  => 'ApiController@createNewSubscriber',
         'as'    => 'createNewSubscriber'
     ]);
+
+    Route::post('/link/create', [
+        'uses' => 'ApiController@createShortLink',
+        'as' => 'createShortLink',
+    ]);
 });
 /* API routes ends here*/
 

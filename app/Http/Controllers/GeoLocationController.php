@@ -139,8 +139,6 @@
         public function getDenyCountryInAllowAll(Request $request){
             try{
                 $selectedCountry=array();
-                $selectedCountry[0][0] = 'Country';
-                $selectedCountry[0][1] = 'Code';
                 $getCountry=Country::select('id','name', 'code')->get();
                 if($getCountry){
                     foreach ($getCountry as $key => $country) {
@@ -155,9 +153,7 @@
                         }
                         $selectedCountry[++$key][0]=$country->name;
                         $selectedCountry[$key][1]=$value;
-
-                        /*$selectedCountry[$key]['id']=$country->id;
-                        $selectedCountry[$key]['code']=$country->code;*/
+                        $selectedCountry[$key][2]=$country->code;
                     }
                     return \Response::json(array(
                         'status' => true,

@@ -619,6 +619,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             @endif
                             {{csrf_field()}}
                             <button type="submit" id="edit-short-url" class=" btn-shorten">Shorten URL</button>
@@ -1328,18 +1329,6 @@ $null_check = 1;
             } else {
                 //$('#link_preview_').hide();
                 $('.use-custom').hide();
-            }
-        }
-
-        if(thisInstance.id === 'editGeoLocation') {
-            if(thisInstance.checked) {
-                $('#geo-location-body').show();
-                if($('#allow-all').is(":checked")) {
-                }
-                else if($('#deny-all').is(":checked")) {
-                }
-            } else {
-                $('#geo-location-body').hide();
             }
         }
 
