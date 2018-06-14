@@ -111,11 +111,7 @@
 
         @php
             $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
-            if (isset($_SERVER['HTTP_REFERER'])) {
-                $referer = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-            } else {
-                $referer = parse_url("{{ route('getIndex') }}", PHP_URL_HOST);
-            }
+            $referer = $_SERVER['HTTP_HOST'];
         @endphp
         <div class="header"></div>
         <div class="row">
@@ -162,6 +158,7 @@
                             data: {
                                 url: '{{ $url->id }}',
                                 country: location,
+                                querystring: '{{$_SERVER['QUERY_STRING']}}',
                                 platform: '{{ $user_agent['platform'] }}',
                                 browser: '{{ $user_agent['browser'] }}',
                                 referer: '{{ $referer }}',

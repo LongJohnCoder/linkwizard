@@ -14,7 +14,7 @@ class CreateUrlLinkSchedulesTable extends Migration
     {
         Schema::create('url_link_schedules', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('url_id');
+            $table->integer('url_id')->unsigned()->index();
             $table->text('url');
             $table->string('protocol', 20);
             $table->tinyInteger('day')->comment('1=monday, 2=tuesday 3=wednesday and so on');
@@ -22,10 +22,10 @@ class CreateUrlLinkSchedulesTable extends Migration
 
             /* Foreign key */
 
-//            $table->foreign('url_id')
-//                ->references('id')
-//                ->on('urls')
-//                ->onDelete('cascade');
+            $table->foreign('url_id')
+                ->references('id')
+                ->on('urls')
+                ->onDelete('cascade');
         });
     }
 

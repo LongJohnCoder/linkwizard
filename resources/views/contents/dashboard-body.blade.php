@@ -351,29 +351,35 @@ $(document).ready(function(){
     $(document).ready(function(){
         $('.delete-url-btn').click(function(event){
             event.stopPropagation();
-            /* sweet alert confirm */
-            var check = confirm('Are you sure you want to delete this link?');
-            if(check==true){
-                var delId = $(this).data('id');
-                $.get('{{route('delete_short_url')}}'+'/'+delId, function(data, status, xhr){
-                    if(xhr.status==200){
-                        if(data==0){
-                            swal({
-                                title: "Deleted",
-                                text: "You have successfully deleted the link!",
-                                icon: "success",
-                                button: "OK",
-                            },
-                                function(){
-                                    window.location.href = "{{route('getDashboard')}}";
-                                }
-                            );
+            var delId = $(this).data('id');
+            swal({
+                    title: "Are you sure you want to delete this link?",
+                    text: "Once deleted you will not be able to recover this!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.get('{{route('delete_short_url')}}'+'/'+delId, function(data, status, xhr){
+                        if(xhr.status==200){
+                            if(data==0){
+                                swal({
+                                        title: "Deleted",
+                                        text: "You have successfully deleted the link!",
+                                        icon: "success",
+                                        button: "OK",
+                                    },
+                                    function(){
+                                        $('#row-'+delId).hide(200);
+                                    }
+                                );
+                            }
                         }
-                    }
+                    });
                 });
-            }else{
-                alert('no delete');
-            }
         });
-    })
+    });
+
 </script>
