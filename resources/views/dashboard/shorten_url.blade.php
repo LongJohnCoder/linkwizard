@@ -39,7 +39,7 @@
                 padding: 5px;
             }
             .merge-tab tr td {
-                padding: 10px;
+                padding-right: 15px;
             }
             .schedule_datepicker{
                 width: 100%;

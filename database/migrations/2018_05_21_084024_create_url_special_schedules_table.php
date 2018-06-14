@@ -14,10 +14,17 @@ class CreateUrlSpecialSchedulesTable extends Migration
     {
         Schema::create('url_special_schedules', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('url_id');
+            $table->integer('url_id')->unsigned()->index();
             $table->date('special_day');
             $table->text('special_day_url');
             $table->timestamps();
+
+            /* Foreign key */
+
+            $table->foreign('url_id')
+                ->references('id')
+                ->on('urls')
+                ->onDelete('cascade');
         });
     }
 

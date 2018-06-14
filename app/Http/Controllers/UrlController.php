@@ -1150,7 +1150,7 @@
                     if(strtotime($date1) < strtotime($date2)){
                          /*Url Not Expired*/
                         if($search->geolocation==""){
-                            $getUrl=$this->schedulSpecialDay($search);
+                            $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                             $redirectUrl=$getUrl['url'];
                             $redirectstatus=$getUrl['status'];
                             $message=$getUrl['message'];
@@ -1163,7 +1163,7 @@
                                     $redirectstatus=1;
                                     $message="This URL is not accessable from your country";
                                 }else{
-                                    $getUrl=$this->schedulSpecialDay($search);
+                                    $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
                                     $redirectstatus=$getUrl['status']=0;
                                     $message=$getUrl['message'];
@@ -1171,7 +1171,7 @@
                             }else if($search->geolocation==1){
                                 $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
                                 if($getDenyed >0){
-                                    $getUrl=$this->schedulSpecialDay($search);
+                                    $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
                                     $redirectstatus=$getUrl['status']=0;
                                     $message=$getUrl['message'];
@@ -1203,7 +1203,7 @@
                             $redirectstatus=1;
                             $message="This URL is not accessable from your country";
                         }else{
-                            $getUrl=$this->schedulSpecialDay($search);
+                            $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                             $redirectUrl=$getUrl['url'];
                             $redirectstatus=$getUrl['status']=0;
                             $message=$getUrl['message'];
@@ -1213,7 +1213,7 @@
                         if(count($getDenyed) >0){
 
                             if($getDenyed->redirection==0){
-                                $getUrl=$this->schedulSpecialDay($search);
+                                $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                 $redirectUrl=$getUrl['url'];
                                 $redirectstatus=$getUrl['status']=0;
                                 $message=$getUrl['message'];
@@ -1228,7 +1228,7 @@
                             $message="This URL is not accessable from your country";
                         }
                     }else{
-                        $getUrl=$this->schedulSpecialDay($search);
+                        $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                         $redirectUrl=$getUrl['url'];
                         $redirectstatus=$getUrl['status'];
                         $message=$getUrl['message'];
@@ -1445,28 +1445,32 @@
         }
 
 
-        public function schedulSpecialDay($url){
+        public function schedulSpecialDay($url, $queryString){
             $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->id)->get();
             if(count($urlSpecialSchedules)>0){
                 foreach ($urlSpecialSchedules as $key=>$urlSplUrl){
                     if($urlSplUrl->special_day==date('Y-m-d')){
                         $redirect['status']=0;
-                        $redirect['url']=$urlSplUrl->special_day_url;
+                        if($queryString!=='' && strlen($queryString)>0){
+                            $redirect['url']=$urlSplUrl->special_day_url.'?'.$queryString;
+                        }else{
+                            $redirect['url']=$urlSplUrl->special_day_url;
+                        }
                         $redirect['message']="";
                         return $redirect;
                         break;
                     }
                 }
-                $redirect=$this->schedularWeeklyDaywise($url);
+                $redirect=$this->schedularWeeklyDaywise($url, $queryString);
                 return $redirect;
             }else{
-                $redirect=$this->schedularWeeklyDaywise($url);
+                $redirect=$this->schedularWeeklyDaywise($url, $queryString);
                 return $redirect;
             }
         }
 
         /* weekly schedule */
-        public function schedularWeeklyDaywise($url){
+        public function schedularWeeklyDaywise($url, $queryString){
             $url_link_schedules = UrlLinkSchedule::where('url_id', $url->id)->get();
             if($url->is_scheduled =='y' && count($url_link_schedules)>0){
                 $day = date('N');
@@ -1477,14 +1481,28 @@
                         $redirect['message']="";
                         break;
                     }else{
-                        $redirect['status']=1;
-                        $redirect['url']=NULL;
-                        $redirect['message']="No Link Available To Redirect For Today";
+                        if(!empty($url->actual_url) or $url->actual_url!=NULL){
+                            $redirect['status']=0;
+                            if($queryString!=='' && strlen($queryString)>0){
+                                $redirect['url']=$url->protocol.'://'.$url->actual_url.'?'.$queryString;
+                            }else{
+                                $redirect['url']=$url->protocol.'://'.$url->actual_url;
+                            }
+                            $redirect['message']="";
+                        }else{
+                            $redirect['status']=1;
+                            $redirect['url']=NULL;
+                            $redirect['message']="No Link Available To Redirect For Today";
+                        }
                     }
                 }
             }else{
                 $redirect['status']=0;
-                $redirect['url']=$url->protocol.'://'.$url->actual_url;
+                if($queryString!=='' && strlen($queryString)>0){
+                    $redirect['url']=$url->protocol.'://'.$url->actual_url.'?'.$queryString;
+                }else{
+                    $redirect['url']=$url->protocol.'://'.$url->actual_url;
+                }
                 $redirect['message']="";
             }
             return $redirect;
