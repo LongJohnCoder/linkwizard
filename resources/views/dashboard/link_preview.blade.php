@@ -7,6 +7,18 @@ $key = 0;
 <!-- head of th page -->
 <html lang="en">
 	@include('contents/head')
+
+    <style>
+        .redirection-link-box a{
+            padding-right: 5px;
+        }
+        .copy-btn{
+            display: none;
+        }
+        .cp-btn{
+            display: none;
+        }
+    </style>
 <body>
 <!-- head end -->
 
@@ -47,12 +59,11 @@ $key = 0;
                 
               <div class="row">
                   <div class="col-md-2 col-sm-2"><strong>Redirection link:</strong></div>
-                  <div class="col-md-3 col-sm-3">
-                      <a href="{{$shrt_url}}" id="copylink">{{$shrt_url}}</a>
-                  </div>
-                  <div class="col-md-7 col-sm-7">
-                      <button id="clipboard" class="btn-primary btn-sm btngrpthree" data-clipboard-action="copy" data-clipboard-target="#copylink" style="width:70px"><i class="fa fa-clipboard"></i> copy
-                      </button>
+                  <div class="col-md-10 col-sm-10">
+                      <span class="redirection-link-box">
+                          <a href="{{$shrt_url}}" id="copylink">{{$shrt_url}}</a>
+                          <a id="clipboard" class="copy-btn" data-clipboard-action="copy" data-clipboard-target="#copylink" title="Copy shorten URL"><i class="fa fa-copy"></i></a>
+                      </span>
                   </div>
               </div>
               <div class="row">
@@ -129,9 +140,28 @@ $key = 0;
                       }
 
                   @endphp
-                  <div class="col-md-2 col-sm-2"><strong>Clicked link:</strong></div>
+                  <div class="col-md-2 col-sm-2"><strong>
+                          @if($url->link_type==0)
+                              Clicked link:
+                          @elseif($url->link_type==1)
+                              Rotating Links:
+                          @endif
+                      </strong></div>
                   <div class="col-md-10 col-sm-10">
-                      <a href="{{$actual_url}}">{{$actual_url}}</a>
+                      @if($url->link_type==0)
+                          <span class="redirect-urls" data-id="0"><a href="{{$actual_url}}" id="url-0">{{$actual_url}}</a> <a onclick="copyUrl(0)" class="cp-btn" id="cp-btn-0"><i class="fa fa-copy"></i></a></span>
+                      @elseif($url->link_type==1)
+                          @if($url->no_of_circular_links>1)
+                              <ul>
+                                <li><span class="redirect-urls" data-id="0"><a href="{{$actual_url}}" id="url-0">{{$actual_url}}</a> <a onclick="copyUrl(0)" class="cp-btn" id="cp-btn-0"><i class="fa fa-copy"></i></a> </span></li>
+                                @foreach($url->circularLink as $key=>$rotatingLink)
+                                    @if($key!==($url->count % $url->no_of_circular_links))
+                                          <li><span class="redirect-urls" data-id="{{$key+1}}"><a href="{{$rotatingLink->protocol}}://{{$rotatingLink->actual_link}}" id="url-{{$key+1}}" style="color: #616161;">{{$rotatingLink->protocol}}://{{$rotatingLink->actual_link}}</a>  <a onclick="copyUrl({{$key+1}})" class="cp-btn" id="cp-btn-{{$key+1}}"><i class="fa fa-copy"></i></a></span></li>
+                                    @endif
+                                @endforeach
+                              </ul>
+                          @endif
+                      @endif
                   </div>
               </div>
               <hr>
@@ -264,6 +294,53 @@ $key = 0;
 
 @include('contents/footer')
 
+<script>
+    $(function(){
+        $('.redirection-link-box').mouseover(function(){
+            $('.copy-btn').show();
+        });
+        $('.redirection-link-box').mouseout(function(){
+            $('.copy-btn').hide();
+        });
+
+        $('.redirect-urls').mouseover(function(){
+            var cpId = $(this).data('id');
+            $('#cp-btn-'+cpId).show();
+        });
+
+        $('.redirect-urls').mouseout(function(){
+            var cpId = $(this).data('id');
+            $('#cp-btn-'+cpId).hide();
+        });
+
+    });
+
+
+    function copyUrl(id)
+    {
+        var temp = $("<input>");
+        $("body").append(temp);
+        var data = $('#url-'+id).prop('href');
+        data = data.trim();
+        temp.val(data).select();
+        document.execCommand("copy");
+        temp.remove();
+        var node = document.getElementById('url-'+id);
+        if (document.body.createTextRange) {
+            const range = document.body.createTextRange();
+            range.moveToElementText(node);
+            range.select();
+        } else if (window.getSelection) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else {
+            console.warn("Could not select text in node: Unsupported browser.");
+        }
+    }
+</script>
 
 <!-- ManyChat -->
 <script src="//widget.manychat.com/216100302459827.js" async="async"></script>

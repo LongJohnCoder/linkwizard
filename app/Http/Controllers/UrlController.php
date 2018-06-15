@@ -1165,7 +1165,7 @@
                                 }else{
                                     $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
-                                    $redirectstatus=$getUrl['status']=0;
+                                    $redirectstatus=$getUrl['status'];
                                     $message=$getUrl['message'];
                                 }
                             }else if($search->geolocation==1){
@@ -1173,7 +1173,7 @@
                                 if($getDenyed >0){
                                     $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
-                                    $redirectstatus=$getUrl['status']=0;
+                                    $redirectstatus=$getUrl['status'];
                                     $message=$getUrl['message'];
                                 }else{
                                     $redirectUrl="";
@@ -1205,7 +1205,7 @@
                         }else{
                             $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                             $redirectUrl=$getUrl['url'];
-                            $redirectstatus=$getUrl['status']=0;
+                            $redirectstatus=$getUrl['status'];
                             $message=$getUrl['message'];
                         }
                     }else if($search->geolocation==1){
@@ -1215,11 +1215,11 @@
                             if($getDenyed->redirection==0){
                                 $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                 $redirectUrl=$getUrl['url'];
-                                $redirectstatus=$getUrl['status']=0;
+                                $redirectstatus=$getUrl['status'];
                                 $message=$getUrl['message'];
                             }else{
                                 $redirectUrl=$getDenyed->url;
-                                $redirectstatus=$getUrl['status']=0;
+                                $redirectstatus=0;
                                 $message="";
                             }
                         }else{
@@ -1477,7 +1477,11 @@
                 foreach($url_link_schedules as $schedule){
                     if ($schedule->day==$day){
                         $redirect['status']=0;
-                        $redirect['url']=$schedule->protocol.'://'.$schedule->url;
+                        if($queryString!=='' && strlen($queryString)>0){
+                            $redirect['url']=$schedule->protocol.'://'.$schedule->url.'?'.$queryString;
+                        }else{
+                            $redirect['url']=$schedule->protocol.'://'.$schedule->url;
+                        }
                         $redirect['message']="";
                         break;
                     }else{
@@ -1497,13 +1501,20 @@
                     }
                 }
             }else{
-                $redirect['status']=0;
-                if($queryString!=='' && strlen($queryString)>0){
-                    $redirect['url']=$url->protocol.'://'.$url->actual_url.'?'.$queryString;
+                if(!empty($url->actual_url) or $url->actual_url!=NULL){
+                    $redirect['status']=0;
+                    if($queryString!=='' && strlen($queryString)>0){
+                        $redirect['url']=$url->protocol.'://'.$url->actual_url.'?'.$queryString;
+                    }else{
+                        $redirect['url']=$url->protocol.'://'.$url->actual_url;
+                    }
+                    $redirect['message']="";
+
                 }else{
-                    $redirect['url']=$url->protocol.'://'.$url->actual_url;
+                    $redirect['status']=1;
+                    $redirect['url']=NULL;
+                    $redirect['message']="No Link Available For Redirection";
                 }
-                $redirect['message']="";
             }
             return $redirect;
         }
