@@ -494,6 +494,7 @@ $(document).ready(function () {
                                                     $('#denied-country-name').html(response.data.name);
                                                     $('#deny-country-code').val(response.data.code);
                                                     $('#deny-country-id').val(response.data.id);
+                                                    $('#deny-country').prop('checked', false);
                                                     $('#deny-country-modal').modal('show');
                                                 }
                                             }
@@ -673,6 +674,8 @@ function drawRegionsDenyMap() {
                                             $('#allowed-country-name').html(response.data.name);
                                             $('#allowed-country-code').val(response.data.code);
                                             $('#allowed-country-id').val(response.data.id);
+                                            $('#allow-country').prop('checked', false);
+                                            $('#allow-redirect-url-checkbox').prop('checked', false);
                                             $('#allow-country-modal').modal('show');
                                         }
 
