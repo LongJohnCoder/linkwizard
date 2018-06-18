@@ -1241,6 +1241,49 @@
                     $circularLinks= CircularLink::where('url_id', $search->id)->get();
                     $search->actual_url       = $circularLinks[($search->count) % $search->no_of_circular_links]->actual_link;
                     $search->protocol         = $circularLinks[($search->count) % $search->no_of_circular_links]->protocol;
+
+                    /* Save og data for rotating links */
+                    $fullUrl =$search->protocol.'://'.$search->actual_url;
+                    $metaData = $this->getPageMetaContents($fullUrl);
+                    $link_preview_type = json_decode($search->link_preview_type);
+                    if($link_preview_type->main==1)
+                    {
+                        if($link_preview_type->image==0)
+                        {
+                            $search->og_image = $metaData['og_image'];
+                        }
+
+                        if($link_preview_type->title==0)
+                        {
+                            $search->title = $metaData['title'];
+                        }
+
+                        if($link_preview_type->description==0)
+                        {
+                            $search->meta_description = $metaData['og_description'];
+                            $search->og_description = $metaData['og_description'];
+                        }
+                        $search->og_title = $metaData['og_title'];
+                        $search->og_url = $metaData['og_url'];
+                        $search->twitter_title = $metaData['twitter_title'];
+                        $search->twitter_description = $metaData['twitter_description'];
+                        $search->twitter_url = $metaData['twitter_url'];
+                        $search->twitter_image = $metaData['twitter_image'];
+                    }else
+                    {
+                        //Original meta data for the URL to be added for Rotating Link
+                        $search->title = $metaData['title'];
+                        $search->meta_description = $metaData['og_description'];
+                        $search->og_description = $metaData['og_description'];
+                        $search->og_title = $metaData['og_title'];
+                        $search->og_url = $metaData['og_url'];
+                        $search->og_image = $metaData['og_image'];
+                        $search->twitter_title = $metaData['twitter_title'];
+                        $search->twitter_description = $metaData['twitter_description'];
+                        $search->twitter_url = $metaData['twitter_url'];
+                        $search->twitter_image = $metaData['twitter_image'];
+                    }
+
                 }
                 $search->save();
                 $redirectstatus=0;
