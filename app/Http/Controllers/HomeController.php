@@ -2453,12 +2453,28 @@ class HomeController extends Controller
                 $limit = Limit::where('plan_code', 'tr5free')->first();
             }
 
+
+            $urlTags = $url->urlTagMap;
+            $tags = '';
+            /* Tags for url */
+            if(count($urlTags)>0)
+            {
+                foreach($urlTags as $urlTag)
+                {
+                    $tagName = UrlTag::find($urlTag->url_tag_id);
+                    $tags[] = $tagName->tag;
+                }
+            }else
+            {
+                $tags = 'No tag available';
+            }
             return view('dashboard.link_preview' , [
               'url'                 => $url,
               'total_links'         => $total_links,
               'limit'               => $limit,
               'subscription_status' => $subscription_status,
-              'user'                => $user
+              'user'                => $user,
+              'tags'                => $tags
             ]);
           }
 

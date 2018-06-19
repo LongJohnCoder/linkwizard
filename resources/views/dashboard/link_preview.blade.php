@@ -79,9 +79,9 @@ function ogUrl($url=NULL)
         }
 
         .sm-tag {
-            background: #eee;
+            background: #c0c0c0;
             border-radius: 3px 0 0 3px;
-            color: #999;
+            color: #666666;
             display: inline-block;
             height: 26px;
             line-height: 26px;
@@ -107,7 +107,7 @@ function ogUrl($url=NULL)
         .sm-tag::after {
             background: #fff;
             border-bottom: 13px solid transparent;
-            border-left: 10px solid #eee;
+            border-left: 10px solid #c0c0c0;
             border-top: 13px solid transparent;
             content: '';
             position: absolute;
@@ -288,21 +288,18 @@ function ogUrl($url=NULL)
                   <div class="col-md-10">
                       {{--<p>Tags associated with this link</p>--}}
                       @php
-                        $urlTags = $url->urlTagMap;
-                        if(count($urlTags)>0)
-                        {
-                            echo '<ul class="tags">';
-                            foreach($urlTags as $urlTag)
-                            {
-                                $tagName = App\UrlTag::find($urlTag->id);
-                                echo '<li><a href="#" class="sm-tag">'.$tagName->tag.'</a></li>';
-                            }
-                            echo '</ul>';
-                        }
-                        else
-                        {
-                            echo "<p class='na-url-tag'>No tag available<p>";
-                        }
+                          if(is_array($tags))
+                          {
+                              echo '<ul class="tags">';
+                              foreach ($tags as $tag)
+                              {
+                                  echo '<li><a href="#" class="sm-tag">'.$tag.'</a></li>';
+                              }
+                          }else
+                          {
+                              echo "<p class='na-url-tag'>".$tags."<p>";
+                          }
+
                       @endphp
                   </div>
                   <div class="col-md-2">
