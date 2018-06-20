@@ -3095,6 +3095,26 @@ class HomeController extends Controller
         return redirect()->route('getIndex');
     }
 
+    /**
+     * Load pixel view
+     */
+
+    public function loadPixels(Request $request)
+    {
+        if(Auth::check())
+        {
+            if(Session::has('plan'))
+            {
+                return redirect()->action('HomeController@getSubscribe');
+            }else
+            {
+                $user = Auth::user();
+                $arr = $this->getAllDashboardElements($user, $request);
+                //dd($arr['user']->name);
+                return view('pixels.pixel_preview', compact('arr'));
+            }
+        }
+    }
 }
 
 
