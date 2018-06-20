@@ -140,6 +140,29 @@
                                     </div>
                                 </div>
                                 <!--Add google pixel End-->
+
+                                <!-- Pixel manage -->
+                                <div class="normal-box1">
+                                    <div class="normal-header">
+                                        <label class="custom-checkbox">Manage pixel
+                                            <input type="checkbox" id="Pixel" name="Pixel">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                    <div class="normal-body" style="display: block;">
+                                        <p>Add your pixels here</p>
+                                        <select class="chosen-select-pixels" multiple="">
+                                                <option value=""></option>
+                                                @if(count($pixels)>0 && !empty($pixels))
+                                                    @foreach($pixels as $key=>$pixel)
+                                                        <option value="{{$pixel->id}}">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
+                                                    @endforeach
+                                                @endif
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- end pixel manage -->
+
                                 <!--Add Tag Start-->
                                 <div class="normal-box1">
                                     <div class="normal-header">
@@ -666,6 +689,11 @@
                     select.trigger("chosen:updated");
                 }
             });
+
+            /* pixel manage */
+            $(".chosen-select-pixels").chosen({width: "95%"});
+
+
             var new_count;
             // Special Schedule tab add /
             function addMoreSpecialLink() {

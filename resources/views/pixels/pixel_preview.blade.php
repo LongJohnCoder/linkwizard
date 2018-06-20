@@ -8,100 +8,8 @@
     .redirection-link-box a{
         padding-right: 5px;
     }
-    .copy-btn{
-        display: none;
-    }
-    .cp-btn{
-        display: none;
-    }
-    #preview{
-        background-color: #f7f7f7;
-        border: 1px solid #999999;
-        box-shadow: 2px 2px 2px #666666;
-        padding: 5px;
-    }
-    .prev-btn{
-        padding-left: 15px;
-        cursor: pointer;
-    }
-    .prev-og-box{
-        margin-top: 5px;
-    }
-    .prev-url{
-        text-transform: uppercase;
-        font-size: 12px;
-        letter-spacing: 1px;
-        color: #888888;
-    }
-    .prev-title{
-        font-family: Helvetica, Arial, sans-serif;
-        font-size: 17px;
-        color: #1d2129;
-        direction: ltr;
-        line-height: 1.34;
-    }
-    .prev-description{
-        color: #666666;
-    }
-    .na-url-tag{
-        font-size: 10px!important;
-        color: #ff6666!important;
-    }
-    .tags {
-        list-style: none;
-        margin: 0;
-        overflow: hidden;
-        padding: 0;
-    }
-
     .tags li {
         float: left;
-    }
-
-    .sm-tag {
-        background: #c0c0c0;
-        border-radius: 3px 0 0 3px;
-        color: #666666;
-        display: inline-block;
-        height: 26px;
-        line-height: 26px;
-        padding: 0 20px 0 23px;
-        position: relative;
-        margin: 0 10px 10px 0;
-        text-decoration: none;
-        -webkit-transition: color 0.2s;
-    }
-
-    .sm-tag::before {
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
-        content: '';
-        height: 6px;
-        left: 10px;
-        position: absolute;
-        width: 6px;
-        top: 10px;
-    }
-
-    .sm-tag::after {
-        background: #fff;
-        border-bottom: 13px solid transparent;
-        border-left: 10px solid #c0c0c0;
-        border-top: 13px solid transparent;
-        content: '';
-        position: absolute;
-        right: 0;
-        top: 0;
-    }
-
-    .sm-tag:hover {
-        background-color: #3275b2;
-        color: white;
-    }
-
-    .sm-tag:hover::after {
-        border-left-color: #3275b2;
     }
 
     /****** LOGIN MODAL ******/
@@ -198,6 +106,29 @@
     .login-help{
         font-size: 12px;
     }
+
+    .panel-heading{
+        color: #ffffff!important;
+    }
+    .pixel-table th{
+        background-color: #e0e7f3;
+        color: #777777;
+        font-size: 16px;
+        text-align: center;
+    }
+    .action-btn{
+        background-color: #f2f5fa;
+        border: 1px solid #cccccc;
+        border-radius: 15px;
+        color: #444444;
+        transition: 0.2s;
+    }
+    .action-btn:hover{
+        color: #ffffff;
+        background-color: #337ab7;
+        transition: 0.2s;
+        /*box-shadow: 2px 2px 2px #999999;*/
+    }
 </style>
 <body>
 <!-- head end -->
@@ -212,8 +143,53 @@
 <script src="{{URL::to('/').'/public/Link-Preview-master/js/linkPreviewRetrieve.js'}}"></script>
 <link href="{{URL::to('/').'/public/Link-Preview-master/css/linkPreview.css'}}" rel="stylesheet" type="text/css">
 <!-- End Of Link Preview Files -->
+<!-- Datatable files -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+<!-- End of datatable files -->
+
 @include('pixels.pixel_header')
 <!-- Header End -->
+
+@if(session()->has('msg'))
+    @if(session()->get('msg')=='success')
+        <script>
+            swal({
+                title: "Success!",
+                text: "Pixel has been successfully added",
+                icon: "success",
+                button: "OK",
+            });
+        </script>
+    @elseif(session()->get('msg')=='error')
+        <script>
+            swal({
+                title: "Error!",
+                text: "Something went wrong during the process, please try again",
+                icon: "warning",
+                button: "OK",
+            });
+        </script>
+    @elseif(session()->get('msg')=='editsuccess')
+        <script>
+            swal({
+                title: "Success!",
+                text: "Pixel has been successfully edited",
+                icon: "success",
+                button: "OK",
+            });
+        </script>
+    @elseif(session()->get('msg')=='editerror')
+        <script>
+            swal({
+                title: "Error!",
+                text: "Something went wrong during the edit process, please try again",
+                icon: "warning",
+                button: "OK",
+            });
+        </script>
+    @endif
+@endif
 
 
 {{--@include('pixels.pixelModal')--}}
@@ -222,15 +198,76 @@
     <div class="main-content">
         <div class="container">
 
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     <div class="container">
-                        <div class="panel panel-default">
+                        <div class="panel panel-primary">
                             <div class="panel-heading"><h4>Manage Your Pixels</h4></div>
                             <div class="panel-body">
                                 <div class="text-center">
-                                    <p>You have not added any Pixel yet, click on the below button to get started!</p>
-                                    <button class="btn btn-xs btn-primary" id="manage-pixel-btn" data-toggle="modal" data-target="#login-modal"><i class="fa fa-plus-square"></i> Add pixels</button>
+                                    @if(count($userPixels)==0)
+                                        <p>You have not added any Pixel yet, click on the below button to get started!</p>
+                                        <button class="btn btn-xs btn-primary" id="manage-pixel-btn" data-toggle="modal" data-target="#login-modal"><i class="fa fa-plus-square"></i> Add pixel</button>
+                                    @elseif(count($userPixels)>0)
+                                        <sapn class="pull-left">
+                                            <button class="btn btn-xs btn-primary" id="manage-pixel-btn" data-toggle="modal" data-target="#login-modal"><i class="fa fa-plus-square"></i> New pixel</button>
+                                        </sapn>
+                                        <table id="pixel-table" class="table table-hover pixel-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Pixel Name</th>
+                                                    <th>Pixel Network</th>
+                                                    <th>Pixel ID</th>
+                                                    <th>Created On</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($userPixels as $pixel)
+                                                    <tr id="pixel-row-{{$pixel->id}}">
+                                                        <td>{{$pixel->pixel_name}}</td>
+                                                        <td>
+                                                            @if($pixel->network=='gl_pixel_id')
+                                                                <i class="fa fa-google"></i> Google
+                                                            @elseif($pixel->network=='fb_pixel_id')
+                                                                <i class="fa fa-facebook"></i> Facebook
+                                                            @elseif($pixel->network=='twt_pixel_id')
+                                                                <i class="fa fa-twitter"></i> Twitter
+                                                            @elseif($pixel->network=='li_pixel_id')
+                                                                <i class="fa fa-linkedin"></i> LinkedIn
+                                                            @elseif($pixel->network=='pinterest_pixel_id')
+                                                                <i class="fa fa-pinterest"></i> Pinterest
+                                                            @elseif($pixel->network=='quora_pixel_id')
+                                                                <i class="fa fa-code"></i> Quora
+                                                            @elseif($pixel->network=='custom_pixel_id')
+                                                                <i class="fa fa-code"></i> Custom
+                                                            @endif
+                                                        </td>
+                                                        <td>{{$pixel->pixel_id}}</td>
+                                                        <td>{{$pixel->created_at->diffForHumans()}}</td>
+                                                        <td>
+                                                            <button class="action-btn pixel-edit-btn" href="javascript:void(0);" data-id="{{$pixel->id}}" id="pixel-edit-btn-{{$pixel->id}}">
+                                                                <i class="fa fa-edit"></i>
+                                                            </button>
+                                                            <button class="action-btn pixel-delete-btn" href="javascript:void(0);" data-id="{{$pixel->id}}" id="pixel-delete-btn-{{$pixel->id}}">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -249,32 +286,69 @@
     <div class="modal-dialog">
         <div class="loginmodal-container">
             <h3><center>Add your pixel</center></h3><br>
-            <form>
+            <form action="{{route('savepixel')}}" method="post">
                 <div class="form-group">
                     <label for="email">Select network:</label>
-                    <select name="pixel_type">
-                        <option class="facebook">Facebook</option>
-                        <option class="twitter">Twitter</option>
-                        <option class="linkedin">LinkedIn</option>
-                        <option class="pinterest">Pinterest</option>
-                        <option class="quora">Quora</option>
-                        <option class="google">Google</option>
-                        <option class="custom">Custom</option>
+                    <select name="network" required>
+                        <option value="fb_pixel_id">Facebook</option>
+                        <option value="twt_pixel_id">Twitter</option>
+                        <option value="li_pixel_id">LinkedIn</option>
+                        <option value="pinterest_pixel_id">Pinterest</option>
+                        <option value="quora_pixel_id">Quora</option>
+                        <option value="gl_pixel_id">Google</option>
+                        <option value="custom_pixel_id">Custom</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="pwd">Pixel name:</label>
-                    <input type="text" class="form-control" id="pwd" placeholder="Enter pixel name">
+                    <input type="text" class="form-control" name="pixel_name" id="add-pixel-name" placeholder="Enter pixel name" required>
                 </div>
                 <div class="form-group">
                     <label for="pwd">Pixel id:</label>
-                    <input type="text" class="form-control" id="pwd" placeholder="Enter pixel id">
+                    <input type="text" class="form-control" name="pixel_id" id="add-pixel-id" placeholder="Enter pixel id" required>
                 </div>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Save">
+                <input type="hidden" name="_token" value="{{csrf_token()}}">
             </form>
         </div>
     </div>
 </div>
+
+<!-- Edit pixel modal -->
+
+<div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="loginmodal-container">
+            <h3><center>Edit your pixel</center></h3><br>
+            <form action="{{route('editpixel')}}" method="post">
+                <div class="form-group">
+                    <label for="email">Select network:</label>
+                    <select name="network" id="edit-pixel-network" required>
+                        <option value="fb_pixel_id">Facebook</option>
+                        <option value="twt_pixel_id">Twitter</option>
+                        <option value="li_pixel_id">LinkedIn</option>
+                        <option value="pinterest_pixel_id">Pinterest</option>
+                        <option value="quora_pixel_id">Quora</option>
+                        <option value="gl_pixel_id">Google</option>
+                        <option value="custom_pixel_id">Custom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Pixel name:</label>
+                    <input type="text" class="form-control" name="pixel_name" id="edit-pixel-name" placeholder="Enter pixel name" required>
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Pixel id:</label>
+                    <input type="text" class="form-control" name="pixel_id" id="edit-pixel-id" placeholder="Enter pixel id" required>
+                </div>
+                <input type="submit" name="login" class="login loginmodal-submit" value="Save">
+                <input type="hidden" name="_token" value="{{csrf_token()}}">
+                <input type="hidden" name="id" id="pxlid" value="">
+            </form>
+        </div>
+    </div>
+</div>
+
 
 
 @include('contents/footer')
@@ -309,33 +383,123 @@
             }
         });
 
+        $('.pixel-edit-btn').on('click', function(){
+            var id = $(this).data('id');
+            var pixelName = $('#pixel-row-'+id).find('td:eq(0)').text();
+            var pixelNetwork = $('#pixel-row-'+id).find('td:eq(1)').text();
+            var pixelId = $('#pixel-row-'+id).find('td:eq(2)').text();
+            pixelNetwork = pixelNetwork.trim();
+            var actualNetwork;
+
+            if(pixelNetwork=='Google')
+            {
+                actualNetwork = 'gl_pixel_id';
+            }
+            else if(pixelNetwork=='Facebbok')
+            {
+                actualNetwork = 'fb_pixel_id';
+            }
+            else if(pixelNetwork=='Twitter')
+            {
+                actualNetwork = 'twt_pixel_id';
+            }
+            else if(pixelNetwork=='LinkedIn')
+            {
+                actualNetwork = 'li_pixel_id';
+            }
+            else if(pixelNetwork=='Pinterest')
+            {
+                actualNetwork = 'pinterest_pixel_id';
+            }
+            else if(pixelNetwork=='Quora')
+            {
+                actualNetwork = 'quora_pixel_id';
+            }
+            else if(pixelNetwork=='Custom')
+            {
+                actualNetwork = 'custom_pixel_id';
+            }
+
+            $('#edit-pixel-name').val(pixelName);
+            $('#edit-pixel-id').val(pixelId);
+            $('#pxlid').val(id);
+            $('#edit-pixel-network').find('option').each(function(index){
+                var elementNetwork = $(this).val();
+                if(elementNetwork==actualNetwork)
+                {
+                    $(this).prop('selected','selected');
+                    return false;
+                }
+            });
+            $('#edit-modal').modal('show');
+        });
+
+        $('.pixel-delete-btn').on('click', function(){
+            var id = $(this).data('id');
+            swal({
+                    title: "Are you sure you want to delete this pixel?",
+                    text: "Once deleted you will not be able to recover this!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.post("{{route('deletepixel')}}", {
+                        'id': id,
+                        '_token': "{{csrf_token()}}"
+                    },
+                    function(data, status, xhr){
+                        if(xhr.status==200)
+                        {
+                            var jsonData = JSON.parse(data);
+                            if(jsonData.status==200)
+                            {
+                                if(jsonData.row>0)
+                                {
+                                    $('#pixel-row-'+jsonData.row).hide(200);
+                                    swal("Success!", "You have successfully deleted the pixel!", "success");
+                                }
+                            }
+                            else
+                            {
+                                swal("Oops!", jsonData.message, "warning");
+                            }
+                        }
+                    });
+                });
+        });
+
+        $('#pixel-table').DataTable();
+
     });
 
 
-    function copyUrl(id)
-    {
-        var temp = $("<input>");
-        $("body").append(temp);
-        var data = $('#url-'+id).prop('href');
-        data = data.trim();
-        temp.val(data).select();
-        document.execCommand("copy");
-        temp.remove();
-        var node = document.getElementById('url-'+id);
-        if (document.body.createTextRange) {
-            const range = document.body.createTextRange();
-            range.moveToElementText(node);
-            range.select();
-        } else if (window.getSelection) {
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(node);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        } else {
-            console.warn("Could not select text in node: Unsupported browser.");
-        }
-    }
+    // function copyUrl(id)
+    // {
+    //     var temp = $("<input>");
+    //     $("body").append(temp);
+    //     var data = $('#url-'+id).prop('href');
+    //     data = data.trim();
+    //     temp.val(data).select();
+    //     document.execCommand("copy");
+    //     temp.remove();
+    //     var node = document.getElementById('url-'+id);
+    //     if (document.body.createTextRange) {
+    //         const range = document.body.createTextRange();
+    //         range.moveToElementText(node);
+    //         range.select();
+    //     } else if (window.getSelection) {
+    //         const selection = window.getSelection();
+    //         const range = document.createRange();
+    //         range.selectNodeContents(node);
+    //         selection.removeAllRanges();
+    //         selection.addRange(range);
+    //     } else {
+    //         console.warn("Could not select text in node: Unsupported browser.");
+    //     }
+    // }
 </script>
 
 <!-- ManyChat -->

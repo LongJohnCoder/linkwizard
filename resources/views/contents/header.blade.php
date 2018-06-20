@@ -1,3 +1,6 @@
+<?php
+$uri = (Request::segment(count(Request::segments())));
+?>
 <style>
 	 .pixel{
 		 -webkit-transition: 05s; /* For Safari 3.1 to 6.0 */
@@ -12,6 +15,9 @@
 		 -webkit-transition: 05s; /* For Safari 3.1 to 6.0 */
 		 transition: 0.5s;
 	}
+     .active a{
+         color: #b0e0e6!important;
+     }
 </style>
 <header>
 	<div class="container">
@@ -52,7 +58,6 @@
 	                </div>
 	                <div id="userdetails" class="userdetails">
 	                	<div>
-							<center><a href="{{route('pixels')}}" class="btn btn-sm pixel" style="display: block; width: 70%;"><i class="fa fa-link"></i> Retargeting Pixels</a></center>
 		                	<a href="{{ route('getLogout') }}" class="signout"><i class="fa fa-sign-out"></i> Sign out</a>
 		                	<p style="color:white">{{ $user->name }}</p>
 		                	<p style="color:white">{{ $user->email }}</p>
@@ -170,11 +175,12 @@
 				        </div> -->
 				        <div class="desktop-menu">
 				            <ul>
-				            	<li><a href="/about">about</a></li>
-				            	<li><a href="/features">features</a></li>
-				            	<li><a href="/pricing">pricing</a></li>
-				            	<li><a href="/blog">blog</a></li>
-											<li><a href="{{route('getDashboard')}}">dashboard</a></li>
+                                <li class="<?php echo ($uri=='about')?'active' : '' ?>"><a href="/about">about</a></li>
+                                <li class="<?php echo ($uri=='features')?'active' : '' ?>"><a href="/features">features</a></li>
+                                <li class="<?php echo ($uri=='pricing')?'active' : '' ?>"><a href="/pricing">pricing</a></li>
+                                <li class="<?php echo ($uri=='blog')?'active' : '' ?>"><a href="/blog">blog</a></li>
+                                <li class="<?php echo ($uri=='pixels')?'active' : '' ?>"><a href="{{route('pixels')}}">Managing Pixels</a></li>
+                                <li class="<?php echo ($uri=='dashboard')?'active' : '' ?>"><a href="{{route('getDashboard')}}">dashboard</a></li>
 				            	@if ($user->is_admin == 1)
 		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
                     	@endif
