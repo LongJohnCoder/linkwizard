@@ -5,6 +5,7 @@
     use App\Country;
     use App\Limit;
     use App\LinkLimit;
+    use App\Pixel;
     use App\Platform;
     use App\Referer;
     use App\RefererUrl;
@@ -73,13 +74,23 @@
                         $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($user) {
                                    $q->where('user_id',$user->id);
                                  })->pluck('tag')->toArray();
+                        $pixelsToManage = Pixel::where('user_id', Auth::user()->id)->get();
+                        if(count($pixelsToManage)>0)
+                        {
+                            $pixels = $pixelsToManage;
+                        }
+                        elseif(count($pixelsToManage)==0)
+                        {
+                            $pixels = '';
+                        }
                         return view('dashboard.shorten_url' , [
                             'urlTags'             => $urlTags,
                             'total_links'         => $total_links,
                             'limit'               => $limit,
                             'subscription_status' => $subscription_status,
                             'user'                => $user,
-                            'type'                => $type
+                            'type'                => $type,
+                            'pixels'              => $pixels
                         ]);
                     }
                 } else {

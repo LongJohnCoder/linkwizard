@@ -7,6 +7,7 @@ use App\CircularLink;
 use App\Country;
 use App\Limit;
 use App\LinkLimit;
+use App\Pixel;
 use App\Platform;
 use App\Referer;
 use App\RefererUrl;
@@ -26,6 +27,7 @@ use App\PasswordReset;
 use Mail;
 use App\Http\Requests\ForgotPasswordRequest;
 use Intervention\Image\ImageManagerStatic as Image;
+use Mockery\Exception;
 
 class HomeController extends Controller
 {
@@ -3097,8 +3099,9 @@ class HomeController extends Controller
 
     /**
      * Load pixel view
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-
     public function loadPixels(Request $request)
     {
         if(Auth::check())
@@ -3110,9 +3113,123 @@ class HomeController extends Controller
             {
                 $user = Auth::user();
                 $arr = $this->getAllDashboardElements($user, $request);
-                //dd($arr['user']->name);
-                return view('pixels.pixel_preview', compact('arr'));
+                $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
+                return view('pixels.pixel_preview', compact('arr', 'userPixels'));
             }
+        }
+    }
+
+    /**
+     * Store pixels
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function savePixels(Request $request)
+    {
+        if(Auth::check())
+        {
+            if(Session::has('plan'))
+            {
+                return redirect()->action('HomeController@getSubscribe');
+            }else
+            {
+                $this->validate($request,[
+                    'network' => 'required',
+                    'pixel_name' => 'required|max:150',
+                    'pixel_id' => 'required|max:150'
+                ]);
+
+                try
+                {
+                    $pixel = new Pixel();
+                    $pixel->user_id = Auth::user()->id;
+                    $pixel->network = $request->network;
+                    $pixel->pixel_name = $request->pixel_name;
+                    $pixel->pixel_id = $request->pixel_id;
+                    $pixel->save();
+                    return redirect()->back()->with('msg', 'success');
+                }
+                catch(Exception $e)
+                {
+                    return redirect()->back()->with('msg', 'error');
+                }
+            }
+        }
+        else
+        {
+            return redirect()->action('HomeController@getDashboard');
+        }
+    }
+
+    /**
+     * Edit pixels
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function editPixels(Request $request)
+    {
+        if(Auth::check())
+        {
+            if(Session::has('plan'))
+            {
+                return redirect()->action('HomeController@getSubscribe');
+            }
+            else
+            {
+                $this->validate($request,[
+                    'network' => 'required',
+                    'pixel_name' => 'required|max:150',
+                    'pixel_id' => 'required|max:150'
+                ]);
+
+                try
+                {
+                    $pixel = Pixel::find($request->id);
+                    $pixel->user_id = Auth::user()->id;
+                    $pixel->network = $request->network;
+                    $pixel->pixel_name = $request->pixel_name;
+                    $pixel->pixel_id = $request->pixel_id;
+                    $pixel->save();
+                    return redirect()->back()->with('msg', 'editsuccess');
+                }
+                catch(Exception $e)
+                {
+                    return redirect()->back()->with('msg', 'editerror');
+                }
+            }
+        }
+        else
+        {
+            return redirect()->action('HomeController@getDashboard');
+        }
+    }
+
+    public function deletePixels(Request $request)
+    {
+        if(Auth::check())
+        {
+            if(Session::has('plan'))
+            {
+                return redirect()->action('HomeController@getSubscribe');
+            }
+            else
+            {
+                try
+                {
+                    $id = $request->id;
+                    $pixel = Pixel::find($id);
+                    $pixel->delete();
+                    echo json_encode(['status'=>200, 'message'=>'success', 'row'=>$id]);
+                }
+                catch(Exception $e)
+                {
+                    echo json_encode(['status'=>400, 'message'=>$e->getMessage(), 'row'=>0]);
+                }
+            }
+        }
+        else
+        {
+            return redirect()->action('HomeController@getDashboard');
         }
     }
 }

@@ -370,3 +370,12 @@ Route::post('/{id?}/editshorturl', 'UrlController@editUrl')->name('edit_short_ur
 
 /*** Edit url routing*/
 Route::post('/editurl', 'UrlController@editUrl')->name('edit_url');
+
+//Store pixel for management
+Route::post('/savepixel', 'HomeController@savePixels')->name('savepixel');
+
+//Edit pixel for management
+Route::post('/editpixel', 'HomeController@editPixels')->name('editpixel');
+
+//Delete pixel for management
+Route::post('/deletepixel', 'HomeController@deletePixels')->name('deletepixel');
