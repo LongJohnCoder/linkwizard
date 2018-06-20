@@ -135,6 +135,12 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                 'as' => 'getLinkPreview'
             ]);
 
+            // load retarget pixel view
+            Route::get('/pixels', [
+                'uses' => 'HomeController@loadPixels',
+                'as' => 'pixels'
+            ]);
+
             // Edit url routing
             Route::get('/{id?}/edit_url_view', 'UrlController@editUrlView')->name('edit_url_view');
 

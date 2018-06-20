@@ -1,3 +1,10 @@
+<?php
+//dd($arr);
+$user = $arr['user'];
+$subscription_status = $arr['subscription_status'];
+$urls = $arr['urls'];
+
+?>
 <style>
 	 .pixel{
 		 -webkit-transition: 05s; /* For Safari 3.1 to 6.0 */
@@ -24,7 +31,7 @@
 
 			<div class="col-md-8 col-sm-8">
 				<div class="top-right">
-					
+
 					<div class="createlink boder openpop">
 						<a href="{{route('createLink',['type' => 'wizard'])}}">
 							@if(config('settings.VIEW.SHORT_LINK') !== null)
@@ -42,7 +49,7 @@
 							@endif
 					</div>
 
-					
+
 					<div class="hamburg-menu">
 	                  <a href="#" id="menu-icon" class="menu-icon">
 	                    <div class="span bar top" style="background-color: #fff;"></div>
