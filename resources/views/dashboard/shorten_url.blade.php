@@ -145,20 +145,22 @@
                                 <div class="normal-box1">
                                     <div class="normal-header">
                                         <label class="custom-checkbox">Manage pixel
-                                            <input type="checkbox" id="Pixel" name="Pixel">
+                                            <input type="checkbox" id="managePixel" name="managePixel">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
-                                    <div class="normal-body" style="display: block;">
+                                    <div class="normal-body pixel-area">
                                         <p>Add your pixels here</p>
-                                        <select class="chosen-select-pixels" multiple="">
+                                        <div class="manage_pixel_area" id="manage_pixel_area">
+                                            <select class="chosen-select-pixels" data-placeholder="Choose a pixel" multiple tabindex="4" id="manage_pixel_contents" name="pixels[]">
                                                 <option value=""></option>
                                                 @if(count($pixels)>0 && !empty($pixels))
                                                     @foreach($pixels as $key=>$pixel)
                                                         <option value="{{$pixel->id}}">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
                                                     @endforeach
                                                 @endif
-                                        </select>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- end pixel manage -->

@@ -15,7 +15,7 @@ $uri = (Request::segment(count(Request::segments())));
 		 -webkit-transition: 05s; /* For Safari 3.1 to 6.0 */
 		 transition: 0.5s;
 	}
-     .active a{
+	 .desktop-menu .active a{
          color: #b0e0e6!important;
      }
 </style>

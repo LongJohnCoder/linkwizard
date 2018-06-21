@@ -124,6 +124,25 @@ $(document).ready(function () {
             }
         }
 
+        //Add Manage Pixel
+        if(thisInstance.id=="managePixel")
+        {
+            if(thisInstance.checked)
+            {
+                $('.pixel-area').show();
+                $('#manage_pixel_area').show();
+            }
+            else
+            {
+                $('.pixel-area').hide();
+                $('#manage_pixel_area').hide();
+                $('#manage_pixel_contents').val('');
+                var select = $('.chosen-select-pixels');
+                select.find('option').prop('selected', false);
+                select.trigger("chosen:updated");
+            }
+        }
+
         //Add Tag
         if (thisInstance.id === "shortTagsEnable") {
             if (thisInstance.checked) {
