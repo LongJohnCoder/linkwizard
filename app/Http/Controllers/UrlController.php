@@ -6,6 +6,7 @@
     use App\Limit;
     use App\LinkLimit;
     use App\Pixel;
+    use App\PixelScript;
     use App\Platform;
     use App\Referer;
     use App\RefererUrl;
@@ -201,7 +202,6 @@
                     $meta_data['twitter_title']= NULL;
                 }
 
-
                 // Add CountDowntimer
                 if(isset($request->allowCountDown) && ($request->allowCountDown == "on")){
                     $url->redirecting_time = ($request->redirecting_time*1000);
@@ -317,6 +317,22 @@
                         }
                     }
 
+                    /**
+                     * Manage pixel
+                     */
+                    if(isset($request->managePixel) && ($request->managePixel))
+                    {
+                        $pixels = [];
+                        if(count($request->pixels)>0)
+                        {
+                            for($i=0; $i<count($request->pixels); $i++)
+                            {
+                                $pixels[] = $request->pixels[$i];
+                            }
+                            $this->addPixelsToUrlFeature($pixels, $url->id);
+                        }
+                    }
+
                     //Add Tag
                     $tag=$this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
 
@@ -420,6 +436,71 @@
                 }
             }catch (Exception $e){
                 return $e->getMessage();
+            }
+        }
+
+        /**
+         * Add manageable pixels to url_features table
+         * @param $pixel
+         * @param $url_id
+         * @return \Illuminate\Http\RedirectResponse
+         */
+        private function addPixelsToUrlFeature($pixel, $url_id)
+        {
+            $urlFeatureColumn = [];
+            $pixel_id = [];
+            try
+            {
+                if(count($pixel)>0)
+                {
+                    for($i=0; $i<count($pixel); $i++)
+                    {
+                        $pixelData = Pixel::find($pixel[$i]);
+                        $urlFeatureColumn[] = $pixelData->network;
+                        $pixel_id[] = $pixelData->pixel_id;
+                    }
+
+                    $urlFeatures = new UrlFeature();
+                    $urlFeatures->url_id = $url_id;
+                    for($j=0; $j<count($pixel); $j++)
+                    {
+                        if($urlFeatureColumn[$j] == 'fb_pixel_id')
+                        {
+                            $urlFeatures->fb_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'gl_pixel_id')
+                        {
+                            $urlFeatures->gl_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'twt_pixel_id')
+                        {
+                            $urlFeatures->twt_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'li_pixel_id')
+                        {
+                            $urlFeatures->li_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'pinterest_pixel_id')
+                        {
+                            $urlFeatures->pinterest_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'quora_pixel_id')
+                        {
+                            $urlFeatures->quora_pixel_id = $pixel_id[$j];
+                        }
+                        /* DON'T DELETE */
+//                    elseif($urlFeatureColumn[$j] == 'custom_pixel_id')
+//                    {
+//                        $urlFeatures->custom_pixel_id = $pixel_id[$j];
+//                    }
+
+                    }
+                    $urlFeatures->save();
+                }
+            }
+            catch(Exception $e)
+            {
+                return redirect()->back()->with('error', 'Sorry we\'re having some problem with processing your pixels!');
             }
         }
 
@@ -1051,9 +1132,65 @@
         /*Redirect To Main Url*/
         public function getRequestedUrl($url){
             $search = Url::where('shorten_suffix', $url)->first();
-            if ($search) {
-                $url_features = UrlFeature::where('url_id', $search->id)->first();
-                return view('redirect', ['url' => $search, 'url_features' => $url_features,'suffix'=>$url]);
+            if ($search)
+            {
+
+                /* OLD URL PIXELS */
+                //$url_features = UrlFeature::where('url_id', $search->id)->first();
+                $url_features = '';
+                // Pixels for urls
+                $pxlValue = UrlFeature::where('url_id', $search->id)->first();
+                $pixelIds = [];
+                $pixelColumn = [];
+                $pixelScript = [];
+                if(count($pxlValue)>0)
+                {
+
+                    if(!empty($pxlValue->fb_pixel_id) or $pxlValue->fb_pixel_id!=NULL)
+                    {
+                        $pixelIds[] = $pxlValue->fb_pixel_id;
+                        $pixelColumn[] = 'fb_pixel_id';
+                    }
+                    if(!empty($pxlValue->gl_pixel_id) or $pxlValue->gl_pixel_id!=NULL)
+                    {
+                        $pixelIds[] = $pxlValue->gl_pixel_id;
+                        $pixelColumn[] = 'gl_pixel_id';
+                    }
+                    if(!empty($pxlValue->twt_pixel_id) or $pxlValue->twt_pixel_id!=NULL)
+                    {
+                        $pixelIds[] = $pxlValue->twt_pixel_id;
+                        $pixelColumn[] = 'twt_pixel_id';
+                    }
+                    if(!empty($pxlValue->li_pixel_id) or $pxlValue->li_pixel_id!=NULL)
+                    {
+                        $pixelIds[] = $pxlValue->li_pixel_id;
+                        $pixelColumn[] = 'li_pixel_id';
+                    }
+                    if(!empty($pxlValue->pinterest_pixel_id) or $pxlValue->pinterest_pixel_id!=NULL)
+                    {
+                        $pixelIds[] = $pxlValue->pinterest_pixel_id;
+                        $pixelColumn[] = 'pinterest_pixel_id';
+                    }
+                    if(!empty($pxlValue->quora_pixel_id) or $pxlValue->quora_pixel_id!=NULL)
+                    {
+                        $pixelIds[] = $pxlValue->quora_pixel_id;
+                        $pixelColumn[] = 'quora_pixel_id';
+                    }
+                    /* DON'T DELETE */
+//                    elseif(!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL)
+//                    {
+//                        $pixelIds[] = $pxlValue;
+//                        $pixelColumn[] = 'custom_pixel_id';
+//                    }
+
+                    for($i=0; $i< count($pixelColumn); $i++)
+                    {
+                        $scripts = PixelScript::where('network_type', $pixelColumn[$i])->first();
+                        $upperColumn = strtoupper($pixelColumn[$i]);
+                        $pixelScript[] = str_replace($upperColumn, $pixelIds[$i],$scripts->network_script);
+                    }
+                }
+                return view('redirect', ['url' => $search, 'url_features' => $url_features,'suffix'=>$url , 'pixelScripts'=>$pixelScript]);
             } else {
                 abort(404);
             }
@@ -1304,6 +1441,8 @@
                 $redirectstatus=0;
                 $message="";
             }
+
+
             return response()->json(['status' => $status,'redirecturl'=>$redirectUrl,'redirectstatus'=>$redirectstatus,'message'=>$message]);
         }
 

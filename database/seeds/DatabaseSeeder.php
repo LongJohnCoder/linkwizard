@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(StripeTableSeeder::class);
         $this->call(LimitSeeder::class);
         $this->call(CountriesTableSeeder::class);
+        $this->call(PixelScrptsTableSeeder::class);
     }
 }
