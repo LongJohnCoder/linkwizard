@@ -56,6 +56,16 @@ Route::group(['prefix' => 'api/v1'],function() {
         'uses' => 'ApiController@createShortLink',
         'as' => 'createShortLink',
     ]);
+    /*Webhooks*/
+    Route::post('suspend-subscriber',[
+        'uses'  => 'ApiController@suspendSubsciber',
+        'as'    => 'suspendSubsciber'
+    ]);
+    Route::post('unsuspend-subscriber',[
+        'uses'  => 'ApiController@unsuspendSubsciber',
+        'as'    => 'unsuspendSubsciber'
+    ]);
+    /* End Webhooks */
 });
 /* API routes ends here*/
 

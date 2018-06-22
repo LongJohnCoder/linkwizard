@@ -308,4 +308,57 @@
                 return $random_string;
             }
         }
+
+        public function suspendSubsciber(Request $request)
+  {
+    $user = User::where('email', $request->email)->first();
+    if ($user) {
+      $user->email = $user->email."_suspend";
+      $user->update();
+      echo json_encode([
+        'status' => true,
+        'message' => $request->email." is suspended successfully."
+      ]);
+    } else {
+      $check_suspend = User::where('email', $request->email.'_suspend')->first();
+      if ($check_suspend){
+        echo json_encode([
+          'status' => false,
+          'message' => $request->email." is already suspended."
+        ]);
+      } else {
+        echo json_encode([
+          'status' => false,
+          'message' => $request->email." not found!!! Check Email again."
+        ]);
+      }
+    }
+  }
+
+  public function unsuspendSubsciber(Request $request)
+  {
+    $user = User::where('email', $request->email.'_suspend')->first();
+    if ($user) {
+      $unsuspend_email = explode('_suspend', $user->email);
+      $user->email = $unsuspend_email[0];
+      $user->update();
+      echo json_encode([
+        'status' => true,
+        'message' => $request->email." is unsuspended successfully."
+      ]);
+    } else {
+      $check_unsuspend = User::where('email', $request->email)->first();
+      if ($check_unsuspend){
+        echo json_encode([
+          'status' => false,
+          'message' => $request->email." is already unsuspended."
+        ]);
+      } else {
+        echo json_encode([
+          'status' => false,
+          'message' => $request->email." not found!!! Check Email again."
+        ]);
+      }
+    }
+  }
     }
