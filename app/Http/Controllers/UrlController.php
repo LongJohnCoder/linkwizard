@@ -323,6 +323,7 @@
                     if(isset($request->managePixel) && ($request->managePixel))
                     {
                         $pixels = [];
+                        $request->pixels = explode('-', $request->pixels);
                         if(count($request->pixels)>0)
                         {
                             for($i=0; $i<count($request->pixels); $i++)
@@ -449,6 +450,7 @@
         {
             $urlFeatureColumn = [];
             $pixel_id = [];
+            $custom_pixel_script = [];
             try
             {
                 if(count($pixel)>0)
@@ -458,6 +460,7 @@
                         $pixelData = Pixel::find($pixel[$i]);
                         $urlFeatureColumn[] = $pixelData->network;
                         $pixel_id[] = $pixelData->pixel_id;
+                        $custom_pixel_script[] = $pixelData->custom_pixel_script;
                     }
 
                     $urlFeatures = new UrlFeature();
@@ -489,10 +492,10 @@
                             $urlFeatures->quora_pixel_id = $pixel_id[$j];
                         }
                         /* DON'T DELETE */
-//                    elseif($urlFeatureColumn[$j] == 'custom_pixel_id')
-//                    {
-//                        $urlFeatures->custom_pixel_id = $pixel_id[$j];
-//                    }
+                        elseif($urlFeatureColumn[$j] == 'custom_pixel_id')
+                        {
+                            $urlFeatures->custom_pixel_id = $custom_pixel_script[$j];
+                        }
 
                     }
                     $urlFeatures->save();
@@ -545,6 +548,76 @@
                             $q->where('user_id', $user->id);
                         })->pluck('tag')->toArray();
 
+                        //Url features
+                        $urlFeatures = UrlFeature::where('url_id', $id)->first();
+                        $pixel_name = [];
+                        $pixel_id = [];
+                        $pxId = [];
+                        $features = [];
+                        $networks = [];
+                        $pixel = [];
+                        if(count($urlFeatures)>0)
+                        {
+                            if(!empty($urlFeatures->fb_pixel_id))
+                            {
+                                $features[] = $urlFeatures->fb_pixel_id;
+                                $networks[] = 'fb_pixel_id';
+                            }
+                            if(!empty($urlFeatures->gl_pixel_id))
+                            {
+                                $features[] = $urlFeatures->gl_pixel_id;
+                                $networks[] = 'gl_pixel_id';
+                            }
+                            if(!empty($urlFeatures->twt_pixel_id))
+                            {
+                                $features[] = $urlFeatures->twt_pixel_id;
+                                $networks[] = 'twt_pixel_id';
+                            }
+                            if(!empty($urlFeatures->li_pixel_id))
+                            {
+                                $features[] = $urlFeatures->li_pixel_id;
+                                $networks[] = 'li_pixel_id';
+                            }
+                            if(!empty($urlFeatures->pinterest_pixel_id))
+                            {
+                                $features[] = $urlFeatures->pinterest_pixel_id;
+                                $networks[] = 'pinterest_pixel_id';
+                            }
+                            if(!empty($urlFeatures->quora_pixel_id))
+                            {
+                                $features[] = $urlFeatures->quora_pixel_id;
+                                $networks[] = 'quora_pixel_id';
+                            }
+                            if(!empty($urlFeatures->custom_pixel_id))
+                            {
+                                $features[] = $urlFeatures->custom_pixel_id;
+                                $networks[] = 'custom_pixel_id';
+                            }
+                            for($i=0; $i<count($networks); $i++)
+                            {
+                                if($networks[$i]!='custom_pixel_id')
+                                {
+                                    $pixel = Pixel::where('network', $networks[$i])
+                                        ->where('pixel_id', $features[$i])
+                                        ->first();
+                                $pixel_name[] = $pixel->pixel_name;
+                                $pxId[] = $pixel->id;
+                                $pixel_id[] = $pixel->pixel_id;
+                                }
+                                else
+                                {
+                                    $pixel = Pixel::where('network', $networks[$i])
+                                        ->where('custom_pixel_script', $features[$i])
+                                        ->first();
+                                $pixel_name[] = $pixel->pixel_name;
+                                $pxId[] = $pixel->id;
+                                $pixel_id[] = $pixel->pixel_id;
+                                }
+                            }
+                        }
+                        $pixels = Pixel:: where('user_id', $user->id)->get();
+                        //dd($pixel_name);
+
                         $selectedTags = UrlTagMap::where('url_id',$id)->with('urlTag')->get();
                         return view('dashboard.edit_url', [
                             'urlTags'              => $urlTags,
@@ -554,7 +627,11 @@
                             'user'                 => $user,
                             'type'                 => $urls->link_type,
                             'selectedTags'         => $selectedTags,
-                            'urls'                 => $urls
+                            'urls'                 => $urls,
+                            'pixel_name'           => $pixel_name,
+                            'pxId'                 => $pxId,
+                            'pixel_id'             => $pixel_id,
+                            'pixels'                => $pixels
                         ]);
 
                     }
@@ -567,7 +644,7 @@
         }
 
         /**
-         * Function returns view for edit url
+         * Function for edit url
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function editUrl(Request $request, $id=NULL){
@@ -1129,7 +1206,11 @@
             }
         }
 
-        /*Redirect To Main Url*/
+        /**
+         * Redirect To Main Url
+         * @param $url
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+         */
         public function getRequestedUrl($url){
             $search = Url::where('shorten_suffix', $url)->first();
             if ($search)
@@ -1177,17 +1258,24 @@
                         $pixelColumn[] = 'quora_pixel_id';
                     }
                     /* DON'T DELETE */
-//                    elseif(!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL)
-//                    {
-//                        $pixelIds[] = $pxlValue;
-//                        $pixelColumn[] = 'custom_pixel_id';
-//                    }
+                    elseif(!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL)
+                    {
+                        $pixelIds[] = $pxlValue->custom_pixel_id;
+                        $pixelColumn[] = 'custom_pixel_id';
+                    }
 
                     for($i=0; $i< count($pixelColumn); $i++)
                     {
-                        $scripts = PixelScript::where('network_type', $pixelColumn[$i])->first();
-                        $upperColumn = strtoupper($pixelColumn[$i]);
-                        $pixelScript[] = str_replace($upperColumn, $pixelIds[$i],$scripts->network_script);
+                        if($pixelColumn[$i]!='custom_pixel_id')
+                        {
+                            $scripts = PixelScript::where('network_type', $pixelColumn[$i])->first();
+                            $upperColumn = strtoupper($pixelColumn[$i]);
+                            $pixelScript[] = str_replace($upperColumn, $pixelIds[$i],$scripts->network_script);
+                        }
+                        else
+                        {
+                            $pixelScript[] = $pixelIds[$i];
+                        }
                     }
                 }
                 return view('redirect', ['url' => $search, 'url_features' => $url_features,'suffix'=>$url , 'pixelScripts'=>$pixelScript]);
@@ -1460,7 +1548,10 @@
         }
 
         /**
-         *  Validating special urls & dates
+         * Validating special urls & dates
+         * @param $special_date
+         * @param $special_date_redirect_url
+         * @param $url_id
          */
         public function specialScheduleInsertion($special_date, $special_date_redirect_url, $url_id)
         {

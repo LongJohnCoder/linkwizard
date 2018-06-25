@@ -3133,21 +3133,46 @@ class HomeController extends Controller
                 return redirect()->action('HomeController@getSubscribe');
             }else
             {
-                $this->validate($request,[
-                    'network' => 'required',
-                    'pixel_name' => 'required|max:150',
-                    'pixel_id' => 'required|max:150'
-                ]);
-
+                if($request->network=='custom_pixel_id')
+                {
+                    $this->validate($request,[
+                        'network' => 'required',
+                        'pixel_name' => 'required|max:150',
+                        'custom_pixel_script' => 'required'
+                    ]);
+                }
+                elseif($request->network!='custom_pixel_id')
+                {
+                    $this->validate($request,[
+                        'network' => 'required',
+                        'pixel_name' => 'required|max:150',
+                        'pixel_id' => 'required|max:150'
+                    ]);
+                }
                 try
                 {
-                    $pixel = new Pixel();
-                    $pixel->user_id = Auth::user()->id;
-                    $pixel->network = $request->network;
-                    $pixel->pixel_name = $request->pixel_name;
-                    $pixel->pixel_id = $request->pixel_id;
-                    $pixel->save();
-                    return redirect()->back()->with('msg', 'success');
+                    if($request->network=='custom_pixel_id')
+                    {
+                        $pixel = new Pixel();
+                        $pixel->user_id = Auth::user()->id;
+                        $pixel->network = $request->network;
+                        $pixel->pixel_name = $request->pixel_name;
+                        $pixel->pixel_id = NULL;
+                        $pixel->custom_pixel_script = $request->custom_pixel_script;
+                        $pixel->save();
+                        return redirect()->back()->with('msg', 'success');
+                    }
+                    elseif($request->network!='custom_pixel_id')
+                    {
+                        $pixel = new Pixel();
+                        $pixel->user_id = Auth::user()->id;
+                        $pixel->network = $request->network;
+                        $pixel->pixel_name = $request->pixel_name;
+                        $pixel->pixel_id = $request->pixel_id;
+                        $pixel->custom_pixel_script = NULL;
+                        $pixel->save();
+                        return redirect()->back()->with('msg', 'success');
+                    }
                 }
                 catch(Exception $e)
                 {
@@ -3204,6 +3229,11 @@ class HomeController extends Controller
         }
     }
 
+    /**
+     * Delete pixels
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function deletePixels(Request $request)
     {
         if(Auth::check())
