@@ -315,19 +315,19 @@
         if ($user) {
           		$user->email = $user->email."_suspend";
           $user->update();
-          echo json_encode([
+          return response()->json([
             'status' => true,
             'message' => $request->email." is suspended successfully."
           ]);
         } else {
           $check_suspend = User::where('email', $request->email.'_suspend')->first();
           if ($check_suspend){
-            echo json_encode([
+            return response()->json([
               'status' => false,
               'message' => $request->email." is already suspended."
             ]);
           } else {
-            echo json_encode([
+            return response()->json([
               'status' => false,
               'message' => $request->email." not found!!! Check Email again."
             ]);
@@ -341,19 +341,19 @@
         if ($user) {
           $user->email = $request->email;
           $user->update();
-          echo json_encode([
+          return response()->json([
             'status' => true,
             'message' => $request->email." is unsuspended successfully."
           ]);
         } else {
           $check_unsuspend = User::where('email', $request->email)->first();
           if ($check_unsuspend){
-            echo json_encode([
+            return response()->json([
               'status' => false,
               'message' => $request->email." is already unsuspended."
             ]);
           } else {
-            echo json_encode([
+            return response()->json([
               'status' => false,
               'message' => $request->email." not found!!! Check Email again."
             ]);
