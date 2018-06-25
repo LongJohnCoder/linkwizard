@@ -149,15 +149,48 @@
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
+                                    <input type="hidden" name="pixels" id="pixel-ids">
                                     <div class="normal-body pixel-area">
                                         <p>Add your pixels here</p>
                                         <div class="manage_pixel_area" id="manage_pixel_area">
                                             <select class="chosen-select-pixels" data-placeholder="Choose a pixel" multiple tabindex="4" id="manage_pixel_contents" name="pixels[]">
                                                 <option value=""></option>
                                                 @if(count($pixels)>0 && !empty($pixels))
-                                                    @foreach($pixels as $key=>$pixel)
-                                                        <option value="{{$pixel->id}}">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                    @endforeach
+                                                    <optgroup label="Facebook" id="opt-Facebook">
+                                                        @foreach($pixels as $key=>$pixel)
+                                                            @if($pixel->network=='fb_pixel_id')
+                                                                <option value="{{$pixel->id}}" data-role="Facebook">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </optgroup>
+                                                    <optgroup label="Google" id="opt-Google">
+                                                        @foreach($pixels as $key=>$pixel)
+                                                            @if($pixel->network=='gl_pixel_id')
+                                                                <option value="{{$pixel->id}}" data-role="Google">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </optgroup>
+                                                    <optgroup label="Twitter" id="opt-Twitter">
+                                                        @foreach($pixels as $key=>$pixel)
+                                                            @if($pixel->network=='twt_pixel_id')
+                                                                <option value="{{$pixel->id}}" data-role="Twitter">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </optgroup>
+                                                    <optgroup label="LinkedIn" id="opt-LinkedIn">
+                                                        @foreach($pixels as $key=>$pixel)
+                                                            @if($pixel->network=='li_pixel_id')
+                                                                <option value="{{$pixel->id}}" data-role="LinkedIn">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </optgroup>
+                                                    <optgroup label="Custom" id="opt-Custom">
+                                                        @foreach($pixels as $key=>$pixel)
+                                                            @if($pixel->network=='custom_pixel_id')
+                                                                <option value="{{$pixel->id}}" data-role="Custom">{{$pixel->pixel_name}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </optgroup>
                                                 @endif
                                             </select>
                                         </div>
@@ -694,6 +727,33 @@
 
             /* pixel manage */
             $(".chosen-select-pixels").chosen({width: "95%"});
+
+            /* Multi network validation */
+            $(".chosen-select-pixels").on('change', function(evt, el){
+
+                var selected_value  = el.selected;
+                var labelArr = [];
+                $('.chosen-select-pixels').find('option').each(function(){
+                    if($(this).val()==selected_value)
+                    {
+                        var label = $(this).data('role');
+                        labelArr.push(label);
+                    }
+                });
+                var optLabel = labelArr[0];
+                //alert(optLabel);
+                $('#opt-'+optLabel).prop('disabled', 'disabled').trigger("chosen:updated");
+                var pixels = $('#pixel-ids').val();
+                if(pixels.length==0)
+                {
+                    $('#pixel-ids').val(el.selected);
+                }
+                else
+                {
+                    pixels = pixels+'-'+(el.selected);
+                    $('#pixel-ids').val(pixels);
+                }
+            });
 
 
             var new_count;

@@ -17,7 +17,8 @@ class CreatePixelsTable extends Migration
             $table->integer('user_id')->unsigned()->index();
             $table->string('network');
             $table->string('pixel_name');
-            $table->string('pixel_id');
+            $table->string('pixel_id')->nullable();
+            $table->text('custom_pixel_script')->nullable();
             $table->timestamps();
 
             /* Foreign key definitions */

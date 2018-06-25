@@ -253,7 +253,13 @@
                                                                 <i class="fa fa-code"></i> Custom
                                                             @endif
                                                         </td>
-                                                        <td>{{$pixel->pixel_id}}</td>
+                                                        <td>
+                                                            @if(!empty($pixel->pixel_id))
+                                                                {{$pixel->pixel_id}}
+                                                            @else
+                                                                {{$pixel->custom_pixel_script}}
+                                                            @endif
+                                                        </td>
                                                         <td>{{$pixel->created_at->diffForHumans()}}</td>
                                                         <td>
                                                             <button class="action-btn pixel-edit-btn" href="javascript:void(0);" data-id="{{$pixel->id}}" id="pixel-edit-btn-{{$pixel->id}}">
@@ -287,7 +293,7 @@
         <div class="loginmodal-container">
             <h3><center>Add your pixel</center></h3><br>
             <form action="{{route('savepixel')}}" method="post">
-                <div class="form-group">
+                <div class="form-group" id="store-modal">
                     <label for="email">Select network:</label>
                     <select name="network" required>
                         <option value="fb_pixel_id">Facebook</option>
@@ -307,6 +313,7 @@
                 <div class="form-group">
                     <label for="pwd">Pixel id:</label>
                     <input type="text" class="form-control" name="pixel_id" id="add-pixel-id" placeholder="Enter pixel id" required>
+                    <textarea class="form-control" name="custom_pixel_script" id="add-custom-script" placeholder="Enter your custom script" rows="6" style="resize: none; display: none;"></textarea>
                 </div>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Save">
                 <input type="hidden" name="_token" value="{{csrf_token()}}">
@@ -322,7 +329,7 @@
         <div class="loginmodal-container">
             <h3><center>Edit your pixel</center></h3><br>
             <form action="{{route('editpixel')}}" method="post">
-                <div class="form-group">
+                <div class="form-group" id="edit-modal">
                     <label for="email">Select network:</label>
                     <select name="network" id="edit-pixel-network" required>
                         <option value="fb_pixel_id">Facebook</option>
@@ -341,7 +348,10 @@
                 </div>
                 <div class="form-group">
                     <label for="pwd">Pixel id:</label>
-                    <input type="text" class="form-control" name="pixel_id" id="edit-pixel-id" placeholder="Enter pixel id" required>
+
+                    <input type="text" class="form-control" name="pixel_id" id="edit-pixel-id" placeholder="Enter pixel id">
+                    <textarea class="form-control" name="custom_pixel_script" id="edit-custom-script" placeholder="Enter your custom script" rows="6" style="resize: none;"></textarea>
+
                 </div>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Save">
                 <input type="hidden" name="_token" value="{{csrf_token()}}">
@@ -390,6 +400,7 @@
             var pixelName = $('#pixel-row-'+id).find('td:eq(0)').text();
             var pixelNetwork = $('#pixel-row-'+id).find('td:eq(1)').text();
             var pixelId = $('#pixel-row-'+id).find('td:eq(2)').text();
+            pixelId = pixelId.trim();
             pixelNetwork = pixelNetwork.trim();
             var actualNetwork;
 
@@ -423,7 +434,24 @@
             }
 
             $('#edit-pixel-name').val(pixelName);
-            $('#edit-pixel-id').val(pixelId);
+            if(pixelNetwork!='Custom')
+            {
+                $('#edit-pixel-id').val(pixelId);
+                $('#edit-pixel-id').show();
+                $('#edit-pixel-id').prop('required', true);
+
+                $('#edit-custom-script').val('');
+                $('#edit-custom-script').hide();
+            }
+            else if(pixelNetwork=='Custom')
+            {
+                $('#edit-custom-script').val(pixelId);
+                $('#edit-custom-script').show();
+                $('#edit-custom-script').prop('required', true);
+
+                $('#edit-pixel-id').val('');
+                $('#edit-pixel-id').hide();
+            }
             $('#pxlid').val(id);
             $('#edit-pixel-network').find('option').each(function(index){
                 var elementNetwork = $(this).val();
@@ -474,6 +502,48 @@
         });
 
         $('#pixel-table').DataTable();
+
+        // toggle textarea for custom pixel for adding
+        $('#store-modal select').on('change', function(){
+            var network = $(this).val();
+            if(network=='custom_pixel_id')
+            {
+                $('#add-pixel-id').hide();
+                $('#add-pixel-id').prop('required', false);
+                $('#add-pixel-id').val('');
+                $('#add-custom-script').show();
+                $('#add-custom-script').prop('required', true);
+            }
+            else
+            {
+                $('#add-pixel-id').show();
+                $('#add-pixel-id').prop('required', true);
+                $('#add-custom-script').hide();
+                $('#add-custom-script').val('');
+                $('#add-custom-script').prop('required', false);
+            }
+        });
+
+        // toggle textarea for custom pixel for editing
+        $('#edit-modal select').on('change', function(){
+            var network = $(this).val();
+            if(network=='custom_pixel_id')
+            {
+                $('#edit-pixel-id').hide();
+                $('#edit-pixel-id').prop('required', false);
+                $('#edit-pixel-id').val('');
+                $('#edit-custom-script').show();
+                $('#edit-custom-script').prop('required', true);
+            }
+            else
+            {
+                $('#edit-pixel-id').show();
+                $('#edit-pixel-id').prop('required', true);
+                $('#edit-custom-script').hide();
+                $('#edit-custom-script').val('');
+                $('#edit-custom-script').prop('required', false);
+            }
+        });
 
     });
 
