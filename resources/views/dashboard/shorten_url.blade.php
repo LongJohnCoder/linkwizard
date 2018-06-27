@@ -112,8 +112,9 @@
                                     @endif 
                                 </div>
                                 <!--Add URL End-->
-                                <!--Add facebook pixel Start-->
-                                <div class="normal-box1">
+
+                                <!--Old facebook pixel Start-->
+                               <!-- <div class="normal-box1">
                                     <div class="normal-header">
                                         <label class="custom-checkbox">Add facebook pixel
                                             <input type="checkbox" id="checkboxAddFbPixelid" name="checkboxAddFbPixelid">
@@ -124,10 +125,11 @@
                                         <p>Paste Your Facebook-pixel-id Here</p>
                                         <input type="text" name="fbPixelid" class="form-control" id="fbPixel_id">
                                     </div>
-                                </div>
-                                <!--Add facebook pixel End-->
-                                <!--Add google pixel Start-->
-                                <div class="normal-box1">
+                                </div> -->
+                                <!--Old facebook pixel End-->
+
+                                <!--Old google pixel Start-->
+                                <!--<div class="normal-box1">
                                     <div class="normal-header">
                                         <label class="custom-checkbox">Add google pixel
                                             <input type="checkbox" id="checkboxAddGlPixelid" name="checkboxAddGlPixelid">
@@ -138,8 +140,8 @@
                                         <p>Paste Your Google-pixel-id Here</p>
                                         <input type="text" name="glPixelid" class="form-control" id="glPixel_id">
                                     </div>
-                                </div>
-                                <!--Add google pixel End-->
+                                </div>-->
+                                <!--Old google pixel End-->
 
                                 <!-- Pixel manage -->
                                 <div class="normal-box1">
@@ -742,7 +744,41 @@
                 });
                 var optLabel = labelArr[0];
                 //alert(optLabel);
-                $('#opt-'+optLabel).prop('disabled', 'disabled').trigger("chosen:updated");
+                //$('#opt-'+optLabel).prop('disabled', 'disabled').trigger("chosen:updated");
+                $('#opt-'+optLabel).find('option').each(function(){
+                    if($(this).val()!=selected_value)
+                    {
+                        $(this).prop('disabled', 'disabled').trigger("chosen:updated");
+                    }
+                });
+
+                // removing added pixel validation
+                $('.search-choice-close').on('click',function(){
+                    var remIndex = $(this).data('option-array-index');
+                    remIndex = parseInt(remIndex);
+                    var remArr = [];
+                    var remValArr = [];
+                    $('.chosen-select-pixels').find('optgroup, option').each(function(indx){
+
+                        if(indx==remIndex)
+                        {
+                            var remLabel = $(this).data('role');
+                            var remVal = $(this).val();
+                            remArr.push(remLabel);
+                            remValArr.push(remVal);
+                        }
+
+                    });
+                    var remOptlabel = remArr[0];
+
+                    $('#opt-'+remOptlabel).find('option').each(function(){
+                        if($(this).val()!=remValArr[0])
+                        {
+                            $(this).prop('disabled', false).trigger("chosen:updated");
+                        }
+                    });
+                });
+
                 var pixels = $('#pixel-ids').val();
                 if(pixels.length==0)
                 {
@@ -755,6 +791,7 @@
                 }
             });
 
+            /* end of pixel manage */
 
             var new_count;
             // Special Schedule tab add /
