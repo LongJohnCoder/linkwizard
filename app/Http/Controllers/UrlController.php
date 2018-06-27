@@ -323,7 +323,7 @@
                     if(isset($request->managePixel) && ($request->managePixel))
                     {
                         $pixels = [];
-                        $request->pixels = explode('-', $request->pixels);
+                        //$request->pixels = explode('-', $request->pixels);
                         if(count($request->pixels)>0)
                         {
                             for($i=0; $i<count($request->pixels); $i++)
@@ -600,9 +600,18 @@
                                     $pixel = Pixel::where('network', $networks[$i])
                                         ->where('pixel_id', $features[$i])
                                         ->first();
-                                $pixel_name[] = $pixel->pixel_name;
-                                $pxId[] = $pixel->id;
-                                $pixel_id[] = $pixel->pixel_id;
+                                    if(count($pixel)>0)
+                                    {
+                                        $pixel_name[] = $pixel->pixel_name;
+                                        $pxId[] = $pixel->id;
+                                        $pixel_id[] = $pixel->pixel_id;
+                                    }
+                                    else
+                                    {
+                                        $pixel_name[] = ucwords($networks[$i]);
+                                        $pixel_id[] = $features[$i];
+                                        $pxId[] = 0;
+                                    }
                                 }
                                 else
                                 {
@@ -616,7 +625,7 @@
                             }
                         }
                         $pixels = Pixel:: where('user_id', $user->id)->get();
-                        //dd($pixel_name);
+                        //dd($pxId);
 
                         $selectedTags = UrlTagMap::where('url_id',$id)->with('urlTag')->get();
                         return view('dashboard.edit_url', [
@@ -631,7 +640,7 @@
                             'pixel_name'           => $pixel_name,
                             'pxId'                 => $pxId,
                             'pixel_id'             => $pixel_id,
-                            'pixels'                => $pixels
+                            'pixels'               => $pixels
                         ]);
 
                     }
@@ -966,6 +975,20 @@
                         }
                     }
 
+                    //Edit pixels
+                    if(isset($request->managePixel) && $request->managePixel=='on')
+                    {
+                        $this->managePixel($id, $request->pixels);
+                    }
+                    else
+                    {
+                        $urlFeatures = UrlFeature::where('url_id', $id)->first();
+                        if(count($urlFeatures)>0)
+                        {
+                            $urlFeatures->delete();
+                        }
+                    }
+
                     //Edit Tags
                     $tag=$this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
                     
@@ -981,6 +1004,90 @@
                 abort(404);
             }
         }
+
+        /**
+         * Manage edit pixel
+         * @param $id
+         * @param $pixels
+         * @return \Illuminate\Http\RedirectResponse
+         */
+        private function managePixel($id, $pixels)
+        {
+            try
+            {
+                if(count($pixels)>0)
+                {
+                    $urlFeatureCol = [];
+                    $pixel_id = [];
+                    for($i=0; $i<count($pixels); $i++)
+                    {
+                        if($pixels[$i]!=0)
+                        {
+                            $pixel = Pixel::find($pixels[$i]);
+                            if($pixel->network!='custom_pixel_id')
+                            {
+                                $urlFeatureCol[] = $pixel->network;
+                                $pixel_id[] = $pixel->pixel_id;
+                            }
+                            elseif($pixel->network=='custom_pixel_id')
+                            {
+                                $urlFeatureCol[] = $pixel->network;
+                                $pixel_id[] = $pixel->custom_pixel_script;
+                            }
+                        }
+
+                    }
+
+                    $urlFeature = UrlFeature::where('url_id', $id)->first();
+
+                    $urlFeature->fb_pixel_id = NULL;
+                    $urlFeature->gl_pixel_id = NULL;
+                    $urlFeature->twt_pixel_id = NULL;
+                    $urlFeature->li_pixel_id = NULL;
+                    $urlFeature->pinterest_pixel_id = NULL;
+                    $urlFeature->quora_pixel_id = NULL;
+                    $urlFeature->custom_pixel_id = NULL;
+
+                    for($i=0; $i<count($urlFeatureCol); $i++)
+                    {
+                        if ($urlFeatureCol[$i]=='fb_pixel_id')
+                        {
+                            $urlFeature->fb_pixel_id = $pixel_id[$i];
+                        }
+                        if ($urlFeatureCol[$i]=='gl_pixel_id')
+                        {
+                            $urlFeature->gl_pixel_id = $pixel_id[$i];
+                        }
+                        if ($urlFeatureCol[$i]=='twt_pixel_id')
+                        {
+                            $urlFeature->twt_pixel_id = $pixel_id[$i];
+                        }
+                        if ($urlFeatureCol[$i]=='li_pixel_id')
+                        {
+                            $urlFeature->li_pixel_id = $pixel_id[$i];
+                        }
+                        if ($urlFeatureCol[$i]=='pinterest_pixel_id')
+                        {
+                            $urlFeature->pinterest_pixel_id = $pixel_id[$i];
+                        }
+                        if ($urlFeatureCol[$i]=='quora_pixel_id')
+                        {
+                            $urlFeature->quora_pixel_id = $pixel_id[$i];
+                        }
+                        if ($urlFeatureCol[$i]=='custom_pixel_id')
+                        {
+                            $urlFeature->custom_pixel_id = $pixel_id[$i];
+                        }
+                    }
+                    $urlFeature->save();
+                }
+            }
+            catch(Exception $e)
+            {
+                return redirect()->back()->with('error' ,'Remove old pixel and add them from pixel manage');
+            }
+        }
+
 
         /**
          * Function Return Meta Content Of Url
@@ -1733,6 +1840,12 @@
         }
 
 
+        /**
+         *  Add special schedules for links
+         * @param $url
+         * @param $queryString
+         * @return mixed
+         */
         public function schedulSpecialDay($url, $queryString){
             $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->id)->get();
             if(count($urlSpecialSchedules)>0){
@@ -1757,7 +1870,12 @@
             }
         }
 
-        /* weekly schedule */
+        /**
+         * Weekly schedule for links
+         * @param $url
+         * @param $queryString
+         * @return mixed
+         */
         public function schedularWeeklyDaywise($url, $queryString){
             $url_link_schedules = UrlLinkSchedule::where('url_id', $url->id)->get();
             if($url->is_scheduled =='y' && count($url_link_schedules)>0){
