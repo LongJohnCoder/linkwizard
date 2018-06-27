@@ -24,7 +24,7 @@ sudo update-alternatives --set php-config /usr/bin/php-config7.0
 
 #installing browscap.ini
 
-sudo wget -O /etc/php/7.0/apache2/browscap.ini http://browscap.org/stream?q=BrowsCapINI
+sudo wget -0 /etc/php/7.0/apache2/browscap.ini http://browscap.org/stream?q=BrowsCapINI
 
 #now go to file /etc/php/7.0/apache2/php.ini and search for 'browscap.ini' by pressing ctrl+w
 #if browscap extension is commented out paste the line below
