@@ -308,11 +308,11 @@
                 </div>
                 <div class="form-group">
                     <label for="pwd">Pixel name:</label>
-                    <input type="text" class="form-control" name="pixel_name" id="add-pixel-name" placeholder="Enter pixel name" required>
+                    <input type="text" class="form-control" name="pixel_name" id="add-pixel-name" placeholder="Enter pixel name" required onblur="checkPixelName(this.value, 'Add')">
                 </div>
                 <div class="form-group">
                     <label for="pwd">Pixel id:</label>
-                    <input type="text" class="form-control" name="pixel_id" id="add-pixel-id" placeholder="Enter pixel id" required>
+                    <input type="text" class="form-control" name="pixel_id" id="add-pixel-id" placeholder="Enter pixel id" required onblur="checkPixelId(this.value, 'Add')">
                     <textarea class="form-control" name="custom_pixel_script" id="add-custom-script" placeholder="Enter your custom script" rows="6" style="resize: none; display: none;"></textarea>
                 </div>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Save">
@@ -344,12 +344,12 @@
                 </div>
                 <div class="form-group">
                     <label for="pwd">Pixel name:</label>
-                    <input type="text" class="form-control" name="pixel_name" id="edit-pixel-name" placeholder="Enter pixel name" required>
+                    <input type="text" class="form-control" name="pixel_name" id="edit-pixel-name" placeholder="Enter pixel name" required onblur="checkPixelName(this.value, 'Edit')">
                 </div>
                 <div class="form-group">
                     <label for="pwd">Pixel id:</label>
 
-                    <input type="text" class="form-control" name="pixel_id" id="edit-pixel-id" placeholder="Enter pixel id">
+                    <input type="text" class="form-control" name="pixel_id" id="edit-pixel-id" placeholder="Enter pixel id" onblur="checkPixelId(this.value, 'Edit')">
                     <textarea class="form-control" name="custom_pixel_script" id="edit-custom-script" placeholder="Enter your custom script" rows="6" style="resize: none;"></textarea>
 
                 </div>
@@ -572,6 +572,60 @@
     //         console.warn("Could not select text in node: Unsupported browser.");
     //     }
     // }
+</script>
+
+<script>
+    function checkPixelName(name, type)
+    {
+        if(name.length>0)
+        {
+            $.post('{{route('pixelnames')}}', {
+                'name': name,
+                '_token': "{{csrf_token()}}"
+            }, function(data, status, xhr){
+                var jsonData = JSON.parse(data);
+                if(jsonData.status!=200)
+                {
+                    if(type=='Add')
+                    {
+                        $('#add-pixel-name').val('');
+                        swal('Name already given, please give another name');
+                    }
+                    else if(type=='Edit')
+                    {
+                        $('#edit-pixel-name').val('');
+                        swal('Name already given, please give another name');
+                    }
+                }
+            })
+        }
+    }
+
+    function checkPixelId(id, type)
+    {
+        if(id.length>0)
+        {
+            $.post('{{route('pixelnames')}}', {
+                'id': name,
+                '_token': "{{csrf_token()}}"
+            }, function(data, status, xhr){
+                var jsonData = JSON.parse(data);
+                if(jsonData.status!=200)
+                {
+                    if(type=='Add')
+                    {
+                        $('#add-pixel-id').val('');
+                        swal('ID already given, please give another name');
+                    }
+                    else if(type=='Edit')
+                    {
+                        $('#edit-pixel-id').val('');
+                        swal('ID already given, please give another name');
+                    }
+                }
+            })
+        }
+    }
 </script>
 
 <!-- ManyChat -->
