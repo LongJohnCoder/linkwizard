@@ -324,7 +324,7 @@
                     {
                         $pixels = [];
                         //$request->pixels = explode('-', $request->pixels);
-                        if(count($request->pixels)>0)
+                        if(count($request->pixels)>0 && !empty($request->pixels))
                         {
                             for($i=0; $i<count($request->pixels); $i++)
                             {
@@ -825,30 +825,32 @@
                     }
                     $url->link_preview_type = json_encode($linkprev);
 
-                    if((isset($request->checkboxAddFbPixelid)&&($request->checkboxAddFbPixelid=='on')) || ((isset($request->checkboxAddGlPixelid)&&($request->checkboxAddGlPixelid=='on')))) {
-                        $checkFeature=UrlFeature::where('url_id',$id)->first();
-                        if($checkFeature){
-                           $urlfeature = UrlFeature::where('url_id',$id)->first();
-                        }else{
-                            $urlfeature = new UrlFeature();
-                            $urlfeature->url_id =$id;
-                        }
-                        if(isset($request->checkboxAddFbPixelid)&&($request->checkboxAddFbPixelid=='on')){
-                            $urlfeature->fb_pixel_id = $request->fbPixelid;
-                        }else{
-                            $urlfeature->fb_pixel_id="";
-                        }
-                        if(isset($request->checkboxAddGlPixelid)&&($request->checkboxAddGlPixelid=='on')){
-                            $urlfeature->gl_pixel_id = $request->glPixelid;
-                        }else{
-                            $urlfeature->gl_pixel_id ="";
-                        }
-                        if(!$urlfeature->save()) {
-                            return redirect()->back()->with('error', 'Short Url Features Not Saved! Try Again!');
-                        }
-                    }else{
-                        $deleteFeature=UrlFeature::where('url_id',$id)->delete();
-                    }
+                    /* OLD PIXEL CODES */
+
+//                    if((isset($request->checkboxAddFbPixelid)&&($request->checkboxAddFbPixelid=='on')) || ((isset($request->checkboxAddGlPixelid)&&($request->checkboxAddGlPixelid=='on')))) {
+//                        $checkFeature=UrlFeature::where('url_id',$id)->first();
+//                        if($checkFeature){
+//                           $urlfeature = UrlFeature::where('url_id',$id)->first();
+//                        }else{
+//                            $urlfeature = new UrlFeature();
+//                            $urlfeature->url_id =$id;
+//                        }
+//                        if(isset($request->checkboxAddFbPixelid)&&($request->checkboxAddFbPixelid=='on')){
+//                            $urlfeature->fb_pixel_id = $request->fbPixelid;
+//                        }else{
+//                            $urlfeature->fb_pixel_id="";
+//                        }
+//                        if(isset($request->checkboxAddGlPixelid)&&($request->checkboxAddGlPixelid=='on')){
+//                            $urlfeature->gl_pixel_id = $request->glPixelid;
+//                        }else{
+//                            $urlfeature->gl_pixel_id ="";
+//                        }
+//                        if(!$urlfeature->save()) {
+//                            return redirect()->back()->with('error', 'Short Url Features Not Saved! Try Again!');
+//                        }
+//                    }else{
+//                        $deleteFeature=UrlFeature::where('url_id',$id)->delete();
+//                    }
 
                     //Check Rotating Link 
                     if($request->type==1){
@@ -978,7 +980,19 @@
                     //Edit pixels
                     if(isset($request->managePixel) && $request->managePixel=='on')
                     {
-                        $this->managePixel($id, $request->pixels);
+
+                        if(!empty($request->pixels))
+                        {
+                            $this->managePixel($id, $request->pixels);
+                        }
+                        else
+                        {
+                            $urlFeatures = UrlFeature::where('url_id', $id)->first();
+                            if(count($urlFeatures)>0)
+                            {
+                                $urlFeatures->delete();
+                            }
+                        }
                     }
                     else
                     {
@@ -1035,11 +1049,48 @@
                                 $pixel_id[] = $pixel->custom_pixel_script;
                             }
                         }
+                        elseif ($pixels[$i]==0)
+                        {
+                            $oldPixel = UrlFeature::where('url_id', $id)
+                                            ->pluck('fb_pixel_id', 'gl_pixel_id')
+                                            ->all();
+                            foreach ($oldPixel as $key=>$val)
+                            {
+                                $oldPixelFb = $val;
+                                $oldPixelGl = $key;
+                            }
+                            if(!empty($oldPixelFb))
+                            {
+                                $pixelFbCheck = Pixel::where('user_id', Auth::user()->id)
+                                                    ->where('network', 'fb_pixel_id')
+                                                    ->where('pixel_id', $oldPixelFb)
+                                                    ->get();
+                                // old fb pixel found
+                                if(count($pixelFbCheck)==0)
+                                {
+                                    $urlFeatureCol[] = 'fb_pixel_id';
+                                    $pixel_id[] = $oldPixelFb;
+                                }
+                            }
+                            if(!empty($oldPixelGl))
+                            {
+                                $pixelGlCheck = Pixel::where('user_id', Auth::user()->id)
+                                    ->where('network', 'gl_pixel_id')
+                                    ->where('pixel_id', $oldPixelGl)
+                                    ->get();
+
+                                //old google pixel found
+                                if(count($pixelGlCheck))
+                                {
+                                    $urlFeatureCol[] = 'gl_pixel_id';
+                                    $pixel_id[] = $oldPixelGl;
+                                }
+                            }
+                        }
 
                     }
 
                     $urlFeature = UrlFeature::where('url_id', $id)->first();
-
                     $urlFeature->fb_pixel_id = NULL;
                     $urlFeature->gl_pixel_id = NULL;
                     $urlFeature->twt_pixel_id = NULL;
@@ -1079,7 +1130,7 @@
                             $urlFeature->custom_pixel_id = $pixel_id[$i];
                         }
                     }
-                    $urlFeature->save();
+                    //$urlFeature->save();
                 }
             }
             catch(Exception $e)
