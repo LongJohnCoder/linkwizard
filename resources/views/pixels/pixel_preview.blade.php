@@ -605,8 +605,8 @@
     {
         if(id.length>0)
         {
-            $.post('{{route('pixelnames')}}', {
-                'id': name,
+            $.post('{{route('pixelids')}}', {
+                'id': id,
                 '_token': "{{csrf_token()}}"
             }, function(data, status, xhr){
                 var jsonData = JSON.parse(data);
