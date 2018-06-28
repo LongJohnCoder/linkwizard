@@ -2130,6 +2130,71 @@
             }
         }
 
+        public function checkPixelName(Request $request)
+        {
+            try
+            {
+                if (Auth::check())
+                {
+                    $userId = Auth::user()->id;
+                    if (strlen($request->name) > 0 && !empty($request->name))
+                    {
+                        $pixel = Pixel::where('pixel_name', $request->name)
+                                        ->where('user_id', $userId)
+                                        ->first();
+                        if(count($pixel)>0)
+                        {
+                            echo json_encode(['status'=>'403', 'message'=>'name already exist']);
+                        }
+                        elseif(count($pixel)==0)
+                        {
+                            echo json_encode(['status'=>'200', 'message'=>'name ok']);
+                        }
+                    }
+                    else
+                    {
+                        echo json_encode(['status'=>'404', 'message'=>'no name given']);
+                    }
+                }
+            }catch(Exception $e)
+            {
+                return redirect()->back()->with('msg', 'error');
+            }
+        }
+
+        public function checkPixelId(Request $request)
+        {
+            try
+            {
+                if(Auth::check())
+                {
+                    $userId = Auth::user()->id;
+                    if(strlen($request->id)>0 && !empty($request->id))
+                    {
+                        $pixel = Pixel::where('pixel_id', $request->id)
+                                      ->where('user_id', $userId)
+                                      ->first();
+                        if(count($pixel)>0)
+                        {
+                            echo json_encode(['status'=>'403', 'message'=>'id already exist']);
+                        }
+                        elseif(count($pixel)==0)
+                        {
+                            echo json_encode(['status'=>'200', 'message'=>'id ok']);
+                        }
+                    }
+                    else
+                    {
+                        echo json_encode(['status'=>'404', 'message'=>'no name given']);
+                    }
+                }
+            }
+            catch(Exception $e)
+            {
+                return redirect()->back()->with('msg', 'error');
+            }
+        }
+
     }
 
 

@@ -389,3 +389,9 @@ Route::post('/editpixel', 'HomeController@editPixels')->name('editpixel');
 
 //Delete pixel for management
 Route::post('/deletepixel', 'HomeController@deletePixels')->name('deletepixel');
+
+//Pixel name check
+Route::post('/pixelnames', 'UrlController@checkPixelName')->name('pixelnames');
+
+//Pixel name id
+Route::post('/pixelids', 'UrlController@checkPixelId')->name('pixelids');
