@@ -1091,6 +1091,11 @@
                     }
 
                     $urlFeature = UrlFeature::where('url_id', $id)->first();
+                    if(!$urlFeature)
+                    {
+                        $urlFeature = new UrlFeature();
+                        $urlFeature->url_id = $id;
+                    }
                     $urlFeature->fb_pixel_id = NULL;
                     $urlFeature->gl_pixel_id = NULL;
                     $urlFeature->twt_pixel_id = NULL;
@@ -1130,7 +1135,7 @@
                             $urlFeature->custom_pixel_id = $pixel_id[$i];
                         }
                     }
-                    //$urlFeature->save();
+                    $urlFeature->save();
                 }
             }
             catch(Exception $e)
