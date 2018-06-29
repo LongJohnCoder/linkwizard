@@ -405,8 +405,8 @@
 </body>
 
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async">
-</script>
+<!-- ManyChat Bar Widget Js  DO NOT REMOVE -->
+<!--<script src="//widget.manychat.com/216100302459827.js" async="async"></script>-->
 <script>
     $(document).ready(function(){
         var formPosTop = $(".formContainer").position().top;

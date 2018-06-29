@@ -85,6 +85,9 @@
         @php
             $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
             $referer = $_SERVER['HTTP_HOST'];
+            $requestIp = json_decode(file_get_contents(env('IP_API_URL')));
+            $ipAddress = $requestIp->ip;
+            $geoLocationApiUrl = env('GEO_LOCATION_API_URL').''.$ipAddress;
         @endphp
         <div class="header"></div>
         <div class="row">
@@ -120,11 +123,26 @@
                     }
                 }, 1000);
                 $.ajax({
-                    url: '//freegeoip.net/json/',
+                    //url: '//freegeoip.net/json/',
+                    url: '{{$geoLocationApiUrl}}',
                     type: 'POST',
                     dataType: 'jsonp',
-                    success: function(location) {
-                        //console.log(location);
+                    success: function(jsonData) {
+                        //console.log(jsonData);
+                        var location =
+                            {
+                                "ip" : "{{$ipAddress}}",
+                                "country_code" : jsonData.countryCode,
+                                "country_name" : jsonData.country,
+                                "region_code" : "",
+                                "region_name" : jsonData.region,
+                                "city" : jsonData.city,
+                                "zip_code" : "",
+                                "time_zone" : "",
+                                "latitude" : jsonData.lat,
+                                "longitude" : jsonData.lon,
+                                "metro_code" : "",
+                            }
                         $.ajax({
                             type: 'POST',
                             url: "{{ route('postUserInfo') }}",
