@@ -93,15 +93,15 @@ class Url extends Model
         $base         = 'urls';
         $rowsToSelectFromBase = '';
         if($rows != null && count($rows) > 0) {
-          foreach ($rows as $key => $colName) {
-            if($rowsToSelectFromBase != '') {
-              $rowsToSelectFromBase .= ','.$base.'.'.$colName;
-            } else {
-              $rowsToSelectFromBase .= $base.'.'.$colName;
+            foreach ($rows as $key => $colName) {
+                if($rowsToSelectFromBase != '') {
+                    $rowsToSelectFromBase .= ','.$base.'.'.$colName;
+                } else {
+                    $rowsToSelectFromBase .= $base.'.'.$colName;
+                }
             }
-          }
         } else {
-          $rowsToSelectFromBase .= $base.'*';
+            $rowsToSelectFromBase .= $base.'*';
         }
 
         $final        = new $finalModel;
@@ -110,8 +110,8 @@ class Url extends Model
         $through      = $through->getTable();
 
         dd($this->join($through, $base.'.'.$baseKey, '=', $through.'.'.$throughToBaseKey)
-                      ->join($final,  $through.'.'.$throughToFinalKey, '=', $final.'.'.$finalKey)->toSql());
-                      //->select($rowsToSelectFromBase);
+            ->join($final,  $through.'.'.$throughToFinalKey, '=', $final.'.'.$finalKey)->toSql());
+        //->select($rowsToSelectFromBase);
     }
 
     public function urlTag()
@@ -121,41 +121,53 @@ class Url extends Model
 
 
     /**
-    * One to one relation with UrlFeature model
-    */
+     * One to one relation with UrlFeature model
+     */
     public function urlFeature()
     {
         return $this->hasOne('App\UrlFeature', 'url_id');
     }
 
     /**
-    * One to many relation with UrlSpecialSchedule model
-    */
+     * One to many relation with UrlSpecialSchedule model
+     */
     public function urlSpecialSchedules()
     {
         return $this->hasMany('App\UrlSpecialSchedule', 'url_id');
     }
 
     /**
-    * One to many relation with CircularLink model
-    */
+     * One to many relation with CircularLink model
+     */
     public function circularLink()
     {
         return $this->hasMany('App\CircularLink', 'url_id');
     }
 
-/**
+    /**
+     * One to many relationship with UrlLinkSchedule model
+     */
+    public function url_link_schedules()
+    {
+        return $this->hasMany('App\UrlLinkSchedule', 'url_id');
+    }
 
-* One to many relationship with UrlLinkSchedule model
-*/
-public function url_link_schedules()
-{
-    return $this->hasMany('App\UrlLinkSchedule', 'url_id');
-}
+    /**
+     * Relation for geo-location
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getGeoLocation()
+    {
+        return $this->hasMany('App\Geolocation', 'url_id');
+    }
 
-public function getGeoLocation()
-{
-    return $this->hasMany('App\Geolocation', 'url_id');
-}
+    /**
+     * One to many relationship with IpLocation model
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function ipLocations()
+    {
+        return $this->hasMany('App\IpLocation', 'url_id');
+    }
 
 }

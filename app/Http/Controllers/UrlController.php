@@ -3,6 +3,7 @@
 
     use App\Browser;
     use App\Country;
+    use App\IpLocation;
     use App\Limit;
     use App\LinkLimit;
     use App\Pixel;
@@ -1456,7 +1457,7 @@
         */
         public function postUserInfo(Request $request){
             $status = 'error';
-
+            
             $country = Country::where('code', $request->country['country_code'])->first();
             if ($country) {
                 $country->urls()->attach($request->url);
@@ -1542,6 +1543,76 @@
                     $status = 'error';
                 }
             }
+
+            // Link info stored in ip_locations table
+            //$requestIpAddress = $request->ip();
+            $requestIp = json_decode(file_get_contents(env('IP_API_URL')));
+            $requestIpAddress = $requestIp->ip;
+            $apiPath = env('GEO_LOCATION_API_URL');
+            $geo = json_decode(file_get_contents($apiPath.''.$requestIpAddress));
+            if(!empty($geo->city) && strlen($geo->city)>0)
+            {
+                $city = $geo->city;
+            }
+            else
+            {
+                $city = NULL;
+            }
+            if(!empty($geo->country) && strlen($geo->country))
+            {
+                $country = $geo->country;
+            }
+            else
+            {
+                $country = NULL;
+            }
+            if(!empty($geo->lat) && strlen($geo->lat))
+            {
+                $latitude = $geo->lat;
+            }
+            else
+            {
+                $latitude = NULL;
+            }
+            if(!empty($geo->lon) && strlen($geo->lon))
+            {
+                $longitude = $geo->lon;
+            }
+            else
+            {
+                $longitude = NULL;
+            }
+
+            $ip = IpLocation::where('url_id', $request->url)->first();
+            if($ip)
+            {
+                $ip = new IpLocation();
+                $ip->url_id = $request->url;
+                $ip->ip_address = $requestIpAddress;
+                $ip->city = $city;
+                $ip->country = $country;
+                $ip->latitude = $latitude;
+                $ip->longitude = $longitude;
+                $ip->platform = $request->platform;
+                $ip->browser = $request->browser;
+                $ip->referer = $request->referer;
+                $ip->save();
+            }
+            else
+            {
+                $ip = new IpLocation();
+                $ip->url_id = $request->url;
+                $ip->ip_address = $requestIpAddress;
+                $ip->city = $city;
+                $ip->country = $country;
+                $ip->latitude = $latitude;
+                $ip->longitude = $longitude;
+                $ip->platform = $request->platform;
+                $ip->browser = $request->browser;
+                $ip->referer = $request->referer;
+                $ip->save();
+            }
+            // End link info stored in ip_locations table
 
             $search = Url::where('shorten_suffix', $request->suffix)->with('urlSpecialSchedules','url_link_schedules')->first();
             if($search->link_type==0){

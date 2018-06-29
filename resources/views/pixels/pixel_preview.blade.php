@@ -219,11 +219,14 @@
                                         <p>You have not added any Pixel yet, click on the below button to get started!</p>
                                         <button class="btn btn-xs btn-primary" id="manage-pixel-btn" data-toggle="modal" data-target="#login-modal"><i class="fa fa-plus-square"></i> Add pixel</button>
                                     @elseif(count($userPixels)>0)
-                                        <sapn class="pull-left">
-                                            <button class="btn btn-xs btn-primary" id="manage-pixel-btn" data-toggle="modal" data-target="#login-modal"><i class="fa fa-plus-square"></i> New pixel</button>
-                                        </sapn>
-                                        <table id="pixel-table" class="table table-hover pixel-table">
-                                            <thead>
+                                        <div class="table-responsive">
+                                            <sapn class="pull-left">
+                                                <button class="btn btn-xs btn-primary" id="manage-pixel-btn" data-toggle="modal" data-target="#login-modal"><i class="fa fa-plus-square"></i> New pixel</button>
+                                            </sapn>
+                                        <!-- Responsive data table -->
+
+                                            <table id="pixel-table" class="table table-hover pixel-table">
+                                                <thead>
                                                 <tr>
                                                     <th>Pixel Name</th>
                                                     <th>Pixel Network</th>
@@ -231,8 +234,8 @@
                                                     <th>Created On</th>
                                                     <th>Action</th>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
+                                                </thead>
+                                                <tbody>
                                                 @foreach($userPixels as $pixel)
                                                     <tr id="pixel-row-{{$pixel->id}}">
                                                         <td>{{$pixel->pixel_name}}</td>
@@ -271,8 +274,9 @@
                                                         </td>
                                                     </tr>
                                                 @endforeach
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     @endif
                                 </div>
                             </div>

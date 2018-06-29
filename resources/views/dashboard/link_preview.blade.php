@@ -1,25 +1,34 @@
-<!DOCTYPE html>
 @php
-$key = 0;
+    $key = 0;
 
-function ogUrl($url=NULL)
-{
-    if($url!='' or !empty($url))
+    function ogUrl($url=NULL)
     {
-        $urlExplode = explode('://', $url);
-        $urlExceptProtocol = $urlExplode[1];
-        $ogUrlExplode = explode('/', $urlExceptProtocol);
-        $ogUrl = $ogUrlExplode[0];
-        return $ogUrl;
-    }else
-    {
-        return NULL;
+        if($url!='' or !empty($url))
+        {
+            $urlExplode = explode('://', $url);
+            $urlExceptProtocol = $urlExplode[1];
+            $ogUrlExplode = explode('/', $urlExceptProtocol);
+            $ogUrl = $ogUrlExplode[0];
+            return $ogUrl;
+        }else
+        {
+            return NULL;
+        }
     }
-}
 
+    $defaultPaginate = 4;
+    if(empty(Request::query('page')))
+    {
+        $serialNo = 1;
+    }
+    elseif(!empty(Request::query('page')))
+    {
+        $serialNo = ($defaultPaginate*(Request::query('page')-1))+1;
+    }
+
+    $ipLocations = $url->ipLocations()->orderBy('created_at','desc')->paginate($defaultPaginate);
 @endphp
-
-
+<!DOCTYPE html>
 <!-- head of th page -->
 <html lang="en">
 	@include('contents/head')
@@ -122,6 +131,22 @@ function ogUrl($url=NULL)
 
         .sm-tag:hover::after {
             border-left-color: #3275b2;
+        }
+
+        .show-info-tab thead{
+            background-color: #4b86b4;
+            color: #ffffff;
+            height: 40px;
+        }
+        .show-info-tab{
+            box-shadow: 2px 2px 4px #888888;
+            padding: 5px;
+        }
+        .link-info-date{
+            font-size: 13px!important;
+        }
+        .no-info{
+            color: #B3B3B3;
         }
     </style>
 <body>
@@ -295,6 +320,7 @@ function ogUrl($url=NULL)
                               {
                                   echo '<li><a href="#" class="sm-tag">'.$tag.'</a></li>';
                               }
+                              echo '</ul>';
                           }else
                           {
                               echo "<p class='na-url-tag'>".$tags."<p>";
@@ -400,6 +426,88 @@ function ogUrl($url=NULL)
               <div class="map-area">
                 {{-- This is where map loads dynamically --}}
                 <div id="regions_div"></div>
+              </div>
+              <hr>
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="table-responsive">
+                          <table class="table table-striped table-condensed show-info-tab">
+                              <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Date & Time</th>
+                                    <th>IP Address</th>
+                                    <th>City</th>
+                                    <th>Country</th>
+                                    <th>Browser</th>
+                                    <th>Platform</th>
+                                    <th>Referring Channel</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                @if($ipLocations->count()==0)
+                                    <tr>
+                                        <td colspan="8" style="text-align: center;"><span class="text-muted text-center">No data available</span></td>
+                                    </tr>
+                                @elseif($ipLocations->count()>0)
+                                    @foreach($ipLocations as $ipLocation)
+                                        <tr>
+                                            <td>{{$serialNo++}}.</td>
+                                            <td>
+                                                <p class="link-info-date">{{date_format(date_create($ipLocation->created_at), 'D M d, y')}}</p>
+                                                <p class="link-info-date">{{date_format(date_create($ipLocation->created_at), 'h:i:s a')}}</p>
+                                            </td>
+                                            <td>
+                                                @if(!empty($ipLocation->ip_address))
+                                                    {{$ipLocation->ip_address}}
+                                                @else
+                                                    <small class="no-info">NA</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if(!empty($ipLocation->city))
+                                                    {{$ipLocation->city}}
+                                                @else
+                                                    <small class="no-info">NA</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if(!empty($ipLocation->country))
+                                                    {{$ipLocation->country}}
+                                                @else
+                                                    <small class="no-info">NA</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if(!empty($ipLocation->browser))
+                                                    {{$ipLocation->browser}}
+                                                @else
+                                                    <small class="no-info">NA</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if(!empty($ipLocation->platform))
+                                                    {{$ipLocation->platform}}
+                                                @else
+                                                    <small class="no-info">NA</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if(!empty($ipLocation->referer))
+                                                    {{$ipLocation->referer}}
+                                                @else
+                                                    <small class="no-info">NA</small>
+                                                @endif
+                                            </td>
+                                        </tr>
+
+                                    @endforeach
+                                @endif
+                              </tbody>
+                          </table>
+                          {{ $ipLocations->links() }}
+                      </div>
+                  </div>
               </div>
 
               <div class="row">
