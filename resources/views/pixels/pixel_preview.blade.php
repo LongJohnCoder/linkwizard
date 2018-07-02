@@ -129,6 +129,24 @@
         transition: 0.2s;
         /*box-shadow: 2px 2px 2px #999999;*/
     }
+    /* close class */
+    #close {
+        font-size: 20px;
+        font-weight: bold;
+        line-height: 18px;
+        color: #000000;
+        text-shadow: 0 1px 0 #ffffff;
+        opacity: 0.2;
+        filter: alpha(opacity=20);
+        text-decoration: none;
+    }
+    #close:hover {
+        color: #000000;
+        text-decoration: none;
+        opacity: 0.4;
+        filter: alpha(opacity=40);
+        cursor: pointer;
+    }
 </style>
 <body>
 <!-- head end -->
@@ -230,7 +248,7 @@
                                                 <tr>
                                                     <th>Pixel Name</th>
                                                     <th>Pixel Network</th>
-                                                    <th>Pixel ID</th>
+                                                    <th width="30%">Pixel ID</th>
                                                     <th>Created On</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -295,15 +313,17 @@
 <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="loginmodal-container">
+            <button type="button" class="pull-right" id="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>
+            </button>
             <h3><center>Add your pixel</center></h3><br>
             <form action="{{route('savepixel')}}" method="post">
                 <div class="form-group" id="store-modal">
                     <label for="email">Select network:</label>
                     <select name="network" required>
                         <option value="fb_pixel_id">Facebook</option>
-                        <option value="twt_pixel_id">Twitter</option>
-                        <option value="li_pixel_id">LinkedIn</option>
                         <!-- DO NOT DELETE -->
+                        <!--<option value="twt_pixel_id">Twitter</option>
+                        <option value="li_pixel_id">LinkedIn</option>-->
                         <!--<option value="pinterest_pixel_id">Pinterest</option>
                         <option value="quora_pixel_id">Quora</option>-->
                         <option value="gl_pixel_id">Google</option>
@@ -331,15 +351,17 @@
 <div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog">
         <div class="loginmodal-container">
+            <button type="button" class="pull-right" id="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>
+            </button>
             <h3><center>Edit your pixel</center></h3><br>
             <form action="{{route('editpixel')}}" method="post">
                 <div class="form-group" id="edit-modal">
                     <label for="email">Select network:</label>
                     <select name="network" id="edit-pixel-network" required>
                         <option value="fb_pixel_id">Facebook</option>
-                        <option value="twt_pixel_id">Twitter</option>
-                        <option value="li_pixel_id">LinkedIn</option>
                         <!-- DO NOT DELETE -->
+                        <!--<option value="twt_pixel_id">Twitter</option>
+                        <option value="li_pixel_id">LinkedIn</option>-->
                         <!--<option value="pinterest_pixel_id">Pinterest</option>-->
                         <!--<option value="quora_pixel_id">Quora</option>-->
                         <option value="gl_pixel_id">Google</option>
@@ -1283,3 +1305,4 @@
 
 </body>
 </html>
+
