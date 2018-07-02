@@ -16,7 +16,7 @@
         }
     }
 
-    $defaultPaginate = 4;
+    $defaultPaginate = 10;
     if(empty(Request::query('page')))
     {
         $serialNo = 1;
@@ -443,7 +443,8 @@
                                     <th>Country</th>
                                     <th>Browser</th>
                                     <th>Platform</th>
-                                    <th>Referring Channel</th>
+                                    <th width="5%">Referring Channel</th>
+                                    <th width="18%">Query String</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -497,6 +498,13 @@
                                             <td>
                                                 @if(!empty($ipLocation->referer))
                                                     {{$ipLocation->referer}}
+                                                @else
+                                                    <small class="no-info">NA</small>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if(!empty($ipLocation->query_string))
+                                                    {{$ipLocation->query_string}}
                                                 @else
                                                     <small class="no-info">NA</small>
                                                 @endif

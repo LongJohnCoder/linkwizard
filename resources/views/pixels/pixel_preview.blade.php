@@ -281,6 +281,15 @@
                                                                 {{$pixel->custom_pixel_script}}
                                                             @endif
                                                         </td>
+                                                        <td>
+                                                            <span class="script-pos-normal-body">
+                                                                @if($pixel->script_position==0)
+                                                                    Header
+                                                                @elseif($pixel->script_position==1)
+                                                                    Footer
+                                                                @endif
+                                                            </span>
+                                                        </td>
                                                         <td>{{$pixel->created_at->diffForHumans()}}</td>
                                                         <td>
                                                             <button class="action-btn pixel-edit-btn" href="javascript:void(0);" data-id="{{$pixel->id}}" id="pixel-edit-btn-{{$pixel->id}}">
@@ -326,6 +335,7 @@
                         <option value="li_pixel_id">LinkedIn</option>-->
                         <!--<option value="pinterest_pixel_id">Pinterest</option>
                         <option value="quora_pixel_id">Quora</option>-->
+
                         <option value="gl_pixel_id">Google</option>
                         <option value="custom_pixel_id">Custom</option>
                     </select>
@@ -335,9 +345,17 @@
                     <input type="text" class="form-control" name="pixel_name" id="add-pixel-name" placeholder="Enter pixel name" required onblur="checkPixelName(this.value, 'Add')">
                 </div>
                 <div class="form-group">
-                    <label for="pwd">Pixel id:</label>
+                    <label for="pwd" id="script-id">Pixel id:</label>
                     <input type="text" class="form-control" name="pixel_id" id="add-pixel-id" placeholder="Enter pixel id" required onblur="checkPixelId(this.value, 'Add')">
                     <textarea class="form-control" name="custom_pixel_script" id="add-custom-script" placeholder="Enter your custom script" rows="6" style="resize: none; display: none;"></textarea>
+                </div>
+                <div class="custom-script-position" style="display: none;">
+                    <div class="form-group">
+                        <label for="">Script's Position:</label>
+                        </br>
+                        <input type="radio" name="script_position" id="header-pixel-script" value="0" checked> Header
+                        <input type="radio" name="script_position" id="footer-pixel-script" value="1"> Footer
+                    </div>
                 </div>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Save">
                 <input type="hidden" name="_token" value="{{csrf_token()}}">
@@ -378,6 +396,14 @@
                     <input type="text" class="form-control" name="pixel_id" id="edit-pixel-id" placeholder="Enter pixel id" onblur="checkPixelId(this.value, 'Edit')">
                     <textarea class="form-control" name="custom_pixel_script" id="edit-custom-script" placeholder="Enter your custom script" rows="6" style="resize: none;"></textarea>
 
+                </div>
+                <div class="custom-script-position-edt" style="display: none;">
+                    <div class="form-group">
+                        <label for="">Script's Position:</label>
+                        </br>
+                        <input type="radio" name="script_position" id="header-pixel-script-edt" value="0" checked> Header
+                        <input type="radio" name="script_position" id="footer-pixel-script-edt" value="1"> Footer
+                    </div>
                 </div>
                 <input type="submit" name="login" class="login loginmodal-submit" value="Save">
                 <input type="hidden" name="_token" value="{{csrf_token()}}">
@@ -426,8 +452,10 @@
             var pixelName = $('#pixel-row-'+id).find('td:eq(0)').text();
             var pixelNetwork = $('#pixel-row-'+id).find('td:eq(1)').text();
             var pixelId = $('#pixel-row-'+id).find('td:eq(2)').text();
+            var scriptPos = $('#pixel-row-'+id).find('td:eq(3)').text();
             pixelId = pixelId.trim();
             pixelNetwork = pixelNetwork.trim();
+            scriptPos = scriptPos.trim();
             var actualNetwork;
 
             if(pixelNetwork=='Google')
@@ -468,12 +496,24 @@
 
                 $('#edit-custom-script').val('');
                 $('#edit-custom-script').hide();
+                $('.custom-script-position-edt').hide();
             }
             else if(pixelNetwork=='Custom')
             {
                 $('#edit-custom-script').val(pixelId);
                 $('#edit-custom-script').show();
                 $('#edit-custom-script').prop('required', true);
+                $('.custom-script-position-edt').show();
+                if(scriptPos=='Header')
+                {
+                    $('#header-pixel-script-edt').prop('checked', true);
+                    $('#footer-pixel-script-edt').prop('checked', false);
+                }
+                else if(scriptPos=='Footer')
+                {
+                    $('#header-pixel-script-edt').prop('checked', false);
+                    $('#footer-pixel-script-edt').prop('checked', true);
+                }
 
                 $('#edit-pixel-id').val('');
                 $('#edit-pixel-id').hide();
@@ -539,6 +579,8 @@
                 $('#add-pixel-id').val('');
                 $('#add-custom-script').show();
                 $('#add-custom-script').prop('required', true);
+                $('.custom-script-position').show();
+                $('#script-id').text('Pixel Script:');
             }
             else
             {
@@ -546,7 +588,11 @@
                 $('#add-pixel-id').prop('required', true);
                 $('#add-custom-script').hide();
                 $('#add-custom-script').val('');
+                $('#header-pixel-script').prop('checked', true);
+                $('#footer-pixel-script').prop('checked', false);
                 $('#add-custom-script').prop('required', false);
+                $('.custom-script-position').hide();
+                $('#script-id').text('Pixel Id:');
             }
         });
 

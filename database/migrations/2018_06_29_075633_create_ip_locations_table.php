@@ -23,6 +23,7 @@ class CreateIpLocationsTable extends Migration
             $table->string('platform')->nullable();
             $table->string('browser')->nullable();
             $table->string('referer')->nullable();
+            $table->text('query_string')->nullable();
             $table->timestamps();
 
             /* Foreign key definitions */

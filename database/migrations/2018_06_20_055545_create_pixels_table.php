@@ -19,6 +19,7 @@ class CreatePixelsTable extends Migration
             $table->string('pixel_name');
             $table->string('pixel_id')->nullable();
             $table->text('custom_pixel_script')->nullable();
+            $table->integer('script_position')->default(0)->comment('0 = default header position, 1 = footer position');
             $table->timestamps();
 
             /* Foreign key definitions */

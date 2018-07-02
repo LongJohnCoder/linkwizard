@@ -1390,31 +1390,47 @@
                     if (!empty($pxlValue->fb_pixel_id) or $pxlValue->fb_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->fb_pixel_id;
                         $pixelColumn[] = 'fb_pixel_id';
+                        $scriptPos[] = 0;
                     }
                     if (!empty($pxlValue->gl_pixel_id) or $pxlValue->gl_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->gl_pixel_id;
                         $pixelColumn[] = 'gl_pixel_id';
+                        $scriptPos[] = 0;
                     }
                     if (!empty($pxlValue->twt_pixel_id) or $pxlValue->twt_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->twt_pixel_id;
                         $pixelColumn[] = 'twt_pixel_id';
+                        $scriptPos[] = 0;
                     }
                     if (!empty($pxlValue->li_pixel_id) or $pxlValue->li_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->li_pixel_id;
                         $pixelColumn[] = 'li_pixel_id';
+                        $scriptPos[] = 0;
                     }
                     if (!empty($pxlValue->pinterest_pixel_id) or $pxlValue->pinterest_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->pinterest_pixel_id;
                         $pixelColumn[] = 'pinterest_pixel_id';
+                        $scriptPos[] = 0;
                     }
                     if (!empty($pxlValue->quora_pixel_id) or $pxlValue->quora_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->quora_pixel_id;
                         $pixelColumn[] = 'quora_pixel_id';
+                        $scriptPos[] = 0;
                     }
                     /* DON'T DELETE */
                     elseif (!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->custom_pixel_id;
                         $pixelColumn[] = 'custom_pixel_id';
+
+                        $pxl = Pixel::where('custom_pixel_script', $pxlValue->custom_pixel_id)->first();
+                        if($pxl)
+                        {
+                            $scriptPos[] = $pxl->script_position;
+                        }
+                        else
+                        {
+                            $scriptPos[] = 0;
+                        }
                     }
                     for ($i=0; $i< count($pixelColumn); $i++) {
                         if($pixelColumn[$i]!='custom_pixel_id')
@@ -1544,6 +1560,7 @@
                 $ip->platform = $request->platform;
                 $ip->browser = $request->browser;
                 $ip->referer = $request->referer;
+                $ip->query_string = $query_string;
                 $ip->save();
             } else {
                 $ip = new IpLocation();
@@ -1556,6 +1573,7 @@
                 $ip->platform = $request->platform;
                 $ip->browser = $request->browser;
                 $ip->referer = $request->referer;
+                $ip->query_string = $query_string;
                 $ip->save();
             }
             /* End link info stored in ip_locations table */

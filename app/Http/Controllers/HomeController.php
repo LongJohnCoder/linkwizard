@@ -106,7 +106,7 @@ class HomeController extends Controller
       //code for search based on tags and description if the params are not empty
       $textToSearch = $request->textToSearch;
       $tagsToSearch = $request->tagsToSearch;
-      $pageLimit        = ( $request->limit ) ? $request->limit: 4;
+      $pageLimit        = ( $request->limit ) ? $request->limit: 10;
 
       $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
       $urls       = $ret['urls']->paginate($pageLimit);
@@ -3159,6 +3159,7 @@ class HomeController extends Controller
                         $pixel->pixel_name = $request->pixel_name;
                         $pixel->pixel_id = NULL;
                         $pixel->custom_pixel_script = $request->custom_pixel_script;
+                        $pixel->script_position = $request->script_position;
                         $pixel->save();
                         return redirect()->back()->with('msg', 'success');
                     }
@@ -3170,6 +3171,7 @@ class HomeController extends Controller
                         $pixel->pixel_name = $request->pixel_name;
                         $pixel->pixel_id = $request->pixel_id;
                         $pixel->custom_pixel_script = NULL;
+                        $pixel->script_position = 0;
                         $pixel->save();
                         return redirect()->back()->with('msg', 'success');
                     }
