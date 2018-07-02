@@ -1422,6 +1422,7 @@
                         $pixelIds[] = $pxlValue->custom_pixel_id;
                         $pixelColumn[] = 'custom_pixel_id';
 
+
                         $pxl = Pixel::where('custom_pixel_script', $pxlValue->custom_pixel_id)->first();
                         if($pxl)
                         {
@@ -1450,6 +1451,7 @@
                     'suffix' => $url,
                     'pixelScripts' => $pixelScript]
                 );
+
             } else {
                 abort(404);
             }
