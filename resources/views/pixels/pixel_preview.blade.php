@@ -278,7 +278,7 @@
                                                             @if(!empty($pixel->pixel_id))
                                                                 {{$pixel->pixel_id}}
                                                             @else
-                                                                {{$pixel->custom_pixel_script}}
+                                                                <div>{{$pixel->custom_pixel_script}}</div>
                                                             @endif
                                                         </td>
                                                         <td>
@@ -324,6 +324,7 @@
         <div class="loginmodal-container">
             <button type="button" class="pull-right" id="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>
             </button>
+
             <h3><center>Add your pixel</center></h3><br>
             <form action="{{route('savepixel')}}" method="post">
                 <div class="form-group" id="store-modal">
@@ -371,6 +372,7 @@
         <div class="loginmodal-container">
             <button type="button" class="pull-right" id="close" data-dismiss="modal"><i class="fa fa-times" aria-hidden="true"></i>
             </button>
+
             <h3><center>Edit your pixel</center></h3><br>
             <form action="{{route('editpixel')}}" method="post">
                 <div class="form-group" id="edit-modal">

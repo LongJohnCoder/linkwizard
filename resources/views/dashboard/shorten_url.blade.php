@@ -239,6 +239,7 @@
                                     </div>
                                 </div>
                                 <!--Add Description End-->
+                                <!-- Add Countdown -->
                                 <div class="normal-box1">
                                     <div class="normal-header">
                                         <label class="custom-checkbox">Add count down timer
@@ -251,6 +252,21 @@
                                         <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="5">
                                     </div>
                                 </div>
+                                <!-- Add Countdown End -->
+                                <!-- Add Favicon -->
+                                <div class="normal-box1">
+                                    <div class="normal-header">
+                                        <label class="custom-checkbox">Add favicon
+                                            <input type="checkbox" id="faviconEnable" name="allowfavicon">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                    <div class="normal-body add-favicon" id="faviconArea">
+                                        <p>Add a favicon for this link</p>
+                                        <input type="file" id="faviconContents" name="favicon_contents" class = "form-control" accept="image/*">
+                                    </div>
+                                </div>
+                                <!-- Add Favicon End -->
                                 <!--Add Link Preview Start-->
                                 <div class="normal-box1">
                                     <div class="normal-header">

@@ -1,3 +1,93 @@
+@php
+
+        if(!empty($url->favicon) && strlen($url->favicon)>0)
+        {
+            $favicon = $url->favicon;
+            $faviconPath = $favicon;
+        }
+        else
+        {
+            $external_file = $url->protocol.'://'.$url->actual_url;
+            $headers = get_headers($external_file);
+            if(preg_match("|200|", $headers[0]))
+            {
+                $favicon = getFavicon($external_file);
+                $actualUrl = getDomainName($url->actual_url);
+                $faviconPath = $url->protocol.'://'.$actualUrl.'/'.$favicon;
+                if (@getimagesize($faviconPath)===false)
+                {
+                    $faviconPath = 'https://tier5.us/images/favicon.ico';
+                }
+            } else
+            {
+                $faviconPath = 'https://tier5.us/images/favicon.ico';
+            }
+
+        }
+
+        function getDomainName($url)
+        {
+            if (strpos($url, '/'))
+            {
+                $endsUrl = substr($url,-1,1);
+                if($endsUrl!='/')
+                {
+                    $explodedUrl = explode('/', $url);
+                    if (count($explodedUrl)>0)
+                    {
+                        $actualUrl = $explodedUrl[0];
+                    }
+                }
+                else
+                {
+                    $explodedUrl = explode('/', $url ,-1);
+                    if (count($explodedUrl)>0)
+                    {
+                        $actualUrl = $explodedUrl[0];
+                    }
+                }
+            }
+            else
+            {
+                $actualUrl = $url;
+            }
+
+            return $actualUrl;
+        }
+
+
+        function getFavicon($url)
+        {
+            $favicon = '';
+            $html = file_get_contents($url);
+            $dom = new DOMDocument();
+            libxml_use_internal_errors(true);
+            $dom->loadHTML($html);
+            libxml_use_internal_errors(false);
+            $links = $dom->getElementsByTagName('link');
+            for ($i = 0; $i < $links->length; $i++){
+                $link = $links->item($i);
+                if($link->getAttribute('rel') == 'icon' or $link->getAttribute('rel') == 'show icon' or $link->getAttribute('rel') == 'Show Icon' or $link->getAttribute('rel') == 'shortcut icon'){
+                    $favicon = $link->getAttribute('href');
+                }
+            }
+            if(substr($favicon, 0,1)=='/')
+            {
+                $favicon = substr($favicon, 1);
+            }
+            elseif(preg_match("~^(?:f|ht)tps?://~i", $favicon))
+            {
+                $explodedFavICon = explode('://', $favicon);
+                $actualImage = explode('/',$explodedFavICon[1]);
+                $favicon = $actualImage[count($actualImage)-1];
+            }
+            else
+            {
+                $favicon = $favicon;
+            }
+            return $favicon;
+        }
+@endphp
 <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -5,6 +95,7 @@
         <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
         <link href="{{url('/')}}/public/loader/css/bootstrap.min.css" rel="stylesheet">
         <link href="{{url('/')}}/public/loader/css/style.css" rel="stylesheet">
+        <link rel="icon" type="image/jpg" href="{{$faviconPath}}" sizes="16x16">
         <script src="{{url('/')}}/public/loader/js/jquery.min.js"></script>
         <script src="{{url('/')}}/public/loader/js/bootstrap.min.js"></script>
         <meta name="robots" content="noindex,nofollow" />

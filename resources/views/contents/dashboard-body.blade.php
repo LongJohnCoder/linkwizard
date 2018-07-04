@@ -259,7 +259,15 @@
 
                                         @endphp
                                         <td class="width-modification"><a href="{{$actual_url}}">{{$actual_url}}</a></td>
-                                        <td class="width-modification"><div class="url-description">{{$url->meta_description}}</div></td>
+                                        <td class="width-modification">
+                                            <div class="url-description">
+                                                @if(!empty($url->meta_description) && strlen($url->meta_description)>0)
+                                                    {{$url->meta_description}}
+                                                @else
+                                                    {{$url->og_description}}
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td>{{$url->count}}</td>
                                         <td>{{$url->created_at->format('d/m/Y')}}</td>
                                         <td>

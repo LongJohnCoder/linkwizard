@@ -17,6 +17,7 @@
     use App\UrlLinkSchedule;
     use App\User;
     use App\CircularLink;
+    use Faker\Provider\File;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\DB;
@@ -210,6 +211,41 @@
                    $url->redirecting_time = 5000; 
                 }
 
+                // Add favicon
+                if(isset($request->allowfavicon) && $request->allowfavicon=='on')
+                {
+                    if($request->hasFile('favicon_contents'))
+                    {
+                        $imgFile        = $request->file('favicon_contents');
+                        $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
+                        $actualFileExtension = $imgFile->getClientOriginalExtension();
+                        $validExtensionRegex = '/(jpg|jpeg|png|svg|ico)/i';
+                        $uploadPath = 'public/uploads/favicons';
+                        if (!file_exists($uploadPath))
+                        {
+                            mkdir($uploadPath,  777 , true);
+                        }
+                        $newFileName = uniqid() . "-" . date('U');
+                        if (preg_match($validExtensionRegex, $actualFileExtension))
+                        {
+                            $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
+                            $url->favicon = '/'.$uploadPath.'/'.$newFileName.'.'.$actualFileExtension;
+                        }
+                        else
+                        {
+                            $url->favicon = NULL;
+                        }
+
+                    }
+                    else
+                    {
+                        $url->favicon = NULL;
+                    }
+                }else
+                {
+                    $url->favicon = NULL;
+                }
+
                 //** expiration values set in the urls table **//
                 if (isset($request->allowExpiration) && $request->allowExpiration == 'on'){
                     $url->date_time = date_format(date_create($request->date_time), 'Y-m-d H:i:s');
@@ -256,7 +292,7 @@
                             $imgFile        = $request->file('img_inp');
                             $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
                             $actualFileExtension = $imgFile->getClientOriginalExtension();
-                            $validExtensionRegex = '/(jpg|jpeg|png)/i';
+                            $validExtensionRegex = '/(jpg|jpeg|png|svg)/i';
                             $url->og_image = $og_image;
                             if (!preg_match($validExtensionRegex, $actualFileExtension)) {
                                 return redirect()->back()->with('error','Image should be in jpg, jpeg or png format');
@@ -737,6 +773,63 @@
                         $url->redirecting_time = ($request->redirecting_time*1000);
                     }else{
                        $url->redirecting_time = 5000; 
+                    }
+                    //Edit Favicon
+                    if(isset($request->allowfavicon) && $request->allowfavicon=='on')
+                    {
+                        $urlInstance = Url::find($id);
+                        $oldFavicon = $urlInstance->favicon;
+                        if($request->hasFile('favicon_contents'))
+                        {
+                            $imgFile        = $request->file('favicon_contents');
+                            $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
+                            $actualFileExtension = $imgFile->getClientOriginalExtension();
+                            $validExtensionRegex = '/(jpg|jpeg|png|svg|ico)/i';
+                            $uploadPath = 'public/uploads/favicons';
+                            if (!file_exists($uploadPath))
+                            {
+                                mkdir($uploadPath,  777 , true);
+                            }
+                            $newFileName = uniqid() . "-" . date('U');
+                            if (preg_match($validExtensionRegex, $actualFileExtension))
+                            {
+                                if(!empty($oldFavicon) && strlen($oldFavicon)>0)
+                                {
+                                    unlink(substr($oldFavicon, 1));
+                                }
+                                $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
+                                $url->favicon = '/'.$uploadPath.'/'.$newFileName.'.'.$actualFileExtension;
+                            }
+                            else
+                            {
+                                if(!empty($oldFavicon) && strlen($oldFavicon)>0)
+                                {
+                                    $url->favicon = $oldFavicon;
+                                }
+                                else
+                                {
+                                    $url->favicon = NULL;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(!empty($oldFavicon) && strlen($oldFavicon)>0)
+                            {
+                                $url->favicon = $oldFavicon;
+                            }
+                            else
+                            {
+                                $url->favicon = NULL;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        $urlInstance = Url::find($id);
+                        $oldFavicon = $urlInstance->favicon;
+                        unlink(substr($oldFavicon, 1));
+                        $url->favicon = NULL;
                     }
                     //Edit Link Preview
                     $linkPreview          = isset($request->link_preview_selector) && $request->link_preview_selector == true ? true : false;
@@ -1345,7 +1438,7 @@
                         $imgFile        = $request->file('img_inp');
                         $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
                         $actualFileExtension = $imgFile->getClientOriginalExtension();
-                        $validExtensionRegex = '/(jpg|jpeg|png)/i';
+                        $validExtensionRegex = '/(jpg|jpeg|png|svg)/i';
                         $uploadPath = getcwd().'/'.config('settings.UPLOAD_IMG');
                         $newFileName = rand(1000, 9999) . "-" . date('U');
                         $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);

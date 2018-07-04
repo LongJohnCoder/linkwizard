@@ -188,6 +188,18 @@ $(document).ready(function () {
             }
         }
 
+        //Add Favicon
+        if(thisInstance.id === "faviconEnable"){
+            if(thisInstance.checked){
+                $('#faviconArea').show();
+                $('#faviconContents').show();
+            } else{
+                $('#faviconArea').hide();
+                $('#faviconContents').val('');
+                $('#faviconContents').hide();
+            }
+        }
+
         //Add Link Preview
         if (thisInstance.id === "link_preview_selector" && thisInstance["name"] === "link_preview_selector") {
             if (thisInstance.checked) {

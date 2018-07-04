@@ -447,6 +447,29 @@ $optTypeLI = 'normal';
                                 <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="<?php if($urls->redirecting_time != 5000){echo ($urls->redirecting_time)/1000;}else{ echo 5;}?>" >
                             </div>
                         </div>
+                        <!-- Edit Favicon -->
+                        <div class="normal-box1">
+                            <div class="normal-header">
+                                <label class="custom-checkbox">Edit favicon
+                                    <input type="checkbox" id="faviconEnable" name="allowfavicon" <?php if(!empty($urls->favicon) && strlen($urls->favicon)>0){echo 'checked';}?> >
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="normal-body add-favicon" id="faviconArea" style="display: <?php if(!empty($urls->favicon) && strlen($urls->favicon)>0){echo 'block';}?>">
+                                <p>Edit favicon for this link</p>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <input type="file" id="faviconContents" name="favicon_contents" class = "form-control" accept="image/*">
+                                    </div>
+                                    <div class="col-md-2">
+                                        @if(!empty($urls->favicon) && strlen($urls->favicon)>0)
+                                            <img class="img-responsive" style="height:40px;" src="{{$urls->favicon}}" alt="favicon" title="Your current favicon">
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Edit Favicon End -->
                         <div class="normal-box1">
                             <div class="normal-header">
                                 <label class="custom-checkbox">Edit Link Preview
@@ -1651,6 +1674,19 @@ $optTypeLI = 'normal';
                 $('#countDownArea').hide();
                 $('#countDownContents').val('');
                 $('#countDownContents').hide();
+            }
+        }
+
+        //Edit favicon
+        if(thisInstance.id=="faviconEnable")
+        {
+            if(thisInstance.checked){
+                $('#faviconArea').show();
+                $('#faviconContents').show();
+            } else{
+                $('#faviconArea').hide();
+                $('#faviconContents').val('');
+                $('#faviconContents').hide();
             }
         }
 

@@ -1,4 +1,5 @@
 @php
+    $serverTZ = date_default_timezone_get();
     $key = 0;
 
     function ogUrl($url=NULL)
@@ -17,6 +18,7 @@
     }
 
     $defaultPaginate = 10;
+
     if(empty(Request::query('page')))
     {
         $serialNo = 1;
@@ -148,6 +150,9 @@
         .no-info{
             color: #B3B3B3;
         }
+        .normal-date{
+            display: none;
+        }
     </style>
 <body>
 <!-- head end -->
@@ -162,6 +167,10 @@
 <script src="{{URL::to('/').'/public/Link-Preview-master/js/linkPreviewRetrieve.js'}}"></script>
 <link href="{{URL::to('/').'/public/Link-Preview-master/css/linkPreview.css'}}" rel="stylesheet" type="text/css">
 <!-- End Of Link Preview Files -->
+<!-- Moment JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.13/moment-timezone-with-data.js"></script>
+<!-- End of Moment JS -->
 @include('contents/header')
 <!-- Header End -->
 
@@ -455,10 +464,11 @@
                                 @elseif($ipLocations->count()>0)
                                     @foreach($ipLocations as $ipLocation)
                                         <tr>
-                                            <td>{{$serialNo++}}.</td>
+                                            <td>{{$serialNo}}.</td>
                                             <td>
-                                                <p class="link-info-date">{{date_format(date_create($ipLocation->created_at), 'D M d, y')}}</p>
-                                                <p class="link-info-date">{{date_format(date_create($ipLocation->created_at), 'h:i:s a')}}</p>
+                                                <p class="link-info-date" id="momentDt-{{$serialNo}}">{{date_format(date_create($ipLocation->created_at), 'D M d, Y')}}</p>
+                                                <p class="link-info-date" id="momentTm-{{$serialNo}}">{{date_format(date_create($ipLocation->created_at), 'h:i:s a')}}</p>
+                                                <span class="normal-date" id="moment-date-{{$serialNo}}">{{$ipLocation->created_at}}</span>
                                             </td>
                                             <td>
                                                 @if(!empty($ipLocation->ip_address))
@@ -510,7 +520,9 @@
                                                 @endif
                                             </td>
                                         </tr>
-
+                                        @php
+                                            $serialNo++;
+                                        @endphp
                                     @endforeach
                                 @endif
                               </tbody>
@@ -616,6 +628,26 @@
                 $('#caret-icon i').prop('class', 'fa fa-caret-up');
             }
         });
+
+        // time of users
+        //var timezone = moment.tz.guess();
+        //var newYork    = moment.tz("2014-06-01 12:00", "{{$serverTZ}}");
+        //var losAngeles = newYork.clone().tz("America/Los_Angeles");
+        //alert(tm.clone().tz(timezone));
+        //alert(losAngeles);
+
+        for(var i=0; i<`{{$ipLocations->count()}}`; i++)
+        {
+            var indx = 1+parseInt(i);
+            var currentDate = $('#moment-date-'+indx).text();
+            var timezone = moment.tz.guess();
+            //Date.parse(currentDate)
+            var tm = moment.tz(Date.parse(currentDate), "{{$serverTZ}}");
+            var momentDt = tm.clone().tz(timezone).format('dddd MMMM Do, YYYY');
+            var momentTm = tm.clone().tz(timezone).format('hh:mm:ss A');
+            $('#momentDt-'+indx).text(momentDt);
+            $('#momentTm-'+indx).text(momentTm);
+        }
 
     });
 
