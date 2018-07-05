@@ -217,7 +217,7 @@
             try {
                 DB::beginTransaction();
                 if(isset($request->url) && $request->url!=""){
-                    if (filter_var($request->url, FILTER_VALIDATE_URL)) {
+                    if ($request->url) {
                         if (strpos($request->url, 'https://') === 0) {
                             $actualUrl = str_replace('https://', null, $request->url);
                             $protocol  = 'https';
@@ -309,55 +309,53 @@
             }
         }
 
-        public function suspendSubsciber(Request $request)
-        {
-        $user = User::where('email', $request->email)->first();
-        if ($user) {
-          		$user->email = $user->email."_suspend";
-          $user->update();
-          return response()->json([
-            'status' => true,
-            'message' => $request->email." is suspended successfully."
-          ]);
-        } else {
-          $check_suspend = User::where('email', $request->email.'_suspend')->first();
-          if ($check_suspend){
-            return response()->json([
-              'status' => false,
-              'message' => $request->email." is already suspended."
-            ]);
-          } else {
-            return response()->json([
-              'status' => false,
-              'message' => $request->email." not found!!! Check Email again."
-            ]);
-          }
+        public function suspendSubsciber(Request $request){
+            $user = User::where('email', $request->email)->first();
+            if ($user) {
+              	$user->email = $user->email."_suspend";
+                $user->update();
+                return response()->json([
+                    'status' => true,
+                    'message' => $request->email." is suspended successfully."
+                ]);
+            } else {
+                $check_suspend = User::where('email', $request->email.'_suspend')->first();
+                if ($check_suspend){
+                    return response()->json([
+                        'status' => false,
+                        'message' => $request->email." is already suspended."
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => $request->email." not found!!! Check Email again."
+                    ]);
+                }
+            }
         }
-      }
 
-      public function unsuspendSubsciber(Request $request)
-      {
-        $user = User::where('email', $request->email.'_suspend')->first();
-        if ($user) {
-          $user->email = $request->email;
-          $user->update();
-          return response()->json([
-            'status' => true,
-            'message' => $request->email." is unsuspended successfully."
-          ]);
-        } else {
-          $check_unsuspend = User::where('email', $request->email)->first();
-          if ($check_unsuspend){
-            return response()->json([
-              'status' => false,
-              'message' => $request->email." is already unsuspended."
-            ]);
-          } else {
-            return response()->json([
-              'status' => false,
-              'message' => $request->email." not found!!! Check Email again."
-            ]);
-          }
+        public function unsuspendSubsciber(Request $request){
+            $user = User::where('email', $request->email.'_suspend')->first();
+            if ($user) {
+                $user->email = $request->email;
+                $user->update();
+                return response()->json([
+                    'status' => true,
+                    'message' => $request->email." is unsuspended successfully."
+                ]);
+            } else {
+                $check_unsuspend = User::where('email', $request->email)->first();
+                if ($check_unsuspend){
+                    return response()->json([
+                        'status' => false,
+                        'message' => $request->email." is already unsuspended."
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => $request->email." not found!!! Check Email again."
+                    ]);
+                }
+            }
         }
-      }
     }
