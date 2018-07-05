@@ -7,6 +7,7 @@
         }
         else
         {
+            //$faviconPath = 'https://tier5.us/images/favicon.ico';
             $external_file = $url->protocol.'://'.$url->actual_url;
             $headers = get_headers($external_file);
             if(preg_match("|200|", $headers[0]))
@@ -22,7 +23,6 @@
             {
                 $faviconPath = 'https://tier5.us/images/favicon.ico';
             }
-
         }
 
         function getDomainName($url)
@@ -60,32 +60,35 @@
         {
             $favicon = '';
             $html = file_get_contents($url);
-            $dom = new DOMDocument();
-            libxml_use_internal_errors(true);
-            $dom->loadHTML($html);
-            libxml_use_internal_errors(false);
-            $links = $dom->getElementsByTagName('link');
-            for ($i = 0; $i < $links->length; $i++){
-                $link = $links->item($i);
-                if($link->getAttribute('rel') == 'icon' or $link->getAttribute('rel') == 'show icon' or $link->getAttribute('rel') == 'Show Icon' or $link->getAttribute('rel') == 'shortcut icon'){
-                    $favicon = $link->getAttribute('href');
+            if (strlen($html) > 0)
+            {
+                $dom = new DOMDocument();
+                libxml_use_internal_errors(true);
+                $dom->loadHTML($html);
+                libxml_use_internal_errors(false);
+                $links = $dom->getElementsByTagName('link');
+                for ($i = 0; $i < $links->length; $i++){
+                    $link = $links->item($i);
+                    if($link->getAttribute('rel') == 'icon' or $link->getAttribute('rel') == 'show icon' or $link->getAttribute('rel') == 'Show Icon' or $link->getAttribute('rel') == 'shortcut icon'){
+                        $favicon = $link->getAttribute('href');
+                    }
                 }
+                if(substr($favicon, 0,1)=='/')
+                {
+                    $favicon = substr($favicon, 1);
+                }
+                elseif(preg_match("~^(?:f|ht)tps?://~i", $favicon))
+                {
+                    $explodedFavICon = explode('://', $favicon);
+                    $actualImage = explode('/',$explodedFavICon[1]);
+                    $favicon = $actualImage[count($actualImage)-1];
+                }
+                else
+                {
+                    $favicon = $favicon;
+                }
+                return $favicon;
             }
-            if(substr($favicon, 0,1)=='/')
-            {
-                $favicon = substr($favicon, 1);
-            }
-            elseif(preg_match("~^(?:f|ht)tps?://~i", $favicon))
-            {
-                $explodedFavICon = explode('://', $favicon);
-                $actualImage = explode('/',$explodedFavICon[1]);
-                $favicon = $actualImage[count($actualImage)-1];
-            }
-            else
-            {
-                $favicon = $favicon;
-            }
-            return $favicon;
         }
 @endphp
 <!DOCTYPE html>

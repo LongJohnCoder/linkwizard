@@ -722,6 +722,7 @@
         <!-- ManyChat -->
         <!-- <script src="//widget.manychat.com/216100302459827.js" async="async"></script> -->
                
+
         <script src="{{ URL::to('/').'/public/js/fineuploader.min.js' }}"></script>
        
         <script type="text/javascript">

@@ -702,8 +702,8 @@
     }
 </script>
 
-<!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async"></script>
+<!-- DO NOT DELETE ManyChat -->
+<!--<script src="//widget.manychat.com/216100302459827.js" async="async"></script>-->
 
 {{-- script for summernote js --}}
 <script>
