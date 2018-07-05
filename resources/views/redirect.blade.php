@@ -7,22 +7,22 @@
         }
         else
         {
-            //$faviconPath = 'https://tier5.us/images/favicon.ico';
-            $external_file = $url->protocol.'://'.$url->actual_url;
-            $headers = get_headers($external_file);
-            if(preg_match("|200|", $headers[0]))
-            {
-                $favicon = getFavicon($external_file);
-                $actualUrl = getDomainName($url->actual_url);
-                $faviconPath = $url->protocol.'://'.$actualUrl.'/'.$favicon;
-                if (@getimagesize($faviconPath)===false)
-                {
-                    $faviconPath = 'https://tier5.us/images/favicon.ico';
-                }
-            } else
-            {
-                $faviconPath = 'https://tier5.us/images/favicon.ico';
-            }
+            $faviconPath = 'https://tier5.us/images/favicon.ico';
+            //$external_file = $url->protocol.'://'.$url->actual_url;
+            //$headers = get_headers($external_file);
+            //if(preg_match("|200|", $headers[0]))
+            //{
+                //$favicon = getFavicon($external_file);
+                //$actualUrl = getDomainName($url->actual_url);
+                //$faviconPath = $url->protocol.'://'.$actualUrl.'/'.$favicon;
+                //if (@getimagesize($faviconPath)===false)
+                //{
+                    //$faviconPath = 'https://tier5.us/images/favicon.ico';
+                //}
+            //} else
+            //{
+                //$faviconPath = 'https://tier5.us/images/favicon.ico';
+            //}
         }
 
         function getDomainName($url)
