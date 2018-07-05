@@ -5,6 +5,8 @@
 		@include('contents/head')
 		<body>
 		<!-- head end -->
+		<!-- Messenger chatbot extension -->
+        @include('chatbot_extension')
 		<link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
 		<script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
 		<script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
@@ -26,8 +28,8 @@
 		<script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
 		<!-- Choseen jquery  -->
 		<!-- ManyChat -->
-		<script src="//widget.manychat.com/216100302459827.js" async="async">
-		</script>
+		<!-- <script src="//widget.manychat.com/216100302459827.js" async="async">
+		</script> -->
 
 		<script type="text/javascript">
 

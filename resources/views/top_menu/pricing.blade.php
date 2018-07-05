@@ -239,8 +239,10 @@
 </body>
 
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async">
-</script>
+<!-- <script src="//widget.manychat.com/216100302459827.js" async="async">
+</script> -->
+<!-- Messenger chatbot extension -->
+@include('chatbot_extension')
 
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script src="https://checkout.stripe.com/checkout.js"></script>

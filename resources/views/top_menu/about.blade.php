@@ -52,6 +52,8 @@
 	</div>
 </header>
 <!-- Header End -->
+<!-- Messenger chatbot extension -->
+@include('chatbot_extension')
 <!-- sign up modal start -->
 @include('registration.customsignup')
 <!-- sign up modal end -->
@@ -201,7 +203,8 @@
 </footer>
 </body>
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async">
-</script>
+<!-- <script src="//widget.manychat.com/216100302459827.js" async="async">
+</script> -->
+
 @include('loginjs')
 </html>

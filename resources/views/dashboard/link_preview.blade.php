@@ -165,8 +165,10 @@
 @include('contents/header')
 <!-- Header End -->
 
-
 @include('contents.modal.allModal')
+
+<!-- Messenger chatbot extension -->
+@include('chatbot_extension')
 
 <div class="main-dashboard-body">
   <div class="main-content">
@@ -637,7 +639,8 @@
 </script>
 
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async"></script>
+<!-- <script src="//widget.manychat.com/216100302459827.js" async="async"></script> -->
+
 
 {{-- script for summernote js --}}
 <script>

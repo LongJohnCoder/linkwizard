@@ -188,7 +188,9 @@
 </footer>
 </body>
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async">
-</script>
+<!-- <script src="//widget.manychat.com/216100302459827.js" async="async">
+</script> -->
+<!-- Messenger chatbot extension -->
+@include('chatbot_extension')
 @include('loginjs')
 </html>

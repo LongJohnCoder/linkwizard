@@ -34,6 +34,8 @@
 
 
 <body>
+<!-- Messenger chatbot extension -->
+        @include('chatbot_extension')
 <!-- Header Start -->
 
 <header class="brandingheader">

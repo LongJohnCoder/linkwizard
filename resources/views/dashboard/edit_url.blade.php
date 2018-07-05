@@ -11,6 +11,8 @@ $optTypeLI = 'normal';
 <!-- head of the page -->
 @include('contents/head')
 <!-- head end -->
+<!-- Messenger chatbot extension -->
+@include('chatbot_extension')
 <body>
 <link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
 <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
@@ -937,8 +939,9 @@ $optTypeLI = 'normal';
     }
 </style>
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async">
-</script>
+<!-- <script src="//widget.manychat.com/216100302459827.js" async="async">
+</script> -->
+
 
 <script src="{{ URL::to('/').'/public/js/fineuploader.min.js' }}"></script>
 <link href="{{ URL::to('/').'/public/css/fineuploader-gallery.min.css' }}" rel="stylesheet" />
@@ -1220,9 +1223,9 @@ $optTypeLI = 'normal';
         // var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
         // var url = str;
         // if (!regexp.test(url)) {
-        // 		return false;
+        //      return false;
         // } else {
-        // 		return true;
+        //      return true;
         // }
     }
 
@@ -1254,8 +1257,8 @@ $optTypeLI = 'normal';
 
     // $("#url_short_frm").submit(function(e) {
     //     e.preventDefault();
-    // 		var formData = new FormData(this);
-    // 		//console.log('form data :',formData);
+    //      var formData = new FormData(this);
+    //      //console.log('form data :',formData);
     //
     //     $.ajax({
     //         url: "{{route('shortenUrl')}}",
@@ -1271,7 +1274,7 @@ $optTypeLI = 'normal';
     // });
 
     // var allowedSizes = {
-    // 	x :
+    //  x :
     // }
 
     /* var shortenUrlFunc = function() {
@@ -1304,7 +1307,7 @@ $optTypeLI = 'normal';
 
         if($("#cust_url_chk").prop('checked') && $("#link_preview_selector").prop('checked') && $("#link_preview_custom").prop('checked')) {
             var url_inp_len = $("#url_inp").val().trim().length;
-            var	url_inp			= $("#url_inp").val();
+            var url_inp         = $("#url_inp").val();
             if(url_inp.indexOf(' ') != -1 ||
                 (!(url_inp.indexOf('http://') == 0) && !(url_inp.indexOf('https://') == 0)) ||
                 (url_inp.indexOf(',') != -1) ||
@@ -1440,15 +1443,15 @@ $optTypeLI = 'normal';
     /*}*/
 
     // var $select = $('#shortTagsContentss').selectize({
-    // 				maxItems: null,
-    // 				valueField: 'tag',
-    // 				labelField: 'tag',
-    // 				searchField: 'tag',
-    // 				options: [
-    // 					{tag: 'tag1'},{tag:'tag2'},{tag:'tag3'}
-    // 				],
-    // 				create: true
-    // 			});
+    //              maxItems: null,
+    //              valueField: 'tag',
+    //              labelField: 'tag',
+    //              searchField: 'tag',
+    //              options: [
+    //                  {tag: 'tag1'},{tag:'tag2'},{tag:'tag3'}
+    //              ],
+    //              create: true
+    //          });
 
     var maintainSidebar = function(thisInstance) {
 
@@ -1560,22 +1563,22 @@ $optTypeLI = 'normal';
 
         //facebook analytics checkbox for custom urls
         // if (thisInstance.id === "checkboxAddFbPixelid1" && thisInstance["name"] === "chk_fb_custom") {
-        // 	if(thisInstance.checked) {
-        // 		$('#fbPixelid1').show();
-        // 	} else {
-        // 		$('#fbPixelid1').hide();
-        // 		$('#fbPixelid1').val('');
-        // 	}
+        //  if(thisInstance.checked) {
+        //      $('#fbPixelid1').show();
+        //  } else {
+        //      $('#fbPixelid1').hide();
+        //      $('#fbPixelid1').val('');
+        //  }
         // }
 
         //google analytics checkbox for short urls
         // if (thisInstance.id === "checkboxAddGlPixelid" && thisInstance["name"] === "chk_gl_short") {
-        // 	if(thisInstance.checked) {
-        // 		$('#glPixelid').show();
-        // 	} else {
-        // 		$('#glPixelid').hide();
-        // 		$('#glPixelid').val('');
-        // 	}
+        //  if(thisInstance.checked) {
+        //      $('#glPixelid').show();
+        //  } else {
+        //      $('#glPixelid').hide();
+        //      $('#glPixelid').val('');
+        //  }
         // }
 
         //google analytics checkbox for custom urls

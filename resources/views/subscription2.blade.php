@@ -36,6 +36,8 @@
 	</div>
 </header>
 <!-- Header End -->
+<!-- Messenger chatbot extension -->
+@include('chatbot_extension')
 <!-- Main Content Start -->
 @if(isset($session_plan) && $session_plan != null)
 	<div>
@@ -212,8 +214,9 @@
 <script src="{{url('/')}}/public/js/parsley.js "></script>
 
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async">
-</script>
+<!-- <script src="//widget.manychat.com/216100302459827.js" async="async">
+</script> -->
+
 
   <script>
 		var public_key = "{{env('STRIPE_KEY')}}";

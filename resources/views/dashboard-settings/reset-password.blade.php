@@ -18,6 +18,8 @@
 <!-- search div -->
 
 <!-- search div ends -->
+<!-- Messenger chatbot extension -->
+@include('chatbot_extension')
 
 <div class="main-dashboard-body">
   <div class="container centered box" >
@@ -103,8 +105,9 @@
 <script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
 <!-- Choseen jquery  -->
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async">
-</script>
+<!-- <script src="//widget.manychat.com/216100302459827.js" async="async">
+</script> -->
+
 
 <script type="text/javascript">
 

@@ -37,6 +37,9 @@
 </header>
 
 <!-- Header End -->
+<!-- Messenger chatbot extension -->
+    @include('chatbot_extension')
+
 <!-- sign up modal start -->
 @include('registration.customsignup')
 <!-- sign up modal end -->
@@ -122,8 +125,8 @@
 </body>
 
 <!-- ManyChat -->
-<script src="//widget.manychat.com/216100302459827.js" async="async">
-</script>
+<!-- <script src="//widget.manychat.com/216100302459827.js" async="async">
+</script> -->
 
 <script type="text/javascript">
 	$(document).ready(function() {
