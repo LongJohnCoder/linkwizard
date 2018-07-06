@@ -268,6 +268,11 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                   'uses'  =>  'HomeController@setPasswordSettings',
                   'as'    =>  'setPasswordSettings'
                 ]);
+
+                Route::get('settings',[
+                  'uses'  =>  'SettingsController@getSettingsPage',
+                  'as'    =>  'getSettingsPage'
+                ]);
             });
 
             Route::post('shortenUrl', [

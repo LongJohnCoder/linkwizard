@@ -182,13 +182,11 @@ class HomeController extends Controller
     */
     public function resetPasswordSettings(Request $request) {
         if(\Auth::check()) {
-
-          $user = \Auth::user();
-          $arr = $this->getAllDashboardElements($user, $request);
-          return view('dashboard-settings.reset-password', $arr);
-          //return view('dashboard-settings.reset-password')->with(['user'  =>  $user]);
+            $user = \Auth::user();
+            $arr = $this->getAllDashboardElements($user, $request);
+            return view('dashboard-settings.reset-password', $arr);
         } else {
-          return redirect()->action('HomeController@getIndex')->with('error','Your Session has expired.. Please log in again!');
+            return redirect()->action('HomeController@getIndex')->with('error','Your Session has expired.. Please log in again!');
         }
     }
 

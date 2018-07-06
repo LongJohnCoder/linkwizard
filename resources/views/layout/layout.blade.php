@@ -3,424 +3,444 @@
     <html lang="en">
         @include('contents/head')
         <body>
-            @include('contents/header')
+          @include('contents/header')
 
-            @yield('content')
+          @yield('content')
+          
+          @include('contents/footer')
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $("#dashboard-search-btn").on('click',function() {
+          $('#limit_page').val($('#dashboard-select').val());
+          var data = $("#dashboard-search-form").serialize();
+          $("#dashboard-search-form").submit();
+        });
 
-            @include('contents/footer')
-            <script type="text/javascript">
-              $(document).ready(function() {
-                $("#dashboard-search-btn").on('click',function() {
-                  $('#limit_page').val($('#dashboard-select').val());
-                  var data = $("#dashboard-search-form").serialize();
-                  $("#dashboard-search-form").submit();
+        $("#dashboard-select").on('change',function(e) {
+          $('#limit_page').val(e.target.value);
+          var data = $("#dashboard-search-form").serialize();
+          $("#dashboard-search-form").submit();
+        });
+        $("#dashboard-search").on('click',function() {
+          var tags = $("#dashboard-tags-to-search").tagsinput('items');
+          var text = $("#dashboard-text-to-search").val();
+          console.log('tags :',tags,' text: ',text);
+        });
+        $(":checkbox").on("change", function() {
+          maintainSidebar(this);
+          });
+        $(this).on('click', '.menu-icon', function(){
+            $(this).addClass("close");
+            $('#userdetails').slideToggle(500);
+            $('#myNav1').hide();
+            $('#myNav2').hide();
+          });
+          $("#basic").click(function(){
+            $('.menu-icon').addClass("close");
+            $('#myNav1').slideToggle(500);
+            $('#myNav2').hide();
+            $('#userdetails').hide();
+            maintainSidebar(this);
+          });
+
+          $("#advanced").click(function(){
+            $('.menu-icon').addClass("close");
+            $('#myNav2').slideToggle(500);
+            $('#myNav1').hide();
+            $('#userdetails').hide();
+            maintainSidebar(this);
+          });
+
+          $(this).on('click', '.close', function(){
+              $('.userdetails').hide();
+              $(this).removeClass("close");
+            });
+
+        $('[data-toggle="tooltip"]').tooltip();
+            $('#hamburger').on('click', function () {
+                $('.sidebar.right').addClass('open', true);
+                $('.sidebar.right').removeClass('close', true);
+            });
+            $('#cross').on('click', function () {
+                $('.sidebar.right').toggleClass('close', true);
+                $('.sidebar.right').removeClass('open', true);
+            });
+            $('#tr5link').on('click', function () {
+                $('.tr5link').addClass('open', true);
+                $('.tr5link').removeClass('close', true);
+            });
+
+            $('#customLink').on('click', function () {
+                $('.sharebar').addClass('open', true);
+                $('.sharebar').removeClass('close', true);
+            });
+            $('#cross2').on('click', function () {
+                $('.sharebar').addClass('close', true);
+                $('.sharebar').removeClass('open', true);
+            });
+            $('#noTr5Link').on('click', function () {
+                swal({
+                    type: 'warning',
+                    title: 'Notification',
+                    text: 'You have maximum shorten links. Please upgrade account to get hassle free services.'
+                });
+            });
+            $('#noCustomLink').on('click', function () {
+                swal({
+                    type: 'warning',
+                    title: 'Notification',
+                    text: 'You have maximum shorten links. Please upgrade account to get hassle free services.'
+                });
+            });
+      });
+    </script>
+    <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
+    <script src="{{ URL::to('/').'/public/resources/js/min/toucheffects-min.js'}}"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+        $(".list-group ul li").click(function(){
+          $(this).addClass("active");
+          $(".list-group ul li").not($(this)).removeClass("active");
+          $(window).scrollTop(500);
+          var index = $(this).index();
+                $("div.tab-content").removeClass("active");
+                $("div.tab-content").eq(index).addClass("active");
+          });
+      });
+    </script>
+
+
+    <script>
+            $(document).ready(function () {
+                var options = {
+                    theme:"custom",
+                    content:'<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" class="center-block">',
+                    message:"Please wait a while",
+                    backgroundColor:"#212230"
+                };
+          $('#swalbtn1').click(function(){
+
+                  var actualUrl = $('#givenActualUrl').val();
+                    var customUrl = $('#makeCustomUrl').val();
+                    @if (Auth::user())
+                        var userId = {{ Auth::user()->id }};
+                    @else
+                        var userId = 0;
+                    @endif
+
+                    var checkboxAddFbPixelid  =   $("#checkboxAddFbPixelid1").prop('checked');
+                    var fbPixelid             =   $("#fbPixelid1").val();
+                    var checkboxAddGlPixelid  =   $("#checkboxAddGlPixelid1").prop('checked');
+                    var glPixelid             =   $("#glPixelid1").val();
+                    var allowTag              =   $("#customTagsEnable").prop('checked');
+                    var tags                  =   $("#customTagsContents").tagsinput('items');
+                    var allowDescription      =   $("#customDescriptionEnable").prop('checked');
+                    var searchDescription     =   $("#customDescriptionContents").val();
+
+                    $.ajax({
+                      type:"POST",
+                      url:"/check_custom",
+                      data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
+                      success:function(response){
+                        console.log('check_custom');
+                        console.log(response);
+                        if(response == 1)
+                        {
+                          console.log(response);
+                          if (ValidURL(actualUrl))
+                          {
+                              if (ValidCustomURL(customUrl))
+                              {
+                                  $.ajax({
+                                      type: "POST",
+                                      url: "{{ route('postCustomUrlTier5') }}",
+                                      data: {
+                                          checkboxAddFbPixelid  : checkboxAddFbPixelid,
+                                          fbPixelid             : fbPixelid,
+                                          checkboxAddGlPixelid  : checkboxAddGlPixelid,
+                                          glPixelid             : glPixelid,
+                                          actual_url            : actualUrl,
+                                          custom_url            : customUrl,
+                                          user_id               : userId,
+                                          allowTag              : allowTag,
+                                          tags                  : tags,
+                                          allowDescription      : allowDescription,
+                                          searchDescription     : searchDescription,
+                                          _token: "{{ csrf_token() }}"
+                                      }, success: function (response) {
+                                        console.log('postCustomUrlTier5');
+                                          if(response.status=="success") {
+                                              var shortenUrl = response.url;
+                                              var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
+                                              swal({
+                                                  title: "Shorten Url:",
+                                                  text: displayHtml,
+                                                  type: "success",
+                                                  html: true
+                                              }, function() {
+                                                  window.location.reload();
+                                              });
+                                              new Clipboard('#clipboardswal');
+                                              $('#clipboardswal').on('click', function () {
+                                                  window.location.reload();
+                                              });
+                                              HoldOn.close();
+                                          } else {
+                                              swal({
+                                                  title: null,
+                                                  text: "Please paste an actual URL",
+                                                  type: "warning",
+                                                  html: true
+                                              });
+                                              HoldOn.close();
+                                          }
+                                      }, error: function(response) {
+                                          console.log('Response error!');
+                                          HoldOn.close();
+                                      }, statusCode: {
+                                          500: function() {
+                                              swal({
+                                                  title: null,
+                                                  text: "Access Forbidden, Please paste a valid URL!",
+                                                  type: "error",
+                                                  html: true
+                                              });
+                                              HoldOn.close();
+                                          }
+                                      }
+                                  });
+                              }
+                              else
+                              {
+                                  swal({
+                                      type: "warning",
+                                      title: null,
+                                      text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
+                                      html: true
+                                  });
+                              }
+                          }
+                          else
+                          {
+                              swal({
+                                  type: "warning",
+                                  title: null,
+                                  text: "Please Enter An URL"
+                                });
+                          }
+                        }
+                        else
+                        {
+                          $("#err_cust").show();
+                          //url already used by this user
+                        }
+
+                      }
+                    });
+
                 });
 
-                $("#dashboard-select").on('change',function(e) {
-                  $('#limit_page').val(e.target.value);
-                  var data = $("#dashboard-search-form").serialize();
-                  $("#dashboard-search-form").submit();
-                });
-                $("#dashboard-search").on('click',function() {
-                  var tags = $("#dashboard-tags-to-search").tagsinput('items');
-                  var text = $("#dashboard-text-to-search").val();
-                  console.log('tags :',tags,' text: ',text);
-                });
-                $(":checkbox").on("change", function() {
-                  maintainSidebar(this);
-                  });
-                $(this).on('click', '.menu-icon', function(){
-                    $(this).addClass("close");
-                    $('#userdetails').slideToggle(500);
-                    $('#myNav1').hide();
-                    $('#myNav2').hide();
-                  });
-                  $("#basic").click(function(){
-                    $('.menu-icon').addClass("close");
-                    $('#myNav1').slideToggle(500);
-                    $('#myNav2').hide();
-                    $('#userdetails').hide();
-                    maintainSidebar(this);
-                  });
-
-                  $("#advanced").click(function(){
-                    $('.menu-icon').addClass("close");
-                    $('#myNav2').slideToggle(500);
-                    $('#myNav1').hide();
-                    $('#userdetails').hide();
-                    maintainSidebar(this);
-                  });
-
-                  $(this).on('click', '.close', function(){
-                      $('.userdetails').hide();
-                      $(this).removeClass("close");
-                    });
-
-                $('[data-toggle="tooltip"]').tooltip();
-                    $('#hamburger').on('click', function () {
-                        $('.sidebar.right').addClass('open', true);
-                        $('.sidebar.right').removeClass('close', true);
-                    });
-                    $('#cross').on('click', function () {
-                        $('.sidebar.right').toggleClass('close', true);
-                        $('.sidebar.right').removeClass('open', true);
-                    });
-                    $('#tr5link').on('click', function () {
-                        $('.tr5link').addClass('open', true);
-                        $('.tr5link').removeClass('close', true);
-                    });
-
-                    $('#customLink').on('click', function () {
-                        $('.sharebar').addClass('open', true);
-                        $('.sharebar').removeClass('close', true);
-                    });
-                    $('#cross2').on('click', function () {
-                        $('.sharebar').addClass('close', true);
-                        $('.sharebar').removeClass('open', true);
-                    });
-                    $('#noTr5Link').on('click', function () {
-                        swal({
-                            type: 'warning',
-                            title: 'Notification',
-                            text: 'You have maximum shorten links. Please upgrade account to get hassle free services.'
-                        });
-                    });
-                    $('#noCustomLink').on('click', function () {
-                        swal({
-                            type: 'warning',
-                            title: 'Notification',
-                            text: 'You have maximum shorten links. Please upgrade account to get hassle free services.'
-                        });
-                    });
-              });
-            </script>
-            <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
-            <script src="{{ URL::to('/').'/public/resources/js/min/toucheffects-min.js'}}"></script>
-            <script type="text/javascript">
-                $(document).ready(function(){
-                    $.fn.modal.Constructor.prototype.enforceFocus = function() {};
-                    $(".list-group ul li").click(function(){
-                    $(this).addClass("active");
-                    $(".list-group ul li").not($(this)).removeClass("active");
-                    $(window).scrollTop(500);
-                    var index = $(this).index();
-                          $("div.tab-content").removeClass("active");
-                          $("div.tab-content").eq(index).addClass("active");
-                    });
-                });
-            </script>
 
 
-            <script>
-                $(document).ready(function () {
-                    var options = {
-                        theme:"custom",
-                        content:'<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" class="center-block">',
-                        message:"Please wait a while",
-                        backgroundColor:"#212230"
-                    };
-                    $('#swalbtn1').click(function(){
-                        var actualUrl = $('#givenActualUrl').val();
-                        var customUrl = $('#makeCustomUrl').val();
-                        @if (Auth::user())
-                            var userId = {{ Auth::user()->id }};
-                        @else
-                            var userId = 0;
-                        @endif
-                        var checkboxAddFbPixelid  =   $("#checkboxAddFbPixelid1").prop('checked');
-                        var fbPixelid             =   $("#fbPixelid1").val();
-                        var checkboxAddGlPixelid  =   $("#checkboxAddGlPixelid1").prop('checked');
-                        var glPixelid             =   $("#glPixelid1").val();
-                        var allowTag              =   $("#customTagsEnable").prop('checked');
-                        var tags                  =   $("#customTagsContents").tagsinput('items');
-                        var allowDescription      =   $("#customDescriptionEnable").prop('checked');
-                        var searchDescription     =   $("#customDescriptionContents").val();
+                function ValidURL(str) {
 
-                        $.ajax({
-                            type:"POST",
-                            url:"/check_custom",
-                            data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
-                            success:function(response){
-                                console.log('check_custom');
-                                console.log(response);
-                                if(response == 1){
-                                    console.log(response);
-                                    if (ValidURL(actualUrl)){
-                                        if (ValidCustomURL(customUrl)){
-                                            $.ajax({
-                                                type: "POST",
-                                                url: "{{ route('postCustomUrlTier5') }}",
-                                                data: {
-                                                    checkboxAddFbPixelid  : checkboxAddFbPixelid,
-                                                    fbPixelid             : fbPixelid,
-                                                    checkboxAddGlPixelid  : checkboxAddGlPixelid,
-                                                    glPixelid             : glPixelid,
-                                                    actual_url            : actualUrl,
-                                                    custom_url            : customUrl,
-                                                    user_id               : userId,
-                                                    allowTag              : allowTag,
-                                                    tags                  : tags,
-                                                    allowDescription      : allowDescription,
-                                                    searchDescription     : searchDescription,
-                                                    _token: "{{ csrf_token() }}"
-                                                    }, 
-                                                success: function (response) {
-                                                    console.log('postCustomUrlTier5');
-                                                    if(response.status=="success") {
-                                                        var shortenUrl = response.url;
-                                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
-                                                          swal({
-                                                              title: "Shorten Url:",
-                                                              text: displayHtml,
-                                                              type: "success",
-                                                              html: true
-                                                          }, function() {
-                                                              window.location.reload();
-                                                          });
-                                                        new Clipboard('#clipboardswal');
-                                                        $('#clipboardswal').on('click', function () {
-                                                            window.location.reload();
-                                                        });
-                                                        HoldOn.close();
-                                                    } else {
-                                                        swal({
-                                                            title: null,
-                                                            text: "Please paste an actual URL",
-                                                            type: "warning",
-                                                            html: true
-                                                        });
-                                                        HoldOn.close();
-                                                    }
-                                                },
-                                                error: function(response) {
-                                                    console.log('Response error!');
-                                                    HoldOn.close();
-                                                }, statusCode: {
-                                                    500: function() {
-                                                        swal({
-                                                            title: null,
-                                                            text: "Access Forbidden, Please paste a valid URL!",
-                                                            type: "error",
-                                                            html: true
-                                                        });
-                                                        HoldOn.close();
-                                                    }
-                                                }
-                                            });
-                                        }else{
-                                            swal({
-                                                type: "warning",
-                                                title: null,
-                                                text: "Please Enter A Custom URL<br>It Should Be AlphaNumeric",
-                                                html: true
-                                            });
-                                        }
-                                    }else{
+                  if(str.indexOf("http://") == 0) {
+                    return true;
+                  } else if(str.indexOf("https://") == 0) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+
+                    // var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
+                    // var url = str;
+                    // if (!regexp.test(url)) {
+                    //     return false;
+                    // } else {
+                    //     return true;
+                    // }
+                }
+
+                function ValidCustomURL(str) {
+                    var regexp = new RegExp("^[a-zA-Z0-9_]+$");
+                    var url = str;
+                    if (!regexp.test(url)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+
+                $('#swalbtn').click(function() {
+                    var url = $('#givenUrl').val();
+                    var validUrl = ValidURL(url);
+                    @if (Auth::user())
+                        var userId = {{ Auth::user()->id }};
+                    @else
+                        var userId = 0;
+                    @endif
+
+                    var checkboxAddFbPixelid  =   $("#checkboxAddFbPixelid").prop('checked');
+                    var fbPixelid             =   $("#fbPixelid").val();
+                    var checkboxAddGlPixelid  =   $("#checkboxAddGlPixelid").prop('checked');
+                    var glPixelid             =   $("#glPixelid").val();
+                    var allowTag              =   $("#shortTagsEnable").prop('checked');
+                    var tags                  =   $("#shortTagsContents").tagsinput('items');
+                    var allowDescription      =   $("#shortDescriptionEnable").prop('checked');
+                    var searchDescription     =   $("#shortDescriptionContents").val();
+
+                    if(url) {
+                        if(validUrl) {
+                            HoldOn.open(options);
+                            $.ajax({
+                                type: 'POST',
+                                url: "{{ route('postShortUrlTier5') }}",
+                                data: {
+                                  url                   : url,
+                                  user_id               : userId,
+                                  checkboxAddFbPixelid  : checkboxAddFbPixelid,
+                                  fbPixelid             : fbPixelid,
+                                  checkboxAddGlPixelid  : checkboxAddGlPixelid,
+                                  glPixelid             : glPixelid,
+                                  allowTag              : allowTag,
+                                  tags                  : tags,
+                                  allowDescription      : allowDescription,
+                                  searchDescription     : searchDescription,
+                                  _token: "{{ csrf_token() }}"},
+                                success: function (response) {
+                                  console.log('postShortUrlTier5');
+                                    if(response.status=="success") {
+                                        var shortenUrl = response.url;
+                                        var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
                                         swal({
-                                            type: "warning",
-                                            title: null,
-                                            text: "Please Enter An URL"
+                                            title: "Shorten Url:",
+                                            text: displayHtml,
+                                            type: "success",
+                                            html: true
+                                        }, function() {
+                                            window.location.reload();
                                         });
-                                    }
-                                }else{
-                                    $("#err_cust").show();
-                                    //url already used by this user
-                                }
-                            }
-                        });
-                    });
-
-                    function ValidURL(str) {
-                        if(str.indexOf("http://") == 0) {
-                            return true;
-                        } else if(str.indexOf("https://") == 0) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        // var regexp = new RegExp("[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%\$#_]*)?\.(com|org|net|co|edu|ac|gr|htm|html|php|asp|aspx|cc|in|gb|au|uk|us|pk|cn|jp|br|co|ca|it|fr|du|ag|gl|ly|le|gs|dj|cr|to|nf|io|xyz)");
-                        // var url = str;
-                        // if (!regexp.test(url)) {
-                        //     return false;
-                        // } else {
-                        //     return true;
-                        // }
-                    }
-
-                    function ValidCustomURL(str) {
-                        var regexp = new RegExp("^[a-zA-Z0-9_]+$");
-                        var url = str;
-                        if (!regexp.test(url)) {
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    }
-
-                    $('#swalbtn').click(function() {
-                        var url = $('#givenUrl').val();
-                        var validUrl = ValidURL(url);
-                        @if (Auth::user())
-                            var userId = {{ Auth::user()->id }};
-                        @else
-                            var userId = 0;
-                        @endif
-
-                        var checkboxAddFbPixelid  =   $("#checkboxAddFbPixelid").prop('checked');
-                        var fbPixelid             =   $("#fbPixelid").val();
-                        var checkboxAddGlPixelid  =   $("#checkboxAddGlPixelid").prop('checked');
-                        var glPixelid             =   $("#glPixelid").val();
-                        var allowTag              =   $("#shortTagsEnable").prop('checked');
-                        var tags                  =   $("#shortTagsContents").tagsinput('items');
-                        var allowDescription      =   $("#shortDescriptionEnable").prop('checked');
-                        var searchDescription     =   $("#shortDescriptionContents").val();
-
-                        if(url) {
-                            if(validUrl) {
-                                HoldOn.open(options);
-                                $.ajax({
-                                    type: 'POST',
-                                    url: "{{ route('postShortUrlTier5') }}",
-                                    data: {
-                                        url                   : url,
-                                        user_id               : userId,
-                                        checkboxAddFbPixelid  : checkboxAddFbPixelid,
-                                        fbPixelid             : fbPixelid,
-                                        checkboxAddGlPixelid  : checkboxAddGlPixelid,
-                                        glPixelid             : glPixelid,
-                                        allowTag              : allowTag,
-                                        tags                  : tags,
-                                        allowDescription      : allowDescription,
-                                        searchDescription     : searchDescription,
-                                        _token: "{{ csrf_token() }}"},
-                                    success: function (response) {
-                                        console.log('postShortUrlTier5');
-                                        if(response.status=="success") {
-                                            var shortenUrl = response.url;
-                                            var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
-                                            swal({
-                                                title: "Shorten Url:",
-                                                text: displayHtml,
-                                                type: "success",
-                                                html: true
-                                            }, function() {
-                                                window.location.reload();
-                                            });
-                                            new Clipboard('#clipboardswal');
-                                            $('#clipboardswal').on('click', function () {
-                                                window.location.reload();
-                                            });
-                                            HoldOn.close();
-                                        } else {
-                                            swal({
-                                                title: null,
-                                                text: "Please paste an actual URL",
-                                                type: "warning",
-                                                html: true
-                                            });
-                                            HoldOn.close();
-                                        }
-                                    }, error: function(response) {
-                                        console.log('Response error!');
+                                        new Clipboard('#clipboardswal');
+                                        $('#clipboardswal').on('click', function () {
+                                            window.location.reload();
+                                        });
                                         HoldOn.close();
-                                    }, statusCode: {
-                                        500: function() {
-                                            swal({
-                                                title: null,
-                                                text: "Access Forbidden, Please paste a valid URL!",
-                                                type: "error",
-                                                html: true
-                                            });
-                                            HoldOn.close();
-                                        }
+                                    } else {
+                                        swal({
+                                            title: null,
+                                            text: "Please paste an actual URL",
+                                            type: "warning",
+                                            html: true
+                                        });
+                                        HoldOn.close();
                                     }
-                                });
-                            } else {
-                                var errorMsg="Enter A Valid URL";
-                                swal({
-                                    title: null,
-                                    text: errorMsg,
-                                    type: "error",
-                                    html: true
-                                });
-                            }
+                                }, error: function(response) {
+                                    console.log('Response error!');
+                                    HoldOn.close();
+                                }, statusCode: {
+                                    500: function() {
+                                        swal({
+                                            title: null,
+                                            text: "Access Forbidden, Please paste a valid URL!",
+                                            type: "error",
+                                            html: true
+                                        });
+                                        HoldOn.close();
+                                    }
+                                }
+                            });
                         } else {
-                            var errorMsg="Please Enter An URL";
+                            var errorMsg="Enter A Valid URL";
                             swal({
                                 title: null,
                                 text: errorMsg,
-                                type: "warning",
+                                type: "error",
                                 html: true
                             });
                         }
-                    });
+                    } else {
+                        var errorMsg="Please Enter An URL";
+                        swal({
+                            title: null,
+                            text: errorMsg,
+                            type: "warning",
+                            html: true
+                        });
+                    }
                 });
-            </script>
-            <script type="text/javascript">
-                $(document).ready(function () {
-                    $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
-                        e.preventDefault();
-                        $(this).siblings('a.active').removeClass("active");
-                        $(this).addClass("active");
-                        var index = $(this).index();
-                        $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
-                        $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
-                    });
-                });
-            </script>
-            <script>
-                $(document).ready(function(){
-                    @if (isset($filter) and $filter != null) {
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ route('postChartDataFilterDateRange') }}",
-                            data: {
-                                "user_id": {{ $user->id }},
-                                "start_date": "{{ $filter['start'] }}",
-                                "end_date": "{{ $filter['end'] }}",
-                                "_token": "{{ csrf_token() }}"
+
+            });
+
+        </script>
+        <script type="text/javascript">
+        $(document).ready(function () {
+            $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+                e.preventDefault();
+                $(this).siblings('a.active').removeClass("active");
+                $(this).addClass("active");
+                var index = $(this).index();
+                $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+                $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+            });
+        });
+        </script>
+        <script>
+        $(document).ready(function(){
+            @if (isset($filter) and $filter != null) {
+              $.ajax({
+                    type: "POST",
+                    url: "{{ route('postChartDataFilterDateRange') }}",
+                    data: {
+                        "user_id": {{ $user->id }},
+                        "start_date": "{{ $filter['start'] }}",
+                        "end_date": "{{ $filter['end'] }}",
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                      console.log('postChartDataFilterDateRange');
+                      console.log(response);
+                      var date_from = "{{ date( 'M d'  , strtotime($filter['start'])) }}";
+                      var date_to   = "{{ date( 'M d'  , (strtotime($filter['end']))-86400) }}";
+
+                      $('#date_range').text(date_from+ ' - ' +date_to);
+
+                        var chartDataStack = [];
+                        $('#columnChart').highcharts({
+                            chart: {
+                                type: 'column',
+                                backgroundColor: 'rgba(255, 255, 255, 0)'
                             },
-                            success: function(response) {
-                                console.log('postChartDataFilterDateRange');
-                                console.log(response);
-                                var date_from = "{{ date( 'M d'  , strtotime($filter['start'])) }}";
-                                var date_to   = "{{ date( 'M d'  , (strtotime($filter['end']))-86400) }}";
-                                $('#date_range').text(date_from+ ' - ' +date_to);
-                                var chartDataStack = [];
-                                $('#columnChart').highcharts({
-                                    chart: {
-                                        type: 'column',
-                                        backgroundColor: 'rgba(255, 255, 255, 0)'
-                                    },
-                                    title: {
-                                        text: null
-                                    },
-                                    xAxis: {
-                                        type: 'category',
-                                        labels: {
-                                            style: {
-                                                fontWeight: 'bold',
-                                                color: '#fff'
-                                            }
-                                        }
-                                    },
-                                    yAxis: {
-                                        labels: {
-                                            enabled: false
-                                        },
-                                        title: {
-                                            text: null
-                                        },
-                                        gridLineWidth: 0,
-                                        minorGridLineWidth: 0
-                                    },
-                                    legend: {
-                                        enabled: false
-                                    },
-                                    plotOptions: {
-                                        series: {
-                                        borderWidth: 0,
-                                        dataLabels: {
+                            title: {
+                                text: null
+                            },
+                            xAxis: {
+                                type: 'category',
+                                labels: {
+                                    style: {
+                                        fontWeight: 'bold',
+                                        color: '#fff'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                labels: {
+                                    enabled: false
+                                },
+                                title: {
+                                    text: null
+                                },
+                                gridLineWidth: 0,
+                                minorGridLineWidth: 0
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            plotOptions: {
+                                series: {
+                                    borderWidth: 0,
+                                    dataLabels: {
                                         enabled: false,
                                         format: '{point.y:.1f}%'
                                     },
