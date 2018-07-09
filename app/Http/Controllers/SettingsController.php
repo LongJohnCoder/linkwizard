@@ -31,6 +31,39 @@
             }
         }
 
+        public function modifyDefaultRedirectTime(Request $request){
+          if(\Auth::check()) {
+                try{
+                    $user = \Auth::user();
+                    $user = User::findOrFail($user->id);
+                    $user->default_redirect_time=($request->redirection_time*1000);
+                    if($user->save()){
+                        return \Response::json(array(
+                            'status'               => true,
+                            'code'                 => 200,
+                            'redirection_time'     => $request->redirection_time,
+                            'message'              => "Default Redirection Time Saved"
+                        ));
+                    }else{
+                        return \Response::json(array(
+                            'status'   => false,
+                            'code'     => 400,
+                            'message'  => "Try Again !"
+                        ));
+                    }
+                }catch(\Exception $e){
+                    return \Response::json(array(
+                        'status'   => false,
+                        'code'     => 500,
+                        'message'  => $e->getMessage()
+                    ));
+                }
+            }else{
+
+            }
+
+        }
+
         private function getAllDashboardElements($user , $request) {
             //code for search based on tags and description if the params are not empty
             $textToSearch = $request->textToSearch;

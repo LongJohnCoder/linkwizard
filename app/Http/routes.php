@@ -269,10 +269,22 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                   'as'    =>  'setPasswordSettings'
                 ]);
 
-                Route::get('settings',[
+                Route::get('all-settings',[
                   'uses'  =>  'SettingsController@getSettingsPage',
                   'as'    =>  'getSettingsPage'
                 ]);
+
+                Route::post('create-zapier-key',[
+                  'uses'  =>  'ZapierController@createZapierKey',
+                  'as'    =>  'createZapierKey'
+                ]);
+
+                Route::post('modify-default-redirect-time',[
+                  'uses'  =>  'SettingsController@modifyDefaultRedirectTime',
+                  'as'    =>  'modifyDefaultRedirectTime'
+                ]);
+
+
             });
 
             Route::post('shortenUrl', [

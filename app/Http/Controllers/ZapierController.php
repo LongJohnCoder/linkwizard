@@ -25,6 +25,54 @@
 
     /** Controller To Manage Zapier Api**/
     class ZapierController extends Controller{
+        public function createZapierKey(Request $request){
+            if(\Auth::check()) {
+                try{
+                    $user = \Auth::user();
+                    $token = $this->generateRandomString();
+                    $user = User::findOrFail($user->id);
+                    $user->zapier_key=$token;
+                    if($user->save()){
+                        return \Response::json(array(
+                            'status'      => true,
+                            'code'        => 200,
+                            'api_key'     => $token,
+                            'message'     => "Api Key Generated"
+                        ));
+                    }else{
+                        return \Response::json(array(
+                            'status'   => false,
+                            'code'     => 400,
+                            'message'  => "Try Again !"
+                        ));
+                    }
+                }catch(\Exception $e){
+                    return \Response::json(array(
+                        'status'   => false,
+                        'code'     => 500,
+                        'message'  => $e->getMessage()
+                    ));
+                }
+            }else{
+
+            }
+        }
+
+        function generateRandomString() {
+            $length = 61;
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, $charactersLength - 1)];
+            }
+            $count=User::where('zapier_key',$randomString)->count();
+            if($count>0){
+                $this->generateRandomString();
+            }else{
+                return $randomString;
+            }
+        }
         /**
           * Webhook to create shortlink
           * Request token, url
