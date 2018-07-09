@@ -18,6 +18,10 @@ $uri = (Request::segment(count(Request::segments())));
 	 .desktop-menu .active a{
          color: #b0e0e6!important;
      }
+	.active-toplink a {
+		color: #b0e0e6!important;
+	}
+
 </style>
 <header>
 	<div class="container">
@@ -31,7 +35,7 @@ $uri = (Request::segment(count(Request::segments())));
 			<div class="col-md-8 col-sm-8">
 				<div class="top-right">
 					
-					<div class="createlink boder openpop">
+					<div class="createlink boder openpop <?php echo ($uri=='wizard')?'active-toplink' : '' ?>">
 						<a href="{{route('createLink',['type' => 'wizard'])}}">
 							@if(config('settings.VIEW.SHORT_LINK') !== null)
 						<!-- Create tier5 link --> +{{config('settings.VIEW.SHORT_LINK')}}</a>
@@ -39,7 +43,7 @@ $uri = (Request::segment(count(Request::segments())));
 								+Add Wizard link
 							@endif
 					</div>
-					<div class="createlink openpop">
+					<div class="createlink openpop <?php echo ($uri=='rotating')?'active-toplink' : '' ?>">
 						<a href="{{route('createLink',['type' => 'rotating'])}}">
 							@if(config('settings.VIEW.ROTATING_LINK') !== null)
 						<!-- Create tier5 link --> +{{config('settings.VIEW.ROTATING_LINK')}}</a>

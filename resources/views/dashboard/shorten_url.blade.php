@@ -188,6 +188,13 @@
                                                             @endif
                                                         @endforeach
                                                     </optgroup>
+                                                    <optgroup label="Pinterest" id="opt-Pinterest">
+                                                        @foreach($pixels as $key=>$pixel)
+                                                            @if($pixel->network=='pinterest_pixel_id')
+                                                                <option value="{{$pixel->id}}" data-role="Pinterest">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </optgroup>
                                                     <optgroup label="Custom" id="opt-Custom">
                                                         @foreach($pixels as $key=>$pixel)
                                                             @if($pixel->network=='custom_pixel_id')

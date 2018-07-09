@@ -366,6 +366,44 @@ $optTypeLI = 'normal';
                                                     @endforeach
                                                 @endif
                                             </optgroup>
+                                            <optgroup label="Pinterest" id="opt-Pinterest">
+                                                @php
+                                                    $spanType = 'noKey';
+                                                @endphp
+
+                                                @foreach($pixels as $key=>$pixel)
+                                                    @if($pixel->network=='pinterest_pixel_id')
+                                                        @if($spanType!=='hasKey')
+                                                            @php
+                                                                if(in_array($pixel->id, $pxId) && $pixel->network=='pinterest_pixel_id')
+                                                                {
+                                                                    $optTypeLI = 'selectDisable';
+                                                                    break;
+                                                                }
+                                                            @endphp
+                                                        @else
+                                                            <option value="{{$pixel->id}}" data-role="Pinterest" disabled>{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
+                                                        @endif
+                                                    @endif
+                                                @endforeach
+
+                                                @if($optTypeLI=='selectDisable' && $spanType!=='hasKey')
+                                                <!-- NO KEY SELECT DISABLE -->
+                                                    @foreach($pixels as $px)
+                                                        @if($px->network =='pinterest_pixel_id')
+                                                            <option value="{{$px->id}}" data-role="Pinterest" <?php echo(in_array($px->id, $pxId))? 'selected': 'disabled'?> >{{$px->pixel_name}} - {{$px->pixel_id}}</option>
+                                                        @endif
+                                                    @endforeach
+
+                                                @elseif($optTypeLI=='normal' && $spanType!=='hasKey')
+                                                <!-- NO KEY ONLY NORMAL -->
+                                                    @foreach($pixels as $px)
+                                                        @if($px->network =='pinterest_pixel_id')
+                                                            <option value="{{$px->id}}" data-role="Pinterest">{{$px->pixel_name}} - {{$px->pixel_id}}</option>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </optgroup>
                                             <optgroup label="Custom" id="opt-Custom">
                                                 @php
                                                     $spanType = 'noKey';
@@ -1066,7 +1104,7 @@ $optTypeLI = 'normal';
         $(".chosen-select-pixels").chosen({width: "95%"});
 
         /* Multi network validation */
-        $(".chosen-select-pixels").on('change', function(evt, el){
+       $(".chosen-select-pixels").on('change', function(evt, el){
 
             var selected_value  = el.selected;
             var labelArr = [];
@@ -1153,7 +1191,11 @@ $optTypeLI = 'normal';
         });
 
         /* end of pixel manage */
+    });
+</script>
 
+<script>
+    $(document).on('ready readyAgain', function(){
         // removing added pixel validation
         $('.search-choice-close').on('click',function(){
             var remIndex = $(this).data('option-array-index');
@@ -1176,6 +1218,7 @@ $optTypeLI = 'normal';
                             if($(this).val()!=remValArr[0])
                             {
                                 $(this).prop('disabled', false).trigger("chosen:updated");
+                                $(document).trigger('readyAgain');
                             }
                         });
                     }
@@ -1197,17 +1240,12 @@ $optTypeLI = 'normal';
                         }
                     }
                 }
-
             });
-
         });
-
         // end of removing pixel validation
-
-
     });
-
 </script>
+
 <script type="text/javascript">
     $("#shortTags_Contents").chosen(
         {no_results_text: "No result found. Press enter to add "}

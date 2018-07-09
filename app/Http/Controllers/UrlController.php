@@ -828,8 +828,17 @@
                     {
                         $urlInstance = Url::find($id);
                         $oldFavicon = $urlInstance->favicon;
-                        unlink(substr($oldFavicon, 1));
-                        $url->favicon = NULL;
+                        if(!empty($oldFavicon) && strlen($oldFavicon)>0)
+                        {
+                            $urlInstance = Url::find($id);
+                            $oldFavicon = $urlInstance->favicon;
+                            unlink(substr($oldFavicon, 1));
+                            $url->favicon = NULL;
+                        }
+                        else
+                        {
+                            $url->favicon = NULL;
+                        }
                     }
                     //Edit Link Preview
                     $linkPreview          = isset($request->link_preview_selector) && $request->link_preview_selector == true ? true : false;

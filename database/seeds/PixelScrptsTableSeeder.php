@@ -42,6 +42,12 @@ class PixelScrptsTableSeeder extends Seeder
                 'network_script' => '',
                 'created_at' => $now,
                 'updated_at' => $now,
+            ],
+            [
+                'network_type' => 'pinterest_pixel_id',
+                'network_script' => '',
+                'created_at' => $now,
+                'updated_at' => $now,
             ]
         ]);
     }

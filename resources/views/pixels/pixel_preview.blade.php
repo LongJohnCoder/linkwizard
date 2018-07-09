@@ -331,11 +331,15 @@
                     <label for="email">Select network:</label>
                     <select name="network" required>
                         <option value="fb_pixel_id">Facebook</option>
+                        <option value="twt_pixel_id">Twitter</option>
+                        <option value="li_pixel_id">LinkedIn</option>
+                        <option value="pinterest_pixel_id">Pinterest</option>
                         <!-- DO NOT DELETE -->
                         <!--<option value="twt_pixel_id">Twitter</option>
                         <option value="li_pixel_id">LinkedIn</option>-->
                         <!--<option value="pinterest_pixel_id">Pinterest</option>
                         <option value="quora_pixel_id">Quora</option>-->
+
 
                         <option value="gl_pixel_id">Google</option>
                         <option value="custom_pixel_id">Custom</option>
@@ -379,10 +383,14 @@
                     <label for="email">Select network:</label>
                     <select name="network" id="edit-pixel-network" required>
                         <option value="fb_pixel_id">Facebook</option>
+                        <option value="twt_pixel_id">Twitter</option>
+                        <option value="li_pixel_id">LinkedIn</option>
+                        <option value="pinterest_pixel_id">Pinterest</option>
                         <!-- DO NOT DELETE -->
                         <!--<option value="twt_pixel_id">Twitter</option>
                         <option value="li_pixel_id">LinkedIn</option>-->
                         <!--<option value="pinterest_pixel_id">Pinterest</option>-->
+
                         <!--<option value="quora_pixel_id">Quora</option>-->
                         <option value="gl_pixel_id">Google</option>
                         <option value="custom_pixel_id">Custom</option>
