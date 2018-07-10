@@ -91,6 +91,40 @@
          * @param $apikey
          * @return Illuminate\Http\JSONResponse
          */
+        public function authenticateZapierKey($apikey){
+            try {
+                $getUser=User::where('zapier_key',$apikey)->first();
+                if(count($getUser)>0){
+                    $response = [
+                        "status"    => true,
+                        "message"   => "Authenticated User",
+                    ];
+                    $responseCode=200;
+                }else{
+                    $response = [
+                        "status"    => false,
+                        "message"   => "You Are Not Authenticated!",
+                    ];
+                    $responseCode=200;
+                }
+            } catch (Exception $e) {
+                DB::rollBack();
+                $response = [
+                    "status"    => false,
+                    'message'   => $exp->getMessage(),
+                ];
+                $responseCode=200;
+            }
+            return response()->json($response,$responseCode);
+        }
+        /**
+         * Webhook to verify ZAPIER api key and if it is verified create short link.
+         * All response code will be 200 as Jon Wants
+         * 
+         * @param Request $request
+         * @param $apikey
+         * @return Illuminate\Http\JSONResponse
+         */
         public function createUntrackedLink(Request $request, $apikey){
             try {
                 $getUser=User::where('zapier_key',$apikey)->first();

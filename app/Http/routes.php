@@ -57,10 +57,17 @@ Route::group(['prefix' => 'api/v1'],function() {
         'as' => 'createShortLink',
     ]);
 
+    Route::any('/authenticate-zapier-key/{api_key}', [
+        'uses' => 'ZapierController@authenticateZapierKey',
+        'as' => 'authenticateZapierKey',
+    ]);
+
     Route::any('/create/zapier/untrackedlink/{api_key}', [
         'uses' => 'ZapierController@createUntrackedLink',
         'as' => 'createUntrackedLinkFromZapier',
     ]);
+
+    
 
     /*Webhooks*/
     Route::post('suspend-subscriber',[
