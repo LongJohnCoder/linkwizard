@@ -9,6 +9,7 @@
     use App\Pixel;
     use App\PixelScript;
     use App\Platform;
+    use App\Profile;
     use App\Referer;
     use App\RefererUrl;
     use App\Subdomain;
@@ -21,6 +22,7 @@
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Auth;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
     use Illuminate\Support\Facades\Session;
     use App\UrlFeature;
     use App\UrlSearchInfo;
@@ -1921,7 +1923,9 @@
         }
 
         /**
-         * Daywise url schedule with model UrlLinkSchedule
+         * Day-wise url schedule with model UrlLinkSchedule
+         * @param array $schedule
+         * @param int $id
          */
         public function url_link_schedules($schedule = [], $id=0)
         {
@@ -1980,8 +1984,12 @@
                 ->whereNotIn('day', $oldScheduleArray);
             $deleteOldSchedule->delete();
         }
+
         /**
          * Inserting special date & urls in edit
+         * @param $id
+         * @param $spl_date
+         * @param $spl_url
          */
         public function insert_special_schedule($id, $spl_date, $spl_url)
         {
@@ -2318,6 +2326,11 @@
             }
         }
 
+        /**
+         * To check for duplicate Pixel Name via ajax call
+         * @param Request $request
+         * @return \Illuminate\Http\RedirectResponse
+         */
         public function checkPixelName(Request $request)
         {
             try
@@ -2350,6 +2363,11 @@
             }
         }
 
+        /**
+         * To check for duplicate Pixel ID via ajax call
+         * @param Request $request
+         * @return \Illuminate\Http\RedirectResponse
+         */
         public function checkPixelId(Request $request)
         {
             try
@@ -2375,6 +2393,97 @@
                     {
                         echo json_encode(['status'=>'404', 'message'=>'no name given']);
                     }
+                }
+            }
+            catch(Exception $e)
+            {
+                return redirect()->back()->with('msg', 'error');
+            }
+        }
+
+        /**
+         * View for profile
+         * @param Request $request
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+         */
+        public function profile(Request $request)
+        {
+            if(Auth::check())
+            {
+                if(Session::has('plan'))
+                {
+                    return redirect()->action('HomeController@getSubscribe');
+                }else
+                {
+                    $user = Auth::user();
+                    $arr = $this->getAllDashboardElements($user, $request);
+                    $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
+                    return view('profile', compact('arr', 'userPixels'));
+                }
+            }
+        }
+
+        public function saveProfile(Request $request)
+        {
+            try
+            {
+                if(Auth::check())
+                {
+                    $userId = Auth::user()->id;
+                    $profile = Profile::where('user_id', $userId)->first();
+                    if($profile)
+                    {
+                        if(isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on')
+                        {
+                            $profile->redirection_page_type = 1;
+                        }
+                        elseif(isset($request->redirection_page_type_zero) && $request->redirection_page_type_zero=='on')
+                        {
+                            $profile->redirection_page_type = 0;
+                        }
+                        else
+                        {
+                            $profile->redirection_page_type = 0;
+                        }
+
+                        if(isset($request->default_redirection_time))
+                        {
+                            $profile->default_redirection_time = $request->default_redirection_time*1000;
+                        }
+                        else
+                        {
+                            $profile->default_redirection_time = 5000;
+                        }
+                        $profile->save();
+                    }
+                    else
+                    {
+                        $profile = new Profile();
+                        $profile->user_id = $userId;
+                        if(isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on')
+                        {
+                            $profile->redirection_page_type = 1;
+                        }
+                        elseif(isset($request->redirection_page_type_zero) && $request->redirection_page_type_zero=='on')
+                        {
+                            $profile->redirection_page_type = 0;
+                        }
+                        else
+                        {
+                            $profile->redirection_page_type = 0;
+                        }
+
+                        if(isset($request->default_redirection_time))
+                        {
+                            $profile->default_redirection_time = $request->default_redirection_time*1000;
+                        }
+                        else
+                        {
+                            $profile->default_redirection_time = 5000;
+                        }
+                        $profile->save();
+                    }
+                    return redirect()->back()->with('msg', 'success');
                 }
             }
             catch(Exception $e)

@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard</title>
+<title>{{ucfirst(basename($_SERVER['REQUEST_URI']))}}</title>
 
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">

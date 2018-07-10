@@ -2898,10 +2898,13 @@ class HomeController extends Controller
             }
         }
     }
+
     /**
      * Method for editing short url
+     * @param Request $request
+     * @param null $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-
     public function editUrl(Request $request, $id=NULL)
     {
         $this->validate($request, [

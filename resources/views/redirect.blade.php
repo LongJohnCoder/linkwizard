@@ -49,20 +49,26 @@
         <style type="text/css">
             body {
                 font-family: 'Nunito';
-                min-height: 100%;
+                /*min-height: 100%;*/
                 background: #fff !important;
             }
             .header{
                 padding: 20px;
                 background: #01579b;
                 width: 100%;
+                height: 50px;
             }
             .sticky-foot{
-                padding: 20px;
+                /*padding: 20px;*/
                 background: #01579b;
                 width: 100%;
-                bottom: 0px;
+                /*bottom: 0px;*/
+                /*position: fixed;*/
                 position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 50px;
             }
             .image-div,.production-div{
                 padding: 20px;
@@ -75,6 +81,9 @@
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
+            }
+            .blank-body{
+                background-color: #fff;
             }
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
@@ -102,27 +111,59 @@
             $ipAddress = $requestIp->ip;
             $geoLocationApiUrl = env('GEO_LOCATION_API_URL').''.$ipAddress;
         @endphp
-        <div class="header"></div>
-        <div class="row">
-            <div class="col-md-12 col-lg-12 image-div">
-                @if($url->uploaded_path)
-                    <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
-                @else
-                    <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
-                @endif
-            </div>
-            <div class="col-md-12 col-lg-12 production-div">
-                @if($url->redirecting_text_template)
-                    <span class="text"><?php echo($url->redirecting_text_template)?></span>
-                @else
-                    <span class="text">Please wait a snap while we take you to the actual website</span>
-                @endif
-                in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
-                <p id="msg" style="color: #9f3a38;"></p>
-            </div>
-        </div>
-        <div class="sticky-foot"></div>
 
+        @if(!empty(Auth::user()->profile) && count(Auth::user()->profile)>0)
+            @if(Auth::user()->profile->redirection_page_type == 0)
+                <div class="redirect-body-content">
+                    <div class="header"></div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12 image-div">
+                            @if($url->uploaded_path)
+                                <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
+                            @else
+                                <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
+                            @endif
+                        </div>
+                        <div class="col-md-12 col-lg-12 production-div">
+                            @if($url->redirecting_text_template)
+                                <span class="text"><?php echo($url->redirecting_text_template)?></span>
+                            @else
+                                <span class="text">Please wait a snap while we take you to the actual website</span>
+                            @endif
+                            in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
+                            <p id="msg" style="color: #9f3a38;"></p>
+                        </div>
+                    </div>
+                    <div class="sticky-foot"></div>
+                </div>
+            @elseif(Auth::user()->profile->redirection_page_type == 1)
+                <div class="blank-body"></div>
+                <p id="msg" style="color: #9f3a38;"></p>
+            @endif
+        @else
+            <div class="redirect-body-content">
+                <div class="header"></div>
+                <div class="row">
+                    <div class="col-md-12 col-lg-12 image-div">
+                        @if($url->uploaded_path)
+                            <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
+                        @else
+                            <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
+                        @endif
+                    </div>
+                    <div class="col-md-12 col-lg-12 production-div">
+                        @if($url->redirecting_text_template)
+                            <span class="text"><?php echo($url->redirecting_text_template)?></span>
+                        @else
+                            <span class="text">Please wait a snap while we take you to the actual website</span>
+                        @endif
+                        in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
+                        <p id="msg" style="color: #9f3a38;"></p>
+                    </div>
+                </div>
+                <div class="sticky-foot"></div>
+            </div>
+        @endif
         <!-- PIXEL SCRIPT FOR FOOTER STARTS HERE -->
         <?php
         if(isset($pixelScripts) && count($pixelScripts)>0)
@@ -141,8 +182,22 @@
         {{--  redirecting js script  --}}
         <script type="text/javascript">
             $(document).ready(function() {
-                var sec = '{{$url->redirecting_time}}' / 1000;
-                window.setInterval(function(){
+                @if(!empty(Auth::user()->profile) && count(Auth::user()->profile)>0)
+                    @if(Auth::user()->profile->redirection_page_type == 0)
+                        var sec = '{{$url->redirecting_time}}' / 1000;
+                        window.setInterval(function(){
+                            sec--;
+                            if(sec >= 0){
+                                $('#txt_').text(sec.toString());
+                            }
+                            else{
+                                $('#txt_').text('');
+                            }
+                        }, 1000);
+                    @endif
+                @else
+                    var sec = '{{$url->redirecting_time}}' / 1000;
+                    window.setInterval(function(){
                     sec--;
                     if(sec >= 0){
                         $('#txt_').text(sec.toString());
@@ -150,7 +205,8 @@
                     else{
                         $('#txt_').text('');
                     }
-                }, 1000);
+                    }, 1000);
+                @endif
                 $.ajax({
                     //url: '//freegeoip.net/json/',
                     url: '{{ env('GEO_LOCATION_API_URL') }}',

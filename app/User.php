@@ -32,4 +32,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $dates = ['trial_ends_at', 'subscription_ends_at'];
+
+    /**
+     * One to one relationship with Profile model
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function profile()
+    {
+        return $this->hasOne('App\Profile', 'user_id');
+    }
 }

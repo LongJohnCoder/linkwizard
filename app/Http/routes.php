@@ -259,6 +259,11 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                   'as'    =>  'resetPasswordSettings'
                 ]);
 
+                Route::get('profile',[
+                    'uses'  =>  'UrlController@profile',
+                    'as'    =>  'profileSettings'
+                ]);
+
                 Route::post('set-password-settings',[
                   'uses'  =>  'HomeController@setPasswordSettings',
                   'as'    =>  'setPasswordSettings'
@@ -395,3 +400,6 @@ Route::post('/pixelnames', 'UrlController@checkPixelName')->name('pixelnames');
 
 //Pixel name id
 Route::post('/pixelids', 'UrlController@checkPixelId')->name('pixelids');
+
+//Store profile informations
+Route::post('/saveprofile', 'UrlController@saveProfile')->name('saveprofile');

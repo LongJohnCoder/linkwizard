@@ -185,6 +185,7 @@ $uri = (Request::segment(count(Request::segments())));
                                 <li class="<?php echo ($uri=='blog')?'active' : '' ?>"><a href="/blog">blog</a></li>
                                 <li class="<?php echo ($uri=='pixels')?'active' : '' ?>"><a href="{{route('pixels')}}">Managing Pixels</a></li>
                                 <li class="<?php echo ($uri=='dashboard')?'active' : '' ?>"><a href="{{route('getDashboard')}}">dashboard</a></li>
+								<li class="<?php echo ($uri=='profile')?'active' : '' ?>"><a href="{{route('profileSettings')}}">Profile</a></li>
 				            	@if ($user->is_admin == 1)
 		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
                     	@endif
