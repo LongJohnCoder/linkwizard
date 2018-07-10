@@ -179,10 +179,10 @@ $uri = (Request::segment(count(Request::segments())));
 				        </div> -->
 				        <div class="desktop-menu">
 				            <ul>
-                                <li class="<?php echo ($uri=='about')?'active' : '' ?>"><a href="/about">about</a></li>
+                                <!--<li class="<?php echo ($uri=='about')?'active' : '' ?>"><a href="/about">about</a></li>
                                 <li class="<?php echo ($uri=='features')?'active' : '' ?>"><a href="/features">features</a></li>
                                 <li class="<?php echo ($uri=='pricing')?'active' : '' ?>"><a href="/pricing">pricing</a></li>
-                                <li class="<?php echo ($uri=='blog')?'active' : '' ?>"><a href="/blog">blog</a></li>
+                                <li class="<?php echo ($uri=='blog')?'active' : '' ?>"><a href="/blog">blog</a></li>-->
                                 <li class="<?php echo ($uri=='pixels')?'active' : '' ?>"><a href="{{route('pixels')}}">Managing Pixels</a></li>
                                 <li class="<?php echo ($uri=='dashboard')?'active' : '' ?>"><a href="{{route('getDashboard')}}">dashboard</a></li>
 								<li class="<?php echo ($uri=='profile')?'active' : '' ?>"><a href="{{route('profileSettings')}}">Profile</a></li>

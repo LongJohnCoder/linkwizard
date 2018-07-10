@@ -2,7 +2,15 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard</title>
+<title>
+    @if(basename(Request::url()) == 'dashboard')
+        Dashboard
+    @elseif(basename(Request::url()) == 'wizard')
+        Create Short Link
+    @elseif(basename(Request::url()) == 'rotating')
+        Create Rotating Link
+    @endif
+</title>
 
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
