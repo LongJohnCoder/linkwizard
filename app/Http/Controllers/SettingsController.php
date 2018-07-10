@@ -18,6 +18,10 @@
     use App\PasswordReset;
 
     class SettingsController extends Controller{
+        /*Method To Get Settings Page View
+        *@return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+        *
+        */
         public function getSettingsPage(Request $request){
             if(\Auth::check()) {
                 $user = \Auth::user();
@@ -31,6 +35,10 @@
             }
         }
 
+        /*Method To Save Redirect Time For User
+        * @return Json Response
+        *
+        */
         public function modifyDefaultRedirectTime(Request $request){
           if(\Auth::check()) {
                 try{
@@ -61,9 +69,12 @@
             }else{
 
             }
-
         }
 
+        /*Method To Get Dashboard Element
+        * @return Array
+        *
+        */
         private function getAllDashboardElements($user , $request) {
             //code for search based on tags and description if the params are not empty
             $textToSearch = $request->textToSearch;
@@ -135,51 +146,42 @@
                      'dates' => $dates,
                      '_plan' => \Session::has('plan') ? \Session::get('plan') : null
                ];
-          }
-
-          private function getDataOfSearchTags($textToSearch = '', $tagsToSearch = [], $userId) {
-      // $textToSearch = $request->textToSearch;
-      // $tagsToSearch = $request->tagsToSearch;
-      $flag = 0;
-      //echo strlen(trim($textToSearch));exit();
-      if(strlen(trim($textToSearch)) > 0 || !empty($tagsToSearch)){
-        $urls = Url::where('user_id', $userId);
-        if(strlen($textToSearch) > 0) {
-          $urls = $urls->whereHas('urlSearchInfo', function($q) use($textToSearch) {
-            $q->whereRaw("MATCH (description) AGAINST ('".$textToSearch."' IN BOOLEAN MODE)");
-          });
-          $flag = 1;
         }
-        if(!empty($tagsToSearch)) {
-          $allTags = implode(",",$tagsToSearch);
-          $condition = $flag == 0 ? 'whereHas' : 'orWhereHas';
-          $urls = $urls->$condition('urlTagMap', function($q) use($allTags) {
-            $q->whereHas('urlTag', function($q2) use($allTags) {
-              $refinedTags = str_replace($allTags,',',' ');
-              $q2->whereRaw("MATCH (tag) AGAINST ('".$allTags."' IN BOOLEAN MODE)");
-            });
-          });
+
+        private function getDataOfSearchTags($textToSearch = '', $tagsToSearch = [], $userId) {
+            $flag = 0;
+            if(strlen(trim($textToSearch)) > 0 || !empty($tagsToSearch)){
+                $urls = Url::where('user_id', $userId);
+                if(strlen($textToSearch) > 0) {
+                    $urls = $urls->whereHas('urlSearchInfo', function($q) use($textToSearch) {
+                        $q->whereRaw("MATCH (description) AGAINST ('".$textToSearch."' IN BOOLEAN MODE)");
+                    });
+                    $flag = 1;
+                }
+                if(!empty($tagsToSearch)) {
+                    $allTags = implode(",",$tagsToSearch);
+                    $condition = $flag == 0 ? 'whereHas' : 'orWhereHas';
+                    $urls = $urls->$condition('urlTagMap', function($q) use($allTags) {
+                        $q->whereHas('urlTag', function($q2) use($allTags) {
+                              $refinedTags = str_replace($allTags,',',' ');
+                              $q2->whereRaw("MATCH (tag) AGAINST ('".$allTags."' IN BOOLEAN MODE)");
+                        });
+                    });
+                }
+                $count_url = $urls->count();
+                return [
+                    'urls' => $urls,
+                    'count_url' => $count_url,
+                    'tagsToSearch' => $tagsToSearch,
+                ];
+            } else {
+                $urls = Url::where('user_id', $userId)->orderBy('id', 'DESC');
+                $count_url = $urls->count();
+                return [
+                    'urls' => $urls,
+                    'count_url' => $count_url,
+                    'tagsToSearch' =>[]
+                ];
+            }
         }
-        //print_r($urls->toSql());die();
-        //$urls = $urls;
-        $count_url = $urls->count();
-        return [
-          'urls' => $urls,
-          'count_url' => $count_url,
-          'tagsToSearch' => $tagsToSearch,
-
-        ];
-      } else {
-
-       $urls = Url::where('user_id', $userId)
-                ->orderBy('id', 'DESC');
-        $count_url = $urls->count();
-        return [
-          'urls' => $urls,
-          'count_url' => $count_url,
-          'tagsToSearch' =>[]
-        ];
-      }
-    }
-
     }

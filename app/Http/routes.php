@@ -56,6 +56,12 @@ Route::group(['prefix' => 'api/v1'],function() {
         'uses' => 'ApiController@createShortLink',
         'as' => 'createShortLink',
     ]);
+
+    Route::post('/create/zapier/untrackedlink', [
+        'uses' => 'ZapierController@createUntrackedLink',
+        'as' => 'createUntrackedLinkFromZapier',
+    ]);
+
     /*Webhooks*/
     Route::post('suspend-subscriber',[
         'uses'  => 'ApiController@suspendSubsciber',

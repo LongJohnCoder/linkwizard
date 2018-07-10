@@ -6,8 +6,6 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a data-toggle="tab" href="#zapier">Zapier</a></li>
                     <li><a data-toggle="tab" href="#redirection">Redirection Time</a></li>
-                    <!--<li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
-                    <li><a data-toggle="tab" href="#menu3">Menu 3</a></li> -->
                 </ul>
 
                 <div class="tab-content">
@@ -22,7 +20,7 @@
                             <div class="col-md-12 form-group">
                                 <label id="lebelforzapiertoken">@if((isset($user->zapier_key)) && ($user->zapier_key!="")) Zapier Token @else Create Zapier Token @endif:</label>
                                 <br>
-                                <b type="text" name="zapier_key" id="zapier_key" class="form-control" style="display:@if((isset($user->zapier_key)) && ($user->zapier_key=="")) none @endif">{{$user->zapier_key}}</b>
+                                <b type="text" name="zapier_key" id="zapier_key" class="form-control" style="display:@if((isset($user->zapier_key)) && ($user->zapier_key=="")) none; @endif">{{$user->zapier_key}}</b>
                                 @if(($user->zapier_key==""))
                                     <button class="btn-success" id="create-zapier-key">Create</button>
                                 @endif
@@ -39,17 +37,8 @@
                             <div class="col-md-12 form-group" >
                                 <button id="save-redirect-time" class="btn-success">Edit</button>
                             </div>
-                        </div>
-                        
+                        </div>  
                     </div>
-                    <!--<div id="menu2" class="tab-pane fade">
-                        <h3>Menu 2</h3>
-                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
-                    </div>
-                    <div id="menu3" class="tab-pane fade">
-                        <h3>Menu 3</h3>
-                        <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                    </div> -->
                 </div>
             </div>
         </section>
@@ -117,7 +106,6 @@
                     });
                 }
             });
-            
         });
     </script>
 @stop
