@@ -57,7 +57,7 @@ Route::group(['prefix' => 'api/v1'],function() {
         'as' => 'createShortLink',
     ]);
 
-    Route::post('/create/zapier/untrackedlink', [
+    Route::any('/create/zapier/untrackedlink/{api_key}', [
         'uses' => 'ZapierController@createUntrackedLink',
         'as' => 'createUntrackedLinkFromZapier',
     ]);

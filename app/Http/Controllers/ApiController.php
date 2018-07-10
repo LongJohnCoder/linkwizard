@@ -216,10 +216,7 @@
         public function createShortLink(Request $request){
             try {
                 DB::beginTransaction();
-
-                $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
-                $url=$request->url;
-                if(isset($request->url) && ($request->url!="") &&(preg_match($pattern,$url))){
+                if(isset($request->url) && $request->url!=""){
                     if ($request->url) {
                         if (strpos($request->url, 'https://') === 0) {
                             $actualUrl = str_replace('https://', null, $request->url);

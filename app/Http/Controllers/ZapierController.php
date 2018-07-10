@@ -62,7 +62,9 @@
             }
         }
 
-        /*Method To Generate Random String For Zapier Key
+        /*
+        * Method To Generate Random String For Zapier Key
+        *
         * @return string
         */
         function generateRandomString() {
@@ -82,76 +84,90 @@
         }
 
         /**
-          * Webhook to create shortlink
-          * Request token, url
-          * Response json
-        */
-        public function createUntrackedLink(Request $request){
+         * Webhook to verify ZAPIER api key and if it is verified create short link.
+         * All response code will be 200 as Jon Wants
+         * 
+         * @param Request $request
+         * @param $apikey
+         * @return Illuminate\Http\JSONResponse
+         */
+        public function createUntrackedLink(Request $request, $apikey){
             try {
-                $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
-                $url=$request->url;
-                if (preg_match($pattern,$url)) {
-                    if (strpos($request->url, 'https://') === 0) {
-                        $actualUrl = str_replace('https://', null, $request->url);
-                        $protocol  = 'https';
-                    }elseif(strpos($request->url, 'http://') === 0){
-                        $actualUrl = str_replace('http://', null, $request->url);
-                        $protocol  = 'http';
-                    }else{
-                        $actualUrl = $request->url;
-                        $protocol  = 'http';
-                    }
-                    //Create Short Url Suffix
-                    $random_string = $this->randomString();
-                    $url                   = new Url();
-                    $url->actual_url       = $actualUrl;
-                    $url->protocol         = $protocol;
-                    $url->user_id          = 0;
-                    $url->link_type        = 0;
-                    $url->shorten_suffix   = $random_string;
-                    if($url){//$url->save()){
-                        if(isset($url->subdomain)) {
-                            if($url->subdomain->type == 'subdomain')
-                                $shrt_url = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
-                            else if($url->subdomain->type == 'subdirectory')
-                                $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
-                        } else {
-                            $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+                $getUser=User::where('zapier_key',$apikey)->first();
+                if(count($getUser)>0){
+                    $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
+                    $url=$request->url;
+                    if (preg_match($pattern,$url)) {
+                        if (strpos($request->url, 'https://') === 0) {
+                            $actualUrl = str_replace('https://', null, $request->url);
+                            $protocol  = 'https';
+                        }elseif(strpos($request->url, 'http://') === 0){
+                            $actualUrl = str_replace('http://', null, $request->url);
+                            $protocol  = 'http';
+                        }else{
+                            $actualUrl = $request->url;
+                            $protocol  = 'http';
                         }
-                        $response = [
-                          "code"     => 200,
-                          "status"   => true,
-                          "link"     => $shrt_url,
-                          "message"  => "Successfully Created Short Link",
-                        ];
+                        //Create Short Url Suffix
+                        $random_string = $this->randomString();
+                        $url                   = new Url();
+                        $url->actual_url       = $actualUrl;
+                        $url->protocol         = $protocol;
+                        $url->user_id          = 0;
+                        $url->link_type        = 0;
+                        $url->shorten_suffix   = $random_string;
+                        if($url->save()){
+                            if(isset($url->subdomain)) {
+                                if($url->subdomain->type == 'subdomain')
+                                    $shrt_url = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+                                else if($url->subdomain->type == 'subdirectory')
+                                    $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+                            } else {
+                                $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+                            }
+                            $response = [
+                              "status"   => true,
+                              "link"     => $shrt_url,
+                              "message"  => "Successfully Created Short Link",
+                            ];
+                            $responseCode=200;
+                        }else{
+                            $response = [
+                                "status"  => false,
+                                "message" => "Cannot Save Url",
+                            ];
+                            $responseCode=200;
+                        }
                     }else{
                         $response = [
-                            "code"    => 200,
-                            "status"  => false,
-                            "message" => "Cannot Save Url",
+                            "status"    => false,
+                            'message'   => "Url Is Not Valid!",
                         ];
+                        $responseCode=200;
                     }
                 }else{
                     $response = [
-                        "code" => 200,
-                        "status"    => "false",
-                        'message' => "Url Is Not Valid!",
+                        "status"    => false,
+                        "message"   => "You Are Not Authenticated!",
                     ];
+                    $responseCode=200;
                 }
             } catch (Exception $e) {
                 DB::rollBack();
                 $response = [
-                    "code" => 200,
-                    "status"    => "false",
-                    'message' => $exp->getMessage(),
+                    "status"    => false,
+                    'message'   => $exp->getMessage(),
                 ];
+                $responseCode=200;
             } finally {
                 DB::commit();
             }
-            return response()->json($response);
+            return response()->json($response,$responseCode);
         }
+
         /**
         * URL suffix random string generator.
+        *
         * @return string
         */
         private function randomString(){
