@@ -81,13 +81,9 @@
         <!-- PIXEL SCRIPTS ENDS HERE -->
     </head>
     <body>
-
         @php
             $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
             $referer = $_SERVER['HTTP_HOST'];
-            $requestIp = json_decode(file_get_contents(env('IP_API_URL')));
-            $ipAddress = $requestIp->ip;
-            $geoLocationApiUrl = env('GEO_LOCATION_API_URL').''.$ipAddress;
         @endphp
         <div class="header"></div>
         <div class="row">
@@ -124,25 +120,22 @@
                 }, 1000);
                 $.ajax({
                     //url: '//freegeoip.net/json/',
-                    url: '{{$geoLocationApiUrl}}',
+                    url: '{{ env('GEO_LOCATION_API_URL') }}',
                     type: 'POST',
-                    dataType: 'jsonp',
                     success: function(jsonData) {
-                        //console.log(jsonData);
-                        var location =
-                            {
-                                "ip" : "{{$ipAddress}}",
-                                "country_code" : jsonData.countryCode,
-                                "country_name" : jsonData.country,
-                                "region_code" : "",
-                                "region_name" : jsonData.region,
-                                "city" : jsonData.city,
-                                "zip_code" : "",
-                                "time_zone" : "",
-                                "latitude" : jsonData.lat,
-                                "longitude" : jsonData.lon,
-                                "metro_code" : "",
-                            }
+                        var location = {
+                            "ip" : jsonData.query,
+                            "country_code" : jsonData.countryCode,
+                            "country_name" : jsonData.country,
+                            "region_code" : jsonData.region,
+                            "region_name" : jsonData.regionName,
+                            "city" : jsonData.city,
+                            "zip_code" : jsonData.postal,
+                            "time_zone" : jsonData.timezone,
+                            "latitude" : jsonData.lat,
+                            "longitude" : jsonData.lon,
+                            "metro_code" : "",
+                        }
                         $.ajax({
                             type: 'POST',
                             url: "{{ route('postUserInfo') }}",
@@ -158,9 +151,9 @@
                             },
                             success: function(response){
                                 setTimeout(function() {
-                                    if(response.redirectstatus==0){
+                                    if (response.redirectstatus==0) {
                                         window.location.href =response.redirecturl;
-                                    }else{
+                                    } else {
                                         $('#msg').text(response.message);
                                     }
                                 }, "{{ $url->redirecting_time }}");

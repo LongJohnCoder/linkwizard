@@ -1375,11 +1375,9 @@
          * @param $url
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
-        public function getRequestedUrl($url){
+        public function getRequestedUrl($url) {
             $search = Url::where('shorten_suffix', $url)->first();
-            if ($search)
-            {
-
+            if ($search) {
                 /* OLD URL PIXELS */
                 //$url_features = UrlFeature::where('url_id', $search->id)->first();
                 $url_features = '';
@@ -1388,92 +1386,84 @@
                 $pixelIds = [];
                 $pixelColumn = [];
                 $pixelScript = [];
-                if(count($pxlValue)>0)
-                {
-
-                    if(!empty($pxlValue->fb_pixel_id) or $pxlValue->fb_pixel_id!=NULL)
-                    {
+                if (count($pxlValue)>0) {
+                    if (!empty($pxlValue->fb_pixel_id) or $pxlValue->fb_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->fb_pixel_id;
                         $pixelColumn[] = 'fb_pixel_id';
                     }
-                    if(!empty($pxlValue->gl_pixel_id) or $pxlValue->gl_pixel_id!=NULL)
-                    {
+                    if (!empty($pxlValue->gl_pixel_id) or $pxlValue->gl_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->gl_pixel_id;
                         $pixelColumn[] = 'gl_pixel_id';
                     }
-                    if(!empty($pxlValue->twt_pixel_id) or $pxlValue->twt_pixel_id!=NULL)
-                    {
+                    if (!empty($pxlValue->twt_pixel_id) or $pxlValue->twt_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->twt_pixel_id;
                         $pixelColumn[] = 'twt_pixel_id';
                     }
-                    if(!empty($pxlValue->li_pixel_id) or $pxlValue->li_pixel_id!=NULL)
-                    {
+                    if (!empty($pxlValue->li_pixel_id) or $pxlValue->li_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->li_pixel_id;
                         $pixelColumn[] = 'li_pixel_id';
                     }
-                    if(!empty($pxlValue->pinterest_pixel_id) or $pxlValue->pinterest_pixel_id!=NULL)
-                    {
+                    if (!empty($pxlValue->pinterest_pixel_id) or $pxlValue->pinterest_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->pinterest_pixel_id;
                         $pixelColumn[] = 'pinterest_pixel_id';
                     }
-                    if(!empty($pxlValue->quora_pixel_id) or $pxlValue->quora_pixel_id!=NULL)
-                    {
+                    if (!empty($pxlValue->quora_pixel_id) or $pxlValue->quora_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->quora_pixel_id;
                         $pixelColumn[] = 'quora_pixel_id';
                     }
                     /* DON'T DELETE */
-                    elseif(!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL)
-                    {
+                    elseif (!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->custom_pixel_id;
                         $pixelColumn[] = 'custom_pixel_id';
                     }
-
-                    for($i=0; $i< count($pixelColumn); $i++)
-                    {
+                    for ($i=0; $i< count($pixelColumn); $i++) {
                         if($pixelColumn[$i]!='custom_pixel_id')
                         {
                             $scripts = PixelScript::where('network_type', $pixelColumn[$i])->first();
                             $upperColumn = strtoupper($pixelColumn[$i]);
                             $pixelScript[] = str_replace($upperColumn, $pixelIds[$i],$scripts->network_script);
-                        }
-                        else
-                        {
+                        } else {
                             $pixelScript[] = $pixelIds[$i];
                         }
                     }
                 }
-                return view('redirect', ['url' => $search, 'url_features' => $url_features,'suffix'=>$url , 'pixelScripts'=>$pixelScript]);
+
+                return view('redirect', [
+                    'url' => $search,
+                    'url_features' => $url_features,
+                    'suffix' => $url,
+                    'pixelScripts' => $pixelScript]
+                );
             } else {
                 abort(404);
             }
         }
 
         /**
-            * Get an User Agent and country Information on AJAX request.
-            *
-            * @param Request $request
-            *
-            * @return \Illuminate\Http\Response
+        * Get an User Agent and country Information on AJAX request.
+        *
+        * @param Request $request
+        * @return \Illuminate\Http\Response
         */
-        public function postUserInfo(Request $request){
+       
+        public function postUserInfo(Request $request) {
             $status = 'error';
-            
             $country = Country::where('code', $request->country['country_code'])->first();
             if ($country) {
                 $country->urls()->attach($request->url);
                 global $status;
                 $status = 'success';
-            }else {
+            } else {
                 $cn = new Country();
                 $cn->name = $request->country['country_name'];
                 $cn->code = $request->country['country_code'];
-                if($cn->save()){
-                  $cn->urls()->attach($request->url);
-                  global $status;
-                  $status = 'success';
+                if ($cn->save()) {
+                    $cn->urls()->attach($request->url);
+                    global $status;
+                    $status = 'success';
                 } else {
-                  global $status;
-                  $status = 'error';
+                    global $status;
+                    $status = 'error';
                 }
             }
 
@@ -1519,11 +1509,9 @@
 
             $referer = Referer::where('name', $request->referer)->first();
             if ($referer) {
-
                 $find = Url::find($request->url);
                 $find->count = $find->count + 1;
                 $find->save();
-
                 $referer->urls()->attach($request->url);
                 global $status;
                 $status = 'success';
@@ -1544,175 +1532,132 @@
                 }
             }
 
-            // Link info stored in ip_locations table
-            //$requestIpAddress = $request->ip();
-            $requestIp = json_decode(file_get_contents(env('IP_API_URL')));
-            $requestIpAddress = $requestIp->ip;
-            $apiPath = env('GEO_LOCATION_API_URL');
-            $geo = json_decode(file_get_contents($apiPath.''.$requestIpAddress));
-            if(!empty($geo->city) && strlen($geo->city)>0)
-            {
-                $city = $geo->city;
-            }
-            else
-            {
-                $city = NULL;
-            }
-            if(!empty($geo->country) && strlen($geo->country))
-            {
-                $country = $geo->country;
-            }
-            else
-            {
-                $country = NULL;
-            }
-            if(!empty($geo->lat) && strlen($geo->lat))
-            {
-                $latitude = $geo->lat;
-            }
-            else
-            {
-                $latitude = NULL;
-            }
-            if(!empty($geo->lon) && strlen($geo->lon))
-            {
-                $longitude = $geo->lon;
-            }
-            else
-            {
-                $longitude = NULL;
-            }
-
             $ip = IpLocation::where('url_id', $request->url)->first();
-            if($ip)
-            {
+            if ($ip) {
                 $ip = new IpLocation();
                 $ip->url_id = $request->url;
-                $ip->ip_address = $requestIpAddress;
-                $ip->city = $city;
-                $ip->country = $country;
-                $ip->latitude = $latitude;
-                $ip->longitude = $longitude;
+                $ip->ip_address = $request->country['ip'];
+                $ip->city = $request->country['city'];
+                $ip->country =  $request->country['country_name'];
+                $ip->latitude =  $request->country['latitude'];
+                $ip->longitude =  $request->country['longitude'];
+                $ip->platform = $request->platform;
+                $ip->browser = $request->browser;
+                $ip->referer = $request->referer;
+                $ip->save();
+            } else {
+                $ip = new IpLocation();
+                $ip->url_id = $request->url;
+                $ip->ip_address = $request->country['ip'];
+                $ip->city = $request->country['city'];
+                $ip->country =  $request->country['country_name'];
+                $ip->latitude =  $request->country['latitude'];
+                $ip->longitude =  $request->country['longitude'];
                 $ip->platform = $request->platform;
                 $ip->browser = $request->browser;
                 $ip->referer = $request->referer;
                 $ip->save();
             }
-            else
-            {
-                $ip = new IpLocation();
-                $ip->url_id = $request->url;
-                $ip->ip_address = $requestIpAddress;
-                $ip->city = $city;
-                $ip->country = $country;
-                $ip->latitude = $latitude;
-                $ip->longitude = $longitude;
-                $ip->platform = $request->platform;
-                $ip->browser = $request->browser;
-                $ip->referer = $request->referer;
-                $ip->save();
-            }
-            // End link info stored in ip_locations table
+            /* End link info stored in ip_locations table */
 
             $search = Url::where('shorten_suffix', $request->suffix)->with('urlSpecialSchedules','url_link_schedules')->first();
-            if($search->link_type==0){
-                //Check Url Expire
-                if(($search->date_time!="") && ($search->timezone!="")){
+            if ($search->link_type==0) {
+                /*Check Url Expire */
+                if (($search->date_time!="") && ($search->timezone!="")) {
                     date_default_timezone_set($search->timezone);
                     $date1= date('Y-m-d H:i:s') ;
                     $date2 = $search->date_time;
-                    if(strtotime($date1) < strtotime($date2)){
+                    if (strtotime($date1) < strtotime($date2)) {
                          /*Url Not Expired*/
-                        if($search->geolocation==""){
+                        if ($search->geolocation=="") {
                             $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                             $redirectUrl=$getUrl['url'];
                             $redirectstatus=$getUrl['status'];
                             $message=$getUrl['message'];
-                        }else{
-                            if($search->geolocation==0){
+                        } else {
+                            if ($search->geolocation==0) {
                                 $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
 
-                                if($getDenyed >0){
+                                if ($getDenyed >0) {
                                     $redirectUrl="";
                                     $redirectstatus=1;
                                     $message="This URL is not accessable from your country";
-                                }else{
+                                } else {
                                     $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
                                     $redirectstatus=$getUrl['status'];
                                     $message=$getUrl['message'];
                                 }
-                            }else if($search->geolocation==1){
+                            } else if ($search->geolocation==1) {
                                 $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
-                                if($getDenyed >0){
+                                if ($getDenyed >0) {
                                     $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
                                     $redirectstatus=$getUrl['status'];
                                     $message=$getUrl['message'];
-                                }else{
+                                } else {
                                     $redirectUrl="";
                                     $redirectstatus=1;
                                     $message="This URL is not accessable from your country";
                                 }
                             }
                         }
-                    }else{
+                    } else {
                         /* Url Expired */
-                        if($search->redirect_url!=""){
+                        if ($search->redirect_url!="") {
                             $redirectUrl=$search->redirect_url;
                             $redirectstatus=0;
                             $message="";
-                        }else{
+                        } else {
                             $redirectUrl=NULL;
                             $redirectstatus=1;
                             $message="The Url Is Expired";
                         }
                     }
-                }else{
-                    if($search->geolocation==0){
+                } else {
+                    if ($search->geolocation==0) {
                         $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
 
-                        if($getDenyed >0){
+                        if ($getDenyed >0) {
                             $redirectUrl="";
                             $redirectstatus=1;
                             $message="This URL is not accessable from your country";
-                        }else{
+                        } else {
                             $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                             $redirectUrl=$getUrl['url'];
                             $redirectstatus=$getUrl['status'];
                             $message=$getUrl['message'];
                         }
-                    }else if($search->geolocation==1){
+                    } else if ($search->geolocation==1) {
                         $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->first();
-                        if(count($getDenyed) >0){
-
-                            if($getDenyed->redirection==0){
+                        if (count($getDenyed) >0) {
+                            if ($getDenyed->redirection==0) {
                                 $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                 $redirectUrl=$getUrl['url'];
                                 $redirectstatus=$getUrl['status'];
                                 $message=$getUrl['message'];
-                            }else{
+                            } else {
                                 $redirectUrl=$getDenyed->url;
                                 $redirectstatus=0;
                                 $message="";
                             }
-                        }else{
+                        } else {
                             $redirectUrl="";
                             $redirectstatus=1;
                             $message="This URL is not accessable from your country";
                         }
-                    }else{
+                    } else {
                         $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                         $redirectUrl=$getUrl['url'];
                         $redirectstatus=$getUrl['status'];
                         $message=$getUrl['message'];
                     }   
                 }
-                //Check Special Date
-            }else if($search->link_type==1){
+                /* Check Special Date */
+            } else if ($search->link_type==1) {
                 $redirectUrl=$search->protocol.'://'.$search->actual_url; 
                 if ($search->no_of_circular_links > 1) {
-                    $circularLinks= CircularLink::where('url_id', $search->id)->get();
+                    $circularLinks = CircularLink::where('url_id', $search->id)->get();
                     $search->actual_url       = $circularLinks[($search->count) % $search->no_of_circular_links]->actual_link;
                     $search->protocol         = $circularLinks[($search->count) % $search->no_of_circular_links]->protocol;
 
@@ -1720,20 +1665,14 @@
                     $fullUrl =$search->protocol.'://'.$search->actual_url;
                     $metaData = $this->getPageMetaContents($fullUrl);
                     $link_preview_type = json_decode($search->link_preview_type);
-                    if($link_preview_type->main==1)
-                    {
-                        if($link_preview_type->image==0)
-                        {
+                    if ($link_preview_type->main==1) {
+                        if ($link_preview_type->image==0) {
                             $search->og_image = $metaData['og_image'];
                         }
-
-                        if($link_preview_type->title==0)
-                        {
+                        if ($link_preview_type->title==0) {
                             $search->title = $metaData['title'];
                         }
-
-                        if($link_preview_type->description==0)
-                        {
+                        if ($link_preview_type->description==0) {
                             $search->meta_description = $metaData['og_description'];
                             $search->og_description = $metaData['og_description'];
                         }
@@ -1743,9 +1682,8 @@
                         $search->twitter_description = $metaData['twitter_description'];
                         $search->twitter_url = $metaData['twitter_url'];
                         $search->twitter_image = $metaData['twitter_image'];
-                    }else
-                    {
-                        //Original meta data for the URL to be added for Rotating Link
+                    } else {
+                        /* Original meta data for the URL to be added for Rotating Link */
                         $search->title = $metaData['title'];
                         $search->meta_description = $metaData['og_description'];
                         $search->og_description = $metaData['og_description'];
@@ -1764,8 +1702,10 @@
                 $message="";
             }
 
-
-            return response()->json(['status' => $status,'redirecturl'=>$redirectUrl,'redirectstatus'=>$redirectstatus,'message'=>$message]);
+            return response()->json(['status' => $status,
+                'redirecturl'=>$redirectUrl,
+                'redirectstatus'=>$redirectstatus,
+                'message'=>$message]);
         }
 
         /*Function Check  Suffix Availability*/
