@@ -124,16 +124,16 @@
                     type: 'POST',
                     success: function(jsonData) {
                         var location = {
-                            "ip" : jsonData.query,
-                            "country_code" : jsonData.countryCode,
-                            "country_name" : jsonData.country,
-                            "region_code" : jsonData.region,
-                            "region_name" : jsonData.regionName,
+                            "ip" : jsonData.ip,
+                            "country_code" : jsonData.country,
+                            "country_name" : jsonData.country_name,
+                            "region_code" : jsonData.region_code,
+                            "region_name" : jsonData.region,
                             "city" : jsonData.city,
                             "zip_code" : jsonData.postal,
                             "time_zone" : jsonData.timezone,
-                            "latitude" : jsonData.lat,
-                            "longitude" : jsonData.lon,
+                            "latitude" : jsonData.latitude,
+                            "longitude" : jsonData.longitude,
                             "metro_code" : "",
                         }
                         $.ajax({
