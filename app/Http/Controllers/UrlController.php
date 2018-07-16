@@ -1481,6 +1481,8 @@
          */
         public function getRequestedUrl($url) {
             $search = Url::where('shorten_suffix', $url)->first();
+            $userRedirection = Profile::where('user_id',$search->user_id)->first();
+            $userRedirectionType = $userRedirection->redirection_page_type;
             if ($search) {
                 /* OLD URL PIXELS */
                 //$url_features = UrlFeature::where('url_id', $search->id)->first();
@@ -1550,6 +1552,7 @@
                 }
 
                 return view('redirect', [
+                    'redirectionType' => $userRedirectionType,
                     'url' => $search,
                     'url_features' => $url_features,
                     'suffix' => $url,

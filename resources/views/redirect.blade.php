@@ -108,9 +108,36 @@
             $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
             $referer = $_SERVER['HTTP_HOST'];
         @endphp
-
-        @if(!empty(Auth::user()->profile) && count(Auth::user()->profile)>0)
-            @if(Auth::user()->profile->redirection_page_type == 0)
+        @if (!$redirectionType)
+            @if(!empty(Auth::user()->profile) && count(Auth::user()->profile)>0)
+                @if(Auth::user()->profile->redirection_page_type == 0)
+                    <div class="redirect-body-content">
+                        <div class="header"></div>
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12 image-div">
+                                @if($url->uploaded_path)
+                                    <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
+                                @else
+                                    <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
+                                @endif
+                            </div>
+                            <div class="col-md-12 col-lg-12 production-div">
+                                @if($url->redirecting_text_template)
+                                    <span class="text"><?php echo($url->redirecting_text_template)?></span>
+                                @else
+                                    <span class="text">Please wait a snap while we take you to the actual website</span>
+                                @endif
+                                in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
+                                <p id="msg" style="color: #9f3a38;"></p>
+                            </div>
+                        </div>
+                        <div class="sticky-foot"></div>
+                    </div>
+                @elseif(Auth::user()->profile->redirection_page_type == 1)
+                    <div class="blank-body"></div>
+                    <p id="msg" style="color: #9f3a38;"></p>
+                @endif
+            @else
                 <div class="redirect-body-content">
                     <div class="header"></div>
                     <div class="row">
@@ -133,33 +160,7 @@
                     </div>
                     <div class="sticky-foot"></div>
                 </div>
-            @elseif(Auth::user()->profile->redirection_page_type == 1)
-                <div class="blank-body"></div>
-                <p id="msg" style="color: #9f3a38;"></p>
             @endif
-        @else
-            <div class="redirect-body-content">
-                <div class="header"></div>
-                <div class="row">
-                    <div class="col-md-12 col-lg-12 image-div">
-                        @if($url->uploaded_path)
-                            <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
-                        @else
-                            <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
-                        @endif
-                    </div>
-                    <div class="col-md-12 col-lg-12 production-div">
-                        @if($url->redirecting_text_template)
-                            <span class="text"><?php echo($url->redirecting_text_template)?></span>
-                        @else
-                            <span class="text">Please wait a snap while we take you to the actual website</span>
-                        @endif
-                        in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
-                        <p id="msg" style="color: #9f3a38;"></p>
-                    </div>
-                </div>
-                <div class="sticky-foot"></div>
-            </div>
         @endif
         <!-- PIXEL SCRIPT FOR FOOTER STARTS HERE -->
         <?php
