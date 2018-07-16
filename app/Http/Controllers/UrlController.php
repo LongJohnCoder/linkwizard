@@ -1666,7 +1666,7 @@
                 $ip->platform = $request->platform;
                 $ip->browser = $request->browser;
                 $ip->referer = $request->referer;
-                $ip->query_string = $query_string;
+                // $ip->query_string = $query_string;
                 $ip->save();
             } else {
                 $ip = new IpLocation();
@@ -1679,7 +1679,7 @@
                 $ip->platform = $request->platform;
                 $ip->browser = $request->browser;
                 $ip->referer = $request->referer;
-                $ip->query_string = $query_string;
+                // $ip->query_string = $query_string;
                 $ip->save();
             }
             /* End link info stored in ip_locations table */

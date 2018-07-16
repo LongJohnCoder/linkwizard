@@ -107,9 +107,6 @@
         @php
             $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
             $referer = $_SERVER['HTTP_HOST'];
-            $requestIp = json_decode(file_get_contents(env('IP_API_URL')));
-            $ipAddress = $requestIp->ip;
-            $geoLocationApiUrl = env('GEO_LOCATION_API_URL').''.$ipAddress;
         @endphp
 
         @if(!empty(Auth::user()->profile) && count(Auth::user()->profile)>0)
