@@ -103,7 +103,7 @@
                                                     <input type="checkbox" name="redirection_page_type_one" id="redirect_type_one" {{$checkRedirectPageOne}}>
                                                 </td>
                                                 <td>
-                                                    <h6>DON'T WANT A REDIRECTION PAGE</h6>
+                                                    <h6> DON'T SHOW DEFAULT REDIRECTION PAGE</h6>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -111,7 +111,7 @@
                                                     <input type="checkbox" name="redirection_page_type_zero" id="redirect_type_zero" {{$checkRedirectPageZero}}>
                                                 </td>
                                                 <td>
-                                                    <h6>YES I WANT A REDIRECTION PAGE</h6>
+                                                    <h6>SHOW DEFAULT REDIRECTION PAGE</h6>
                                                 </td>
                                             </tr>
                                             <tr>

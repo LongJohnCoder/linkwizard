@@ -271,9 +271,9 @@
                                         <td>{{$url->count}}</td>
                                         <td>{{$url->created_at->format('d/m/Y')}}</td>
                                         <td>
-                                            <button class='btn btn-primary btn-xs delete-url-btn' data-id="{{ $url->id }}" title="Delete"><i class="fa fa-trash"></i></button>
-                                            <button class='btn btn-primary btn-xs'><a href="{{route('edit_url_view' , $url->id)}}" style="color: #fff;" title="Edit Url"> <i class="fa fa-edit"></i></a></button>
-                                            <button class='btn btn-primary btn-xs' onclick="copyUrl({{$url->id}}, event)" title="Copy Url"><i class="fa fa-copy"></i></button>
+                                            <button class='btn btn-danger btn-xs delete-url-btn' data-id="{{ $url->id }}" title="Delete"><i class="fa fa-trash"></i></button>
+                                            <button class='btn btn-warning btn-xs'><a href="{{route('edit_url_view' , $url->id)}}" style="color: #fff;" title="Edit Url"> <i class="fa fa-edit"></i></a></button>
+                                            <button class='btn btn-success btn-xs' onclick="copyUrl({{$url->id}}, event)" title="Copy Url"><i class="fa fa-copy"></i></button>
                                         </td>
                                     </tr>
                                     @endforeach

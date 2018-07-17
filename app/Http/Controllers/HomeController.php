@@ -10,6 +10,7 @@ use App\LinkLimit;
 use App\Pixel;
 use App\Platform;
 use App\Referer;
+use App\Profile;
 use App\RefererUrl;
 use App\Subdomain;
 use App\Url;
@@ -2428,7 +2429,10 @@ class HomeController extends Controller
           {
             $user = Auth::user();
             $url = Url::find($id);
-
+            $profile = Profile::where('user_id',$url->user_id)->first();
+            if ($profile->default_redirection_time != 5000) {
+                $url->redirecting_time = $profile->default_redirection_time;
+            }
             if(!$url) {
                 return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
             }
@@ -2476,7 +2480,8 @@ class HomeController extends Controller
               'limit'               => $limit,
               'subscription_status' => $subscription_status,
               'user'                => $user,
-              'tags'                => $tags
+              'tags'                => $tags,
+              'redirectionFlag'     => $profile->redirection_page_type
             ]);
           }
 

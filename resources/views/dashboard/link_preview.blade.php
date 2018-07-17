@@ -343,7 +343,14 @@
                       <strong>Redirecting time:</strong>
                   </div>
                   <div class="col-md-10">
-                      {{$url->redirecting_time/1000}} Seconds
+                    @if($redirectionFlag == 1)
+                    Redirecting page will not show <small>(You can change the redirecting time profile section).</small>
+                    @else
+                        {{$url->redirecting_time/1000}} Seconds 
+                        @if($url->redirecting_time != 5000)
+                            <small>(You can change the redirecting time profile section).</small>
+                        @endif
+                    @endif
                   </div>
                   <div class="col-md-2">
                       <strong>Redirecting text:</strong>
