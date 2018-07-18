@@ -179,6 +179,7 @@
                 $url->actual_url       = $actualUrl;
                 $url->protocol         = $protocol;
                 $url->user_id          = $userId;
+                $url->redirecting_text_template = $request->redirecting_text_template;
 
                 //Get Meta Data from browser if user did not provide
                 if(preg_match("~^(?:f|ht)tps?://~i", $request->actual_url[0])){

@@ -108,6 +108,24 @@
                                                 
                                             </div>  
                                         </div>
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-2">
+                                                <label> Select your customise colour </label>
+                                            </div>
+                                            <div class="col-md-8 col-sm-8">
+                                                <input type="color" name="pageColour" value="#005C96">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-2">
+                                                <label> Enter your redirecting text </label>
+                                            </div>
+                                            <div class="col-md-8 col-sm-8">
+                                                <div class="form-group">
+                                                    <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="row" id="error-custom-url">
                                         </div>
                                     @endif 
