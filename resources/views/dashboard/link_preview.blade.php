@@ -343,20 +343,17 @@
                       <strong>Redirecting time:</strong>
                   </div>
                   <div class="col-md-10">
-                    @if($redirectionFlag == 1)
-                    Redirecting page will not show <small>(You can change the redirecting time profile section).</small>
+                    @if(!$url->usedCustomised)
+                        {{$profileSettings->default_redirection_time/1000}} Seconds
                     @else
                         {{$url->redirecting_time/1000}} Seconds 
-                        @if($url->redirecting_time != 5000)
-                            <small>(You can change the redirecting time profile section).</small>
-                        @endif
                     @endif
                   </div>
                   <div class="col-md-2">
                       <strong>Redirecting text:</strong>
                   </div>
                 <div class="col-md-10">
-                    <span style="display: inline;"><?php echo $url->redirecting_text_template ?></span>
+                    <span style="display: inline;">{{$url->redirecting_text_template}}</span>
                 </div>
 
               </div>

@@ -2430,8 +2430,8 @@ class HomeController extends Controller
             $user = Auth::user();
             $url = Url::find($id);
             $profile = Profile::where('user_id',$url->user_id)->first();
-            if ($profile->default_redirection_time != 5000) {
-                $url->redirecting_time = $profile->default_redirection_time;
+            if (!$url->usedCustomised) {
+                // dd($url);
             }
             if(!$url) {
                 return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
@@ -2481,7 +2481,7 @@ class HomeController extends Controller
               'subscription_status' => $subscription_status,
               'user'                => $user,
               'tags'                => $tags,
-              'redirectionFlag'     => $profile->redirection_page_type
+              'profileSettings'     => $profile
             ]);
           }
 
@@ -2529,6 +2529,7 @@ class HomeController extends Controller
         }
         $url->redirecting_time = $request->redirectingTime * 1000;
         $url->redirecting_text_template = $request->redirectingTextTemplate;
+        $url->usedCustomised = 1;
         if ($url->save()) {
             //dd($url);
             return redirect()->back()

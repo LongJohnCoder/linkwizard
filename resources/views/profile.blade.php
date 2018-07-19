@@ -59,30 +59,26 @@
             @endif
 
                 @php
-                    if(!empty(Auth::user()->profile) && count(Auth::user()->profile)>0)
-                    {
-                        if(Auth::user()->profile->redirection_page_type == 0)
-                        {
+                    if (!empty(Auth::user()->profile) && count(Auth::user()->profile)>0) {
+                        if (Auth::user()->profile->redirection_page_type == 0) {
                             $checkRedirectPageZero = 'checked';
                             $checkRedirectPageOne = '';
-                        }
-                        elseif(Auth::user()->profile->redirection_page_type == 1)
-                        {
+                        } elseif (Auth::user()->profile->redirection_page_type == 1) {
                             $checkRedirectPageZero = '';
                             $checkRedirectPageOne = 'checked';
                         }
 
-                        if(!empty(Auth::user()->profile->default_redirection_time))
-                        {
+                        if (!empty(Auth::user()->profile->default_redirection_time)) {
                             $redirectionTime =  (Auth::user()->profile->default_redirection_time/1000);
-                        }
-                        else
-                        {
+                        } else {
                             $redirectionTime = 5000;
                         }
-                    }
-                    else
-                    {
+                        if (!empty(Auth::user()->profile->pageColor)) {
+                            $skinColour =  (Auth::user()->profile->pageColor);
+                        } else {
+                            $skinColour = "#005c96";
+                        }
+                    } else {
                         $checkRedirectPageZero = '';
                         $checkRedirectPageOne = '';
                         $redirectionTime = 5000;
@@ -92,7 +88,7 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     <div class="container">
-                        <form action="{{route('saveprofile')}}" method="post">
+                        <form action="{{route('saveprofile')}}" method="post" enctype="multipart/form-data">
                             <div class="panel panel-primary">
                                 <div class="panel-heading"><h4>Manage Your Profile</h4></div>
                                 <div class="panel-body">
@@ -120,6 +116,22 @@
                                                 </td>
                                                 <td>
                                                     <input type='number' name='default_redirection_time' class='form-control redirection_time' id='default_redirection_time' min='1' max='30' value='{{$redirectionTime}}' disabled>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SELECT SKIN COLOUR
+                                                </td>
+                                                <td>
+                                                    <input type="color" name="pageColor" value='{{$skinColour}}'>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    SELECT DEFAULT IMAGE
+                                                </td>
+                                                <td>
+                                                    <input type="file" name="default_image" id="default_image" class="form-control">
                                                 </td>
                                             </tr>
                                         </table>

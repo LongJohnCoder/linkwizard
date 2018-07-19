@@ -54,13 +54,13 @@
             }
             .header{
                 padding: 20px;
-                background: #01579b;
+                background: {{$skinColor}};
                 width: 100%;
                 height: 50px;
             }
             .sticky-foot{
                 /*padding: 20px;*/
-                background: #01579b;
+                background: {{$skinColor}};
                 width: 100%;
                 /*bottom: 0px;*/
                 /*position: fixed;*/
@@ -108,15 +108,19 @@
             $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
             $referer = $_SERVER['HTTP_HOST'];
         @endphp
-            @if($redirectionType != 1)
+            @if((!$profileSettings->redirection_page_type)||($url->usedCustomised))
                 <div class="redirect-body-content">
                     <div class="header"></div>
                     <div class="row">
                         <div class="col-md-12 col-lg-12 image-div">
-                            @if($url->uploaded_path)
-                                <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
+                            @if(($profileSettings)&&(!$url->usedCustomised))
+                                <img src="{{ asset('uploads/brand_images/'.$profileSettings->default_image)}}" class="img-responsive">
                             @else
-                                <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
+                                @if($url->uploaded_path)
+                                    <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
+                                @else
+                                    <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
+                                @endif
                             @endif
                         </div>
                         <div class="col-md-12 col-lg-12 production-div">
@@ -152,11 +156,17 @@
         {{--  redirecting js script  --}}
         <script type="text/javascript">
             $(document).ready(function() {
-                    @if ($redirectionType == 1)
-                        var red_time = 0;
+                    @if ($profileSettings)
+                        var red_time = '{{$profileSettings->default_redirection_time}}';
+                        @if (($profileSettings->redirection_page_type)&&($url->usedCustomised))
+                            var red_time = '{{$url->redirecting_time}}';
+                        @else
+                            var red_time = 0;
+                        @endif
                     @else
                         var red_time = '{{$url->redirecting_time}}';
-                        var sec = '{{$url->redirecting_time}}' / 1000;
+                    @endif
+                        var sec = red_time / 1000;
                         window.setInterval(function(){
                             sec--;
                             if(sec >= 0){
@@ -166,7 +176,6 @@
                                 $('#txt_').text('');
                             }
                         }, 1000);
-                    @endif
                 $.ajax({
                     //url: '//freegeoip.net/json/',
                     url: '{{ env('GEO_LOCATION_API_URL') }}',

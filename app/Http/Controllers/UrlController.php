@@ -179,7 +179,6 @@
                 $url->actual_url       = $actualUrl;
                 $url->protocol         = $protocol;
                 $url->user_id          = $userId;
-                $url->redirecting_text_template = $request->redirecting_text_template;
 
                 //Get Meta Data from browser if user did not provide
                 if(preg_match("~^(?:f|ht)tps?://~i", $request->actual_url[0])){
@@ -332,6 +331,9 @@
                 if(isset($request->custom_url_status)&& ($request->custom_url_status=='on')){
                     $url->is_custom         =1;
                     $url->shorten_suffix    = $request->custom_url;
+                    $url->redirecting_text_template =$request->redirecting_text_template;
+                    $url->customColour = $request->pageColour;
+                    $url->  usedCustomised  = '1';
                 }else{
                     $url->shorten_suffix    = $random_string;
                 }
@@ -1483,10 +1485,20 @@
         public function getRequestedUrl($url) {
             $search = Url::where('shorten_suffix', $url)->first();
             $userRedirection = Profile::where('user_id',$search->user_id)->first();
-            if ($userRedirection->default_redirection_time != 5000) {
-                $search->redirecting_time = $userRedirection->default_redirection_time;
+            if ($userRedirection) {
+                $profileSettings = $userRedirection;
+                if (!$search->usedCustomised) {
+                    $search->redirecting_time = $userRedirection->default_redirection_time;
+                    $userRedirectionType = $userRedirection->redirection_page_type;
+                    $skinColor = $userRedirection->pageColor;
+                } else {
+                    $skinColor = $search->customColour;
+                    $userRedirectionType = 1;
+                }   
+            } else {
+                $profileSettings = 0;
+                $userRedirectionType = 0;
             }
-            $userRedirectionType = $userRedirection->redirection_page_type;
             if ($search) {
                 /* OLD URL PIXELS */
                 //$url_features = UrlFeature::where('url_id', $search->id)->first();
@@ -1560,7 +1572,9 @@
                     'url' => $search,
                     'url_features' => $url_features,
                     'suffix' => $url,
-                    'pixelScripts' => $pixelScript]
+                    'pixelScripts' => $pixelScript,
+                    'skinColor' => $skinColor,
+                    'profileSettings' => $profileSettings]
                 );
 
             } else {
@@ -2415,13 +2429,10 @@
          */
         public function profile(Request $request)
         {
-            if(Auth::check())
-            {
-                if(Session::has('plan'))
-                {
+            if (Auth::check()) {
+                if (Session::has('plan')) {
                     return redirect()->action('HomeController@getSubscribe');
-                }else
-                {
+                } else {
                     $user = Auth::user();
                     $arr = $this->getAllDashboardElements($user, $request);
                     $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
@@ -2438,56 +2449,79 @@
                 {
                     $userId = Auth::user()->id;
                     $profile = Profile::where('user_id', $userId)->first();
-                    if($profile)
-                    {
-                        if(isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on')
-                        {
+                    if ($profile) {
+                        if (isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on') {
                             $profile->redirection_page_type = 1;
-                        }
-                        elseif(isset($request->redirection_page_type_zero) && $request->redirection_page_type_zero=='on')
-                        {
+                        } elseif (isset($request->redirection_page_type_zero) && $request->redirection_page_type_zero=='on') {
                             $profile->redirection_page_type = 0;
-                        }
-                        else
-                        {
+                        } else {
                             $profile->redirection_page_type = 0;
                         }
 
-                        if(isset($request->default_redirection_time))
-                        {
+                        if (isset($request->default_redirection_time)) {
                             $profile->default_redirection_time = $request->default_redirection_time*1000;
-                        }
-                        else
-                        {
+                        } else {
                             $profile->default_redirection_time = 5000;
                         }
-                        $profile->save();
+                        $profile->pageColor = $request->pageColor;
+                        /* Checking for image */
+                        if ($request->hasFile('default_image')) {
+                        if (!file_exists('public/uploads/brand_images')) {
+                            mkdir('public/uploads/brand_images', 777 , true);
+                        }
+                        $upload_path ='public/uploads/brand_images';
+                        $image_name = uniqid()."-".$request->default_image->getClientOriginalName();
+                        $data = getimagesize($request->default_image);
+                        $width = $data[0];
+                        $height = $data[1];
+
+                        /* image resizing */
+                        $temp_height = 450;
+                        $abs_width = ceil(($width*$temp_height)/$height);
+                        $abs_height = $temp_height;
+                        $image_resize = Image::make($request->default_image->getRealPath());
+                        $image_resize->resize($abs_width, $abs_height);
+                        $image_resize->save($upload_path.'/'.$image_name);
+                        $profile->default_image = $upload_path.'/'.$image_name;
                     }
-                    else
-                    {
+                        $profile->save();
+                    } else {
                         $profile = new Profile();
                         $profile->user_id = $userId;
-                        if(isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on')
-                        {
+                        if (isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on') {
                             $profile->redirection_page_type = 1;
-                        }
-                        elseif(isset($request->redirection_page_type_zero) && $request->redirection_page_type_zero=='on')
-                        {
+                        } elseif (isset($request->redirection_page_type_zero) && $request->redirection_page_type_zero=='on') {
                             $profile->redirection_page_type = 0;
-                        }
-                        else
-                        {
+                        } else {
                             $profile->redirection_page_type = 0;
                         }
 
-                        if(isset($request->default_redirection_time))
-                        {
+                        if (isset($request->default_redirection_time)) {
                             $profile->default_redirection_time = $request->default_redirection_time*1000;
-                        }
-                        else
-                        {
+                        } else {
                             $profile->default_redirection_time = 5000;
                         }
+                        $profile->pageColor = $request->pageColor;
+                        /* Checking for image */
+                        if ($request->hasFile('default_image')) {
+                        if (!file_exists('public/uploads/brand_images')) {
+                            mkdir('public/uploads/brand_images', 777 , true);
+                        }
+                        $upload_path ='public/uploads/brand_images';
+                        $image_name = uniqid()."-".$request->default_image->getClientOriginalName();
+                        $data = getimagesize($request->default_image);
+                        $width = $data[0];
+                        $height = $data[1];
+
+                        /* image resizing */
+                        $temp_height = 450;
+                        $abs_width = ceil(($width*$temp_height)/$height);
+                        $abs_height = $temp_height;
+                        $image_resize = Image::make($request->default_image->getRealPath());
+                        $image_resize->resize($abs_width, $abs_height);
+                        $image_resize->save($upload_path.'/'.$image_name);
+                        $profile->default_image = $upload_path.'/'.$image_name;
+                    }                        
                         $profile->save();
                     }
                     return redirect()->back()->with('msg', 'success');
