@@ -13,10 +13,9 @@ class AlterProfilesTable extends Migration
     public function up()
     {
         Schema::table('profiles', function (Blueprint $table) {
-            //
-        });
             $table->string('pageColor')->default('#005C96')->after('default_redirection_time');
-            $table->string('default_image')->nullable()->after('pageColor');
+            $table->string('default_image')->default_image('public/images/Tier5.jpg')->after('pageColor');
+        });
     }
 
     /**

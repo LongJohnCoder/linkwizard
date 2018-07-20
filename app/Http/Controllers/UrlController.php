@@ -209,6 +209,7 @@
                 // Add CountDowntimer
                 if(isset($request->allowCountDown) && ($request->allowCountDown == "on")){
                     $url->redirecting_time = ($request->redirecting_time*1000);
+                    $url->usedCustomised = '1';
                 }else{
                    $url->redirecting_time = 5000; 
                 }
@@ -741,7 +742,7 @@
                     $url->actual_url = $actualUrl;
                     $actual_og_image = $url->og_image;
                     if (!$request->customizeOption) {
-                        $url->usedCustomised = $request->customizeOption;
+                        $url->usedCustomised = '1';
                         /* Check if the shorten link is already exist or not */
                         if ($url->shorten_suffix != $request->custom_url) {
                             $checkSuffix=Url::where('shorten_suffix',$request->custom_url)->count();
@@ -757,9 +758,8 @@
                             $url->redirecting_text_template = $request->redirecting_text_template;
                         }
                     } else {
-                        $url->usedCustomised = $request->customizeOption;
+                        $url->usedCustomised = '0';
                     }
-
                     //Get Meta Data from browser if user did not provide
                     if(preg_match("~^(?:f|ht)tps?://~i", $request->actual_url[0])){
                         $meta_data = $this->getPageMetaContents($request->actual_url[0]);
