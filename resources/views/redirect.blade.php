@@ -114,7 +114,7 @@
                     <div class="row">
                         <div class="col-md-12 col-lg-12 image-div">
                             @if(($profileSettings)&&(!$url->usedCustomised))
-                                <img src="{{ asset('uploads/brand_images/'.$profileSettings->default_image)}}" class="img-responsive">
+                                <img src="{{url('/')}}/{{$profileSettings->default_image}}" class="img-responsive">
                             @else
                                 @if($url->uploaded_path)
                                     <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
@@ -158,14 +158,14 @@
             $(document).ready(function() {
                     @if ($profileSettings)
                         var red_time = '{{$profileSettings->default_redirection_time}}';
-                        @if (($profileSettings->redirection_page_type)&&($url->usedCustomised))
+                        @if ($url->usedCustomised)
                             var red_time = '{{$url->redirecting_time}}';
                         @else
-                            var red_time = 0;
+                            var red_time = '{{$profileSettings->default_redirection_time}}';
                         @endif
                     @else
                         var red_time = '{{$url->redirecting_time}}';
-                    @endif
+                    @endif 
                         var sec = red_time / 1000;
                         window.setInterval(function(){
                             sec--;

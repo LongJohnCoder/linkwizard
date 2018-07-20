@@ -15,9 +15,6 @@ class AlterUrlsTable extends Migration
       Schema::table('urls', function (Blueprint $table) {
 
           $table->string('meta_description')->nullable();
-          /* Columns for customize setting for urls */
-          $table->string('customColour')->default('#005C96');
-          $table->tinyInteger('usedCustomised')->default('0')->comment('0 => using default settings; 1 => using custom settings');
 
           //columns required for facebook open graph
           $table->string('og_title')->nullable();

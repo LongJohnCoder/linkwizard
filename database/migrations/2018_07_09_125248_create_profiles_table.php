@@ -17,8 +17,6 @@ class CreateProfilesTable extends Migration
             $table->integer('user_id')->unsigned()->index();
             $table->integer('redirection_page_type')->default(0)->comment('0=default redirection, 1=blank redirection');
             $table->integer('default_redirection_time')->default(5000);
-            $table->string('pageColor')->default('#005C96');
-            $table->string('default_image')->nullable();
             $table->timestamps();
 
             /* Foreign key definitions */

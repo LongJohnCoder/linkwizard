@@ -140,7 +140,7 @@
                         }
                     }else{
                         return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
-                    } 
+                    }
                     $actualUrl = NULL;
                     $protocol  = 'http';
                 }
@@ -740,6 +740,25 @@
                     $url->protocol = $protocol;
                     $url->actual_url = $actualUrl;
                     $actual_og_image = $url->og_image;
+                    if (!$request->customizeOption) {
+                        $url->usedCustomised = $request->customizeOption;
+                        /* Check if the shorten link is already exist or not */
+                        if ($url->shorten_suffix != $request->custom_url) {
+                            $checkSuffix=Url::where('shorten_suffix',$request->custom_url)->count();
+                            if ($checkSuffix >0) {
+                                return redirect()->back()->with('error', 'This Url Is Already Taken');
+                            }
+                            if ($request->custom_url != NULL) {
+                                $url->shorten_suffix = $request->custom_url;
+                            }
+                        }
+                        $url->customColour = $request->pageColour;
+                        if ($request->redirecting_text_template != NULL) {
+                            $url->redirecting_text_template = $request->redirecting_text_template;
+                        }
+                    } else {
+                        $url->usedCustomised = $request->customizeOption;
+                    }
 
                     //Get Meta Data from browser if user did not provide
                     if(preg_match("~^(?:f|ht)tps?://~i", $request->actual_url[0])){
@@ -776,6 +795,7 @@
                     // Edit CountDowntimer
                     if(isset($request->allowCountDown) && ($request->allowCountDown == "on")){
                         $url->redirecting_time = ($request->redirecting_time*1000);
+                        $url->  usedCustomised  = '1';
                     }else{
                        $url->redirecting_time = 5000; 
                     }

@@ -22,6 +22,10 @@ $optTypeLI = 'normal';
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
 
 <style type="text/css">
     #scheduleArea{
@@ -141,10 +145,48 @@ $optTypeLI = 'normal';
                                         <div class="col-md-8 col-sm-8">
                                             <input id="givenActual_Url" type="text" name="actual_url[0]" class="form-control " value="<?php echo($urls->actual_url!==NULL) ? $urls->protocol.'://'.$urls->actual_url : ''  ?>" placeholder="Please Provide A Valid Url Like http://www.example.com">
                                             <div class="input-msg">* This is where you paste your long URL that you'd like to shorten.</div>
+                                                <div class="row">
+                                                    <hr>
+                                                    <input type="checkbox" name="customizeOption" id="customizeOption" onchange="valueChanged()"><small>* Check to use the default settings for this url </small>
+                                                </div>
                                         </div>
+
                                         <div class="col-md-2 col-sm-2">
 
                                         </div>
+                                    </div>
+                                    <div class="customized-url-div">
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-2">
+                                                <label> Paste Your Customized Url Name </label>
+                                            </div>
+                                            <div class="col-md-8 col-sm-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">{{config('settings.APP_REDIRECT_HOST')}}
+                                                        /</span>
+                                                    <input id="makeCustom_Url" type="text" name="custom_url"
+                                                           class="form-control" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                            <div class="row">
+                                                <div class="col-md-2 col-sm-2">
+                                                    <label> Select your customise colour </label>
+                                                </div>
+                                                <div class="col-md-8 col-sm-8">
+                                                    <input type="color" name="pageColour" value="{{$urls->customColour}}">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 col-sm-2">
+                                                    <label> Enter your redirecting text </label>
+                                                </div>
+                                                <div class="col-md-8 col-sm-8">
+                                                    <div class="form-group">
+                                                        <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
+                                                    </div>
+                                                </div>
+                                            </div>
                                     </div>
                                 @endif
                             </div>
@@ -2048,6 +2090,9 @@ $optTypeLI = 'normal';
 
 <script type="text/javascript">
     $(document).ready(function(){
+            $('#customizeOption').click(function(){
+                $('.customized-url-div').toggle();
+            });
         /*
                 if (typeof(FB) != 'undefined'
                     && FB != null ) {
