@@ -156,37 +156,41 @@ $optTypeLI = 'normal';
                                         </div>
                                     </div>
                                     <div class="customized-url-div">
-                                        <div class="row">
-                                            <div class="col-md-2 col-sm-2">
-                                                <label> Paste Your Customized Url Name </label>
-                                            </div>
-                                            <div class="col-md-8 col-sm-8">
-                                                <div class="input-group">
-                                                    <span class="input-group-addon">{{config('settings.APP_REDIRECT_HOST')}}
-                                                        /</span>
-                                                    <input id="makeCustom_Url" type="text" name="custom_url"
-                                                           class="form-control" >
-                                                </div>
-                                            </div>
-                                        </div>
-                                            <div class="row">
-                                                <div class="col-md-2 col-sm-2">
-                                                    <label> Select your customise colour </label>
-                                                </div>
-                                                <div class="col-md-8 col-sm-8">
-                                                    <input type="color" name="pageColour" value="{{$urls->customColour}}">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-2 col-sm-2">
-                                                    <label> Enter your redirecting text </label>
-                                                </div>
-                                                <div class="col-md-8 col-sm-8">
-                                                    <div class="form-group">
-                                                        <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
+                                        @if ($subscription_status != null)
+                                            @if(count($limit) > 0)
+                                                <div class="row">
+                                                    <div class="col-md-2 col-sm-2">
+                                                        <label> Paste Your Customized Url Name </label>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-8">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">{{config('settings.APP_REDIRECT_HOST')}}
+                                                                /</span>
+                                                            <input id="makeCustom_Url" type="text" name="custom_url"
+                                                                   class="form-control" >
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                                <div class="row">
+                                                    <div class="col-md-2 col-sm-2">
+                                                        <label> Select your customise colour </label>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-8">
+                                                        <input type="color" name="pageColour" value="{{$urls->customColour}}">
+                                                    </div>
+                                                </div>
+                                                    <div class="row">
+                                                    <div class="col-md-2 col-sm-2">
+                                                        <label> Enter your redirecting text </label>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-8">
+                                                        <div class="form-group">
+                                                            <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endif
                                     </div>
                                 @endif
                             </div>
@@ -680,96 +684,12 @@ $optTypeLI = 'normal';
                                     <p>Select a timezone</p>
                                     <select name="timezone" id="expirationTZ" class="form-control">
                                         <option value="">Please select a timezone</option>
-                                        <option value="Pacific/Midway" <?php echo($urls->timezone=="Pacific/Midway")? 'selected' : '' ?> >(GMT-11:00) Midway Island, Samoa</option>
-                                        <option value="America/Adak" <?php echo($urls->timezone=="America/Adak")? 'selected' : '' ?> >(GMT-10:00) Hawaii-Aleutian</option>
-                                        <option value="Etc/GMT+10" <?php echo($urls->timezone=="Etc/GMT+10")? 'selected' : '' ?> >(GMT-10:00) Hawaii</option>
-                                        <option value="Pacific/Marquesas" <?php echo($urls->timezone=="Etc/GMT+10")? 'selected' : '' ?> >(GMT-09:30) Marquesas Islands</option>
-                                        <option value="Pacific/Gambier" <?php echo($urls->timezone=="Pacific/Gambier")? 'selected' : '' ?> >(GMT-09:00) Gambier Islands</option>
-                                        <option value="America/Anchorage" <?php echo($urls->timezone=="America/Anchorage")? 'selected' : '' ?> >(GMT-09:00) Alaska</option>
-                                        <option value="America/Ensenada" <?php echo($urls->timezone=="America/Ensenada")? 'selected' : '' ?> >(GMT-08:00) Tijuana, Baja California</option>
-                                        <option value="Etc/GMT+8" <?php echo($urls->timezone=="Etc/GMT+8")? 'selected' : '' ?> >(GMT-08:00) Pitcairn Islands</option>
-                                        <option value="America/Los_Angeles" <?php echo($urls->timezone=="America/Los_Angeles")? 'selected' : '' ?> >(GMT-08:00) Pacific Time (US & Canada)</option>
-                                        <option value="America/Denver" <?php echo($urls->timezone=="America/Denver")? 'selected' : '' ?> >(GMT-07:00) Mountain Time (US & Canada)</option>
-                                        <option value="America/Chihuahua" <?php echo($urls->timezone=="America/Chihuahua")? 'selected' : '' ?> >(GMT-07:00) Chihuahua, La Paz, Mazatlan</option>
-                                        <option value="America/Dawson_Creek" <?php echo($urls->timezone=="America/Dawson_Creek")? 'selected' : '' ?> >(GMT-07:00) Arizona</option>
-                                        <option value="America/Belize" <?php echo($urls->timezone=="America/Belize")? 'selected' : '' ?> >(GMT-06:00) Saskatchewan, Central America</option>
-                                        <option value="America/Cancun" <?php echo($urls->timezone=="America/Cancun")? 'selected' : '' ?> >(GMT-06:00) Guadalajara, Mexico City, Monterrey</option>
-                                        <option value="Chile/EasterIsland" <?php echo($urls->timezone=="Chile/EasterIsland")? 'selected' : '' ?> >(GMT-06:00) Easter Island</option>
-                                        <option value="America/Chicago" <?php echo($urls->timezone=="America/Chicago")? 'selected' : '' ?> >(GMT-06:00) Central Time (US & Canada)</option>
-                                        <option value="America/New_York" <?php echo($urls->timezone=="America/New_York")? 'selected' : '' ?> >(GMT-05:00) Eastern Time (US & Canada)</option>
-                                        <option value="America/Havana" <?php echo($urls->timezone=="America/Havana")? 'selected' : '' ?> >(GMT-05:00) Cuba</option>
-                                        <option value="America/Bogota" <?php echo($urls->timezone=="America/Bogota")? 'selected' : '' ?> >(GMT-05:00) Bogota, Lima, Quito, Rio Branco</option>
-                                        <option value="America/Caracas" <?php echo($urls->timezone=="America/Caracas")? 'selected' : '' ?> >(GMT-04:30) Caracas</option>
-                                        <option value="America/Santiago" <?php echo($urls->timezone=="America/Santiago")? 'selected' : '' ?> >(GMT-04:00) Santiago</option>
-                                        <option value="America/La_Paz" <?php echo($urls->timezone=="America/La_Paz")? 'selected' : '' ?> >(GMT-04:00) La Paz</option>
-                                        <option value="Atlantic/Stanley" <?php echo($urls->timezone=="Atlantic/Stanley")? 'selected' : '' ?> >(GMT-04:00) Faukland Islands</option>
-                                        <option value="America/Campo_Grande" <?php echo($urls->timezone=="America/Campo_Grande")? 'selected' : '' ?> >(GMT-04:00) Brazil</option>
-                                        <option value="America/Goose_Bay" <?php echo($urls->timezone=="America/Goose_Bay")? 'selected' : '' ?> >(GMT-04:00) Atlantic Time (Goose Bay)</option>
-                                        <option value="America/Glace_Bay" <?php echo($urls->timezone=="America/Glace_Bay")? 'selected' : '' ?> >(GMT-04:00) Atlantic Time (Canada)</option>
-                                        <option value="America/St_Johns" <?php echo($urls->timezone=="America/St_Johns")? 'selected' : '' ?> >(GMT-03:30) Newfoundland</option>
-                                        <option value="America/Araguaina" <?php echo($urls->timezone=="America/Araguaina")? 'selected' : '' ?> >(GMT-03:00) UTC-3</option>
-                                        <option value="America/Montevideo" <?php echo($urls->timezone=="America/Montevideo")? 'selected' : '' ?> >(GMT-03:00) Montevideo</option>
-                                        <option value="America/Miquelon" <?php echo($urls->timezone=="America/Miquelon")? 'selected' : '' ?> >(GMT-03:00) Miquelon, St. Pierre</option>
-                                        <option value="America/Godthab" <?php echo($urls->timezone=="America/Godthab")? 'selected' : '' ?> >(GMT-03:00) Greenland</option>
-                                        <option value="America/Argentina/Buenos_Aires" <?php echo($urls->timezone=="America/Argentina/Buenos_Aires")? 'selected' : '' ?> >(GMT-03:00) Buenos Aires</option>
-                                        <option value="America/Sao_Paulo" <?php echo($urls->timezone=="America/Sao_Paulo")? 'selected' : '' ?> >(GMT-03:00) Brasilia</option>
-                                        <option value="America/Noronha" <?php echo($urls->timezone=="America/Noronha")? 'selected' : '' ?> >(GMT-02:00) Mid-Atlantic</option>
-                                        <option value="Atlantic/Cape_Verde" <?php echo($urls->timezone=="Atlantic/Cape_Verde")? 'selected' : '' ?> >(GMT-01:00) Cape Verde Is.</option>
-                                        <option value="Atlantic/Azores" <?php echo($urls->timezone=="Atlantic/Azores")? 'selected' : '' ?> >(GMT-01:00) Azores</option>
-                                        <option value="Europe/Belfast" <?php echo($urls->timezone=="Europe/Belfast")? 'selected' : '' ?> >(GMT) Greenwich Mean Time : Belfast</option>
-                                        <option value="Europe/Dublin" <?php echo($urls->timezone=="Europe/Dublin")? 'selected' : '' ?> >(GMT) Greenwich Mean Time : Dublin</option>
-                                        <option value="Europe/Lisbon" <?php echo($urls->timezone=="Europe/Lisbon")? 'selected' : '' ?> >(GMT) Greenwich Mean Time : Lisbon</option>
-                                        <option value="Europe/London" <?php echo($urls->timezone=="Europe/London")? 'selected' : '' ?> >(GMT) Greenwich Mean Time : London</option>
-                                        <option value="Africa/Abidjan" <?php echo($urls->timezone=="Africa/Abidjan")? 'selected' : '' ?> >(GMT) Monrovia, Reykjavik</option>
-                                        <option value="Europe/Amsterdam" <?php echo($urls->timezone=="Europe/Amsterdam")? 'selected' : '' ?> >(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna</option>
-                                        <option value="Europe/Belgrade" <?php echo($urls->timezone=="Europe/Belgrade")? 'selected' : '' ?> >(GMT+01:00) Belgrade, Bratislava, Budapest, Ljubljana, Prague</option>
-                                        <option value="Europe/Brussels" <?php echo($urls->timezone=="Europe/Brussels")? 'selected' : '' ?> >(GMT+01:00) Brussels, Copenhagen, Madrid, Paris</option>
-                                        <option value="Africa/Algiers" <?php echo($urls->timezone=="Africa/Algiers")? 'selected' : '' ?> >(GMT+01:00) West Central Africa</option>
-                                        <option value="Africa/Windhoek" <?php echo($urls->timezone=="Africa/Windhoek")? 'selected' : '' ?> >(GMT+01:00) Windhoek</option>
-                                        <option value="Asia/Beirut" <?php echo($urls->timezone=="Asia/Beirut")? 'selected' : '' ?> >(GMT+02:00) Beirut</option>
-                                        <option value="Africa/Cairo" <?php echo($urls->timezone=="Africa/Cairo")? 'selected' : '' ?> >(GMT+02:00) Cairo</option>
-                                        <option value="Asia/Gaza" <?php echo($urls->timezone=="Asia/Gaza")? 'selected' : '' ?> >(GMT+02:00) Gaza</option>
-                                        <option value="Africa/Blantyre" <?php echo($urls->timezone=="Africa/Blantyre")? 'selected' : '' ?> >(GMT+02:00) Harare, Pretoria</option>
-                                        <option value="Asia/Jerusalem" <?php echo($urls->timezone=="Asia/Jerusalem")? 'selected' : '' ?> >(GMT+02:00) Jerusalem</option>
-                                        <option value="Europe/Minsk" <?php echo($urls->timezone=="Europe/Minsk")? 'selected' : '' ?> >(GMT+02:00) Minsk</option>
-                                        <option value="Asia/Damascus" <?php echo($urls->timezone=="Asia/Damascus")? 'selected' : '' ?> >(GMT+02:00) Syria</option>
-                                        <option value="Europe/Moscow" <?php echo($urls->timezone=="Europe/Moscow")? 'selected' : '' ?> >(GMT+03:00) Moscow, St. Petersburg, Volgograd</option>
-                                        <option value="Africa/Addis_Ababa" <?php echo($urls->timezone=="Africa/Addis_Ababa")? 'selected' : '' ?> >(GMT+03:00) Nairobi</option>
-                                        <option value="Asia/Tehran" <?php echo($urls->timezone=="Asia/Tehran")? 'selected' : '' ?> >(GMT+03:30) Tehran</option>
-                                        <option value="Asia/Dubai" <?php echo($urls->timezone=="Asia/Dubai")? 'selected' : '' ?> >(GMT+04:00) Abu Dhabi, Muscat</option>
-                                        <option value="Asia/Yerevan" <?php echo($urls->timezone=="Asia/Yerevan")? 'selected' : '' ?> >(GMT+04:00) Yerevan</option>
-                                        <option value="Asia/Kabul" <?php echo($urls->timezone=="Asia/Kabul")? 'selected' : '' ?> >(GMT+04:30) Kabul</option>
-                                        <option value="Asia/Yekaterinburg" <?php echo($urls->timezone=="Asia/Yekaterinburg")? 'selected' : '' ?> >(GMT+05:00) Ekaterinburg</option>
-                                        <option value="Asia/Tashkent" <?php echo($urls->timezone=="Asia/Tashkent")? 'selected' : '' ?> >(GMT+05:00) Tashkent</option>
-                                        <option value="Asia/Kolkata" <?php echo($urls->timezone=="Asia/Kolkata")? 'selected' : '' ?> >(GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi</option>
-                                        <option value="Asia/Katmandu" <?php echo($urls->timezone=="Asia/Katmandu")? 'selected' : '' ?> >(GMT+05:45) Kathmandu</option>
-                                        <option value="Asia/Dhaka" <?php echo($urls->timezone=="Asia/Dhaka")? 'selected' : '' ?> >(GMT+06:00) Astana, Dhaka</option>
-                                        <option value="Asia/Novosibirsk" <?php echo($urls->timezone=="Asia/Novosibirsk")? 'selected' : '' ?> >(GMT+06:00) Novosibirsk</option>
-                                        <option value="Asia/Rangoon" <?php echo($urls->timezone=="Asia/Rangoon")? 'selected' : '' ?> >(GMT+06:30) Yangon (Rangoon)</option>
-                                        <option value="Asia/Bangkok" <?php echo($urls->timezone=="Asia/Bangkok")? 'selected' : '' ?> >(GMT+07:00) Bangkok, Hanoi, Jakarta</option>
-                                        <option value="Asia/Krasnoyarsk" <?php echo($urls->timezone=="Asia/Krasnoyarsk")? 'selected' : '' ?> >(GMT+07:00) Krasnoyarsk</option>
-                                        <option value="Asia/Hong_Kong" <?php echo($urls->timezone=="Asia/Hong_Kong")? 'selected' : '' ?> >(GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi</option>
-                                        <option value="Asia/Irkutsk" <?php echo($urls->timezone=="Asia/Irkutsk")? 'selected' : '' ?> >(GMT+08:00) Irkutsk, Ulaan Bataar</option>
-                                        <option value="Australia/Perth" <?php echo($urls->timezone=="Australia/Perth")? 'selected' : '' ?> >(GMT+08:00) Perth</option>
-                                        <option value="Australia/Eucla" <?php echo($urls->timezone=="Australia/Eucla")? 'selected' : '' ?> >(GMT+08:45) Eucla</option>
-                                        <option value="Asia/Tokyo" <?php echo($urls->timezone=="Asia/Tokyo")? 'selected' : '' ?> >(GMT+09:00) Osaka, Sapporo, Tokyo</option>
-                                        <option value="Asia/Seoul" <?php echo($urls->timezone=="Asia/Seoul")? 'selected' : '' ?> >(GMT+09:00) Seoul</option>
-                                        <option value="Asia/Yakutsk" <?php echo($urls->timezone=="Asia/Yakutsk")? 'selected' : '' ?> >(GMT+09:00) Yakutsk</option>
-                                        <option value="Australia/Adelaide" <?php echo($urls->timezone=="Australia/Adelaide")? 'selected' : '' ?> >(GMT+09:30) Adelaide</option>
-                                        <option value="Australia/Darwin" <?php echo($urls->timezone=="Australia/Darwin")? 'selected' : '' ?> >(GMT+09:30) Darwin</option>
-                                        <option value="Australia/Brisbane" <?php echo($urls->timezone=="Australia/Brisbane")? 'selected' : '' ?> >(GMT+10:00) Brisbane</option>
-                                        <option value="Australia/Hobart" <?php echo($urls->timezone=="Australia/Hobart")? 'selected' : '' ?> >(GMT+10:00) Hobart</option>
-                                        <option value="Asia/Vladivostok" <?php echo($urls->timezone=="Asia/Vladivostok")? 'selected' : '' ?> >(GMT+10:00) Vladivostok</option>
-                                        <option value="Australia/Lord_Howe" <?php echo($urls->timezone=="Australia/Lord_Howe")? 'selected' : '' ?> >(GMT+10:30) Lord Howe Island</option>
-                                        <option value="Etc/GMT-11" <?php echo($urls->timezone=="Etc/GMT-11")? 'selected' : '' ?> >(GMT+11:00) Solomon Is., New Caledonia</option>
-                                        <option value="Asia/Magadan" <?php echo($urls->timezone=="Asia/Magadan")? 'selected' : '' ?> >(GMT+11:00) Magadan</option>
-                                        <option value="Pacific/Norfolk" <?php echo($urls->timezone=="Pacific/Norfolk")? 'selected' : '' ?> >(GMT+11:30) Norfolk Island</option>
-                                        <option value="Asia/Anadyr" <?php echo($urls->timezone=="Asia/Anadyr")? 'selected' : '' ?> >(GMT+12:00) Anadyr, Kamchatka</option>
-                                        <option value="Pacific/Auckland" <?php echo($urls->timezone=="Pacific/Auckland")? 'selected' : '' ?> >(GMT+12:00) Auckland, Wellington</option>
-                                        <option value="Etc/GMT-12">(GMT+12:00) Fiji, Kamchatka, Marshall Is.</option>
-                                        <option value="Pacific/Chatham" <?php echo($urls->timezone=="Pacific/Chatham")? 'selected' : '' ?> >(GMT+12:45) Chatham Islands</option>
-                                        <option value="Pacific/Tongatapu" <?php echo($urls->timezone=="Pacific/Tongatapu")? 'selected' : '' ?> >(GMT+13:00) Nuku'alofa</option>
-                                        <option value="Pacific/Kiritimati" <?php echo($urls->timezone=="Pacific/Kiritimati")? 'selected' : '' ?> >(GMT+14:00) Kiritimati</option>
+                                        @foreach($timezones as $timezone)
+                                            <option value="{{$timezone->region}}"
+                                               {{$urls->timezone == $timezone->region ? 'selected' : ''}} >
+                                               {{$timezone->timezone}}
+                                            </option>
+                                        @endforeach
                                     </select>
                                     <p>Select a redirection page url after expiration</p>
                                     <input type="text" class="form-control" name="redirect_url" id="expirationUrl" value="<?php echo(!empty($urls->redirect_url))? $urls->redirect_url : '' ?>" onchange="checkUrl(this.value)">

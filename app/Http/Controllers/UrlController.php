@@ -34,6 +34,7 @@
     use App\Http\Requests\ForgotPasswordRequest;
     use Mockery\Exception;
     use Intervention\Image\ImageManagerStatic as Image;
+    use App\Timezone;
 
     class UrlController extends Controller{
         /**
@@ -88,6 +89,7 @@
                         {
                             $pixels = '';
                         }
+                        $timezones = Timezone::all();
                         return view('dashboard.shorten_url' , [
                             'urlTags'             => $urlTags,
                             'total_links'         => $total_links,
@@ -95,7 +97,8 @@
                             'subscription_status' => $subscription_status,
                             'user'                => $user,
                             'type'                => $type,
-                            'pixels'              => $pixels
+                            'pixels'              => $pixels,
+                            'timezones'          => $timezones
                         ]);
                     }
                 } else {
@@ -669,7 +672,7 @@
                         }
                         $pixels = Pixel:: where('user_id', $user->id)->get();
                         //dd($pxId);
-
+                        $timezones = Timezone::all();
                         $selectedTags = UrlTagMap::where('url_id',$id)->with('urlTag')->get();
                         return view('dashboard.edit_url', [
                             'urlTags'              => $urlTags,
@@ -683,7 +686,8 @@
                             'pixel_name'           => $pixel_name,
                             'pxId'                 => $pxId,
                             'pixel_id'             => $pixel_id,
-                            'pixels'               => $pixels
+                            'pixels'               => $pixels,
+                            'timezones'            => $timezones
                         ]);
 
                     }
