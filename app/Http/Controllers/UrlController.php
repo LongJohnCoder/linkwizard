@@ -2484,6 +2484,8 @@
 
                         if (isset($request->default_redirection_time)) {
                             $profile->default_redirection_time = $request->default_redirection_time*1000;
+                        } elseif (isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on') {
+                            $profile->default_redirection_time = 0000;
                         } else {
                             $profile->default_redirection_time = 5000;
                         }

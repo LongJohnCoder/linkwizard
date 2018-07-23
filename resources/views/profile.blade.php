@@ -47,7 +47,6 @@
 <div class="main-dashboard-body">
     <div class="main-content">
         <div class="container">
-
             @if ($errors->any())
                 <div class="alert alert-danger">
                     <ul>
@@ -57,33 +56,31 @@
                     </ul>
                 </div>
             @endif
-
-                @php
-                    if (!empty(Auth::user()->profile) && count(Auth::user()->profile)>0) {
-                        if (Auth::user()->profile->redirection_page_type == 0) {
-                            $checkRedirectPageZero = 'checked';
-                            $checkRedirectPageOne = '';
-                        } elseif (Auth::user()->profile->redirection_page_type == 1) {
-                            $checkRedirectPageZero = '';
-                            $checkRedirectPageOne = 'checked';
-                        }
-
-                        if (!empty(Auth::user()->profile->default_redirection_time)) {
-                            $redirectionTime =  (Auth::user()->profile->default_redirection_time/1000);
-                        } else {
-                            $redirectionTime = 5000;
-                        }
-                        if (!empty(Auth::user()->profile->pageColor)) {
-                            $skinColour =  (Auth::user()->profile->pageColor);
-                        } else {
-                            $skinColour = "#005c96";
-                        }
-                    } else {
-                        $checkRedirectPageZero = '';
+            @php
+                if (!empty(Auth::user()->profile) && count(Auth::user()->profile)>0) {
+                    if (Auth::user()->profile->redirection_page_type == 0) {
+                        $checkRedirectPageZero = 'checked';
                         $checkRedirectPageOne = '';
+                    } elseif (Auth::user()->profile->redirection_page_type == 1) {
+                        $checkRedirectPageZero = '';
+                        $checkRedirectPageOne = 'checked';
+                    }
+                    if (!empty(Auth::user()->profile->default_redirection_time)) {
+                        $redirectionTime =  (Auth::user()->profile->default_redirection_time/1000);
+                    } else {
                         $redirectionTime = 5000;
                     }
-                @endphp
+                    if (!empty(Auth::user()->profile->pageColor)) {
+                        $skinColour =  (Auth::user()->profile->pageColor);
+                    } else {
+                        $skinColour = "#005c96";
+                    }
+                } else {
+                    $checkRedirectPageZero = '';
+                    $checkRedirectPageOne = '';
+                    $redirectionTime = 5000;
+                }
+            @endphp
 
             <div class="row">
                 <div class="col-md-12 col-sm-12">
@@ -153,26 +150,20 @@
     $(document).ready(function(){
        $('#redirect_type_one').on('click', function(){
             var redirectTypeZeroCheck =  $('#redirect_type_zero').prop('checked');
-            if(redirectTypeZeroCheck==true)
-            {
+            if (redirectTypeZeroCheck==true) {
                 $('#redirect_type_zero').prop('checked', false);
                 $('#default_redirection_time').prop('disabled', true);
-            }
-            else
-            {
+            } else {
                 $('#default_redirection_time').prop('disabled', true);
             }
        });
 
         $('#redirect_type_zero').on('click', function(){
             var redirectTypeOneCheck =  $('#redirect_type_one').prop('checked');
-            if(redirectTypeOneCheck==true)
-            {
+            if (redirectTypeOneCheck==true) {
                 $('#redirect_type_one').prop('checked', false);
                 $('#default_redirection_time').prop('disabled', false);
-            }
-            else
-            {
+            } else {
                 $('#default_redirection_time').prop('disabled', false);
             }
         });
@@ -182,24 +173,17 @@
     $(function(){
         $('#default_redirection_time').bind('keyup change click' ,function(){
             var countDownTime = $(this).val();
-            if(countDownTime.match(/[0-9]|\./))
-            {
-                if(countDownTime<=30 && countDownTime>=1)
-                {
+            if (countDownTime.match(/[0-9]|\./)) {
+                if (countDownTime<=30 && countDownTime>=1) {
                     $('#default_redirection_time').val(countDownTime);
                 }
-                if(countDownTime>30)
-                {
+                if (countDownTime>30) {
                     $('#default_redirection_time').val(30);
                 }
-                if(countDownTime<=0)
-                {
+                if (countDownTime<=0) {
                     $('#default_redirection_time').val(1);
                 }
-
-
-            }else
-            {
+            } else {
                 swal({
                     type: 'warning',
                     title: 'Notification',
@@ -212,27 +196,60 @@
 
     function profileValidate()
     {
-        if($('#redirect_type_one').prop('checked')==false)
-        {
-            if($('#redirect_type_zero').prop('checked')==false)
-            {
+        if ($('#redirect_type_one').prop('checked')==false) {
+            if ($('#redirect_type_zero').prop('checked')==false) {
                 swal({
                     type: 'warning',
                     title: 'Notification',
                     text: 'Please select one of the redirection type before proceeding'
                 });
                 return false;
-            }
-            else
-            {
+            } else {
                 return true;
             }
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(this).on('click', '.menu-icon', function(){
+        $(this).addClass("close");
+        $('#userdetails').slideToggle(500);
+        $('#myNav1').hide();
+        $('#myNav2').hide();
+    });
+      $("#basic").click(function(){
+        $('.menu-icon').addClass("close");
+        $('#myNav1').slideToggle(500);
+        $('#myNav2').hide();
+        $('#userdetails').hide();
+        maintainSidebar(this);
+    });
+    $("#advanced").click(function(){
+        $('.menu-icon').addClass("close");
+        $('#myNav2').slideToggle(500);
+        $('#myNav1').hide();
+        $('#userdetails').hide();
+        maintainSidebar(this);
+    });
+
+    $(this).on('click', '.close', function(){
+        $('.userdetails').hide();
+        $(this).removeClass("close");
+    });
+  });
+</script>
+
+<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+<script>
+(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+e.src='//www.google-analytics.com/analytics.js';
+r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+ga('create','UA-XXXXX-X');ga('send','pageview');
 </script>
 </body>
 </html>
