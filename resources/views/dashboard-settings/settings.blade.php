@@ -5,7 +5,6 @@
             <div class="container" style="padding: 20px 0px 20px 0px;">
                 <ul class="nav nav-tabs">
                     <li class="active"><a data-toggle="tab" href="#zapier">Zapier</a></li>
-                    <li><a data-toggle="tab" href="#redirection">Redirection Time</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -19,25 +18,16 @@
                             </div>
                             <div class="col-md-12 form-group">
                                 <label id="lebelforzapiertoken">@if((isset($user->zapier_key)) && ($user->zapier_key!="")) Zapier Token @else Create Zapier Token @endif:</label>
-                                <br>
+                            </div>
+                            <div class="col-md-12 form-group">
                                 <b type="text" name="zapier_key" id="zapier_key" class="form-control" style="display:@if((isset($user->zapier_key)) && ($user->zapier_key=="")) none; @endif">{{$user->zapier_key}}</b>
+                             </div>
+                            <div class="col-md-12 form-group">
                                 @if(($user->zapier_key==""))
                                     <button class="btn-success" id="create-zapier-key">Create</button>
-                                @endif
-                                    
+                                @endif       
                             </div>
                         </div>
-                    </div>
-                    <div id="redirection" class="tab-pane fade">
-                        <h3>Set Redirection Time (In Seconds)</h3>
-                        <div class="row">
-                            <div class="col-md-12 form-group" >
-                                <input type="number" name="redirect_time"  id="redirect_time" class="form-control" value="{{$user->default_redirect_time/1000}}" readonly>
-                            </div>
-                            <div class="col-md-12 form-group" >
-                                <button id="save-redirect-time" class="btn-success">Edit</button>
-                            </div>
-                        </div>  
                     </div>
                 </div>
             </div>

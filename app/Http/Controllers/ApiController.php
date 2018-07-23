@@ -217,7 +217,9 @@
             try {
                 DB::beginTransaction();
                 if(isset($request->url) && $request->url!=""){
-                    if ($request->url) {
+                    $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
+                    $url=$request->url;
+                    if (preg_match($pattern,$url)) {
                         if (strpos($request->url, 'https://') === 0) {
                             $actualUrl = str_replace('https://', null, $request->url);
                             $protocol  = 'https';

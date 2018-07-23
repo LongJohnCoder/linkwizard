@@ -115,7 +115,7 @@
                 ];
                 $responseCode=200;
             }
-            return response()->json($response,$responseCode);
+            return \Response::json($response,$responseCode);
         }
         /**
          * Webhook to verify ZAPIER api key and if it is verified create short link.
@@ -196,7 +196,8 @@
             } finally {
                 DB::commit();
             }
-            return response()->json($response,$responseCode);
+            
+            return \Response::json($response,$responseCode);
         }
 
         /**
