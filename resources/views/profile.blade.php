@@ -56,32 +56,6 @@
                     </ul>
                 </div>
             @endif
-            @php
-                if (!empty(Auth::user()->profile) && count(Auth::user()->profile)>0) {
-                    if (Auth::user()->profile->redirection_page_type == 0) {
-                        $checkRedirectPageZero = 'checked';
-                        $checkRedirectPageOne = '';
-                    } elseif (Auth::user()->profile->redirection_page_type == 1) {
-                        $checkRedirectPageZero = '';
-                        $checkRedirectPageOne = 'checked';
-                    }
-                    if (!empty(Auth::user()->profile->default_redirection_time)) {
-                        $redirectionTime =  (Auth::user()->profile->default_redirection_time/1000);
-                    } else {
-                        $redirectionTime = 5000;
-                    }
-                    if (!empty(Auth::user()->profile->pageColor)) {
-                        $skinColour =  (Auth::user()->profile->pageColor);
-                    } else {
-                        $skinColour = "#005c96";
-                    }
-                } else {
-                    $checkRedirectPageZero = '';
-                    $checkRedirectPageOne = '';
-                    $redirectionTime = 5000;
-                }
-            @endphp
-
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     <div class="container">

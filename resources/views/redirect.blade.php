@@ -104,38 +104,34 @@
         <!-- PIXEL SCRIPTS FOR HEADER ENDS HERE -->
     </head>
     <body>
-        @php
-            $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
-            $referer = $_SERVER['HTTP_HOST'];
-        @endphp
-            @if((!$profileSettings->redirection_page_type)||($url->usedCustomised))
-                <div class="redirect-body-content">
-                    <div class="header"></div>
-                    <div class="row">
-                        <div class="col-md-12 col-lg-12 image-div">
-                            @if(($profileSettings)&&(!$url->usedCustomised))
-                                <img src="{{url('/')}}/{{$profileSettings->default_image}}" class="img-responsive">
+        @if((!$profileSettings->redirection_page_type)||($url->usedCustomised))
+            <div class="redirect-body-content">
+                <div class="header"></div>
+                <div class="row">
+                    <div class="col-md-12 col-lg-12 image-div">
+                        @if(($profileSettings)&&(!$url->usedCustomised))
+                            <img src="{{url('/')}}/{{$profileSettings->default_image}}" class="img-responsive">
+                        @else
+                            @if($url->uploaded_path)
+                                <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
                             @else
-                                @if($url->uploaded_path)
-                                    <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
-                                @else
-                                    <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
-                                @endif
+                                <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
                             @endif
-                        </div>
-                        <div class="col-md-12 col-lg-12 production-div">
-                            @if($url->redirecting_text_template)
-                                <span class="text"><?php echo($url->redirecting_text_template)?></span>
-                            @else
-                                <span class="text">Please wait a snap while we take you to the actual website</span>
-                            @endif
-                            in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
-                            <p id="msg" style="color: #9f3a38;"></p>
-                        </div>
+                        @endif
                     </div>
-                    <div class="sticky-foot"></div>
+                    <div class="col-md-12 col-lg-12 production-div">
+                        @if($url->redirecting_text_template)
+                            <span class="text"><?php echo($url->redirecting_text_template)?></span>
+                        @else
+                            <span class="text">Please wait a snap while we take you to the actual website</span>
+                        @endif
+                        in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
+                        <p id="msg" style="color: #9f3a38;"></p>
+                    </div>
                 </div>
-            @endif
+                <div class="sticky-foot"></div>
+            </div>
+        @endif
                 
            
         <!-- PIXEL SCRIPT FOR FOOTER STARTS HERE -->
@@ -156,17 +152,7 @@
         {{--  redirecting js script  --}}
         <script type="text/javascript">
             $(document).ready(function() {
-                    @if ($profileSettings)
-                        var red_time = '{{$profileSettings->default_redirection_time}}';
-                        @if ($url->usedCustomised)
-                            var red_time = '{{$url->redirecting_time}}';
-                        @else
-                            var red_time = '{{$profileSettings->default_redirection_time}}';
-                        @endif
-                    @else
-                        var red_time = '{{$url->redirecting_time}}';
-                    @endif 
-                        var sec = red_time / 1000;
+                        var sec = '{{$red_time}}' / 1000;
                         window.setInterval(function(){
                             sec--;
                             if(sec >= 0){
@@ -214,7 +200,7 @@
                                     } else {
                                         $('#msg').text(response.message);
                                     }
-                                }, red_time);
+                                }, {{$red_time}});
                             }
                         });
                     }

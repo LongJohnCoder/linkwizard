@@ -1590,7 +1590,15 @@
                         }
                     }
                 }
-
+                if (($profileSettings) && ($search->usedCustomised)) {
+                    $red_time = $search->redirecting_time;
+                } elseif (($profileSettings) && (!$search->usedCustomised)) {
+                    $red_time = $profileSettings->default_redirection_time;
+                } else {
+                    $red_time = 5000;
+                }
+                $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
+                $referer = $_SERVER['HTTP_HOST'];
                 return view('redirect', [
                     'redirectionType' => $userRedirectionType,
                     'url' => $search,
@@ -1598,7 +1606,10 @@
                     'suffix' => $url,
                     'pixelScripts' => $pixelScript,
                     'skinColor' => $skinColor,
-                    'profileSettings' => $profileSettings]
+                    'profileSettings' => $profileSettings,
+                    'red_time' => $red_time,
+                    'referer' => $referer,
+                    'user_agent' => $user_agent]
                 );
 
             } else {
@@ -2460,7 +2471,23 @@
                     $user = Auth::user();
                     $arr = $this->getAllDashboardElements($user, $request);
                     $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
-                    return view('profile', compact('arr', 'userPixels'));
+                    $profile = Profile::where('user_id', Auth::user()->id)->exists();
+                    if (!$profile) {
+                        $profile = new Profile();
+                        $profile->user_id = Auth::user()->id;
+                        $profile->save();
+                    }
+                    $profileSettings = Profile::where('user_id', Auth::user()->id)->first();
+                    if ($profileSettings->redirection_page_type) {
+                        $checkRedirectPageZero = '';
+                        $checkRedirectPageOne = 'checked';
+                    } else {
+                        $checkRedirectPageZero = 'checked';
+                        $checkRedirectPageOne = '';
+                    }
+                    $redirectionTime = $profileSettings->default_redirection_time/1000;
+                    $skinColour = $profileSettings->pageColor;
+                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour'));
                 }
             }
         }
@@ -2473,7 +2500,6 @@
                 {
                     $userId = Auth::user()->id;
                     $profile = Profile::where('user_id', $userId)->first();
-                    if ($profile) {
                         if (isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on') {
                             $profile->redirection_page_type = 1;
                         } elseif (isset($request->redirection_page_type_zero) && $request->redirection_page_type_zero=='on') {
@@ -2492,64 +2518,25 @@
                         $profile->pageColor = $request->pageColor;
                         /* Checking for image */
                         if ($request->hasFile('default_image')) {
-                        if (!file_exists('public/uploads/brand_images')) {
-                            mkdir('public/uploads/brand_images', 777 , true);
-                        }
-                        $upload_path ='public/uploads/brand_images';
-                        $image_name = uniqid()."-".$request->default_image->getClientOriginalName();
-                        $data = getimagesize($request->default_image);
-                        $width = $data[0];
-                        $height = $data[1];
+                            if (!file_exists('public/uploads/brand_images')) {
+                                mkdir('public/uploads/brand_images', 777 , true);
+                            }
+                            $upload_path ='public/uploads/brand_images';
+                            $image_name = uniqid()."-".$request->default_image->getClientOriginalName();
+                            $data = getimagesize($request->default_image);
+                            $width = $data[0];
+                            $height = $data[1];
 
-                        /* image resizing */
-                        $temp_height = 450;
-                        $abs_width = ceil(($width*$temp_height)/$height);
-                        $abs_height = $temp_height;
-                        $image_resize = Image::make($request->default_image->getRealPath());
-                        $image_resize->resize($abs_width, $abs_height);
-                        $image_resize->save($upload_path.'/'.$image_name);
-                        $profile->default_image = $upload_path.'/'.$image_name;
-                    }
+                            /* image resizing */
+                            $temp_height = 450;
+                            $abs_width = ceil(($width*$temp_height)/$height);
+                            $abs_height = $temp_height;
+                            $image_resize = Image::make($request->default_image->getRealPath());
+                            $image_resize->resize($abs_width, $abs_height);
+                            $image_resize->save($upload_path.'/'.$image_name);
+                            $profile->default_image = $upload_path.'/'.$image_name;
+                        }
                         $profile->save();
-                    } else {
-                        $profile = new Profile();
-                        $profile->user_id = $userId;
-                        if (isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on') {
-                            $profile->redirection_page_type = 1;
-                        } elseif (isset($request->redirection_page_type_zero) && $request->redirection_page_type_zero=='on') {
-                            $profile->redirection_page_type = 0;
-                        } else {
-                            $profile->redirection_page_type = 0;
-                        }
-
-                        if (isset($request->default_redirection_time)) {
-                            $profile->default_redirection_time = $request->default_redirection_time*1000;
-                        } else {
-                            $profile->default_redirection_time = 5000;
-                        }
-                        $profile->pageColor = $request->pageColor;
-                        /* Checking for image */
-                        if ($request->hasFile('default_image')) {
-                        if (!file_exists('public/uploads/brand_images')) {
-                            mkdir('public/uploads/brand_images', 777 , true);
-                        }
-                        $upload_path ='public/uploads/brand_images';
-                        $image_name = uniqid()."-".$request->default_image->getClientOriginalName();
-                        $data = getimagesize($request->default_image);
-                        $width = $data[0];
-                        $height = $data[1];
-
-                        /* image resizing */
-                        $temp_height = 450;
-                        $abs_width = ceil(($width*$temp_height)/$height);
-                        $abs_height = $temp_height;
-                        $image_resize = Image::make($request->default_image->getRealPath());
-                        $image_resize->resize($abs_width, $abs_height);
-                        $image_resize->save($upload_path.'/'.$image_name);
-                        $profile->default_image = $upload_path.'/'.$image_name;
-                    }                        
-                        $profile->save();
-                    }
                     return redirect()->back()->with('msg', 'success');
                 }
             }
