@@ -67,8 +67,15 @@ Route::group(['prefix' => 'api/v1'],function() {
         'as' => 'createUntrackedLinkFromZapier',
     ]);
 
-    
+    Route::any('/create/zapier/grouplink/{api_key}', [
+        'uses' => 'ZapierController@createGroupLink',
+        'as' => 'createGroupLinkFromZapier',
+    ]);
 
+    Route::post('/create/grouplink', [
+        'uses' => 'UrlController@createsingleGroupLink',
+        'as' => 'createsingleGroupLink',
+    ]);
     /*Webhooks*/
     Route::post('suspend-subscriber',[
         'uses'  => 'ApiController@suspendSubsciber',

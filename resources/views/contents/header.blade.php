@@ -48,6 +48,9 @@
 							@endif
 					</div>
 
+					<div class="createlink openpop">
+						<a href="{{route('createLink',['type' => 'grouplink'])}}">Add Group Link</a>	
+					</div>
 				
 					<div class="hamburg-menu">
 	                  	<a href="#" id="menu-icon" class="menu-icon">

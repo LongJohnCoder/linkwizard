@@ -196,7 +196,7 @@
             } finally {
                 DB::commit();
             }
-            
+
             return \Response::json($response,$responseCode);
         }
 
@@ -217,6 +217,31 @@
                 return $random_string;
             }
         }
+
+        /**
+         * Webhook to verify ZAPIER api key and if it is verified create short link.
+         * All response code will be 200 as Jon Wants
+         * 
+         * @param Request $request
+         * @param $apikey
+         * @return Illuminate\Http\JSONResponse
+        */
+
+        public function createGroupLinkFromZapier(Request $request, $apikey){
+            $getUser=User::where('zapier_key',$apikey)->first();
+            if(count($getUser)>0){
+                
+            }else{
+                $response = [
+                    "status"    => false,
+                    "message"   => "You Are Not Authenticated!",
+                ];
+                $responseCode=200;
+            }
+            return \Response::json($response,$responseCode);
+        }
+
+        
     }
 
        

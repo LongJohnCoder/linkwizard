@@ -42,16 +42,19 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function createLink($linktype){
-            if((isset($linktype) && ($linktype=='wizard'))||(isset($linktype) && ($linktype=='rotating'))){
+            if((isset($linktype) && ($linktype=='wizard'))||(isset($linktype) && ($linktype=='rotating'))||(isset($linktype) && ($linktype=='grouplink'))){
                 if (Auth::check()) {
                     if(\Session::has('plan')){
                         return redirect()->action('HomeController@getSubscribe');
                     } else {
                         if($linktype=='wizard'){
                             $type=0;
-                        }else{
+                        }else if($linktype=='rotating'){
                             $type=1;
+                        }else{
+                            $type=2;
                         }
+
                         $user = Auth::user();
                         $count = DB::table('urls')
                             ->selectRaw('count(user_id) AS `count`')
@@ -89,17 +92,20 @@
                         {
                             $pixels = '';
                         }
-                        $timezones = Timezone::all();
-                        return view('dashboard.shorten_url' , [
-                            'urlTags'             => $urlTags,
-                            'total_links'         => $total_links,
-                            'limit'               => $limit,
-                            'subscription_status' => $subscription_status,
-                            'user'                => $user,
-                            'type'                => $type,
-                            'pixels'              => $pixels,
-                            'timezones'          => $timezones
-                        ]);
+
+                        if(($type==0)||($type==1)){
+                            return view('dashboard.shorten_url' , [
+                                'urlTags'             => $urlTags,
+                                'total_links'         => $total_links,
+                                'limit'               => $limit,
+                                'subscription_status' => $subscription_status,
+                                'user'                => $user,
+                                'type'                => $type,
+                                'pixels'              => $pixels
+                            ]);
+                        }else{
+                            return view('dashboard.grouplink' , compact('user','type','subscription_status'));
+                        }
                     }
                 } else {
                     return redirect()->action('HomeController@getIndex');
@@ -2547,6 +2553,59 @@
             }
         }
 
+        public function createsingleGroupLink(Request $request){
+            try{
+                if (Auth::check()){
+                    //Create Short Url Suffix
+                    $random_string = $this->grouplinkSuffix();
+                    $url                   = new Url();
+                    $url->protocol         = 'http';
+                    $url->user_id          = Auth::user()->id;
+                    $url->link_type        = 2;
+                    $url->shorten_suffix   = $random_string;
+                    if($url->save()){
+                        return \Response::json(array(
+                            'status'    => true,
+                            'code'      => 200,
+                            'link'      => $url->shorten_suffix,
+                            'message'   => "Group Link Created!"
+                        ));
+
+                    }else{
+                        return \Response::json(array(
+                            'status' => false,
+                            'code' => 400,
+                            'message'   => "Group Link Is Not Created!"
+                        ));
+                    }
+                }
+            }catch(Exception $e){
+                return \Response::json(array(
+                    'status' => false,
+                    'code' => 500,
+                    'message'   => "Try Again!"
+                ));
+            }
+        }
+
+        /**
+        * URL suffix random string generator.
+        *
+        * @return string
+        */
+        private function grouplinkSuffix(){
+            $character_set = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $random_string = null;
+            for ($i = 0; $i < 8; ++$i) {
+                $random_string = $random_string.$character_set[rand(0, strlen($character_set)-1)];
+            }
+            $random_string ='grp-'.$random_string;
+            if (Url::where('shorten_suffix', $random_string)->first()) {
+                $this->RandomString();
+            } else {
+                return $random_string;
+            }
+        }
     }
 
 
