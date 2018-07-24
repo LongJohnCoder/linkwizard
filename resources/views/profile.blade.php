@@ -89,7 +89,7 @@
                                                     <input type='number' name='default_redirection_time' class='form-control redirection_time' id='default_redirection_time' min='1' max='30' value='{{$redirectionTime}}' disabled>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            {{-- <tr>
                                                 <td>
                                                     SELECT SKIN COLOUR
                                                 </td>
@@ -104,7 +104,7 @@
                                                 <td>
                                                     <input type="file" name="default_image" id="default_image" class="form-control">
                                                 </td>
-                                            </tr>
+                                            </tr> --}}
                                         </table>
                                     </div>
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
