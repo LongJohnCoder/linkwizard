@@ -47,9 +47,8 @@
 								+Add Rotating link
 							@endif
 					</div>
-
 					<div class="createlink openpop">
-						<a href="{{route('createLink',['type' => 'grouplink'])}}">Add Group Link</a>	
+						<a href="{{route('createLink',['type' => 'grouplink'])}}">+Add Group Link</a>	
 					</div>
 				
 					<div class="hamburg-menu">

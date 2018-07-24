@@ -104,7 +104,8 @@
                                 'pixels'              => $pixels
                             ]);
                         }else{
-                            return view('dashboard.grouplink' , compact('user','type','subscription_status'));
+                            $grouplink=Url::where('link_type',2)->where('user_id',$user->id)->orderBy('id','DESC')->Paginate(10);
+                            return view('dashboard.grouplink' , compact('user','type','subscription_status','grouplink'));
                         }
                     }
                 } else {
@@ -2560,16 +2561,28 @@
                     $random_string = $this->grouplinkSuffix();
                     $url                   = new Url();
                     $url->protocol         = 'http';
+                    $url->title            = $request->linktitle;
                     $url->user_id          = Auth::user()->id;
                     $url->link_type        = 2;
                     $url->shorten_suffix   = $random_string;
                     if($url->save()){
+                        $grouplink=Url::where('link_type',2)->where('user_id',Auth::user()->id)->orderBy('id','DESC')->Paginate(10)->setPath('/app/user/create_link/grouplink');
+                        /*$allGroupLink=view('dashboard.grouplinkreplace',compact('grouplink'));
                         return \Response::json(array(
                             'status'    => true,
                             'code'      => 200,
                             'link'      => $url->shorten_suffix,
+                            'allGroupLink' =>$allGroupLink,
                             'message'   => "Group Link Created!"
-                        ));
+                        ));*/
+                        return \Response::json([
+                            'status'    => true,
+                            'code'      => 200,
+                            'link'      => $url->shorten_suffix,
+                          /*  'allGroupLink'   => \View::make('dashboard.grouplinkreplace')->with('grouplink',$grouplink),*/
+                            'allGroupLink'  =>  view('dashboard.grouplinkreplace')->with(compact('grouplink'))->render(),
+                            'message'   => "Group Link Created!"
+                        ]);
 
                     }else{
                         return \Response::json(array(
