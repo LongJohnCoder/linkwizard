@@ -241,7 +241,119 @@
             return \Response::json($response,$responseCode);
         }
 
-        
+        public function getGrouplink($apikey){
+            $getUser=User::where('zapier_key',$apikey)->first();
+            if(count($getUser)>0){
+                $getAllGroupUrl=Url::where('link_type',2)->where('parent_id',0)->get();
+                if(count($getAllGroupUrl)>0){
+                    if(isset($url->subdomain)) {
+                        if($url->subdomain->type == 'subdomain')
+                            $shrt_url = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST');
+                        else if($url->subdomain->type == 'subdirectory')
+                            $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->subdomain->name;
+                    } else {
+                        $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST');
+                    }
+                                    
+                    foreach ($getAllGroupUrl as $key=>$eachGroupUrl) {
+                        $groupUrlList[$key]['id']            =$eachGroupUrl->name;
+                        $groupUrlList[$key]['group_url']     =$shrt_url."/".$eachGroupUrl->shorten_suffix;
+                        $groupUrlList[$key]['title']         =$eachGroupUrl->number;      
+                    }
+                     $response = [
+                        "status"    => true,
+                        "grouplinks" => $groupUrlList,
+                        "message"   => "Group Link List",
+                    ];
+                    $responseCode=200;
+                }else{
+                    $response = [
+                        "status"    => false,
+                        "message"   => "No Group Link Available",
+                    ];
+                    $responseCode=200;
+                }   
+            }else{
+                $response = [
+                    "status"    => false,
+                    "message"   => "You Are Not Authenticated!",
+                ];
+                $responseCode=200;
+            }
+            return \Response::json($response,$responseCode);
+        }
+    
+
+        public function groupMultipleLink(Request $request, $apikey){
+            $getUser=User::where('zapier_key',$apikey)->first();
+            if(count($getUser)>0){
+                $checkParentGroup=Url::where('id',$request->parent_group)->where('user_id',$getUser->id)->where('link_type',2)->first();
+                if(count($checkParentGroup)>0){
+                    $subGroupUrl=$request->selectedurl;
+                    foreach ($subGroupUrl as $individualUrl) {
+                        $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
+                        if (preg_match($pattern,$individualUrl)) {
+                            if (strpos($individualUrl, 'https://') === 0) {
+                                $actualUrl = str_replace('https://', null, $individualUrl);
+                                $protocol  = 'https';
+                            }elseif(strpos($individualUrl, 'http://') === 0){
+                                $actualUrl = str_replace('http://', null, $individualUrl);
+                                $protocol  = 'http';
+                            }else{
+                                $actualUrl = $individualUrl;
+                                $protocol  = 'http';
+                            }
+                            try{
+                                $random_string = $this->groupRandomString($checkParentGroup->shorten_suffix);
+                                $url                   = new Url();
+                                $url->actual_url       = $actualUrl;
+                                $url->title            = $checkParentGroup->title."-Suburl";
+                                $url->protocol         = $protocol;
+                                $url->user_id          = $getUser->id;
+                                $url->link_type        = 2;
+                                $url->parent_id        = $checkParentGroup->id;
+                                $url->shorten_suffix   = $random_string;
+                                $url->save();
+                            }catch(\Exception $e){
+                                continue; 
+                            }  
+                        }
+                        $response = [
+                            "status"    => true,
+                            "message"   => "Group Url Created!",
+                        ];
+                        $responseCode=200;
+                    }
+                }else{
+                    $response = [
+                        "status"    => false,
+                        "message"   => "No Such Group Created!",
+                    ];
+                    $responseCode=200;
+                }
+            }else{
+                $response = [
+                    "status"    => false,
+                    "message"   => "You Are Not Authenticated!",
+                ];
+                $responseCode=200;
+            }
+            return \Response::json($response,$responseCode);
+        }
+
+        private function groupRandomString($parenSuffix){
+            $character_set = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $random_string = null;
+            for ($i = 0; $i < 8; ++$i) {
+                $random_string = $random_string.$character_set[rand(0, strlen($character_set)-1)];
+            }
+            $groupUrlSuffix=$parenSuffix."/".$random_string;
+            if (Url::where('shorten_suffix', $groupUrlSuffix)->first()) {
+                $this->RandomString($parenSuffix);
+            } else {
+                return $groupUrlSuffix;
+            }
+        }
     }
 
        

@@ -104,7 +104,7 @@
                                 'pixels'              => $pixels
                             ]);
                         }else{
-                            $grouplink=Url::where('link_type',2)->where('user_id',$user->id)->orderBy('id','DESC')->Paginate(10);
+                            $grouplink=Url::where('link_type',2)->where('user_id',$user->id)->where('parent_id',0)->orderBy('id','DESC')->with('children')->get();
                             return view('dashboard.grouplink' , compact('user','type','subscription_status','grouplink'));
                         }
                     }
@@ -2559,28 +2559,20 @@
                 if (Auth::check()){
                     //Create Short Url Suffix
                     $random_string = $this->grouplinkSuffix();
+                    date_default_timezone_set("UTC");
                     $url                   = new Url();
                     $url->protocol         = 'http';
                     $url->title            = $request->linktitle;
                     $url->user_id          = Auth::user()->id;
                     $url->link_type        = 2;
+                    $url->parent_id        = 0;
                     $url->shorten_suffix   = $random_string;
+                    $url->created_at       = date("Y-m-d H:i:s");
+                    $url->updated_at       = date("Y-m-d H:i:s");
                     if($url->save()){
-                        $grouplink=Url::where('link_type',2)->where('user_id',Auth::user()->id)->orderBy('id','DESC')->Paginate(10)->setPath('/app/user/create_link/grouplink');
-                        /*$allGroupLink=view('dashboard.grouplinkreplace',compact('grouplink'));
-                        return \Response::json(array(
-                            'status'    => true,
-                            'code'      => 200,
-                            'link'      => $url->shorten_suffix,
-                            'allGroupLink' =>$allGroupLink,
-                            'message'   => "Group Link Created!"
-                        ));*/
                         return \Response::json([
                             'status'    => true,
                             'code'      => 200,
-                            'link'      => $url->shorten_suffix,
-                          /*  'allGroupLink'   => \View::make('dashboard.grouplinkreplace')->with('grouplink',$grouplink),*/
-                            'allGroupLink'  =>  view('dashboard.grouplinkreplace')->with(compact('grouplink'))->render(),
                             'message'   => "Group Link Created!"
                         ]);
 
@@ -2617,6 +2609,36 @@
                 $this->RandomString();
             } else {
                 return $random_string;
+            }
+        }
+
+        public function showGroupDetails($groupId){
+            try{
+                $user=User::where('id',Auth::User()->id)->first();
+                if ($user->subscribed('main', 'tr5Advanced')) {
+                    $subscription_status = 'tr5Advanced';
+                    $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+                } elseif ($user->subscribed('main', 'tr5Basic')) {
+                    $subscription_status = 'tr5Basic';
+                    $limit = Limit::where('plan_code', 'tr5Basic')->first();
+                } else {
+                    $subscription_status = false;
+                    $limit = Limit::where('plan_code', 'tr5free')->first();
+                }
+                $groupId=base64_decode($groupId);
+                if (is_numeric($groupId)) {
+                    $getGroupDetails=Url::where('id',$groupId)->where('link_type',2)->where('user_id',Auth::User()->id)->first();
+                    if(count($getGroupDetails)>0){
+                        $getSubLink=Url::where('parent_id',$groupId)->where('link_type',2)->where('user_id',Auth::User()->id)->paginate(10);
+                        return view('dashboard.grouplinkdetails',compact('getGroupDetails','getSubLink','user','subscription_status'));
+                    }else{
+                        return redirect()->back()->with('error', 'No Group Found!');
+                    }
+                }else{
+                    return redirect()->back()->with('error', 'No Group Found!');
+                }
+            }catch(Exception $e){
+               abort(404);
             }
         }
     }

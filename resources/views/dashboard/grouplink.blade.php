@@ -1,60 +1,67 @@
 @extends('layout/layout')
 @section('content')
-	<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script> -->
     <div class="main-dashboard-body">
         <section class="main-content">
             <div class="container">
-            	<div class="row">
-	                <div class="col-md-12 col-sm-12 col-lg-12">
-		                <div class="panel panel-default">
-	    					<div class="panel-body row">
-	    						<div class="col-md-6 col-sm-6 col-lg-6">
-	    							<label>Group Link</label>
-	    						</div>
-	    						<div class="col-md-6 col-sm-6 col-lg-6">
-	    							<button type="button" class="btn-success btn-md pull-right" data-toggle="modal" data-target="#myModal"><i class='fa fa-plus'></i>Add Group Link</button>
-	    						</div>
-	    					</div>
-	  					</div>
-	                </div>
-	            </div>
-	            <div class="row" id="show-all-grouplink">
-	                <div class="col-md-12 col-sm-12 col-lg-12">
-	                <table  class="table table-striped table-bordered" style="width:100%">
-				        <thead>
-				            <tr>
-				             	<th>Title</th>
-				                <th>Group Url</th>
-				                <th>Total Link</th>
-				                <th>Creation Date</th>
-				                <th>Action</th>
-				            </tr>
-				        </thead>
-				        <tbody>
-				        @if(count($grouplink)>0)
-				        	@foreach($grouplink as $grouplinks)
-				        		<tr>
-				        			<td>{{$grouplinks->title}}</td>
-				        			<td>{{$grouplinks->shorten_suffix}}</td>
-				        			<td></td>
-				        			<td>{{date_format($grouplinks->created_at,"d M,Y H:i")}}</td>
-				        			<td></td>
-				        		</tr>
-				        	@endforeach
-				        @else
-				        	<h2>No Group Link Available</h2>
-				        @endif	
-				        </tbody>
-				    </table>
-	               	</div>
-	               	<div class="col-md-12 col-sm-12 col-lg-12">
-	               		{{ $grouplink->render() }}
-	               	</div>
-	            </div>
+            	<div class="panel panel-primary">
+                    <div class="panel-heading">
+                    	<h4 >Group Link</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="text-center">
+                        	<div class="bs-example">
+							    <ul class="breadcrumb">
+							        <li class="active">Group Link</li>
+							    </ul>
+							</div>
+                        	<div class="table-responsive">
+                                <sapn class="pull-left">
+                                    <button class="btn btn-xs btn-primary" id="show-creat-grouplink"><i class='fa fa-plus'></i>Add Group Link</button>
+                                </sapn>
+                                <!-- Responsive data table -->
+								<table id="show-all-grouplink" class="table table-hover pixel-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+							                <th>Group Url</th>
+							                <th>Total Sub-link</th>
+							                <th>Creation Date(UTC Time)</th>
+							                <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(count($grouplink)>0)
+									       	@foreach($grouplink as $grouplinks)
+										        @php
+			                                        if(isset($grouplinks->subdomain)) {
+			                                            if($grouplinks->subdomain->type == 'subdomain')
+			                                                $shrt_url = config('settings.SECURE_PROTOCOL').$grouplinks->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$grouplinks->shorten_suffix;
+			                                            else if($grouplinks->subdomain->type == 'subdirectory')
+			                                                $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$grouplinks->subdomain->name.'/'.$grouplinks->shorten_suffix;
+			                                        } else {
+			                                            $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$grouplinks->shorten_suffix;
+			                                        }
+			                                    @endphp
+							        	<tr>
+						        			<td>{{$grouplinks->title}}</td>
+						        			<td>{{$shrt_url}}</td>
+						        			<td>{{count($grouplinks->children)}}</td>
+						        			<td>{{date_format($grouplinks->created_at,"d M, Y H:i a")}}</td>
+						        			<td>
+									        	<a class="btn-primary btn-xs action-btn" title="Group Info" href="{{route('show-group-details', base64_encode($grouplinks->id))}}" terget="_blank"><i class="fa fa-info"></i></a>
+									        </td>
+									    </tr>
+									    @endforeach
+								        @else
+								        	<tr><td colspan="4">No Group Link Available<td></tr>
+								        @endif	
+                                   	</tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+               
+	               
 	            <!-- Modal -->
 				<div id="myModal" class="modal fade" role="dialog">
 				  	<div class="modal-dialog modal-md">
@@ -77,13 +84,17 @@
 				    	</div>
 				  	</div>
 				</div>
+				<!-- Modal -->
             </div>
         </section>
     </div>
     
     <script type="text/javascript">
     	$(document).ready(function(){
-    		/*$('#example').DataTable();*/
+    		$('#show-all-grouplink').DataTable();
+    		$('#show-creat-grouplink').click(function(){
+    			$('#myModal').modal('show');
+    		});
     		$('#create-new-grouplink').click(function(){
     			var linktitle=$('#group-link-title').val().trim();
     			if(linktitle){
@@ -94,14 +105,17 @@
 	                	success: function (response) {
 	                		console.log(response);
 	                		if(response.code==200){
-	                			$('.close').click();
-	                			$('#show-all-grouplink').html(response.allGroupLink);
+	                			$('#myModal').modal('hide');
 	                			swal({
 	                                title: "Success",
 	                                text: "Group Link Generated Successfully!",
 	                                type: "success",
 	                            });
 	                		}
+
+	                		setTimeout(function(){
+   								window.location.reload();
+							}, 3000);
 	                	}
 	    			});
     			}else{
@@ -113,6 +127,5 @@
     			}
     		});
     	});
-
     </script>
 @stop

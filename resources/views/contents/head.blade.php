@@ -27,7 +27,9 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
 <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
-
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.jqueryui.min.css
+">
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
 <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
 <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
@@ -37,6 +39,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="https://www.google.com/jsapi"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.jqueryui.min.js"></script>
+
 {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0-rc.2/Chart.bundle.min.js"></script> --}}
 <script src="{{ URL::to('/').'/public/resources/js/highcharts.js' }}"></script>
 <script src="{{ URL::to('/').'/public/resources/js/highchart-data.js' }}"></script>

@@ -68,7 +68,7 @@ Route::group(['prefix' => 'api/v1'],function() {
     ]);
 
     Route::any('/create/zapier/grouplink/{api_key}', [
-        'uses' => 'ZapierController@createGroupLink',
+        'uses' => 'ZapierController@groupMultipleLink',
         'as' => 'createGroupLinkFromZapier',
     ]);
 
@@ -76,6 +76,7 @@ Route::group(['prefix' => 'api/v1'],function() {
         'uses' => 'UrlController@createsingleGroupLink',
         'as' => 'createsingleGroupLink',
     ]);
+
     /*Webhooks*/
     Route::post('suspend-subscriber',[
         'uses'  => 'ApiController@suspendSubsciber',
@@ -370,6 +371,12 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
             Route::post('email-check', [
                 'uses' => 'HomeController@postEmailCheck',
                 'as' => 'postEmailCheck',
+            ]);
+
+            /*******************/
+            Route::get('show-group-details/{linkid}',[
+                'uses'  => 'UrlController@showGroupDetails',
+                'as'    => 'show-group-details'
             ]);
         });
 

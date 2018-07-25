@@ -170,4 +170,8 @@ class Url extends Model
         return $this->hasMany('App\IpLocation', 'url_id');
     }
 
+    public function children() {
+        return $this->hasMany(static::class, 'parent_id')->orderBy('id', 'desc');
+    }
+
 }
