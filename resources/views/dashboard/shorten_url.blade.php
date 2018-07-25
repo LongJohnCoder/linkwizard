@@ -109,24 +109,6 @@
                                                         
                                                     </div>  
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-2 col-sm-2">
-                                                        <label> Select your customise colour </label>
-                                                    </div>
-                                                    <div class="col-md-8 col-sm-8">
-                                                        <input type="color" name="pageColour" value="#005C96">
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-2 col-sm-2">
-                                                        <label> Enter your redirecting text </label>
-                                                    </div>
-                                                    <div class="col-md-8 col-sm-8">
-                                                        <div class="form-group">
-                                                            <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
                                             <div class="row" id="error-custom-url">
                                             </div>
@@ -269,15 +251,19 @@
                                 <!-- Add Countdown -->
                                 <div class="normal-box1">
                                     <div class="normal-header">
-                                        <label class="custom-checkbox">Add count down timer
-                                            <input type="checkbox" id="countDownEnable" name="allowCountDown">
+                                        <label class="custom-checkbox">Customize Redirecting Page
+                                            <input type="checkbox" id="countDownEnable" name="allowCustomizeUrl">
                                             <span class="checkmark"></span>
                                         </label>
                                     </div>
                                     <div class="normal-body add-countDown" id="countDownArea">
                                         <p>Add countdown time for this link</p>
-                                        <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="5">
-                                    </div>
+                                        <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="5"><br>
+                                        <p> Select your customize colour </p>
+                                        <input type="color" name="pageColour" value="#005C96"><br><br>
+                                        <p> Enter your redirecting text </p>
+                                        <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
+                                    </div>                        
                                 </div>
                                 <!-- Add Countdown End -->
                                 <!-- Add Favicon -->

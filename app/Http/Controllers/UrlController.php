@@ -210,8 +210,13 @@
                 }
 
                 // Add CountDowntimer
-                if(isset($request->allowCountDown) && ($request->allowCountDown == "on")){
+                if(isset($request->allowCustomizeUrl) && ($request->allowCustomizeUrl == "on")){
                     $url->redirecting_time = ($request->redirecting_time*1000);
+                    $request->redirecting_text_template = trim(preg_replace('/\s+/', ' ',$request->redirecting_text_template));
+                    if ($request->redirecting_text_template != NULL) {
+                        $url->redirecting_text_template = $request->redirecting_text_template;
+                    }
+                    $url->customColour = $request->pageColour;
                     $url->usedCustomised = '1';
                 }else{
                    $url->redirecting_time = 5000; 
@@ -335,9 +340,6 @@
                 if(isset($request->custom_url_status)&& ($request->custom_url_status=='on')){
                     $url->is_custom         =1;
                     $url->shorten_suffix    = $request->custom_url;
-                    $url->redirecting_text_template =$request->redirecting_text_template;
-                    $url->customColour = $request->pageColour;
-                    $url->  usedCustomised  = '1';
                 }else{
                     $url->shorten_suffix    = $random_string;
                 }
@@ -797,11 +799,20 @@
                        $url->meta_description = ""; 
                     }
                     // Edit CountDowntimer
-                    if(isset($request->allowCountDown) && ($request->allowCountDown == "on")){
+                    if(isset($request->allowCustomizeUrl) && ($request->allowCustomizeUrl == "on")){
+                        if ($request->redirecting_time == '') {
+                            $request->redirecting_time = 5;
+                        }
                         $url->redirecting_time = ($request->redirecting_time*1000);
-                        $url->  usedCustomised  = '1';
+                        $request->redirecting_text_template = trim(preg_replace('/\s+/', ' ',$request->redirecting_text_template));
+                        if ($request->redirecting_text_template != NULL) {
+                            $url->redirecting_text_template = $request->redirecting_text_template;
+                        }
+                        $url->customColour = $request->pageColour;
+                        $url->usedCustomised  = '1';
                     }else{
-                       $url->redirecting_time = 5000; 
+                       $url->redirecting_time = 5000;
+                       $url->usedCustomised = '0';
                     }
                     //Edit Favicon
                     if(isset($request->allowfavicon) && $request->allowfavicon=='on')
@@ -1514,9 +1525,7 @@
                 if (!$search->usedCustomised) {
                     $search->redirecting_time = $userRedirection->default_redirection_time;
                     $userRedirectionType = $userRedirection->redirection_page_type;
-                    $skinColor = $userRedirection->pageColor;
                 } else {
-                    $skinColor = $search->customColour;
                     $userRedirectionType = 1;
                 }   
             } else {
@@ -1605,7 +1614,7 @@
                     'url_features' => $url_features,
                     'suffix' => $url,
                     'pixelScripts' => $pixelScript,
-                    'skinColor' => $skinColor,
+                    'pageColor' => $search->customColour,
                     'profileSettings' => $profileSettings,
                     'red_time' => $red_time,
                     'referer' => $referer,

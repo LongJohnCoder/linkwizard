@@ -9,6 +9,8 @@
         Create Short Link
     @elseif(basename(Request::url()) == 'rotating')
         Create Rotating Link
+    @elseif(basename(Request::url()) == 'edit_url_view')
+        Edit Url
     @endif
 </title>
 

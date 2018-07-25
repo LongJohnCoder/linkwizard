@@ -208,6 +208,11 @@
         $('#userdetails').hide();
         maintainSidebar(this);
     });
+    $("#redirect_type_one").change(function(){
+        if (this.checked) {
+            $("#default_redirection_time").val("0");
+        }
+    });
 
     $(this).on('click', '.close', function(){
         $('.userdetails').hide();

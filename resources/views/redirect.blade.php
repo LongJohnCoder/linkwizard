@@ -54,13 +54,13 @@
             }
             .header{
                 padding: 20px;
-                background: {{$skinColor}};
+                background: {{$pageColor}};
                 width: 100%;
                 height: 50px;
             }
             .sticky-foot{
                 /*padding: 20px;*/
-                background: {{$skinColor}};
+                background: {{$pageColor}};
                 width: 100%;
                 /*bottom: 0px;*/
                 /*position: fixed;*/
