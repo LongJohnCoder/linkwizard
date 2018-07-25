@@ -209,8 +209,8 @@
                     $meta_data['twitter_title']= NULL;
                 }
 
-                // Add CountDowntimer
-                if(isset($request->allowCustomizeUrl) && ($request->allowCustomizeUrl == "on")){
+                // Add Customize settings for urls
+                if (isset($request->allowCustomizeUrl) && ($request->allowCustomizeUrl == "on")) {
                     $url->redirecting_time = ($request->redirecting_time*1000);
                     $request->redirecting_text_template = trim(preg_replace('/\s+/', ' ',$request->redirecting_text_template));
                     if ($request->redirecting_text_template != NULL) {
@@ -218,42 +218,34 @@
                     }
                     $url->customColour = $request->pageColour;
                     $url->usedCustomised = '1';
-                }else{
+                } else {
                    $url->redirecting_time = 5000; 
                 }
 
                 // Add favicon
-                if(isset($request->allowfavicon) && $request->allowfavicon=='on')
+                if (isset($request->allowfavicon) && $request->allowfavicon=='on')
                 {
-                    if($request->hasFile('favicon_contents'))
-                    {
+                    if ($request->hasFile('favicon_contents')) {
                         $imgFile        = $request->file('favicon_contents');
                         $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
                         $actualFileExtension = $imgFile->getClientOriginalExtension();
                         $validExtensionRegex = '/(jpg|jpeg|png|svg|ico)/i';
                         $uploadPath = 'public/uploads/favicons';
-                        if (!file_exists($uploadPath))
-                        {
+                        if (!file_exists($uploadPath)) {
                             mkdir($uploadPath,  777 , true);
                         }
                         $newFileName = uniqid() . "-" . date('U');
-                        if (preg_match($validExtensionRegex, $actualFileExtension))
-                        {
+                        if (preg_match($validExtensionRegex, $actualFileExtension)) {
                             $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
                             $url->favicon = '/'.$uploadPath.'/'.$newFileName.'.'.$actualFileExtension;
-                        }
-                        else
-                        {
+                        } else {
                             $url->favicon = NULL;
                         }
 
-                    }
-                    else
-                    {
+                    } else {
                         $url->favicon = NULL;
                     }
-                }else
-                {
+                } else {
                     $url->favicon = NULL;
                 }
 
@@ -798,8 +790,8 @@
                     }else{
                        $url->meta_description = ""; 
                     }
-                    // Edit CountDowntimer
-                    if(isset($request->allowCustomizeUrl) && ($request->allowCustomizeUrl == "on")){
+                    // Edit default redirection settings
+                    if (isset($request->allowCustomizeUrl) && ($request->allowCustomizeUrl == "on")) {
                         if ($request->redirecting_time == '') {
                             $request->redirecting_time = 5;
                         }
@@ -810,7 +802,7 @@
                         }
                         $url->customColour = $request->pageColour;
                         $url->usedCustomised  = '1';
-                    }else{
+                    } else {
                        $url->redirecting_time = 5000;
                        $url->usedCustomised = '0';
                     }

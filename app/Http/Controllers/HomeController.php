@@ -2420,7 +2420,7 @@ class HomeController extends Controller
     public function getLinkPreview($id) {
       if (Auth::check())
       {
-          //dd(Auth::check());
+          //dd(Auth::check());  
           if(\Session::has('plan'))
           {
               return redirect()->action('HomeController@getSubscribe');
