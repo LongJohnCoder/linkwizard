@@ -33,19 +33,22 @@
 			<div class="col-md-8 col-sm-8">
 				<div class="top-right">
 					<div class="createlink boder openpop <?php echo ($uri=='wizard')?'active-toplink' : '' ?>">
-							@if(config('settings.VIEW.SHORT_LINK') !== null)
-						<!-- Create tier5 link --> +{{config('settings.VIEW.SHORT_LINK')}}</a>
-							@else
-								+Add Wizard link
-							@endif
+							<a href="{{route('createLink',['type' => 'wizard'])}}">
+								@if(config('settings.VIEW.SHORT_LINK') !== null)
+							        +{{config('settings.VIEW.SHORT_LINK')}}
+								@else
+									+Add Wizard link
+								@endif
+							</a>
 					</div>
 					<div class="createlink openpop <?php echo ($uri=='rotating')?'active-toplink' : '' ?>">
 						<a href="{{route('createLink',['type' => 'rotating'])}}">
 							@if(config('settings.VIEW.ROTATING_LINK') !== null)
-						<!-- Create tier5 link --> +{{config('settings.VIEW.ROTATING_LINK')}}</a>
+						<!-- Create tier5 link --> +{{config('settings.VIEW.ROTATING_LINK')}}
 							@else
 								+Add Rotating link
 							@endif
+						</a>
 					</div>
 					<div class="createlink openpop">
 						<a href="{{route('createLink',['type' => 'grouplink'])}}">+Group Link</a>	
@@ -68,8 +71,8 @@
 		                	@endif
 								<br>
 								<a href="{{route('resetPasswordSettings')}}" class="reset-password"><i class="fa fa-settings"></i> Reset Password</a>
-								<br>
-								<a href="{{route('getSettingsPage')}}" class="btn btn-success"> Settings</a>
+								<!-- <br>
+								<a href="{{route('getSettingsPage')}}" class="btn btn-success"> Settings</a> -->
 	                	</div>
 	                </div>
 	                <div id="myNav1" class="userdetails">
@@ -157,7 +160,7 @@
                                 <li class="<?php echo ($uri=='blog')?'active' : '' ?>"><a href="/blog">blog</a></li>-->
                                 <li class="<?php echo ($uri=='pixels')?'active' : '' ?>"><a href="{{route('pixels')}}">Managing Pixels</a></li>
                                 <li class="<?php echo ($uri=='dashboard')?'active' : '' ?>"><a href="{{route('getDashboard')}}">dashboard</a></li>
-								<li class="<?php echo ($uri=='profile')?'active' : '' ?>"><a href="{{route('profileSettings')}}">Profile</a></li>
+								<li class="<?php echo ($uri=='profile')?'active' : '' ?>"><a href="{{route('profileSettings')}}">Settings</a></li>
 				            	@if ($user->is_admin == 1)
 		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>
                     			@endif

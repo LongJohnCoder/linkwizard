@@ -2476,7 +2476,17 @@
                 if (Session::has('plan')) {
                     return redirect()->action('HomeController@getSubscribe');
                 } else {
-                    $user = Auth::user();
+                    $user=User::where('id',Auth::User()->id)->first();
+                    if ($user->subscribed('main', 'tr5Advanced')) {
+                        $subscription_status = 'tr5Advanced';
+                        $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+                    } elseif ($user->subscribed('main', 'tr5Basic')) {
+                        $subscription_status = 'tr5Basic';
+                        $limit = Limit::where('plan_code', 'tr5Basic')->first();
+                    } else {
+                        $subscription_status = false;
+                        $limit = Limit::where('plan_code', 'tr5free')->first();
+                    }
                     $arr = $this->getAllDashboardElements($user, $request);
                     $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
                     $profile = Profile::where('user_id', Auth::user()->id)->exists();
@@ -2495,7 +2505,7 @@
                     }
                     $redirectionTime = $profileSettings->default_redirection_time/1000;
                     $skinColour = $profileSettings->pageColor;
-                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour'));
+                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status'));
                 }
             }
         }

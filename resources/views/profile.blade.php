@@ -1,26 +1,5 @@
-<!DOCTYPE html>
-
-<!-- head of th page -->
-<html lang="en">
-@include('pixels.pixel_head')
-<body>
-<!-- head end -->
-
-<link rel="stylesheet" href="{{ URL('/')}}/public/css/selectize.legacy.css" />
-<script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
-<script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
-<link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
-<!-- Header Start -->
-<!-- Link Preview Files -->
-<script src="{{URL::to('/').'/public/Link-Preview-master/js/linkPreview.js'}}"></script>
-<script src="{{URL::to('/').'/public/Link-Preview-master/js/linkPreviewRetrieve.js'}}"></script>
-<link href="{{URL::to('/').'/public/Link-Preview-master/css/linkPreview.css'}}" rel="stylesheet" type="text/css">
-<!-- End Of Link Preview Files -->
-<!-- Datatable files -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css" />
-<script src="//cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
-<!-- End of datatable files -->
-@include('pixels.pixel_header')
+@extends('layout/layout')
+@section('content')
 
 @if(session()->has('msg'))
     @if(session()->get('msg')=='success')
@@ -59,59 +38,94 @@
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     <div class="container">
-                        <form action="{{route('saveprofile')}}" method="post" enctype="multipart/form-data">
+                        
                             <div class="panel panel-primary">
-                                <div class="panel-heading"><h4>Manage Your Profile</h4></div>
-                                <div class="panel-body">
-                                    <div class="text-center">
-                                        <table class="table profile-table" border="0">
-                                            <tr>
-                                                <td>
-                                                    <input type="checkbox" name="redirection_page_type_one" id="redirect_type_one" {{$checkRedirectPageOne}}>
-                                                </td>
-                                                <td>
-                                                    <h6> DON'T SHOW DEFAULT REDIRECTION PAGE</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <input type="checkbox" name="redirection_page_type_zero" id="redirect_type_zero" {{$checkRedirectPageZero}}>
-                                                </td>
-                                                <td>
-                                                    <h6>SHOW DEFAULT REDIRECTION PAGE</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    REDIRECTION TIME
-                                                </td>
-                                                <td>
-                                                    <input type='number' name='default_redirection_time' class='form-control redirection_time' id='default_redirection_time' min='1' max='30' value='{{$redirectionTime}}' disabled>
-                                                </td>
-                                            </tr>
-                                            {{-- <tr>
-                                                <td>
-                                                    SELECT SKIN COLOUR
-                                                </td>
-                                                <td>
-                                                    <input type="color" name="pageColor" value='{{$skinColour}}'>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    SELECT DEFAULT IMAGE
-                                                </td>
-                                                <td>
-                                                    <input type="file" name="default_image" id="default_image" class="form-control">
-                                                </td>
-                                            </tr> --}}
-                                        </table>
+                                <div class="panel-heading"><h4>Manage Your Settings</h4></div>
+                                    <ul class="nav nav-tabs">
+                                        <li class="active"><a data-toggle="tab" href="#zapier">Zapier</a></li>
+                                        <li ><a data-toggle="tab" href="#redirection">Redirection</a></li>
+                                        <!-- <li ><a data-toggle="tab" href="#zapier">Pixel</a></li> -->
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="zapier" class="tab-pane fade in active">
+                                            <div class="panel-body">
+                                                <h3>Zapier</h3>
+                                                <div class="row">
+                                                    <div class="col-md-12 form-group" >
+                                                        <label>Invitation Link :</label>
+                                                        <br>
+                                                        <b class="form-control">{{env('ZAPIER_LINK')}}</b>
+                                                    </div>
+                                                    <div class="col-md-12 form-group">
+                                                        <label id="lebelforzapiertoken">@if((isset($user->zapier_key)) && ($user->zapier_key!="")) Zapier Token @else Create Zapier Token @endif:</label>
+                                                    </div>
+                                                    <div class="col-md-12 form-group">
+                                                        <b type="text" name="zapier_key" id="zapier_key" class="form-control" style="display:@if((isset($user->zapier_key)) && ($user->zapier_key=="")) none; @endif">{{$user->zapier_key}}</b>
+                                                    </div>
+                                                    <div class="col-md-12 form-group">
+                                                        @if(($user->zapier_key==""))
+                                                            <button class="btn-success" id="create-zapier-key">Create</button>
+                                                        @endif       
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                        <div id="redirection" class="tab-pane">
+                                        <form action="{{route('saveprofile')}}" method="post" enctype="multipart/form-data">
+                                            <div class="panel-body">
+                                            
+                                                <div class="text-center">
+                                                    <table class="table profile-table" border="0">
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" name="redirection_page_type_one" id="redirect_type_one" {{$checkRedirectPageOne}}>
+                                                            </td>
+                                                            <td>
+                                                                <h6> DON'T SHOW DEFAULT REDIRECTION PAGE</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" name="redirection_page_type_zero" id="redirect_type_zero" {{$checkRedirectPageZero}}>
+                                                            </td>
+                                                            <td>
+                                                                <h6>SHOW DEFAULT REDIRECTION PAGE</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                REDIRECTION TIME
+                                                            </td>
+                                                            <td>
+                                                                <input type='number' name='default_redirection_time' class='form-control redirection_time' id='default_redirection_time' min='1' max='30' value='{{$redirectionTime}}' disabled>
+                                                            </td>
+                                                        </tr>
+                                                        {{-- <tr>
+                                                            <td>
+                                                                SELECT SKIN COLOUR
+                                                            </td>
+                                                            <td>
+                                                                <input type="color" name="pageColor" value='{{$skinColour}}'>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                SELECT DEFAULT IMAGE
+                                                            </td>
+                                                            <td>
+                                                                <input type="file" name="default_image" id="default_image" class="form-control">
+                                                            </td>
+                                                        </tr> --}}
+                                                    </table>
+                                                </div>
+                                                <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                                <input type="submit" class="btn btn-block btn-primary" name="profile_btn" value="Confirm Changes" onclick="return profileValidate()">
+                                            </div>
+                                            </form>
+                                        </div>
                                     </div>
-                                    <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    <input type="submit" class="btn btn-block btn-primary" name="profile_btn" value="Confirm Changes" onclick="return profileValidate()">
                                 </div>
-                            </div>
-                        </form>
+                        
                     </div>
                 </div>
             </div>
@@ -186,49 +200,5 @@
         }
     }
 </script>
-<script type="text/javascript">
-  $(document).ready(function() {
-    $(this).on('click', '.menu-icon', function(){
-        $(this).addClass("close");
-        $('#userdetails').slideToggle(500);
-        $('#myNav1').hide();
-        $('#myNav2').hide();
-    });
-      $("#basic").click(function(){
-        $('.menu-icon').addClass("close");
-        $('#myNav1').slideToggle(500);
-        $('#myNav2').hide();
-        $('#userdetails').hide();
-        maintainSidebar(this);
-    });
-    $("#advanced").click(function(){
-        $('.menu-icon').addClass("close");
-        $('#myNav2').slideToggle(500);
-        $('#myNav1').hide();
-        $('#userdetails').hide();
-        maintainSidebar(this);
-    });
-    $("#redirect_type_one").change(function(){
-        if (this.checked) {
-            $("#default_redirection_time").val("0");
-        }
-    });
+@stop
 
-    $(this).on('click', '.close', function(){
-        $('.userdetails').hide();
-        $(this).removeClass("close");
-    });
-  });
-</script>
-
-<!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-<script>
-(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-e.src='//www.google-analytics.com/analytics.js';
-r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-ga('create','UA-XXXXX-X');ga('send','pageview');
-</script>
-</body>
-</html>
