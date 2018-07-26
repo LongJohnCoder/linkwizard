@@ -92,7 +92,7 @@
                         {
                             $pixels = '';
                         }
-
+                        $timezones = Timezone::all();
                         if(($type==0)||($type==1)){
                             return view('dashboard.shorten_url' , [
                                 'urlTags'             => $urlTags,
@@ -101,6 +101,7 @@
                                 'subscription_status' => $subscription_status,
                                 'user'                => $user,
                                 'type'                => $type,
+                                'timezones'           => $timezones,
                                 'pixels'              => $pixels
                             ]);
                         }else{

@@ -430,11 +430,13 @@
                                         <p>Select a timezone</p>
                                         <select name="timezone" id="expirationTZ" class="form-control">
                                             <option value="">Please select a timezone</option>
-                                            @foreach($timezones as $timezone)
-                                                <option value="{{$timezone->region}}">
-                                                   {{$timezone->timezone}}
-                                                </option>
-                                            @endforeach
+                                                @if(count($timezones)>0)
+                                                    @foreach($timezones as $timezone)
+                                                        <option value="{{$timezone->region}}">
+                                                           {{$timezone->timezone}}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
                                         </select>
                                         <p>Select a redirection page url after expiration</p>
                                         <input type="text" class="form-control" name="redirect_url" id="expirationUrl" onchange="checkUrl(this.value)">

@@ -41,7 +41,7 @@
 								@endif
 							</a>
 					</div>
-					<div class="createlink openpop <?php echo ($uri=='rotating')?'active-toplink' : '' ?>">
+					<div class="createlink boder openpop <?php echo ($uri=='rotating')?'active-toplink' : '' ?>">
 						<a href="{{route('createLink',['type' => 'rotating'])}}">
 							@if(config('settings.VIEW.ROTATING_LINK') !== null)
 						<!-- Create tier5 link --> +{{config('settings.VIEW.ROTATING_LINK')}}
@@ -50,7 +50,7 @@
 							@endif
 						</a>
 					</div>
-					<div class="createlink openpop">
+					<div class="createlink openpop <?php echo ($uri=='grouplink')?'active-toplink' : '' ?>">
 						<a href="{{route('createLink',['type' => 'grouplink'])}}">+Group Link</a>	
 					</div>
 				

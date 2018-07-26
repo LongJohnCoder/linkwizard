@@ -41,8 +41,8 @@
                         
                             <div class="panel panel-primary">
                                 <div class="panel-heading"><h4>Manage Your Settings</h4></div>
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a data-toggle="tab" href="#zapier">Zapier</a></li>
+                                    <ul class="nav nav-tabs" style="padding: 0px 20px 0px 20px;">
+                                        <li class="active "><a data-toggle="tab" href="#zapier">Zapier</a></li>
                                         <li ><a data-toggle="tab" href="#redirection">Redirection</a></li>
                                         <!-- <li ><a data-toggle="tab" href="#zapier">Pixel</a></li> -->
                                     </ul>
@@ -136,6 +136,35 @@
 @include('contents/footer')
 <script>
     $(document).ready(function(){
+        $('#create-zapier-key').on('click', function () {
+            var zapier_key=$('#zapier_key').val();
+            $.ajax({
+                type:"POST",
+                url:"{{ route('createZapierKey') }}",
+                data: { _token:'{{csrf_token()}}'},
+                success:function(response){
+                    //console.log(response);
+                    if(response.code==200){
+                        $('#lebelforzapiertoken').html("Zapier Token");
+                        $('#create-zapier-key').hide();
+                        $('#zapier_key').html(response.api_key);
+                        $('#zapier_key').show();
+                        swal({
+                            title: "Success",
+                            text: "Zapier Key Generated Successfully!",
+                            type: "success",
+                        }); 
+                    }else{
+                        swal({
+                            title: "Error",
+                            text: "Try Again!",
+                            type: "error",
+                        }); 
+                    }
+                }
+            });
+        });
+
        $('#redirect_type_one').on('click', function(){
             var redirectTypeZeroCheck =  $('#redirect_type_zero').prop('checked');
             if (redirectTypeZeroCheck==true) {
@@ -153,6 +182,11 @@
                 $('#default_redirection_time').prop('disabled', false);
             } else {
                 $('#default_redirection_time').prop('disabled', false);
+            }
+        });
+        $("#redirect_type_one").change(function(){
+            if (this.checked) {
+                $("#default_redirection_time").val("0");
             }
         });
     });
@@ -201,4 +235,3 @@
     }
 </script>
 @stop
-
