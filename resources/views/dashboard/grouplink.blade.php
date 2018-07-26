@@ -8,17 +8,21 @@
                     	<h4 >Group Link</h4>
                     </div>
                     <div class="panel-body">
-                        <div class="text-center">
-                        	<div class="bs-example">
-							    <ul class="breadcrumb">
-							        <li class="active">Group Link</li>
-							    </ul>
+                        <div class="text-center row">
+                       	 	<div class="col-md-12">
+	                        	<div class="bs-example">
+								    <ul class="breadcrumb">
+								        <li class="active">Group Link</li>
+								    </ul>
+								</div>
 							</div>
-                        	<div class="table-responsive">
-                                <sapn class="pull-left">
-                                    <button class="btn btn-xs btn-primary" id="show-creat-grouplink"><i class='fa fa-plus'></i>Add Group Link</button>
-                                </sapn>
-                                <!-- Responsive data table -->
+							<div class="col-md-12">
+								<sapn class="pull-left">
+	                                <button class="btn btn-xs btn-primary" id="show-creat-grouplink"><i class='fa fa-plus'></i>Add Group Link</button>
+	                            </sapn>
+                            </div>
+                        	@if(count($grouplink)>0)
+                            <div class="table-responsive col-md-12">
 								<table id="show-all-grouplink" class="table table-hover pixel-table">
                                     <thead>
                                         <tr>
@@ -30,37 +34,40 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if(count($grouplink)>0)
-									       	@foreach($grouplink as $grouplinks)
-										        @php
-			                                        if(isset($grouplinks->subdomain)) {
-			                                            if($grouplinks->subdomain->type == 'subdomain')
-			                                                $shrt_url = config('settings.SECURE_PROTOCOL').$grouplinks->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$grouplinks->shorten_suffix;
-			                                            else if($grouplinks->subdomain->type == 'subdirectory')
-			                                                $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$grouplinks->subdomain->name.'/'.$grouplinks->shorten_suffix;
-			                                        } else {
-			                                            $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$grouplinks->shorten_suffix;
-			                                        }
-			                                    @endphp
-							        	<tr>
-						        			<td>{{$grouplinks->title}}</td>
-						        			<td>{{$shrt_url}}</td>
-						        			<td>{{count($grouplinks->children)}}</td>
-						        			<td>{{date_format($grouplinks->created_at,"d M, Y H:i a")}}</td>
-						        			<td>
-									        	<a class="btn-primary btn-xs action-btn" title="Group Info" href="{{route('show-group-details', base64_encode($grouplinks->id))}}" terget="_blank"><i class="fa fa-info"></i></a>
-									        </td>
-									    </tr>
+                                       	@foreach($grouplink as $grouplinks)
+									        @php
+		                                        if(isset($grouplinks->subdomain)) {
+		                                            if($grouplinks->subdomain->type == 'subdomain')
+		                                                $shrt_url = config('settings.SECURE_PROTOCOL').$grouplinks->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$grouplinks->shorten_suffix;
+		                                            else if($grouplinks->subdomain->type == 'subdirectory')
+		                                                $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$grouplinks->subdomain->name.'/'.$grouplinks->shorten_suffix;
+		                                        } else {
+		                                            $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$grouplinks->shorten_suffix;
+		                                        }
+		                                    @endphp
+							        		<tr>
+							        			<td>{{$grouplinks->title}}</td>
+							        			<td>{{$shrt_url}}</td>
+							        			<td>@if(isset($grouplinks->children)){{count($grouplinks->children)}}@else 0 @endif</td>
+							        			<td>{{date_format($grouplinks->created_at,"d M, Y H:i a")}}</td>
+							        			<td>
+									        		<a class="btn-primary btn-xs action-btn" title="Group Info" href="{{route('show-group-details', base64_encode($grouplinks->id))}}" terget="_blank"><i class="fa fa-info"></i></a>
+									        	</td>
+									    	</tr>
 									    @endforeach
-								        @else
-								        	<tr><td colspan="4">No Group Link Available<td></tr>
-								        @endif	
                                    	</tbody>
                                 </table>
                             </div>
+                            @else
+                            <div class="col-md-12">
+	                            <div class="alert alert-info">
+	  								<strong>Info!</strong> No Group Link Available.
+								</div>
+							</div>
+							@endif	 
                         </div>
                     </div>
-               
+               	</div>
 	               
 	            <!-- Modal -->
 				<div id="myModal" class="modal fade" role="dialog">
@@ -93,7 +100,43 @@
     	$(document).ready(function(){
     		$('#show-all-grouplink').DataTable();
     		$('#show-creat-grouplink').click(function(){
-    			$('#myModal').modal('show');
+    			/*$('#myModal').modal('show');*/
+    			swal({
+					title: "Group Title!",
+					text: "Enter Group Title:",
+					type: "input",
+					showCancelButton: true,
+					closeOnConfirm: false,
+					inputPlaceholder: "Enter Group Title"
+				}, function (inputValue) {
+				  if (inputValue === false) return false;
+				  	if (inputValue === "") {
+				    	swal.showInputError("You need to write something!");
+				    	return false
+				  	}else{
+				  		$.ajax({
+		    				type: "POST",
+		                	url: "{{route('createsingleGroupLink')}}",
+		                	data:{ linktitle:inputValue, _token:"{{csrf_token()}}" },
+		                	success: function (response) {
+		                		//console.log(response);
+		                		if(response.code==200){
+		                			swal({
+		                                title: "Success",
+		                                text: "Group Link Generated Successfully!",
+		                                type: "success",
+		                            });
+		                            setTimeout(function(){
+	   									window.location.reload();
+									}, 2000);
+		                		}else{
+		                			swal.showInputError("Try Again!");
+		                		}
+		                	}
+	    				});
+				  	}
+				  	//swal("Nice!", "You wrote: " + inputValue, "success");
+				});
     		});
     		$('#create-new-grouplink').click(function(){
     			var linktitle=$('#group-link-title').val().trim();
@@ -101,9 +144,9 @@
 	    			$.ajax({
 	    				type: "POST",
 	                	url: "{{route('createsingleGroupLink')}}",
-	                	data: {linktitle:linktitle,_token: '{{csrf_token()}}'},
+	                	data:{ linktitle:linktitle, _token:"{{csrf_token()}}" },
 	                	success: function (response) {
-	                		console.log(response);
+	                		//console.log(response);
 	                		if(response.code==200){
 	                			$('#myModal').modal('hide');
 	                			swal({

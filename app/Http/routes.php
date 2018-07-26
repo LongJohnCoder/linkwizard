@@ -269,6 +269,13 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                 'uses' => 'UrlController@checkSuffixAvailability',
                 'as' => 'checkSuffixAvailability',
             ]);
+
+            Route::post('delete/group/link', [
+                'uses' => 'UrlController@deleteGroupLink',
+                'as' => 'deleteGroupLink',
+            ]);
+
+            
         });
 
         Route::group(['prefix' => 'user'], function () {

@@ -117,6 +117,7 @@ class HomeController extends Controller
       $count = DB::table('urls')
           ->selectRaw('count(user_id) AS `count`')
           ->where('user_id', $user->id)
+          ->where('link_type',"!=",2)
           ->groupBy('user_id')
           ->get();
 
@@ -158,7 +159,7 @@ class HomeController extends Controller
 
          $userId = \Auth::user()->id;
          $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($userId) {
-           $q->where('user_id',$userId);
+           $q->where('user_id',$userId)->where('link_type',"!=",2);
          })->pluck('tag')->toArray();
 
          return [
@@ -174,6 +175,7 @@ class HomeController extends Controller
                'dates' => $dates,
                '_plan' => \Session::has('plan') ? \Session::get('plan') : null
          ];
+
     }
 
 
@@ -387,7 +389,7 @@ class HomeController extends Controller
       $flag = 0;
       //echo strlen(trim($textToSearch));exit();
       if(strlen(trim($textToSearch)) > 0 || !empty($tagsToSearch)){
-        $urls = Url::where('user_id', $userId);
+        $urls = Url::where('user_id', $userId)->where("link_type","!=",2);
         if(strlen($textToSearch) > 0) {
           $urls = $urls->whereHas('urlSearchInfo', function($q) use($textToSearch) {
             $q->whereRaw("MATCH (description) AGAINST ('".$textToSearch."' IN BOOLEAN MODE)");
@@ -415,7 +417,7 @@ class HomeController extends Controller
         ];
       } else {
 
-       $urls = Url::where('user_id', $userId)
+       $urls = Url::where('user_id', $userId)->where("link_type","!=",2)
                 ->orderBy('id', 'DESC');
         $count_url = $urls->count();
         return [

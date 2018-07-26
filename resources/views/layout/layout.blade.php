@@ -2,6 +2,13 @@
     <!-- head of th page -->
     <html lang="en">
         @include('contents/head')
+        <style type="text/css">
+            .footer{
+                position: fixed;
+                width: 100%;
+                bottom: 0px;
+            }
+        </style>
         <body>
             @include('contents/header')
 
@@ -809,6 +816,7 @@
       }*/
       });
     </script>
+
 
 </body>
 </html>

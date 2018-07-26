@@ -2629,7 +2629,7 @@
                 if (is_numeric($groupId)) {
                     $getGroupDetails=Url::where('id',$groupId)->where('link_type',2)->where('user_id',Auth::User()->id)->first();
                     if(count($getGroupDetails)>0){
-                        $getSubLink=Url::where('parent_id',$groupId)->where('link_type',2)->where('user_id',Auth::User()->id)->paginate(10);
+                        $getSubLink=Url::where('parent_id',$groupId)->where('link_type',2)->where('user_id',Auth::User()->id)->get();
                         return view('dashboard.grouplinkdetails',compact('getGroupDetails','getSubLink','user','subscription_status'));
                     }else{
                         return redirect()->back()->with('error', 'No Group Found!');
@@ -2639,6 +2639,46 @@
                 }
             }catch(Exception $e){
                abort(404);
+            }
+        }
+
+        public function deleteGroupLink(Request $request){
+            if(Auth::check()){
+                try{
+                    $linkId=base64_decode($request->linkid);
+                    if($linkId){
+                        $deleteGroupLink=Url::where('id',$linkId)->where('user_id',Auth::User()->id)->delete();
+                        if($deleteGroupLink){
+                            $response = [
+                                "status"    => true,
+                                "message"   => "Link Deleted Successfully !",
+                            ];
+                            $responseCode=200;
+
+                        }else{
+                            $response = [
+                                "status"    => false,
+                                "message"   => "Link Not Deleted !",
+                            ];
+                            $responseCode=400;
+                        }
+                    }else{
+                        $response = [
+                            "status"    => false,
+                            "message"   => "This Not A Link To Delete!",
+                        ];
+                        $responseCode=400;
+                    }
+                }catch(Exception $e){
+                    $response = [
+                        "status"    => false,
+                        "message"   => $exp->getMessage(),
+                    ];
+                    $responseCode=500;
+                }
+                return \Response::json($response,$responseCode);
+            }else{
+                return redirect()->action('HomeController@getIndex');
             }
         }
     }
