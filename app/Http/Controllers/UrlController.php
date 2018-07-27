@@ -811,6 +811,7 @@
                         $url->customColour = $request->pageColour;
                         $url->usedCustomised  = '1';
                     } else {
+                       $url->customColour = '#005C96';
                        $url->redirecting_time = 5000;
                        $url->usedCustomised = '0';
                     }
