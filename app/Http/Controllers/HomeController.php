@@ -3168,7 +3168,7 @@ class HomeController extends Controller
                         $pixel->pixel_name = $request->pixel_name;
                         $pixel->pixel_id = NULL;
                         $pixel->custom_pixel_script = $request->custom_pixel_script;
-                        $pixel->script_position = $request->script_position;
+                        //$pixel->script_position = $request->script_position;
                         $pixel->save();
                         return redirect()->back()->with('msg', 'success');
                     }
@@ -3180,7 +3180,7 @@ class HomeController extends Controller
                         $pixel->pixel_name = $request->pixel_name;
                         $pixel->pixel_id = $request->pixel_id;
                         $pixel->custom_pixel_script = NULL;
-                        $pixel->script_position = 0;
+                        //$pixel->script_position = 0;
                         $pixel->save();
                         return redirect()->back()->with('msg', 'success');
                     }

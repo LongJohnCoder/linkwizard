@@ -11,24 +11,24 @@
 	        		@if($errors->any())
                 		<div id="NameValidation" style="color:red">{{ $errors->first('name') }}</div>
                 	@endif
+                	<label>username</label>
 		        	<input type="text" placeholder="John Doe" class="form-control" name="name" id="Name" value="{{ old('name') }}">
-		        	<label>username</label>
 	        	</div>
 
 	        	<div class="form-group">
 	        		@if($errors->any())
                 		<div id="EmailValidation" style="color:red">{{ $errors->first('email') }}</div>
                 	@endif
+                	<label>email</label>
 		        	<input type="email" placeholder="johndoe@company.io" class="form-control" name="email" id="Email" value="{{ old('email') }}">
-		        	<label>email</label>
 	        	</div>
 
 	        	<div class="form-group">
 	        		@if($errors->any())
 	                	<div id="passwordValidation" style="color:red">{{ $errors->first('password') }}</div>
 	                @endif
+	                <label class="passwrd">password</label>
 		        	<input type="password" placeholder="itsasecret" class="form-control" name="password" id="password">
-		        	<label class="passwrd">password</label>
 	        	</div>
 
 
@@ -36,8 +36,8 @@
 	        		@if($errors->any())
 	                	<div id="password_confirmationValidation" style="color:red">{{ $errors->first('password_confirmation') }}</div>
 	                @endif
+	                <label class="passwrd">confirm password</label>
 		        	<input type="password" placeholder="itsasecret" name="password_confirmation" class="form-control" id="password_confirmation">
-		        	<label class="passwrd">confirm password</label>
 	        	</div>
 
 	        	<div class="form-group" style="display:none">

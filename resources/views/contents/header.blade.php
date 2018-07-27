@@ -70,7 +70,7 @@
 		                		<a href="{{ route('getSubscribe') }}" class="upgrade"><i class="fa fa-sign-out"></i> Upgrade</a>
 		                	@endif
 								<br>
-								<a href="{{route('resetPasswordSettings')}}" class="reset-password"><i class="fa fa-settings"></i> Reset Password</a>
+								<!-- <a href="{{route('resetPasswordSettings')}}" class="reset-password"><i class="fa fa-settings"></i> Reset Password</a> -->
 								<!-- <br>
 								<a href="{{route('getSettingsPage')}}" class="btn btn-success"> Settings</a> -->
 	                	</div>
@@ -158,7 +158,7 @@
                                 <li class="<?php echo ($uri=='features')?'active' : '' ?>"><a href="/features">features</a></li>
                                 <li class="<?php echo ($uri=='pricing')?'active' : '' ?>"><a href="/pricing">pricing</a></li>
                                 <li class="<?php echo ($uri=='blog')?'active' : '' ?>"><a href="/blog">blog</a></li>-->
-                                <li class="<?php echo ($uri=='pixels')?'active' : '' ?>"><a href="{{route('pixels')}}">Managing Pixels</a></li>
+                               <!--  <li class="<?php echo ($uri=='pixels')?'active' : '' ?>"><a href="{{route('pixels')}}">Managing Pixels</a></li> -->
                                 <li class="<?php echo ($uri=='dashboard')?'active' : '' ?>"><a href="{{route('getDashboard')}}">dashboard</a></li>
 								<li class="<?php echo ($uri=='profile')?'active' : '' ?>"><a href="{{route('profileSettings')}}">Settings</a></li>
 				            	@if ($user->is_admin == 1)

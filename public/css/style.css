@@ -82,7 +82,7 @@ ul{
 
 
 
-.clear{
+/*.clear{
     clear: both;
     display: inline-block;
     width: 100%
@@ -95,9 +95,23 @@ ul{
 
 .modal .modal-content{
     border-radius: 0;
+}*/
+#close{
+    background-color: #337ab7;
+    color: #ffffff;
+    border: #337ab7;
+}
+.modal-header{
+    background-color: #337ab7;
+    color: #ffffff;
+}
+.modal-body{
+    padding: 20px;
+    background-color: #F5F5F5;
+    color: #000000;
 }
 
-.modal h1{
+/*.modal h1{
     font-family:'OpenSans-ExtraBold';
     color: #000;
     text-transform: capitalize;
@@ -108,9 +122,9 @@ ul{
 .modal form{
     padding: 10px 0;
 }
-
+*/
 .modal-body input{
-    width: 100%;
+    /*width: 100%;
     border-bottom: 1px solid #eee;
     border-left: 0;
     border-right: 0;
@@ -118,10 +132,10 @@ ul{
     font-size: 18px;
     color: #000;
     height: 50px;
-    transition: 0.5s;
+    transition: 0.5s;*/
 }
 
-.modal-body input:focus{
+/*.modal-body input:focus{
     outline: none;
     border-bottom: 1px solid #000;
 }
@@ -133,15 +147,15 @@ ul{
 .modal-body label.passwrd{
     color: #000;
 }
-
+*/
 .modal-body label{
-    font-family:'OpenSans-Bold';
+   /* font-family:'OpenSans-Bold';
     color: #B0B0B0;
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: 12px;*/
 }
 
-.btn{
+/*.btn{
     background: #4C90FF;
     color: #fff;
     display: inline-block;
@@ -150,19 +164,17 @@ ul{
     font-size: 16px;
     margin: 20px 0;
 }
-
-.modal-body input[type='submit']{
-    background: #4C90FF;
-    color: #fff;
+*/
+/*.modal-body input[type='submit']{
     display: inline-block;
     font-family: 'OpenSans-Semibold';
     text-transform: uppercase;
     font-size: 16px;
-    width: 55%;
-    margin: 20px 0;
+   /* width: 55%;*/
+    /*margin: 20px 0;
 }
-
-.modal-body p{
+*/
+/*.modal-body p{
     color: #ABABAB;
     text-align: center;
 }
@@ -174,22 +186,22 @@ ul{
     text-transform: capitalize;
     display: block;
     font-size: 16px;
-}
+}*/
 
-.modal-body a.forgot{
+/*.modal-body a.forgot{
     font-family: 'OpenSans-Regular';
     color: #4C90FF;
     display: inline-block;
     float: right;
     font-size: 14px;
-}
+}*/
 
 .remember{
     margin: 20px 0 0;
 }
 
 /* checkbox style */
-.modal-body .control {
+/*.modal-body .control {
     position: relative;
     display: inline-block;
     padding-left: 30px;
@@ -200,7 +212,7 @@ ul{
     font-weight: normal;
     font-size: 14px;
 }
-
+*/
 .control input {
     position: absolute;
     z-index: -1;
@@ -376,7 +388,19 @@ header.brandingheader {
 
 
 }
-
+.action-btn{
+        background-color: #f2f5fa;
+        border: 1px solid #cccccc;
+        border-radius: 15px;
+        color: #444444;
+        transition: 0.2s;
+    }
+    .action-btn:hover{
+        color: #ffffff;
+        background-color: #337ab7;
+        transition: 0.2s;
+        /*box-shadow: 2px 2px 2px #999999;*/
+    }
 .mobile-menu{
     display: none;
 }
@@ -881,7 +905,7 @@ a.link{
     margin-left: 5px;
 }
 .tab-content{
-    padding: 40px 30px 0 0;
+    padding: 20px;
     /*max-height: 530px;*/
     display: inline-block;
     width: 100%;

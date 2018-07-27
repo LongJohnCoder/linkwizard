@@ -2506,7 +2506,8 @@
                     }
                     $redirectionTime = $profileSettings->default_redirection_time/1000;
                     $skinColour = $profileSettings->pageColor;
-                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status'));
+                    $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
+                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels'));
                 }
             }
         }
