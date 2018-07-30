@@ -226,7 +226,6 @@
          * @param $apikey
          * @return Illuminate\Http\JSONResponse
         */
-
         public function createGroupLinkFromZapier(Request $request, $apikey){
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){
@@ -241,6 +240,13 @@
             return \Response::json($response,$responseCode);
         }
 
+        /**
+         * Webhook to get all group link of a perticuler user.
+         * All response code will be 200 as Jon Wants
+         * 
+         * @param $apikey
+         * @return Illuminate\Http\JSONResponse
+        */
         public function getGrouplink($apikey){
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){
@@ -283,7 +289,13 @@
             return \Response::json($response,$responseCode);
         }
     
-
+        /**
+         * Create Multiple Group Link Into a group.
+         * All response code will be 200 as Jon Wants
+         * 
+         * @param Request $request, $apikey
+         * @return Illuminate\Http\JSONResponse
+        */
         public function groupMultipleLink(Request $request, $apikey){
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){

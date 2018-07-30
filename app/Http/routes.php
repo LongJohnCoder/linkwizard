@@ -59,22 +59,29 @@ Route::group(['prefix' => 'api/v1'],function() {
 
     Route::any('/authenticate-zapier-key/{api_key}', [
         'uses' => 'ZapierController@authenticateZapierKey',
-        'as' => 'authenticateZapierKey',
+        'as' => 'authenticateZapierKey'
     ]);
-
+    //Weebhook to create for untrackedlinklink action
     Route::any('/create/zapier/untrackedlink/{api_key}', [
         'uses' => 'ZapierController@createUntrackedLink',
-        'as' => 'createUntrackedLinkFromZapier',
+        'as' => 'createUntrackedLinkFromZapier'
     ]);
 
+    //Webhook to create for grouplink trigger
+    Route::any('/get/groups/{api_key}', [
+        'uses' => 'ZapierController@getGrouplink',
+        'as'   => 'getGrouplink'
+    ]);
+
+    //Webhook to create for grouplink action
     Route::any('/create/zapier/grouplink/{api_key}', [
         'uses' => 'ZapierController@groupMultipleLink',
-        'as' => 'createGroupLinkFromZapier',
+        'as'   => 'createGroupLinkFromZapier'
     ]);
 
     Route::post('/create/grouplink', [
         'uses' => 'UrlController@createsingleGroupLink',
-        'as' => 'createsingleGroupLink',
+        'as' => 'createsingleGroupLink'
     ]);
 
     /*Webhooks*/
