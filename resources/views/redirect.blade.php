@@ -120,10 +120,10 @@
                         @endif
                     </div>
                     <div class="col-md-12 col-lg-12 production-div">
-                        @if($url->redirecting_text_template)
+                        @if(isset($url->redirecting_text_template) && ($url->usedCustomised))
                             <span class="text"><?php echo($url->redirecting_text_template)?></span>
                         @else
-                            <span class="text">Please wait a snap while we take you to the actual website</span>
+                            <span class="text">Redirecting...</span>
                         @endif
                         in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
                         <p id="msg" style="color: #9f3a38;"></p>

@@ -811,8 +811,6 @@
                         $url->customColour = $request->pageColour;
                         $url->usedCustomised  = '1';
                     } else {
-                       $url->customColour = '#005C96';
-                       $url->redirecting_time = 5000;
                        $url->usedCustomised = '0';
                     }
                     //Edit Favicon
@@ -1601,11 +1599,30 @@
                     }
                 }
                 if (($profileSettings) && ($search->usedCustomised)) {
-                    $red_time = $search->redirecting_time;
+                    if ((isset($search->redirecting_time)) && ($search->redirecting_time !== NULL)) {
+                       $red_time = $search->redirecting_time;
+                    } else {
+                        $red_time = 5000;
+                    }
+                    if ((isset($search->customColour)) && ($search->customColour !== NULL)) {
+                        $pageColour = $search->customColour;
+                    } else {
+                        $pageColor = '#005C96';
+                    }
                 } elseif (($profileSettings) && (!$search->usedCustomised)) {
-                    $red_time = $profileSettings->default_redirection_time;
+                    if ((isset($profileSettings->default_redirection_time)) && ($profileSettings->default_redirection_time !== NULL)) {
+                        $red_time = $profileSettings->default_redirection_time;
+                    } else {
+                        $red_time = 5000;
+                    }
+                    if ((isset($profileSettings->pageColor)) && ($profileSettings->pageColor !== NULL)) {
+                        $pageColour = $profileSettings->pageColor;
+                    } else {
+                        $pageColour = '#005C96';
+                    } 
                 } else {
                     $red_time = 5000;
+                    $pageColour = '#005C96';
                 }
                 $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
                 $referer = $_SERVER['HTTP_HOST'];
@@ -1615,7 +1632,7 @@
                     'url_features' => $url_features,
                     'suffix' => $url,
                     'pixelScripts' => $pixelScript,
-                    'pageColor' => $search->customColour,
+                    'pageColor' => $pageColour,
                     'profileSettings' => $profileSettings,
                     'red_time' => $red_time,
                     'referer' => $referer,
