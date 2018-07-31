@@ -343,17 +343,13 @@
                       <strong>Redirecting time:</strong>
                   </div>
                   <div class="col-md-10">
-                    @if(!$url->usedCustomised)
-                        {{$profileSettings->default_redirection_time/1000}} Seconds
-                    @else
-                        {{$url->redirecting_time/1000}} Seconds 
-                    @endif
+                    {{$redirecting_time/1000}} Seconds
                   </div>
                   <div class="col-md-2">
                       <strong>Redirecting text:</strong>
                   </div>
                 <div class="col-md-10">
-                    <span style="display: inline;">{{$url->redirecting_text_template}}</span>
+                    <span style="display: inline;">{{$redirecting_text}}</span>
                 </div>
 
               </div>
@@ -1772,7 +1768,7 @@ window.onload = function(){
                 $(document).ready(function(){
                     swal({
                         title: "Success",
-                        text: "{{Session::get('success')}}",
+                        text: "{{Session::flush('success')}}",
                         type: "success",
                         html: true
                     });
@@ -1784,7 +1780,7 @@ window.onload = function(){
                 $(document).ready(function(){
                     swal({
                         title: "Error",
-                        text: "{{Session::get('error')}}",
+                        text: "{{Session::flush('error')}}",
                         type: "error",
                         html: true
                     });
