@@ -1,55 +1,44 @@
-@php
-    if(!empty($url->favicon) && strlen($url->favicon)>0)
-    {
-        $faviconPath = $url->favicon;
-    }
-    else
-    {
-        $faviconPath = 'https://tier5.us/images/favicon.ico';
-    }
-@endphp
 <!DOCTYPE html>
     <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
-        <link href="{{url('/')}}/public/loader/css/bootstrap.min.css" rel="stylesheet">
-        <link href="{{url('/')}}/public/loader/css/style.css" rel="stylesheet">
-        <link rel="icon" type="image/jpg" href="{{$faviconPath}}" sizes="16x16">
-        <script src="{{url('/')}}/public/loader/js/jquery.min.js"></script>
-        <script src="{{url('/')}}/public/loader/js/bootstrap.min.js"></script>
-        <meta name="robots" content="noindex,nofollow" />
-        @if(strlen($url->title) > 0)
-            <title>{{$url->title}}</title>
-        @endif
-        @if(strlen($url->meta_description) > 0)
-            <meta name="description" content="{{$url->meta_description}}">
-        @endif
-        @if(strlen($url->og_title) > 0)
-            <meta property="og:title" content="{{$url->og_title}}" />
-        @endif
-        @if(strlen($url->og_description) > 0)
-            <meta property="og:description" content="{{$url->og_description}}" />
-        @endif
-        @if(strlen($url->og_image) > 0)
-            <meta property="og:image" content="{{$url->og_image}}" />
-        @endif
-        @if(strlen($url->twitter_image) > 0)
-            <meta name="twitter:title" content="{{$url->twitter_image}}" />
-        @endif
-        @if(strlen($url->twitter_description) > 0)
-            <meta name="twitter:description" content="{{$url->twitter_description}}" />
-        @endif
-        @if(strlen($url->twitter_image) > 0)
-            <meta name="twitter:image" content="{{$url->twitter_image}}" />
-        @endif
-        <meta name="twitter:card" content="summary"  />
-        <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
-        <link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
-        <style type="text/css">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
+            <link href="{{url('/')}}/public/loader/css/bootstrap.min.css" rel="stylesheet">
+            <link href="{{url('/')}}/public/loader/css/style.css" rel="stylesheet">
+            <link rel="icon" type="image/jpg" href="{{$favicon}}" sizes="16x16">
+            <script src="{{url('/')}}/public/loader/js/jquery.min.js"></script>
+            <script src="{{url('/')}}/public/loader/js/bootstrap.min.js"></script>
+            <meta name="robots" content="noindex,nofollow" />
+            @if(strlen($url->title) > 0)
+                <title>{{$url->title}}</title>
+            @endif
+            @if(strlen($url->meta_description) > 0)
+                <meta name="description" content="{{$url->meta_description}}">
+            @endif
+            @if(strlen($url->og_title) > 0)
+                <meta property="og:title" content="{{$url->og_title}}" />
+            @endif
+            @if(strlen($url->og_description) > 0)
+                <meta property="og:description" content="{{$url->og_description}}" />
+            @endif
+            @if(strlen($url->og_image) > 0)
+                <meta property="og:image" content="{{$url->og_image}}" />
+            @endif
+            @if(strlen($url->twitter_image) > 0)
+                <meta name="twitter:title" content="{{$url->twitter_image}}" />
+            @endif
+            @if(strlen($url->twitter_description) > 0)
+                <meta name="twitter:description" content="{{$url->twitter_description}}" />
+            @endif
+            @if(strlen($url->twitter_image) > 0)
+                <meta name="twitter:image" content="{{$url->twitter_image}}" />
+            @endif
+            <meta name="twitter:card" content="summary"  />
+            <link rel="stylesheet" type="text/css" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
+            <link rel="stylesheet" type="text/css" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
+            <style type="text/css">
             body {
                 font-family: 'Nunito';
-                /*min-height: 100%;*/
                 background: #fff !important;
             }
             .header{
@@ -104,60 +93,25 @@
         <!-- PIXEL SCRIPTS FOR HEADER ENDS HERE -->
     </head>
     <body>
-        @if(isset($profileSettings) && (isset($profileSettings->redirection_page_type)))
-            @if(($profileSettings->redirection_page_type == 0))
-                <div class="redirect-body-content">
-                    <div class="header"></div>
-                    <div class="row">
-                        <div class="col-md-12 col-lg-12 image-div">
-                            @if(($profileSettings)&&(!$url->usedCustomised))
-                                <img src="{{url('/')}}/{{$profileSettings->default_image}}" class="img-responsive">
-                            @else
-                                @if($url->uploaded_path)
-                                    <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
-                                @else
-                                    <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
-                                @endif
-                            @endif
-                        </div>
-                        <div class="col-md-12 col-lg-12 production-div">
-                            @if(isset($url->redirecting_text_template) && ($url->usedCustomised))
-                                <span class="text"><?php echo($url->redirecting_text_template)?></span>
-                            @else
-                                <span class="text">Redirecting...</span>
-                            @endif
-                            in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
-                            <p id="msg" style="color: #9f3a38;"></p>
-                        </div>
-                    </div>
-                    <div class="sticky-foot"></div>
+        <div class="redirect-body-content">
+            <div class="header"></div>
+            <div class="row">
+                <div class="col-md-12 col-lg-12 image-div">
+                    @if(isset($imageUrl) && ($imageUrl!=""))
+                        <img src="{{url('/')}}/{{$imageUrl}}" class="img-responsive">
+                    @endif
                 </div>
-            @endif
-        @else
-            <div class="redirect-body-content">
-                    <div class="header"></div>
-                    <div class="row">
-                        <div class="col-md-12 col-lg-12 image-div">
-                            @if($url->uploaded_path)
-                                <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
-                            @else
-                                <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
-                            @endif
-                        </div>
-                        <div class="col-md-12 col-lg-12 production-div">
-                            @if(isset($url->redirecting_text_template) && ($url->usedCustomised))
-                                <span class="text"><?php echo($url->redirecting_text_template)?></span>
-                            @else
-                                <span class="text">Redirecting...</span>
-                            @endif
-                            in <span id="txt_" style="display: inline;">{{$red_time / 1000 }}</span> sec
-                            <p id="msg" style="color: #9f3a38;"></p>
-                        </div>
-                    </div>
-                    <div class="sticky-foot"></div>
+                <div class="col-md-12 col-lg-12 production-div">
+                    @if(isset($redirectionText) && ($redirectionText!=""))
+                        <span class="text">{{$redirectionText}}</span>
+                    @endif
+                    @if(isset($red_time) && ($red_time >0))
+                        in <span id="txt_" style="display: inline;">{{$red_time / 1000 }}</span> sec  <p id="msg" style="color: #9f3a38;"></p>
+                    @endif
                 </div>
-        @endif
-                
+            </div>
+            <div class="sticky-foot"></div>
+        </div>
            
         <!-- PIXEL SCRIPT FOR FOOTER STARTS HERE -->
         <?php

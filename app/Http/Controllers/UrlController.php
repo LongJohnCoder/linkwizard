@@ -1519,8 +1519,137 @@
         public function getRequestedUrl($url) {
             $red_time = 5000;
             $pageColour = '#005C96';
+            $redirectionText = 'Redirecting ...';
+            $favicon = 'https://tier5.us/images/favicon.ico';
+            $imageUrl = 'public/images/Tier5.jpg';
             $search = Url::where('shorten_suffix', $url)->first();
-            $userRedirection = Profile::where('user_id',$search->user_id)->first();
+            if(count($search )>0){
+                if(!empty($search->favicon) && strlen($search->favicon)>0) {
+                    $favicon = $search->favicon;
+                }
+                $userRedirection = Profile::where('user_id',$search->user_id)->first();
+                if(count($userRedirection )>0){
+                    if ((isset($userRedirection) ) &&($userRedirection->redirection_page_type==1) ) {
+                        if($search->usedCustomised==1){
+                            $red_time =  $search->redirecting_time;
+                            $pageColour = $search->customColour;
+                            $redirectionText = $search->redirecting_text_template;
+                            if(isset($search->uploaded_path) && ($search->uploaded_path!="")){
+                                $imageUrl = $search->uploaded_path;
+                            }
+                        } else {
+                            $red_time = 0000;
+                            $pageColour = '#ffffff';
+                            $redirectionText = '';
+                            $imageUrl = '';
+                        }
+                    } else if (isset($userRedirection->redirection_page_type) &&($userRedirection->redirection_page_type==0) ) {
+                        if($search->usedCustomised==1){
+                            $red_time =  $search->redirecting_time;
+                            $pageColour = $search->customColour;
+                            $redirectionText = $search->redirecting_text_template;
+                            if((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="") ){
+                                $pageColour = $userRedirection->pageColor;  
+                            } 
+                        } else if($search->usedCustomised==0){
+                            $red_time =  $userRedirection->default_redirection_time;
+                            if((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="") ){
+                                $pageColour = $userRedirection->pageColor;  
+                            } 
+                        }
+                    }
+                } else {
+                    if($search->usedCustomised==1){
+                        $red_time =  $search->redirecting_time;
+                        $pageColour = $search->customColour;
+                        $redirectionText = $search->redirecting_text_template;
+                        if(isset($search->uploaded_path) && ($search->uploaded_path!="")){
+                             $imageUrl = $search->uploaded_path;
+                        }
+                    } else if($search->usedCustomised==0){
+                        if(isset($userRedirection)){
+                            $red_time =  $userRedirection->default_redirection_time;
+                            $pageColour = $userRedirection->pageColor;
+                        }
+                    } 
+
+                }
+                $url_features = '';
+                $pxlValue = UrlFeature::where('url_id', $search->id)->first();
+                $pixelIds = [];
+                $pixelColumn = [];
+                $pixelScript = [];
+                if (count($pxlValue)>0) {
+                    if (!empty($pxlValue->fb_pixel_id) or $pxlValue->fb_pixel_id!=NULL) {
+                        $pixelIds[] = $pxlValue->fb_pixel_id;
+                        $pixelColumn[] = 'fb_pixel_id';
+                        $scriptPos[] = 0;
+                    }
+                    if (!empty($pxlValue->gl_pixel_id) or $pxlValue->gl_pixel_id!=NULL) {
+                        $pixelIds[] = $pxlValue->gl_pixel_id;
+                        $pixelColumn[] = 'gl_pixel_id';
+                        $scriptPos[] = 0;
+                    }
+                    if (!empty($pxlValue->twt_pixel_id) or $pxlValue->twt_pixel_id!=NULL) {
+                        $pixelIds[] = $pxlValue->twt_pixel_id;
+                        $pixelColumn[] = 'twt_pixel_id';
+                        $scriptPos[] = 0;
+                    }
+                    if (!empty($pxlValue->li_pixel_id) or $pxlValue->li_pixel_id!=NULL) {
+                        $pixelIds[] = $pxlValue->li_pixel_id;
+                        $pixelColumn[] = 'li_pixel_id';
+                        $scriptPos[] = 0;
+                    }
+                    if (!empty($pxlValue->pinterest_pixel_id) or $pxlValue->pinterest_pixel_id!=NULL) {
+                        $pixelIds[] = $pxlValue->pinterest_pixel_id;
+                        $pixelColumn[] = 'pinterest_pixel_id';
+                        $scriptPos[] = 0;
+                    }
+                    if (!empty($pxlValue->quora_pixel_id) or $pxlValue->quora_pixel_id!=NULL) {
+                        $pixelIds[] = $pxlValue->quora_pixel_id;
+                        $pixelColumn[] = 'quora_pixel_id';
+                        $scriptPos[] = 0;
+                    } elseif (!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL) {
+                        $pixelIds[] = $pxlValue->custom_pixel_id;
+                        $pixelColumn[] = 'custom_pixel_id';
+
+
+                        $pxl = Pixel::where('custom_pixel_script', $pxlValue->custom_pixel_id)->first();
+                        if($pxl){
+                            $scriptPos[] = $pxl->script_position;
+                        } else{
+                            $scriptPos[] = 0;
+                        }
+                    }
+                    for ($i=0; $i< count($pixelColumn); $i++) {
+                        if($pixelColumn[$i]!='custom_pixel_id'){
+                            $scripts = PixelScript::where('network_type', $pixelColumn[$i])->first();
+                            $upperColumn = strtoupper($pixelColumn[$i]);
+                            $pixelScript[] = str_replace($upperColumn, $pixelIds[$i],$scripts->network_script);
+                        } else {
+                            $pixelScript[] = $pixelIds[$i];
+                        }
+                    }
+                }
+                $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
+                $referer = $_SERVER['HTTP_HOST'];
+                return view('redirect', [
+                    'url' => $search,
+                    'url_features' => $url_features,
+                    'suffix' => $url,
+                    'pixelScripts' => $pixelScript,
+                    'redirectionText'=>$redirectionText,
+                    'pageColor' => $pageColour,
+                    'favicon' =>$favicon,
+                    'imageUrl'=>$imageUrl,
+                    'red_time' => $red_time,
+                    'referer' => $referer,
+                    'user_agent' => $user_agent]
+                );
+            } else {
+                abort(404);
+            }
+            /*$userRedirection = Profile::where('user_id',$search->user_id)->first();
             if ($userRedirection) {
                 $profileSettings = $userRedirection;
                 if (!$search->usedCustomised) {
@@ -1534,10 +1663,9 @@
                 $userRedirectionType = 0;
             }
             if ($search) {
-                /* OLD URL PIXELS */
-                //$url_features = UrlFeature::where('url_id', $search->id)->first();
+               
                 $url_features = '';
-                // Pixels for urls
+              
                 $pxlValue = UrlFeature::where('url_id', $search->id)->first();
                 $pixelIds = [];
                 $pixelColumn = [];
@@ -1573,7 +1701,7 @@
                         $pixelColumn[] = 'quora_pixel_id';
                         $scriptPos[] = 0;
                     }
-                    /* DON'T DELETE */
+                 
                     elseif (!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->custom_pixel_id;
                         $pixelColumn[] = 'custom_pixel_id';
@@ -1638,9 +1766,9 @@
                     'user_agent' => $user_agent]
                 );
 
-            } else {
+           /* } else {
                 abort(404);
-            }
+            }*/
         }
 
         /**
