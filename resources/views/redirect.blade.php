@@ -104,33 +104,58 @@
         <!-- PIXEL SCRIPTS FOR HEADER ENDS HERE -->
     </head>
     <body>
-        @if((!$profileSettings->redirection_page_type)||($url->usedCustomised))
+        @if(isset($profileSettings) && (isset($profileSettings->redirection_page_type)))
+            @if(($profileSettings->redirection_page_type == 0))
+                <div class="redirect-body-content">
+                    <div class="header"></div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12 image-div">
+                            @if(($profileSettings)&&(!$url->usedCustomised))
+                                <img src="{{url('/')}}/{{$profileSettings->default_image}}" class="img-responsive">
+                            @else
+                                @if($url->uploaded_path)
+                                    <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
+                                @else
+                                    <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
+                                @endif
+                            @endif
+                        </div>
+                        <div class="col-md-12 col-lg-12 production-div">
+                            @if(isset($url->redirecting_text_template) && ($url->usedCustomised))
+                                <span class="text"><?php echo($url->redirecting_text_template)?></span>
+                            @else
+                                <span class="text">Redirecting...</span>
+                            @endif
+                            in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
+                            <p id="msg" style="color: #9f3a38;"></p>
+                        </div>
+                    </div>
+                    <div class="sticky-foot"></div>
+                </div>
+            @endif
+        @else
             <div class="redirect-body-content">
-                <div class="header"></div>
-                <div class="row">
-                    <div class="col-md-12 col-lg-12 image-div">
-                        @if(($profileSettings)&&(!$url->usedCustomised))
-                            <img src="{{url('/')}}/{{$profileSettings->default_image}}" class="img-responsive">
-                        @else
+                    <div class="header"></div>
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12 image-div">
                             @if($url->uploaded_path)
                                 <img src="{{url('/')}}/{{$url->uploaded_path}}" class="img-responsive">
                             @else
                                 <img src="{{url('/')}}/public/images/Tier5.jpg" class="img-responsive">
                             @endif
-                        @endif
+                        </div>
+                        <div class="col-md-12 col-lg-12 production-div">
+                            @if(isset($url->redirecting_text_template) && ($url->usedCustomised))
+                                <span class="text"><?php echo($url->redirecting_text_template)?></span>
+                            @else
+                                <span class="text">Redirecting...</span>
+                            @endif
+                            in <span id="txt_" style="display: inline;">{{$red_time / 1000 }}</span> sec
+                            <p id="msg" style="color: #9f3a38;"></p>
+                        </div>
                     </div>
-                    <div class="col-md-12 col-lg-12 production-div">
-                        @if(isset($url->redirecting_text_template) && ($url->usedCustomised))
-                            <span class="text"><?php echo($url->redirecting_text_template)?></span>
-                        @else
-                            <span class="text">Redirecting...</span>
-                        @endif
-                        in <span id="txt_" style="display: inline;">{{$url->redirecting_time / 1000 }}</span> sec
-                        <p id="msg" style="color: #9f3a38;"></p>
-                    </div>
+                    <div class="sticky-foot"></div>
                 </div>
-                <div class="sticky-foot"></div>
-            </div>
         @endif
                 
            

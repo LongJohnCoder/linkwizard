@@ -1517,6 +1517,8 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function getRequestedUrl($url) {
+            $red_time = 5000;
+            $pageColour = '#005C96';
             $search = Url::where('shorten_suffix', $url)->first();
             $userRedirection = Profile::where('user_id',$search->user_id)->first();
             if ($userRedirection) {
@@ -1601,13 +1603,6 @@
                 if (($profileSettings) && ($search->usedCustomised)) {
                     if ((isset($search->redirecting_time)) && ($search->redirecting_time !== NULL)) {
                        $red_time = $search->redirecting_time;
-                    } else {
-                        $red_time = 5000;
-                    }
-                    if ((isset($search->customColour)) && ($search->customColour !== NULL)) {
-                        $pageColour = $search->customColour;
-                    } else {
-                        $pageColor = '#005C96';
                     }
                 } elseif (($profileSettings) && (!$search->usedCustomised)) {
                     if ((isset($profileSettings->default_redirection_time)) && ($profileSettings->default_redirection_time !== NULL)) {
@@ -1621,8 +1616,12 @@
                         $pageColour = '#005C96';
                     } 
                 } else {
-                    $red_time = 5000;
-                    $pageColour = '#005C96';
+                    if ((isset($search->customColour)) && ($search->customColour !== NULL) && ($search->usedCustomised)) {
+                        $pageColour = $search->customColour;
+                    }
+                    if ((isset($search->redirecting_time)) && ($search->redirecting_time !== NULL) && ($search->usedCustomised)) {
+                        $red_time = $search->redirecting_time;
+                    }
                 }
                 $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
                 $referer = $_SERVER['HTTP_HOST'];
