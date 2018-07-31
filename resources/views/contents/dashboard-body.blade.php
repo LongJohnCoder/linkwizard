@@ -185,7 +185,7 @@
                                         }
                                     @endphp
                                     <tr>
-                                        <td class="width-modification" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}"><a href="{{$shrt_url}}" target="_blank">{{$shrt_url}}</a></td>
+                                        <td class="width-modification row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}"><a href="{{$shrt_url}}" target="_blank">{{$shrt_url}}</a></td>
                                         @php
                                             $actual_url = '';
                                             $has_spl_url = 'n';
@@ -258,8 +258,8 @@
                                             }
 
                                         @endphp
-                                        <td class="width-modification" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}"><a href="{{$actual_url}}">{{$actual_url}}</a></td>
-                                        <td class="width-modification" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">
+                                        <td class="width-modification row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}"><a href="{{$actual_url}}">{{$actual_url}}</a></td>
+                                        <td class="width-modification row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">
                                             <div class="url-description">
                                                 @if(!empty($url->meta_description) && strlen($url->meta_description)>0)
                                                     {{$url->meta_description}}
@@ -268,9 +268,9 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->count}}</td>
-                                        <td onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->created_at->format('d/m/Y')}}</td>
-                                        <td>
+                                        <td class="row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->count}}</td>
+                                        <td class="row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->created_at->format('d/m/Y')}}</td>
+                                        <td class="row-{{$url->id}}">
                                             <button class='btn btn-danger btn-xs delete-url-btn' data-id="{{ $url->id }}" title="Delete"><i class="fa fa-trash"></i></button>
                                             <button class='btn btn-warning btn-xs'><a href="{{route('edit_url_view' , $url->id)}}" style="color: #fff;" title="Edit Url"> <i class="fa fa-edit"></i></a></button>
                                             <button class='btn btn-success btn-xs' onclick="copyUrl({{$url->id}}, event)" title="Copy Url"><i class="fa fa-copy"></i></button>
@@ -380,7 +380,7 @@ $(document).ready(function(){
                                         button: "OK",
                                     },
                                     function(){
-                                        $('#row-'+delId).hide(200);
+                                        $(".row-"+delId).hide(200);
                                     }
                                 );
                             }
