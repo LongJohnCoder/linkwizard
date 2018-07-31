@@ -46,19 +46,19 @@
                 <form action="{{ route('getDashboard') }}" method="get" role="form" class="form" id="datePickerForm">
                     <div class="form-group">
                         <div class="input-daterange input-group" id="datepicker">
-                        	<label>
-	                        	<i class="fa fa-calendar" aria-hidden="true"></i>
-	                            <input type="text" class="input-sm form-control" name="from" id="datePickerFrom" required />
+                            <label>
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                                <input type="text" class="input-sm form-control" name="from" id="datePickerFrom" required />
                             </label>
                             <span class="input-group-addon">TO</span>
                             <label>
-	                            <i class="fa fa-calendar" aria-hidden="true"></i>
-	                            <input type="text" class="input-sm form-control" name="to" id="datePickerTo" required />
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                                <input type="text" class="input-sm form-control" name="to" id="datePickerTo" required />
                             </label>
                         </div>
                     </div>
                     <div class="form-group">
-                    	<button type="submit" id="date_form" class="btn btn-primary pull-right">Apply</button>
+                        <button type="submit" id="date_form" class="btn btn-primary pull-right">Apply</button>
                     </div>
                 </form>
             </div>
@@ -69,34 +69,34 @@
 <section class="banner">
     {{-- populating this container with google api --}}
     <div class="container">
-		    <div class="row">
+            <div class="row">
             <div class="banner-top">
-				        <div class="col-md-6">
+                        <div class="col-md-6">
                     <div class="tot-counts">
-						            <!-- <img src="{{url('/')}}/public/images/barcount.jpg" class="img-responsive"> -->
+                                    <!-- <img src="{{url('/')}}/public/images/barcount.jpg" class="img-responsive"> -->
                         <img style="width: 30px; height: auto;" src="{{url('/')}}/public/images/chart-bar.png" class="img-responsive">
-						            <div class="count"><span>{{$count_url}}</span>Total Urls</div> <!-- ?count -->
+                                    <div class="count"><span>{{$count_url}}</span>Total Urls</div> <!-- ?count -->
                     </div>
-				        </div>
-				        <div class="col-md-6">
-          					<div class="datelink dateRangeButton">
-          						  <a id="date_range" href="#">{{ date('M d', strtotime('-1 month')) .' - '. date('M d') }}</a>
-          					</div>
-          					<script type="text/javascript">
-          						  $(document).ready(function(){
+                        </div>
+                        <div class="col-md-6">
+                            <div class="datelink dateRangeButton">
+                                  <a id="date_range" href="#">{{ date('M d', strtotime('-1 month')) .' - '. date('M d') }}</a>
+                            </div>
+                            <script type="text/javascript">
+                                  $(document).ready(function(){
                             $('.datelink a').click(function(){
-          								      $('#datePickerModal').modal('show');
+                                              $('#datePickerModal').modal('show');
                             });
-          						  });
-          					</script>
-				        </div>
-			      </div>
-		    </div>
-    		<div class="row">
-            <div class="col-md-12">
-    				    <div id="columnChart" style="height: 165px; margin: 0 auto"></div> <!-- col-md-12 graph -->
+                                  });
+                            </script>
+                        </div>
+                  </div>
             </div>
-    		</div>
+            <div class="row">
+            <div class="col-md-12">
+                        <div id="columnChart" style="height: 165px; margin: 0 auto"></div> <!-- col-md-12 graph -->
+            </div>
+            </div>
     </div>
 </section>
 <!-- Banner End -->
@@ -169,7 +169,7 @@
                                         <th class="width-modification"><span title="Description of the link">Description</span></th>
                                         <th>Clicks</th>
                                         <th>Created</th>
-                                        <th >Action</th>
+                                        <th >Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -185,7 +185,7 @@
                                         }
                                     @endphp
                                     <tr>
-                                        <td class="width-modification row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}"><a href="{{$shrt_url}}" target="_blank">{{$shrt_url}}</a></td>
+                                        <td class="width-modification" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}"><a href="{{$shrt_url}}" id="link-{{$url->id}}" target="_blank">{{$shrt_url}}</a></td>
                                         @php
                                             $actual_url = '';
                                             $has_spl_url = 'n';
@@ -258,8 +258,8 @@
                                             }
 
                                         @endphp
-                                        <td class="width-modification row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}"><a href="{{$actual_url}}">{{$actual_url}}</a></td>
-                                        <td class="width-modification row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">
+                                        <td class="width-modification" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}"><a href="{{$actual_url}}" data-index"{{$url->id}}">{{$actual_url}}</a></td>
+                                        <td class="width-modification" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">
                                             <div class="url-description">
                                                 @if(!empty($url->meta_description) && strlen($url->meta_description)>0)
                                                     {{$url->meta_description}}
@@ -268,12 +268,12 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td class="row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->count}}</td>
-                                        <td class="row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->created_at->format('d/m/Y')}}</td>
-                                        <td class="row-{{$url->id}}">
-                                            <button class='btn btn-danger btn-xs delete-url-btn' data-id="{{ $url->id }}" title="Delete"><i class="fa fa-trash"></i></button>
+                                        <td onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->count}}</td>
+                                        <td onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->created_at->format('d/m/Y')}}</td>
+                                        <td>
+                                            <button class='btn btn-success btn-xs copyBtn' id="copyButton" onclick="copyUrl({{$url->id}}, event)" title="Copy Url"><i class="fa fa-copy"></i></button>                                            
                                             <button class='btn btn-warning btn-xs'><a href="{{route('edit_url_view' , $url->id)}}" style="color: #fff;" title="Edit Url"> <i class="fa fa-edit"></i></a></button>
-                                            <button class='btn btn-success btn-xs' onclick="copyUrl({{$url->id}}, event)" title="Copy Url"><i class="fa fa-copy"></i></button>
+                                            <button class='btn btn-danger btn-xs delete-url-btn' data-id="{{ $url->id }}" title="Delete"><i class="fa fa-trash"></i></button>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -340,19 +340,16 @@ $(document).ready(function(){
 <script>
     /* copy url script */
     function copyUrl(row_id, event){
-        // $('#row-'+row_id).removeAttr('onclick');
         var $temp = $("<input>");
         $("body").append($temp);
-        var data = $("#row-"+row_id).find('td').eq(0).text().trim();
-        $temp.val(data).select();
+        var link = $("#link-"+row_id).attr("href");
+        $temp.val(link).select();
         document.execCommand("copy");
-        swal({
-            title: 'Copied!',
-            text: 'Successfully copied the shortend link',
-        });
         $temp.remove();
         event.stopPropagation();
-        // $('.test-'+row_id).css({"border-color": "red"});
+        var tooltip = document.getElementsByClassName(".copyBtn");
+        tooltip.innerHTML = "Copied: " + link;
+        console.log(tooltip.innerHTML);
     }
 
     /* delete url script */
@@ -380,7 +377,7 @@ $(document).ready(function(){
                                         button: "OK",
                                     },
                                     function(){
-                                        $(".row-"+delId).hide(200);
+                                        $('#row-'+delId).hide(200);
                                     }
                                 );
                             }
