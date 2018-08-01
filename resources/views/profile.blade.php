@@ -51,7 +51,7 @@
                 <ul class="nav nav-tabs" style="padding-top:20px; border-bottom: 1px solid #337ab7;">
                     <li class="active "><a data-toggle="tab" href="#reset-password">Reset Password</a></li>
                     <li ><a data-toggle="tab" href="#redirection">Redirection Settings</a></li>
-                    <!-- <li ><a data-toggle="tab" href="#zapier">Zapier Intigration</a></li> -->
+                    <li ><a data-toggle="tab" href="#zapier">Zapier Intigration</a></li>
                     <li ><a data-toggle="tab" href="#pixel">Manage Pixels</a></li>
                 </ul>
                 <div class="tab-content">
@@ -98,7 +98,7 @@
                             </form>
                         </div>
                     </div>
-                    <!--<div id="zapier" class="tab-pane">
+                    <div id="zapier" class="tab-pane">
                         <div class="element-main">
                             <h2>Intigrate Zapier</h2>
                             <div class="control-group form-group">
@@ -122,7 +122,7 @@
                                 </div>
                             </div>    
                         </div>
-                    </div>-->
+                    </div>
                     <div id="redirection" class="tab-pane">
                         <div class="element-main">
                             <h2>Set Redirection Settings</h2>
