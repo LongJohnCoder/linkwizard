@@ -50,9 +50,9 @@
 							@endif
 						</a>
 					</div>
-					<!--<div class="createlink openpop <?php echo ($uri=='grouplink')?'active-toplink' : '' ?>">
+					<div class="createlink openpop <?php echo ($uri=='grouplink')?'active-toplink' : '' ?>">
 						<a href="{{route('createLink',['type' => 'grouplink'])}}">+Group Link</a>	
-					</div>-->
+					</div>
 				
 					<div class="hamburg-menu">
 	                  	<a href="#" id="menu-icon" class="menu-icon">
