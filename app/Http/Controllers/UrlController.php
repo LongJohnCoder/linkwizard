@@ -223,6 +223,8 @@
                     $request->redirecting_text_template = trim(preg_replace('/\s+/', ' ',$request->redirecting_text_template));
                     if ($request->redirecting_text_template != NULL) {
                         $url->redirecting_text_template = $request->redirecting_text_template;
+                    } else {
+                        $url->redirecting_text_template = "Redirecting...";
                     }
                     $url->customColour = $request->pageColour;
                     $url->usedCustomised = '1';
@@ -762,6 +764,8 @@
                         $url->customColour = $request->pageColour;
                         if ($request->redirecting_text_template != NULL) {
                             $url->redirecting_text_template = $request->redirecting_text_template;
+                        } else {
+                            $url->redirecting_text_template = "Redirecting...";
                         }
                     } else {
                         $url->usedCustomised = '0';
