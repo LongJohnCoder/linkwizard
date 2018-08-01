@@ -107,7 +107,7 @@ class HomeController extends Controller
       //code for search based on tags and description if the params are not empty
       $textToSearch = $request->textToSearch;
       $tagsToSearch = $request->tagsToSearch;
-      $pageLimit        = ( $request->limit ) ? $request->limit: 4;
+      $pageLimit        = ( $request->limit ) ? $request->limit: 10;
 
       $ret        = self::getDataOfSearchTags($textToSearch, $tagsToSearch, $user->id);
       $urls       = $ret['urls']->paginate($pageLimit);
