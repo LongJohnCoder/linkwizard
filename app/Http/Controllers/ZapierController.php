@@ -256,9 +256,9 @@
                     }
                                     
                     foreach ($getAllGroupUrl as $key=>$eachGroupUrl) {
-                        $groupUrlList[$key]['id']            =$eachGroupUrl->name;
+                        $groupUrlList[$key]['id']            =$eachGroupUrl->id;
                         $groupUrlList[$key]['group_url']     =$shrt_url."/".$eachGroupUrl->shorten_suffix;
-                        $groupUrlList[$key]['title']         =$eachGroupUrl->number;      
+                        $groupUrlList[$key]['title']         =$eachGroupUrl->title;      
                     }
                      $response = [
                         "status"    => true,
