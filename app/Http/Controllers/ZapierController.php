@@ -129,9 +129,9 @@
             try {
                 $getUser=User::where('zapier_key',$apikey)->first();
                 if(count($getUser)>0){
-                    //$pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
+                    $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
                     $url=$request->url;
-                    if ($url) {
+                    if (preg_match($pattern,$url)) {
                         if (strpos($request->url, 'https://') === 0) {
                             $actualUrl = str_replace('https://', null, $request->url);
                             $protocol  = 'https';
@@ -172,7 +172,7 @@
                             ];
                             $responseCode=200;
                         }
-                    }else{
+                    .}else{
                         $response = [
                             "status"    => false,
                             'message'   => "Url Is Not Valid!",
@@ -226,6 +226,7 @@
          * @param $apikey
          * @return Illuminate\Http\JSONResponse
         */
+
         public function createGroupLinkFromZapier(Request $request, $apikey){
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){
@@ -240,13 +241,6 @@
             return \Response::json($response,$responseCode);
         }
 
-        /**
-         * Webhook to get all group link of a perticuler user.
-         * All response code will be 200 as Jon Wants
-         * 
-         * @param $apikey
-         * @return Illuminate\Http\JSONResponse
-        */
         public function getGrouplink($apikey){
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){
@@ -289,13 +283,7 @@
             return \Response::json($response,$responseCode);
         }
     
-        /**
-         * Create Multiple Group Link Into a group.
-         * All response code will be 200 as Jon Wants
-         * 
-         * @param Request $request, $apikey
-         * @return Illuminate\Http\JSONResponse
-        */
+
         public function groupMultipleLink(Request $request, $apikey){
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){
