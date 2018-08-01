@@ -2761,7 +2761,7 @@
             for ($i = 0; $i < 8; ++$i) {
                 $random_string = $random_string.$character_set[rand(0, strlen($character_set)-1)];
             }
-            $random_string ='grp-'.$random_string;
+            $random_string =$random_string;
             if (Url::where('shorten_suffix', $random_string)->first()) {
                 $this->RandomString();
             } else {

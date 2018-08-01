@@ -112,16 +112,18 @@
 			   			success: function(response){
 			   				//console.log(response);
 			   				if(response.status==true){
-			   					swal("Success! Your short link has been deleted!", {
-						      		icon: "success",
-						    	});
+			   					swal({
+									type: 'success',
+									title: 'Success',
+									text: 'Success! Your short link has been deleted!',
+								});
 						    	window.location.reload();
 			   				}else{
 			   					swal({
 									type: 'error',
 									title: 'Oops...',
 									text: 'Something went wrong, Try Again!',
-								})
+								});
 			   				}
 			   			}
 					});
