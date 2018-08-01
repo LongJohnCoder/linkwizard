@@ -290,20 +290,28 @@
                 $checkParentGroup=Url::where('id',$request->parent_group)->where('user_id',$getUser->id)->where('link_type',2)->first();
                 if(count($checkParentGroup)>0){
                     $subGroupUrl=$request->selectedurl;
-                    foreach ($subGroupUrl as $individualUrl) {
-                        $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
-                        if (preg_match($pattern,$individualUrl)) {
-                            if (strpos($individualUrl, 'https://') === 0) {
-                                $actualUrl = str_replace('https://', null, $individualUrl);
-                                $protocol  = 'https';
-                            }elseif(strpos($individualUrl, 'http://') === 0){
-                                $actualUrl = str_replace('http://', null, $individualUrl);
-                                $protocol  = 'http';
-                            }else{
-                                $actualUrl = $individualUrl;
-                                $protocol  = 'http';
-                            }
-                            try{
+                    if(!$subGroupUrl){
+                        $response = [
+                            "status"    => false,
+                            "message"   => "No Group List Available",
+                        ];
+                        $responseCode=200; 
+                    }
+                    try{
+                        foreach ($subGroupUrl as $individualUrl) {
+                            $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
+                            if (preg_match($pattern,$individualUrl)) {
+                                if (strpos($individualUrl, 'https://') === 0) {
+                                    $actualUrl = str_replace('https://', null, $individualUrl);
+                                    $protocol  = 'https';
+                                }elseif(strpos($individualUrl, 'http://') === 0){
+                                    $actualUrl = str_replace('http://', null, $individualUrl);
+                                    $protocol  = 'http';
+                                }else{
+                                    $actualUrl = $individualUrl;
+                                    $protocol  = 'http';
+                                }
+                            
                                 $random_string = $this->groupRandomString($checkParentGroup->shorten_suffix);
                                 $url                   = new Url();
                                 $url->actual_url       = $actualUrl;
@@ -314,8 +322,6 @@
                                 $url->parent_id        = $checkParentGroup->id;
                                 $url->shorten_suffix   = $random_string;
                                 $url->save();
-                            }catch(\Exception $e){
-                                continue; 
                             }  
                         }
                         $response = [
@@ -323,7 +329,13 @@
                             "message"   => "Group Url Created!",
                         ];
                         $responseCode=200;
-                    }
+                    }catch(\Exception $e){
+                        $response = [
+                            "status"    => false,
+                            "message"   => "No Group Url Created",
+                        ];
+                        $responseCode=200; 
+                    } 
                 }else{
                     $response = [
                         "status"    => false,
