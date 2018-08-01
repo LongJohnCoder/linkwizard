@@ -495,7 +495,7 @@ $optTypeLI = 'normal';
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
-                            <div class="normal-body add-countDown" id="countDownArea" style="display: {{$urls->redirecting_time != 5000 ? 'block' : 'none'}};">
+                            <div class="normal-body add-countDown" id="countDownArea" style="display: {{$urls->usedCustomised ? 'block' : 'none'}};">
                                 <p>Edit countdown time for this link</p>
                                 <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="{{$urls->redirecting_time/1000}}" ><br>
                                 <p> Select your customize colour </p>

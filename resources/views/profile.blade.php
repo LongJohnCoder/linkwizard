@@ -144,12 +144,12 @@
                                         <input type="checkbox" name="redirection_page_type_zero" id="redirect_type_zero" {{$checkRedirectPageZero}}>
                                     </div>
                                 </div>
-                                <div class="controls row alert">
+                                <div class="controls row alert" id="redirection_time_div" style="display: {{$checkRedirectPageOne == 'checked' ? 'none' : 'block'}};">
                                     <div class="col-md-9">
                                         <label class="control-label"> Redirection time</label>
                                     </div>
                                     <div class="col-md-3">
-                                        <input type='number' name='default_redirection_time' class='form-control redirection_time' id='default_redirection_time' min='1' max='30' value='{{$redirectionTime}}' disabled>
+                                        <input type='number' name='default_redirection_time' class='form-control redirection_time' id='default_redirection_time' min='1' max='30' value='{{$redirectionTime}}'>
                                     </div>
                                 </div>
                                 <div class="controls row">
@@ -372,25 +372,26 @@
        $('#redirect_type_one').on('click', function(){
             var redirectTypeZeroCheck =  $('#redirect_type_zero').prop('checked');
             if (redirectTypeZeroCheck==true) {
+                $("#redirection_time_div").hide();
                 $('#redirect_type_zero').prop('checked', false);
-                $('#default_redirection_time').prop('disabled', true);
-            } else {
-                $('#default_redirection_time').prop('disabled', true);
+            }else{
+                $("#redirection_time_div").show();
+                $('#redirect_type_zero').prop('checked', true);
             }
        });
 
         $('#redirect_type_zero').on('click', function(){
+            $("#redirection_time_div").show();
+            $("#default_redirection_time").val("5");
             var redirectTypeOneCheck =  $('#redirect_type_one').prop('checked');
             if (redirectTypeOneCheck==true) {
                 $('#redirect_type_one').prop('checked', false);
                 $('#default_redirection_time').prop('disabled', false);
             } else {
                 $('#default_redirection_time').prop('disabled', false);
-            }
-        });
-        $("#redirect_type_one").change(function(){
-            if (this.checked) {
-                $("#default_redirection_time").val("0");
+                $('#redirect_type_one').prop('checked', true);
+                $("#redirection_time_div").hide();
+                
             }
         });
         $('.pixel-edit-btn').on('click', function(){
