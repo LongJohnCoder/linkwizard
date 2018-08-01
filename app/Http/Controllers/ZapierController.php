@@ -129,9 +129,9 @@
             try {
                 $getUser=User::where('zapier_key',$apikey)->first();
                 if(count($getUser)>0){
-                    $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
+                    //$pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
                     $url=$request->url;
-                    if (preg_match($pattern,$url)) {
+                    if ($url) {
                         if (strpos($request->url, 'https://') === 0) {
                             $actualUrl = str_replace('https://', null, $request->url);
                             $protocol  = 'https';
