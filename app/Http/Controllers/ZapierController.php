@@ -172,7 +172,7 @@
                             ];
                             $responseCode=200;
                         }
-                    .}else{
+                    }else{
                         $response = [
                             "status"    => false,
                             'message'   => "Url Is Not Valid!",
