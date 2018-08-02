@@ -12,16 +12,14 @@
     use App\Url;
     use App\UrlSpecialSchedule;
     use App\User;
-    use Illuminate\Http\Request;
-    use Illuminate\Support\Facades\Auth;
-    use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Session;
     use App\UrlFeature;
     use App\UrlSearchInfo;
     use App\UrlTag;
     use App\UrlTagMap;
-    use App\PasswordReset;
-    use App\Http\Requests\ForgotPasswordRequest;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Auth;
+    use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Session;
 
     /** Controller To Manage Zapier Api**/
     class ZapierController extends Controller{
@@ -117,6 +115,7 @@
             }
             return \Response::json($response,$responseCode);
         }
+
         /**
          * Webhook to verify ZAPIER api key and if it is verified create short link.
          * All response code will be 200 as Jon Wants
@@ -219,28 +218,13 @@
         }
 
         /**
-         * Webhook to verify ZAPIER api key and if it is verified create short link.
+         * Webhook to get group link list.
          * All response code will be 200 as Jon Wants
          * 
          * @param Request $request
          * @param $apikey
          * @return Illuminate\Http\JSONResponse
         */
-
-        public function createGroupLinkFromZapier(Request $request, $apikey){
-            $getUser=User::where('zapier_key',$apikey)->first();
-            if(count($getUser)>0){
-                
-            }else{
-                $response = [
-                    "status"    => false,
-                    "message"   => "You Are Not Authenticated!",
-                ];
-                $responseCode=200;
-            }
-            return \Response::json($response,$responseCode);
-        }
-
         public function getGrouplink($apikey){
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){
@@ -283,7 +267,14 @@
             return \Response::json($response,$responseCode);
         }
     
-
+        /**
+         * Webhook to verify ZAPIER api key and if it is verified create short link.
+         * All response code will be 200 as Jon Wants
+         * 
+         * @param Request $request
+         * @param $apikey
+         * @return Illuminate\Http\JSONResponse
+        */
         public function groupMultipleLink(Request $request, $apikey){
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){
@@ -366,6 +357,11 @@
             return \Response::json($response,$responseCode);
         }
 
+        /**
+        * URL suffix random string generator for group link.
+        *
+        * @return string
+        */
         private function groupRandomString($parenSuffix){
             $character_set = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
             $random_string = null;

@@ -510,30 +510,42 @@ $(document).ready(function () {
 
                 ValidURL(originalUrl);
             }
-        }else if(getUrlType==1){
-            var rotatingUrls=$("input[name^=actual_url").map(function() {return $(this).val();}).get();
-            if(!(rotatingUrls.length >1)){
-                swal({
-                    title: "Error",
-                    text: "Atleast Need Two URL to create Rotating Link",
-                    type: "error",
-                    html: true
-                });
-                return false;
-            }
-            for(i=0; i < rotatingUrls.length ; i++){
-                if(rotatingUrls[i]){
-                    ValidURL(rotatingUrls[i]);
-                }else{
+        }else if(getUrlType==1 || getUrlType==2){
+            if(getUrlType==1 ){
+                var rotatingUrls=$("input[name^=actual_url").map(function() {return $(this).val();}).get();
+                if(!(rotatingUrls.length >1)){
                     swal({
                         title: "Error",
-                        text:  "Please Provide Url",
+                        text: "Atleast Need Two URL to create Rotating Link",
                         type: "error",
                         html: true
                     });
                     return false;
                 }
-            } 
+                for(i=0; i < rotatingUrls.length ; i++){
+                    if(rotatingUrls[i]){
+                        ValidURL(rotatingUrls[i]);
+                    }else{
+                        swal({
+                            title: "Error",
+                            text:  "Please Provide Url",
+                            type: "error",
+                            html: true
+                        });
+                        return false;
+                    }
+                }
+            }else{
+                var urlTitle=$('#group_url_title').val();
+                if(!urlTitle){
+                    swal({
+                        title: "Error",
+                        text:  "Please Provide Group Title",
+                        type: "error",
+                    });
+                    return false;
+                }
+            }
         }else{
             return false;
         }

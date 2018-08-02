@@ -1843,12 +1843,6 @@ h4#subdomainModalLabel{
   box-shadow: inset 1px 0 10px 0 #ccc;
 }
 
-#myModalLabel.modal-title {
-    background: #eee;
-    padding: 10px;
-    font-size: 20px;
-}
-
 #datePickerModal .modal-content{
     display: inline-block;
     width: 100%;

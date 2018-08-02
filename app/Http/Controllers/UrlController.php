@@ -100,23 +100,16 @@
                             $red_time = $profileSettings->default_redirection_time;
                             $pageColour = $profileSettings->pageColor;
                         }
-                        if(($type==0)||($type==1)){
-                            return view('dashboard.shorten_url' , [
-                                'urlTags'             => $urlTags,
-                                'total_links'         => $total_links,
-                                'limit'               => $limit,
-                                'subscription_status' => $subscription_status,
-                                'user'                => $user,
-                                'type'                => $type,
-                                'timezones'           => $timezones,
-                                'pixels'              => $pixels,
-                                'red_time'            => $red_time,
-                                'pageColor'           => $pageColour  
-                            ]);
-                        }else{
-                            $grouplink=Url::where('link_type',2)->where('user_id',$user->id)->where('parent_id',0)->orderBy('id','DESC')->with('children')->get();
-                            return view('dashboard.grouplink' , compact('user','type','subscription_status','grouplink'));
-                        }
+                        return view('dashboard.shorten_url' , [
+                            'urlTags'             => $urlTags,
+                            'total_links'         => $total_links,
+                            'limit'               => $limit,
+                            'subscription_status' => $subscription_status,
+                            'user'                => $user,
+                            'type'                => $type,
+                            'timezones'           => $timezones,
+                            'pixels'              => $pixels
+                        ]);
                     }
                 } else {
                     return redirect()->action('HomeController@getIndex');
@@ -158,6 +151,10 @@
                             $actualUrl = NULL;
                             $protocol  = 'http';
                         }
+                    }if($request->type==2){
+                        $protocol  = 'http';
+                        $actualUrl = NULL;
+                        $urltitle  = $request->group_url_title;
                     }else{
                         return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
                     }
@@ -456,7 +453,7 @@
                         $url->link_type = 1;
                         $url->no_of_circular_links = $noOfCircularLinks;
                         $url->save();
-                    }else if($request->type==0){
+                    }else if($request->type==0|| $request->type==2){
                         $link_schedule_array = [];
                         if(isset($request->allowSchedule) && $request->allowSchedule == 'on'){
                             $url->is_scheduled = 'y';
@@ -517,6 +514,10 @@
                                 $url->geolocation=1;
                             }
                             $this->addGeoLocation($request, $url->id);
+                        }
+                        if($request->type==2){
+                            $url->link_type = 2;
+                            $url->title=$urltitle;
                         }
                         $url->save();
                     }

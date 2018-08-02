@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+  namespace App\Http\Controllers;
 
 use App\Browser;
 use App\CircularLink;
@@ -117,7 +117,6 @@ class HomeController extends Controller
       $count = DB::table('urls')
           ->selectRaw('count(user_id) AS `count`')
           ->where('user_id', $user->id)
-          ->where('link_type',"!=",2)
           ->groupBy('user_id')
           ->get();
 
@@ -159,7 +158,7 @@ class HomeController extends Controller
 
          $userId = \Auth::user()->id;
          $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($userId) {
-           $q->where('user_id',$userId)->where('link_type',"!=",2);
+           $q->where('user_id',$userId);
          })->pluck('tag')->toArray();
 
          return [
@@ -389,7 +388,7 @@ class HomeController extends Controller
       $flag = 0;
       //echo strlen(trim($textToSearch));exit();
       if(strlen(trim($textToSearch)) > 0 || !empty($tagsToSearch)){
-        $urls = Url::where('user_id', $userId)->where("link_type","!=",2);
+        $urls = Url::where('user_id', $userId)->where("parent_id",0);
         if(strlen($textToSearch) > 0) {
           $urls = $urls->whereHas('urlSearchInfo', function($q) use($textToSearch) {
             $q->whereRaw("MATCH (description) AGAINST ('".$textToSearch."' IN BOOLEAN MODE)");
@@ -417,7 +416,7 @@ class HomeController extends Controller
         ];
       } else {
 
-       $urls = Url::where('user_id', $userId)->where("link_type","!=",2)
+       $urls = Url::where('user_id', $userId)->where("parent_id",0)
                 ->orderBy('id', 'DESC');
         $count_url = $urls->count();
         return [
@@ -2408,7 +2407,8 @@ class HomeController extends Controller
             }else{
                 $user = Auth::user();
                 $arr = $this->getAllDashboardElements($user, $request);
-                return view('dashboard2', $arr);
+               // return view('dashboard2', $arr);
+                return view('dashboard.dashboard', $arr);
             }
         } else {
             Auth::logout();
@@ -2418,89 +2418,93 @@ class HomeController extends Controller
     }
 
     public function getLinkPreview($id) {
-      if (Auth::check())
-      {
-          //dd(Auth::check());  
-          if(\Session::has('plan'))
-          {
-              return redirect()->action('HomeController@getSubscribe');
-          }
-          else
-          {
-            $user = Auth::user();
-            $url = Url::find($id);
-            $redirecting_time = 5000;
-            $redirecting_text = "Redirecting...";
-            $profile = Profile::where('user_id',$url->user_id)->first();
-            if (count($profile)>0) {
-                $redirecting_time = $profile->default_redirection_time;
-                $redirecting_text = $profile->default_redirecting_text;
-                if ($url->usedCustomised==1) {
-                    $redirecting_time = $url->redirecting_time;
-                    $redirecting_text = $url->redirecting_text_template; 
-                }
-                if (($profile->redirection_page_type == 1) && ($url->usedCustomised==0)) {
-                    $redirecting_time = 0;
-                }
-            }  else {
-                if ($url->usedCustomised==1) {
-                    $redirecting_time = $url->redirecting_time;
-                    $redirecting_text = $url->redirecting_text_template; 
-                }
+        if (Auth::check()){
+            //dd(Auth::check());  
+            if(\Session::has('plan')) {
+                return redirect()->action('HomeController@getSubscribe');
+            }else{
+              $user = Auth::user();
+              $url = Url::find($id);
+              $redirecting_time = 5000;
+              $redirecting_text = "Redirecting...";
+              $profile = Profile::where('user_id',$url->user_id)->first();
+              if (count($profile)>0) {
+                  $redirecting_time = $profile->default_redirection_time;
+                  if ($url->usedCustomised==1) {
+                      $redirecting_time = $url->redirecting_time;
+                      $redirecting_text = $url->redirecting_text_template; 
+                  } else {
+                      $redirecting_time = $profile->default_redirection_time;
+                  }
+              }
+              if(!$url) {
+                  return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
+              }
+
+              $total_links = null;
+              if ($url) {
+                  $total_links = $url->count;
+                  $limit = LinkLimit::where('user_id', $user->id)->first();
+                  if ($limit) {
+                      $limit->number_of_links = $total_links;
+                      $limit->save();
+                  }
+              }
+
+              if ($user->subscribed('main', 'tr5Advanced')) {
+                  $subscription_status = 'tr5Advanced';
+                  $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+
+              } elseif ($user->subscribed('main', 'tr5Basic')) {
+                  $subscription_status = 'tr5Basic';
+                  $limit = Limit::where('plan_code', 'tr5Basic')->first();
+              } else {
+                  $subscription_status = false;
+                  $limit = Limit::where('plan_code', 'tr5free')->first();
+              }
+
+
+              $urlTags = $url->urlTagMap;
+              $tags = '';
+              /* Tags for url */
+              if(count($urlTags)>0)
+              {
+                  $tags = array();
+                  foreach($urlTags as $urlTag)
+                  {
+                      $tagName = UrlTag::find($urlTag->url_tag_id);
+                      $tags[] = $tagName->tag;
+                  }
+              }else
+              {
+                  $tags = 'No tag available';
+              }
+              if($url->link_type==2){
+                return view('dashboard.grouppreview' , [
+                'url'                 => $url,
+                'total_links'         => $total_links,
+                'limit'               => $limit,
+                'subscription_status' => $subscription_status,
+                'user'                => $user,
+                'tags'                => $tags,
+                'redirecting_text'    => $redirecting_text,
+                'redirecting_time'    => $redirecting_time
+
+              ]);
+
+              }else{
+              return view('dashboard.link_preview' , [
+                'url'                 => $url,
+                'total_links'         => $total_links,
+                'limit'               => $limit,
+                'subscription_status' => $subscription_status,
+                'user'                => $user,
+                'tags'                => $tags,
+                'redirecting_text'    => $redirecting_text,
+                'redirecting_time'    => $redirecting_time
+
+              ]);
             }
-            if(!$url) {
-                return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
-            }
-
-            $total_links = null;
-            if ($url) {
-                $total_links = $url->count;
-                $limit = LinkLimit::where('user_id', $user->id)->first();
-                if ($limit) {
-                    $limit->number_of_links = $total_links;
-                    $limit->save();
-                }
-            }
-
-            if ($user->subscribed('main', 'tr5Advanced')) {
-                $subscription_status = 'tr5Advanced';
-                $limit = Limit::where('plan_code', 'tr5Advanced')->first();
-
-            } elseif ($user->subscribed('main', 'tr5Basic')) {
-                $subscription_status = 'tr5Basic';
-                $limit = Limit::where('plan_code', 'tr5Basic')->first();
-            } else {
-                $subscription_status = false;
-                $limit = Limit::where('plan_code', 'tr5free')->first();
-            }
-
-
-            $urlTags = $url->urlTagMap;
-            $tags = '';
-            /* Tags for url */
-            if(count($urlTags)>0)
-            {
-                $tags = array();
-                foreach($urlTags as $urlTag)
-                {
-                    $tagName = UrlTag::find($urlTag->url_tag_id);
-                    $tags[] = $tagName->tag;
-                }
-            }else
-            {
-                $tags = 'No tag available';
-            }
-            return view('dashboard.link_preview' , [
-              'url'                 => $url,
-              'total_links'         => $total_links,
-              'limit'               => $limit,
-              'subscription_status' => $subscription_status,
-              'user'                => $user,
-              'tags'                => $tags,
-              'redirecting_text'    => $redirecting_text,
-              'redirecting_time'    => $redirecting_time
-
-            ]);
           }
 
       } else {

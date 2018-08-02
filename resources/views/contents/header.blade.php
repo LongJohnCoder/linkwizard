@@ -35,24 +35,24 @@
 					<div class="createlink boder openpop <?php echo ($uri=='wizard')?'active-toplink' : '' ?>">
 							<a href="{{route('createLink',['type' => 'wizard'])}}">
 								@if(config('settings.VIEW.SHORT_LINK') !== null)
-							        +{{config('settings.VIEW.SHORT_LINK')}}
+							        {{config('settings.VIEW.SHORT_LINK')}}
 								@else
-									+Add Wizard link
+								    Create Wizard link
 								@endif
 							</a>
 					</div>
-					<div class="createlink openpop <?php echo ($uri=='rotating')?'active-toplink' : '' ?>">
+					<div class="createlink boder openpop <?php echo ($uri=='rotating')?'active-toplink' : '' ?>">
 						<a href="{{route('createLink',['type' => 'rotating'])}}">
 							@if(config('settings.VIEW.ROTATING_LINK') !== null)
-						<!-- Create tier5 link --> +{{config('settings.VIEW.ROTATING_LINK')}}
+							<!-- Create tier5 link -->{{config('settings.VIEW.ROTATING_LINK')}}
 							@else
-								+Add Rotating link
+								Create Rotating link
 							@endif
 						</a>
 					</div>
-					<!-- <div class="createlink openpop <?php echo ($uri=='grouplink')?'active-toplink' : '' ?>">
-						<a href="{{route('createLink',['type' => 'grouplink'])}}">+Group Link</a>	
-					</div> -->
+					<div class="createlink openpop <?php echo ($uri=='grouplink')?'active-toplink' : '' ?>">
+						<a href="{{route('createLink',['type' => 'grouplink'])}}">Create Group Link</a>	
+					</div>
 				
 					<div class="hamburg-menu">
 	                  	<a href="#" id="menu-icon" class="menu-icon">
@@ -159,7 +159,7 @@
                                 <li class="<?php echo ($uri=='pricing')?'active' : '' ?>"><a href="/pricing">pricing</a></li>
                                 <li class="<?php echo ($uri=='blog')?'active' : '' ?>"><a href="/blog">blog</a></li>-->
                                <!--  <li class="<?php echo ($uri=='pixels')?'active' : '' ?>"><a href="{{route('pixels')}}">Managing Pixels</a></li> -->
-                                <li class="<?php echo ($uri=='dashboard')?'active' : '' ?>"><a href="{{route('getDashboard')}}">dashboard</a></li>
+                                <li class="<?php echo ($uri=='dashboard')?'active' : '' ?>"><a href="{{route('getDashboard')}}"> My dashboard</a></li>
 								<li class="<?php echo ($uri=='profile')?'active' : '' ?>"><a href="{{route('profileSettings')}}">Settings</a></li>
 				            	@if ($user->is_admin == 1)
 		               				<li><a style="color:green" href="{{ route('getAdminDashboard') }}">ADMIN DASHBOARD</a></li>

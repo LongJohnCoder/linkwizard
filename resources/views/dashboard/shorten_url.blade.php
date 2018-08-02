@@ -65,11 +65,19 @@
                                     <div class="actualUrl">
                                         <div class="row">
                                             <div class="col-md-2 col-sm-2">
+                                                @if($type==0 || $type==1)
                                                 <label> Paste An Actual URL Here </label>
+                                                @else
+                                                <label>Name Your Group </label>
+                                                @endif
                                             </div>
                                             <div class="col-md-8 col-sm-8">
                                                 <div class="form-group">
+                                                    @if($type==0 || $type==1)
                                                     <input id="givenActual_Url_0" type="text" name="actual_url[0]" class="form-control actual-url" placeholder="Please Provide A Valid Url Like http://www.example.com">
+                                                    @else
+                                                    <input id="group_url_title" type="text" name="group_url_title" class="form-control" placeholder="Group Name" required="true">
+                                                    @endif
                                                 </div>
                                                 <div class="input-msg form-group">
                                                     * This is where you paste your long URL that you'd like to shorten.
@@ -116,36 +124,6 @@
                                     @endif 
                                 </div>
                                 <!--Add URL End-->
-
-                                <!--Old facebook pixel Start-->
-                               <!-- <div class="normal-box1">
-                                    <div class="normal-header">
-                                        <label class="custom-checkbox">Add facebook pixel
-                                            <input type="checkbox" id="checkboxAddFbPixelid" name="checkboxAddFbPixelid">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="normal-body facebook-pixel">
-                                        <p>Paste Your Facebook-pixel-id Here</p>
-                                        <input type="text" name="fbPixelid" class="form-control" id="fbPixel_id">
-                                    </div>
-                                </div> -->
-                                <!--Old facebook pixel End-->
-
-                                <!--Old google pixel Start-->
-                                <!--<div class="normal-box1">
-                                    <div class="normal-header">
-                                        <label class="custom-checkbox">Add google pixel
-                                            <input type="checkbox" id="checkboxAddGlPixelid" name="checkboxAddGlPixelid">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
-                                    <div class="normal-body google-pixel">
-                                        <p>Paste Your Google-pixel-id Here</p>
-                                        <input type="text" name="glPixelid" class="form-control" id="glPixel_id">
-                                    </div>
-                                </div>-->
-                                <!--Old google pixel End-->
 
                                 <!-- Pixel manage -->
                                 <div class="normal-box1">
@@ -406,7 +384,7 @@
                                     </div>
                                 </div>
                                 <!--Add Link Schedular-->
-                                @if($type==0)
+                                @if($type==0 || $type==2)
                                 <div class="normal-box1">
                                     <div class="normal-header">
                                         <table class="merge-tab">
@@ -417,12 +395,14 @@
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </td>
+                                                @if($type==0)
                                                 <td>
                                                     <label class="custom-checkbox">Add schedules for the link
                                                         <input type="checkbox" id="addSchedule" name="allowSchedule">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </td>
+                                                @endif
                                             </tr>
                                         </table>
                                     </div>
@@ -444,6 +424,7 @@
                                         <p>Select a redirection page url after expiration</p>
                                         <input type="text" class="form-control" name="redirect_url" id="expirationUrl" onchange="checkUrl(this.value)">
                                     </div>
+                                    @if($type==0)
                                     <!-- Link schedule part html -->
                                     <div class="normal-body add-link-schedule" id="scheduleArea">
                                         <ul class="nav nav-tabs">
@@ -535,6 +516,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
 
                                 <!--Box For Adding Geo Location-->

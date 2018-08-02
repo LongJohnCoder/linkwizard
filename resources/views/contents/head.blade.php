@@ -1,80 +1,78 @@
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>
-    @if(basename(Request::url()) == 'dashboard')
-        Dashboard
-    @elseif(basename(Request::url()) == 'wizard')
-        Create Short Link
-    @elseif(basename(Request::url()) == 'rotating')
-        Create Rotating Link
-    @elseif(basename(Request::url()) == 'edit_url_view')
-        Edit Url
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
+    <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
+    <meta name="author" content="Tier5 LLC" />
+    <meta property="og:title" content="Tier5 URL Shortener" />
+    <meta property="og:image" content="{{ URL('/')}}/public/resources/img/company_logo.png" />
+    <meta property="og:url" content="tr5.io" />
+    <meta property="og:site_name" content="Tr5.io" />
+    <meta property="og:description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
+    <meta name="twitter:title" content="Tr5.io"  />
+    <meta name="twitter:image" content="{{ URL('/')}}/public/resources/img/company_logo.png"  />
+    <meta name="twitter:url" content="tr5.io"  />
+    <meta name="twitter:card" content="summary"  />
+    <title>
+        @if(isset($title))
+            {{$title}}
+        @else
+            Linkwizard
+        @endif
+    </title>
+    <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{url('/')}}/public/fonts/font-awesome/css/font-awesome.min.css">
+    <link href="{{config('settings.FAVICON')}}" rel="shortcut icon" type="image/ico">
+    <!-- <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" /> -->
+    <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
+    <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
+    <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.jqueryui.min.css
+    ">
+    <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
+    <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
+    <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
+    <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
+    <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.jqueryui.min.js"></script>
+
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0-rc.2/Chart.bundle.min.js"></script> --}}
+    <script src="{{ URL::to('/').'/public/resources/js/highcharts.js' }}"></script>
+    <script src="{{ URL::to('/').'/public/resources/js/highchart-data.js' }}"></script>
+    <script src="{{ URL::to('/').'/public/resources/js/highchart-drilldown.js' }}"></script>
+    <script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
+
+    <!-- Choseen jquery  -->
+    <script src="{{ URL::to('/').'/public/resources/js/chosen/chosen.jquery.js' }}" type="text/javascript"></script>
+    <script src="{{ URL::to('/').'/public/resources/js/chosen/prism.js' }}" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
+    <!-- Choseen jquery  -->
+
+    {{-- Tags css --}}
+    <link rel="stylesheet" href="{{ URL('/')}}/public/css/bootstrap-tagsinput.css" />
+
+    {{-- Tags js --}}
+    <script src="{{URL::to('/').'/public/js/bootstrap-tagsinput.js'}}"></script>
+
+    @if(\Session::has('plan'))
+    <script type="text/javascript">
+    	$(document).ready(function(){
+    		var plan = "{{\Session::get('plan')}}";
+    		var url = "{{url('/')}}/app/user/subscribe";
+    		window.location.replace(url);
+    	});
+    </script>
     @endif
-</title>
-
-<link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
-<link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
-<link rel="stylesheet" href="{{url('/')}}/public/fonts/font-awesome/css/font-awesome.min.css">
-
-<meta name="description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
-<meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
-<meta name="author" content="Tier5 LLC" />
-<link href="{{config('settings.FAVICON')}}" rel="shortcut icon" type="image/ico">
-<!-- <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap.min.css" /> -->
-<link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-theme.min.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-<link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' />
-<link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/style2.css" />
-<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.jqueryui.min.css
-">
-<link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
-<link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
-<link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-<script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
-<script src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="https://www.google.com/jsapi"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/dataTables.jqueryui.min.js"></script>
-
-{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0-rc.2/Chart.bundle.min.js"></script> --}}
-<script src="{{ URL::to('/').'/public/resources/js/highcharts.js' }}"></script>
-<script src="{{ URL::to('/').'/public/resources/js/highchart-data.js' }}"></script>
-<script src="{{ URL::to('/').'/public/resources/js/highchart-drilldown.js' }}"></script>
-<script src="{{ URL::to('/').'/public/resources/js/modernizr.custom.js' }}"></script>
-
-<!-- Choseen jquery  -->
-<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
-<link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
-<script src="{{ URL::to('/').'/public/resources/js/chosen/chosen.jquery.js' }}" type="text/javascript"></script>
-<script src="{{ URL::to('/').'/public/resources/js/chosen/prism.js' }}" type="text/javascript" charset="utf-8"></script>
-<script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
-<!-- Choseen jquery  -->
-
-{{-- Tags css --}}
-<link rel="stylesheet" href="{{ URL('/')}}/public/css/bootstrap-tagsinput.css" />
-
-{{-- Tags js --}}
-<script src="{{URL::to('/').'/public/js/bootstrap-tagsinput.js'}}"></script>
-
-@if(\Session::has('plan'))
-<script type="text/javascript">
-	$(document).ready(function(){
-		var plan = "{{\Session::get('plan')}}";
-		var url = "{{url('/')}}/app/user/subscribe";
-		window.location.replace(url);
-	});
-</script>
-@endif
-
-
-
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
 
@@ -84,15 +82,6 @@
 
 
 
-<meta property="og:title" content="Tier5 URL Shortener" />
-<meta property="og:image" content="{{ URL('/')}}/public/resources/img/company_logo.png" />
-<meta property="og:url" content="tr5.io" />
-<meta property="og:site_name" content="Tr5.io" />
-<meta property="og:description" content="An URL shortener with more sophisticated analytics. Spread your business or creativity using the power of shorten links. Brought to you by Tier5 LLC." />
-<meta name="twitter:title" content="Tr5.io"  />
-<meta name="twitter:image" content="{{ URL('/')}}/public/resources/img/company_logo.png"  />
-<meta name="twitter:url" content="tr5.io"  />
-<meta name="twitter:card" content="summary"  />
 
 
 <script src="//connect.facebook.net/en_US/sdk/debug.js"></script>
