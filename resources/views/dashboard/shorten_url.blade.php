@@ -259,12 +259,12 @@
                                     <div class="normal-body add-countDown" id="countDownArea">
                                         <p>Add countdown time for this link</p>
                                         <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="5"><br>
+                                        <p> Choose custom brand logo </p>
+                                        <input class="form-control" type="file" name="custom_brand_logo" accept="image/*"><br>
                                         <p> Select your customize colour </p>
                                         <input type="color" name="pageColour" value="#005C96"><br><br>
                                         <p> Enter your redirecting text </p>
                                         <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
-                                        <p> Choose custom brand logo </p>
-                                        <input class="form-control" type="file" name="custom_brand_logo" accept="image/*">
                                     </div>                        
                                 </div>
                                 <!-- Add Countdown End -->

@@ -500,12 +500,12 @@ $optTypeLI = 'normal';
                             <div class="normal-body add-countDown" id="countDownArea" style="display: {{$urls->usedCustomised ? 'block' : 'none'}};">
                                 <p>Edit countdown time for this link</p>
                                 <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="{{$urls->redirecting_time/1000}}" ><br>
+                                <p> Choose custom brand logo <small>{{$urls->uploaded_path != '' ? '(Already uploaded a brand image.You can choose another file to change the brand logo)' : ''}} </small></p>
+                                <input class="form-control" type="file" name="custom_brand_logo" accept="image/*"><br>
                                 <p> Select your customize colour </p>
                                 <input type="color" name="pageColour" value="{{$urls->customColour}}"><br><br>
                                 <p> Enter your redirecting text </p>
                                 <input class="form-control" type="text" name="redirecting_text_template" value="{{$urls->redirecting_text_template != 'Redirecting...' ? $urls->redirecting_text_template : ''}}" placeholder="Redirecting..."><br>
-                                <p> Choose custom brand logo <small>{{$urls->uploaded_path != '' ? '(Already uploaded a brand image.You can choose another file to change the brand logo)' : ''}} </small></p>
-                                <input class="form-control" type="file" name="custom_brand_logo" accept="image/*">
                             </div>
                         </div>
                         <!-- Edit Favicon -->
