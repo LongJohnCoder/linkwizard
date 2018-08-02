@@ -263,6 +263,8 @@
                                         <input type="color" name="pageColour" value="#005C96"><br><br>
                                         <p> Enter your redirecting text </p>
                                         <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
+                                        <p> Choose custom brand logo </p>
+                                        <input class="form-control" type="file" name="custom_brand_logo" accept="image/*">
                                     </div>                        
                                 </div>
                                 <!-- Add Countdown End -->
@@ -1068,6 +1070,18 @@
         });
     });
 </script>
+@if(session()->has('imgErr'))
+    @if(session()->get('imgErr')=='error')
+        <script>
+            swal({
+                title: "Invalid Image format",
+                text: "Please select an image with jpg png or gif file format",
+                type: "warning",
+                button: "OK",
+            });
+        </script>
+    @endif
+@endif
 @if(Session::has('success'))
     <script type="text/javascript">
         $(document).ready(function () {

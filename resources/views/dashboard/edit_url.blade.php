@@ -58,7 +58,8 @@ $optTypeLI = 'normal';
             });
         });
     </script>
-@endif @if(Session::has('error'))
+@endif
+@if(Session::has('error'))
     <script type="text/javascript">
         $(document).ready(function () {
             swal({
@@ -69,7 +70,8 @@ $optTypeLI = 'normal';
             });
         });
     </script>
-@endif @if ($errors->any())
+@endif
+@if ($errors->any())
     <script>
         $(document).ready(function () {
             swal({
@@ -501,7 +503,9 @@ $optTypeLI = 'normal';
                                 <p> Select your customize colour </p>
                                 <input type="color" name="pageColour" value="{{$urls->customColour}}"><br><br>
                                 <p> Enter your redirecting text </p>
-                                <input class="form-control" type="text" name="redirecting_text_template" value="{{$urls->redirecting_text_template != 'Redirecting...' ? $urls->redirecting_text_template : ''}}" placeholder="Redirecting...">
+                                <input class="form-control" type="text" name="redirecting_text_template" value="{{$urls->redirecting_text_template != 'Redirecting...' ? $urls->redirecting_text_template : ''}}" placeholder="Redirecting..."><br>
+                                <p> Choose custom brand logo <small>{{$urls->uploaded_path != '' ? '(Already uploaded a brand image.You can choose another file to change the brand logo)' : ''}} </small></p>
+                                <input class="form-control" type="file" name="custom_brand_logo" accept="image/*">
                             </div>
                         </div>
                         <!-- Edit Favicon -->
@@ -851,7 +855,7 @@ $optTypeLI = 'normal';
 
                         @endif
                         {{csrf_field()}}
-                        <button type="submit" id="edit-short-url" class=" btn-shorten">Shorten URL</button>
+                        <button type="submit" id="edit-short-url" class=" btn-shorten">Update URL</button>
                     </form>
                 </div>
             </div>
@@ -1914,6 +1918,18 @@ $optTypeLI = 'normal';
             });
         });
     </script>
+@endif
+@if(session()->has('imgErr'))
+    @if(session()->get('imgErr')=='error')
+        <script>
+            swal({
+                title: "Invalid Image format",
+                text: "Please select an image with jpg png or gif file format",
+                type: "warning",
+                button: "OK",
+            });
+        </script>
+    @endif
 @endif
 @if(Session::has('error'))
     <script type="text/javascript">

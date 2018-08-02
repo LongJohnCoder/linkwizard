@@ -7,7 +7,7 @@
             swal({
                 title: "Success!",
                 text: "Profile information has been successfully added",
-                icon: "success",
+                type: "success",
                 button: "OK",
             });
         </script>
@@ -16,7 +16,16 @@
             swal({
                 title: "Error!",
                 text: "Something went wrong during the process, please try again",
-                icon: "warning",
+                type: "warning",
+                button: "OK",
+            });
+        </script>
+    @elseif(session()->get('msg')=='imgErr')
+        <script>
+            swal({
+                title: "Invalid Image format",
+                text: "Please select an image with jpg png or gif file format",
+                type: "warning",
                 button: "OK",
             });
         </script>
@@ -145,11 +154,22 @@
                                     </div>
                                 </div>
                                 <div class="controls row alert" id="redirection_time_div" style="display: {{$checkRedirectPageOne == 'checked' ? 'none' : 'block'}};">
-                                    <div class="col-md-9">
-                                        <label class="control-label"> Redirection time</label>
+                                    <div class="row alert">
+                                        <div class="col-md-9">
+                                            <label class="control-label"> Choose default brand logo </label>
+                                            <small>{{$default_brand_logo == 1 ? '(Already uploaded a brand image. You can choose another file to change the brand logo)' : ''}}</small>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="file" name="default_image" accept="image/*">
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <input type='number' name='default_redirection_time' class='form-control redirection_time' id='default_redirection_time' min='1' max='30' value='{{$redirectionTime}}'>
+                                    <div class="row alert">
+                                        <div class="col-md-9">
+                                            <label class="control-label"> Redirection time</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type='number' name='default_redirection_time' class='form-control redirection_time' id='default_redirection_time' min='1' max='30' value='{{$redirectionTime}}'>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="controls row">

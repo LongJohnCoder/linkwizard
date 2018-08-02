@@ -226,6 +226,32 @@
                     } else {
                         $url->redirecting_text_template = "Redirecting...";
                     }
+                    /* Checking for image */
+                    if ($request->hasFile('custom_brand_logo')) {
+                        /* checking file type */
+                        $allowedExt = array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF');
+                        $imageExt = $request->custom_brand_logo->getClientOriginalExtension();
+                        if (!in_array($imageExt, $allowedExt)) {
+                            return redirect()->back()->with('imgErr', 'error');
+                        }
+                        if (!file_exists('public/uploads/brand_images')) {
+                            mkdir('public/uploads/brand_images', 777 , true);
+                        }
+                        $upload_path ='public/uploads/brand_images';
+                        $image_name = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
+                        $data = getimagesize($request->custom_brand_logo);
+                        $width = $data[0];
+                        $height = $data[1];
+
+                        /* image resizing */
+                        $temp_height = 450;
+                        $abs_width = ceil(($width*$temp_height)/$height);
+                        $abs_height = $temp_height;
+                        $image_resize = Image::make($request->custom_brand_logo->getRealPath());
+                        $image_resize->resize($abs_width, $abs_height);
+                        $image_resize->save($upload_path.'/'.$image_name);
+                        $url->uploaded_path = $upload_path.'/'.$image_name;
+                    }
                     $url->customColour = $request->pageColour;
                     $url->usedCustomised = '1';
                 } else {
@@ -766,6 +792,32 @@
                             $url->redirecting_text_template = $request->redirecting_text_template;
                         } else {
                             $url->redirecting_text_template = "Redirecting...";
+                        }
+                        /* Checking for image */
+                        if ($request->hasFile('custom_brand_logo')) {
+                            /* checking file type */
+                            $allowedExt = array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF');
+                            $imageExt = $request->custom_brand_logo->getClientOriginalExtension();
+                            if (!in_array($imageExt, $allowedExt)) {
+                                return redirect()->back()->with('imgErr', 'error');
+                            }
+                            if (!file_exists('public/uploads/brand_images')) {
+                                mkdir('public/uploads/brand_images', 777 , true);
+                            }
+                            $upload_path ='public/uploads/brand_images';
+                            $image_name = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
+                            $data = getimagesize($request->custom_brand_logo);
+                            $width = $data[0];
+                            $height = $data[1];
+
+                            /* image resizing */
+                            $temp_height = 450;
+                            $abs_width = ceil(($width*$temp_height)/$height);
+                            $abs_height = $temp_height;
+                            $image_resize = Image::make($request->custom_brand_logo->getRealPath());
+                            $image_resize->resize($abs_width, $abs_height);
+                            $image_resize->save($upload_path.'/'.$image_name);
+                            $url->uploaded_path = $upload_path.'/'.$image_name;
                         }
                     } else {
                         $url->usedCustomised = '0';
@@ -1538,9 +1590,6 @@
                             $red_time =  $search->redirecting_time;
                             $pageColour = $search->customColour;
                             $redirectionText = $search->redirecting_text_template;
-                            if(isset($search->uploaded_path) && ($search->uploaded_path!="")){
-                                $imageUrl = $search->uploaded_path;
-                            }
                         } else {
                             $red_time = 0000;
                             $pageColour = '#ffffff';
@@ -1554,11 +1603,17 @@
                             $redirectionText = $search->redirecting_text_template;
                             if((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="") ){
                                 $pageColour = $userRedirection->pageColor;  
-                            } 
+                            }
+                            if(isset($search->uploaded_path) && ($search->uploaded_path!="")){
+                                $imageUrl = $search->uploaded_path;
+                            }
                         } else if($search->usedCustomised==0){
                             $red_time =  $userRedirection->default_redirection_time;
                             if((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="") ){
                                 $pageColour = $userRedirection->pageColor;  
+                            }
+                            if((isset($userRedirection->default_image))&&( $userRedirection->default_image!="") ){
+                                $imageUrl = $userRedirection->default_image;
                             } 
                         }
                     }
@@ -2655,8 +2710,13 @@
                     }
                     $redirectionTime = $profileSettings->default_redirection_time/1000;
                     $skinColour = $profileSettings->pageColor;
+                    if ((isset($profileSettings->default_image) && ($profileSettings->default_image != 'public/images/Tier5.jpg'))) {
+                        $default_brand_logo = 1;
+                    } else {
+                        $default_brand_logo = 0;
+                    }
                     $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
-                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels'));
+                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels','default_brand_logo'));
                 }
             }
         }
@@ -2687,6 +2747,12 @@
                         $profile->pageColor = $request->pageColor;
                         /* Checking for image */
                         if ($request->hasFile('default_image')) {
+                            /* checking file type */
+                            $allowedExt = array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF');
+                            $imageExt = $request->default_image->getClientOriginalExtension();
+                            if (!in_array($imageExt, $allowedExt)) {
+                                return redirect()->back()->with('msg', 'imgErr');
+                            }
                             if (!file_exists('public/uploads/brand_images')) {
                                 mkdir('public/uploads/brand_images', 777 , true);
                             }
