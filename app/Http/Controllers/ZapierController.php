@@ -244,7 +244,7 @@
         public function getGrouplink($apikey){
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){
-                $getAllGroupUrl=Url::where('link_type',2)->where('parent_id',0)->get();
+                $getAllGroupUrl=Url::where('link_type',2)->where('parent_id',0)->where('user_id',$getUser->id)->get();
                 if(count($getAllGroupUrl)>0){
                     if(isset($url->subdomain)) {
                         if($url->subdomain->type == 'subdomain')
@@ -289,53 +289,66 @@
             if(count($getUser)>0){
                 $checkParentGroup=Url::where('id',$request->parent_group)->where('user_id',$getUser->id)->where('link_type',2)->first();
                 if(count($checkParentGroup)>0){
-                    $subGroupUrl=$request->selectedurl;
-                    if(!$subGroupUrl){
+                  
+                    if((!isset($request->selectedurl)) || ($request->selectedurl=="")){
                         $response = [
                             "status"    => false,
-                            "message"   => "No Group List Available",
+                            "message"   => "No Destination Url Is Available",
                         ];
                         $responseCode=200; 
-                    }
-                    try{
-                        foreach ($subGroupUrl as $individualUrl) {
-                            $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
-                            if (preg_match($pattern,$individualUrl)) {
-                                if (strpos($individualUrl, 'https://') === 0) {
-                                    $actualUrl = str_replace('https://', null, $individualUrl);
-                                    $protocol  = 'https';
-                                }elseif(strpos($individualUrl, 'http://') === 0){
-                                    $actualUrl = str_replace('http://', null, $individualUrl);
-                                    $protocol  = 'http';
-                                }else{
-                                    $actualUrl = $individualUrl;
-                                    $protocol  = 'http';
-                                }
-                            
-                                $random_string = $this->groupRandomString($checkParentGroup->shorten_suffix);
-                                $url                   = new Url();
-                                $url->actual_url       = $actualUrl;
-                                $url->title            = $checkParentGroup->title."-Suburl";
-                                $url->protocol         = $protocol;
-                                $url->user_id          = $getUser->id;
-                                $url->link_type        = 2;
-                                $url->parent_id        = $checkParentGroup->id;
-                                $url->shorten_suffix   = $random_string;
-                                $url->save();
-                            }  
+                    }else{
+                        $subGroupUrl=$request->selectedurl;
+                        try{
+                            foreach ($subGroupUrl as $key=>$individualUrl) {
+                                $pattern='/((http|https)\:\/\/)?[a-zA-Z0-9\.\/\?\:@\-_=#]+\.([a-zA-Z0-9\&\.\/\?\:@\-_=#])*/';
+                                if (preg_match($pattern,$individualUrl)) {
+                                    if (strpos($individualUrl, 'https://') === 0) {
+                                        $actualUrl = str_replace('https://', null, $individualUrl);
+                                        $protocol  = 'https';
+                                    }elseif(strpos($individualUrl, 'http://') === 0){
+                                        $actualUrl = str_replace('http://', null, $individualUrl);
+                                        $protocol  = 'http';
+                                    }else{
+                                        $actualUrl = $individualUrl;
+                                        $protocol  = 'http';
+                                    }
+                                
+                                    $random_string = $this->groupRandomString($checkParentGroup->shorten_suffix);
+                                    $url                   = new Url();
+                                    $url->actual_url       = $actualUrl;
+                                    $url->title            = $checkParentGroup->title;
+                                    $url->protocol         = $protocol;
+                                    $url->user_id          = $getUser->id;
+                                    $url->link_type        = 2;
+                                    $url->parent_id        = $checkParentGroup->id;
+                                    $url->shorten_suffix   = $random_string;
+                                    if($url->save()){
+                                        if(isset($url->subdomain)) {
+                                            if($url->subdomain->type == 'subdomain')
+                                                $shrt_url = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+                                            else if($url->subdomain->type == 'subdirectory')
+                                                $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->subdomain->name.'/'.$url->shorten_suffix;
+                                        } else {
+                                            $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->shorten_suffix;
+                                        }
+                                    }
+                                    $shortGroupUrl[$key]=$shrt_url;
+                                }  
+                            }
+                            $response = [
+                                "status"      => true,
+                                "groupurl"    => $shortGroupUrl,
+                                "message"     => "Group Url Created!",
+                            ];
+                            $responseCode=200;
+                        }catch(\Exception $e){
+                            $response = [
+                                "status"    => false,
+                                "message"   => "No Group Url Created",
+                            ];
+                            $responseCode=200; 
                         }
-                        $response = [
-                            "status"    => true,
-                            "message"   => "Group Url Created!",
-                        ];
-                        $responseCode=200;
-                    }catch(\Exception $e){
-                        $response = [
-                            "status"    => false,
-                            "message"   => "No Group Url Created",
-                        ];
-                        $responseCode=200; 
-                    } 
+                    }
                 }else{
                     $response = [
                         "status"    => false,
