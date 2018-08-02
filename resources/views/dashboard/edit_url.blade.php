@@ -501,8 +501,9 @@ $optTypeLI = 'normal';
                                 <p>Edit countdown time for this link</p>
                                 <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="{{$urls->redirecting_time/1000}}" ><br>
                                 <p> Choose custom brand logo <small>{{$urls->uploaded_path != '' ? '(Already uploaded a brand image.You can choose another file to change the brand logo)' : ''}} </small></p>
-                                <input class="form-control" type="file" name="custom_brand_logo" accept="image/*"><br>
-                                <p> Select your customize colour </p>
+                                <input class="form-control" type="file" name="custom_brand_logo" id="custom_brand_logo" accept="image/*">
+                                <span id="imageError" style="display: none; color: red">*This image is not valid. Please choose another image</span>
+                                <br><p> Select your customize colour </p>
                                 <input type="color" name="pageColour" value="{{$urls->customColour}}"><br><br>
                                 <p> Enter your redirecting text </p>
                                 <input class="form-control" type="text" name="redirecting_text_template" value="{{$urls->redirecting_text_template != 'Redirecting...' ? $urls->redirecting_text_template : ''}}" placeholder="Redirecting..."><br>
@@ -956,6 +957,18 @@ $optTypeLI = 'normal';
  // });
 </script>
 <script type="text/javascript">
+    /* Checking Image validation */
+    $('#custom_brand_logo').change(function(){
+        var fileName = $('#custom_brand_logo').val().split('\\').pop();
+        var extension = fileName.substr( (fileName.lastIndexOf('.') +1) ).toLowerCase();
+        var allowedExt = new Array("jpg","png","gif");
+        if ($.inArray(extension,allowedExt) > -1) {
+            $('#imageError').hide();
+        } else {
+            $('#imageError').show();
+            $("#custom_brand_logo").val('');
+        }
+    });
     function addMoreSpecialLink() {
         var special_url_count = $("#special_url_count").val();
         var new_count;

@@ -1,6 +1,6 @@
 @extends('layout/layout')
 @section('content')
-
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.js" type="text/javascript"></script>
 @if(session()->has('msg'))
     @if(session()->get('msg')=='success')
         <script>
@@ -135,7 +135,7 @@
                     <div id="redirection" class="tab-pane">
                         <div class="element-main">
                             <h2>Set Redirection Settings</h2>
-                            <form action="{{route('saveprofile')}}" method="post" enctype="multipart/form-data">
+                            <form action="{{route('saveprofile')}}" method="post" id="profileSettings" enctype="multipart/form-data">
                             <div class="control-group form-group" style="padding:20px;">
                                 <div class="controls row alert">
                                     <div class="col-md-9">
@@ -160,7 +160,8 @@
                                             <small>{{$default_brand_logo == 1 ? '(Already uploaded a brand image. You can choose another file to change the brand logo)' : ''}}</small>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="file" name="default_image" accept="image/*">
+                                            <input type="file" name="default_image" id="default_image" accept="image/*">
+                                            <span id="imageError" style="display: none; color: red"> <br>*This image is not valid. Please choose another image</span>
                                         </div>
                                     </div>
                                     <div class="row alert">
@@ -411,9 +412,9 @@
                 $('#default_redirection_time').prop('disabled', false);
                 $('#redirect_type_one').prop('checked', true);
                 $("#redirection_time_div").hide();
-                
             }
         });
+        
         $('.pixel-edit-btn').on('click', function(){
             var id = $(this).data('id');
             var pixelName = $('#pixel-row-'+id).find('td:eq(0)').text();
@@ -561,7 +562,18 @@
             }
         });
     });
-
+    /* Image Validation */
+    $('#default_image').change(function(){
+        var fileName = $('#default_image').val().split('\\').pop();
+        var extension = fileName.substr( (fileName.lastIndexOf('.') +1) ).toLowerCase();
+        var allowedExt = new Array("jpg","png","gif");
+        if ($.inArray(extension,allowedExt) > -1) {
+            $('#imageError').hide();
+        } else {
+            $('#imageError').show();
+            $("#default_image").val('');
+        }
+    });
     function profileValidate()
     {
         if ($('#redirect_type_one').prop('checked')==false) {

@@ -260,8 +260,9 @@
                                         <p>Add countdown time for this link</p>
                                         <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="5"><br>
                                         <p> Choose custom brand logo </p>
-                                        <input class="form-control" type="file" name="custom_brand_logo" accept="image/*"><br>
-                                        <p> Select your customize colour </p>
+                                        <input class="form-control" type="file" name="custom_brand_logo" id="custom_brand_logo" accept="image/*">
+                                        <span id="imageError" style="display: none; color: red">*This image is not valid. Please choose another image</span>
+                                        <br><p> Select your customize colour </p>
                                         <input type="color" name="pageColour" value="#005C96"><br><br>
                                         <p> Enter your redirecting text </p>
                                         <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
@@ -658,6 +659,18 @@
         <script src="{{ URL::to('/').'/public/js/fineuploader.min.js' }}"></script>
        
         <script type="text/javascript">
+            /* Checking Image validation */
+            $('#custom_brand_logo').change(function(){
+                var fileName = $('#custom_brand_logo').val().split('\\').pop();
+                var extension = fileName.substr( (fileName.lastIndexOf('.') +1) ).toLowerCase();
+                var allowedExt = new Array("jpg","png","gif");
+                if ($.inArray(extension,allowedExt) > -1) {
+                    $('#imageError').hide();
+                } else {
+                    $('#imageError').show();
+                    $("#custom_brand_logo").val('');
+                }
+            });
             $(".chosen-select").chosen({});
             $(".chosen-container").bind('keyup', function (e) {
                 if (e.which == 13 || e.which == 188) {
