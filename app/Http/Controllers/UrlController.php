@@ -1632,7 +1632,16 @@
                         if ($search->usedCustomised==1) {
                             $red_time =  $search->redirecting_time;
                             $pageColour = $search->customColour;
-                            $redirectionText = $search->redirecting_text_template;
+                            if($search->redirecting_text_template == "Redirecting..." ){
+                                if($userRedirection->default_redirecting_text != "Redirecting..."){
+                                    $redirectionText = $userRedirection->default_redirecting_text;
+                                }else{
+                                    $redirectionText = 'Redirecting...';
+                                }
+                            }else{
+                                $redirectionText = $search->redirecting_text_template;
+                            }
+                            
                             if ($search->uploaded_path == "") {
                                 if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
                                     $imageUrl = $userRedirection->default_image;
