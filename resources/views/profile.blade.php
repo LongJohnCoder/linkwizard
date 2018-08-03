@@ -156,6 +156,14 @@
                                 <div class="controls row alert" id="redirection_time_div" style="display: {{$checkRedirectPageOne == 'checked' ? 'none' : 'block'}};">
                                     <div class="row alert">
                                         <div class="col-md-9">
+                                            <label class="control-label"> Choose default theme colour </label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="color" name="pageColor" value="{{$skinColour}}">
+                                        </div>
+                                    </div>
+                                    <div class="row alert">
+                                        <div class="col-md-9">
                                             <label class="control-label"> Choose default brand logo </label>
                                             <small>{{$default_brand_logo == 1 ? '(Already uploaded a brand image. You can choose another file to change the brand logo)' : ''}}</small>
                                         </div>
