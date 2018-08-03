@@ -1612,7 +1612,6 @@
                             if ((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="")) {
                                 $pageColour = $userRedirection->pageColor;  
                             }
-<<<<<<< HEAD
                             if ($search->uploaded_path == "") {
                                 if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
                                     $imageUrl = $userRedirection->default_image;
@@ -1622,24 +1621,20 @@
                                 $imageUrl = $search->uploaded_path;
                             }
                         } else if ($search->usedCustomised==0) {
-=======
+                            if ($search->uploaded_path == "") {
+                                $imageUrl = $userRedirection->default_image;
+                            }
                             if(isset($search->uploaded_path) && ($search->uploaded_path!="")){
                                 $imageUrl = $search->uploaded_path;
                             }
-                        } else if($search->usedCustomised==0){
->>>>>>> e9b651e85a47bdf6dcf434b1194139cb6c0359c1
-                            $red_time =  $userRedirection->default_redirection_time;
-                            if ((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="")) {
-                                $pageColour = $userRedirection->pageColor;  
-                            }
-<<<<<<< HEAD
-                            if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
-=======
-                            if((isset($userRedirection->default_image))&&( $userRedirection->default_image!="") ){
->>>>>>> e9b651e85a47bdf6dcf434b1194139cb6c0359c1
-                                $imageUrl = $userRedirection->default_image;
-                            } 
                         }
+                        $red_time =  $userRedirection->default_redirection_time;
+                        if ((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="")) {
+                            $pageColour = $userRedirection->pageColor;
+                        }
+                        if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
+                            $imageUrl = $userRedirection->default_image;
+                        } 
                     }
                 } else {
                     if ($search->usedCustomised==1) {
