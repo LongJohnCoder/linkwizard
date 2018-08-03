@@ -343,13 +343,21 @@
                       <strong>Redirecting time:</strong>
                   </div>
                   <div class="col-md-10">
-                    {{$redirecting_time/1000}} Seconds
+                    @if($redirecting_time == 0)
+                        <span style="display: inline;">0 Seconds</span>
+                    @else
+                        {{$redirecting_time/1000}} Seconds
+                    @endif
                   </div>
                   <div class="col-md-2">
                       <strong>Redirecting text:</strong>
                   </div>
                 <div class="col-md-10">
-                    <span style="display: inline;">{{$redirecting_text}}</span>
+                    @if($redirecting_time == 0)
+                        <span style="display: inline;">--</span>
+                    @else
+                        <span style="display: inline;">{{$redirecting_text}}</span>
+                    @endif
                 </div>
 
               </div>

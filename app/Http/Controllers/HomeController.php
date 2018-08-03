@@ -2434,11 +2434,13 @@ class HomeController extends Controller
             $profile = Profile::where('user_id',$url->user_id)->first();
             if (count($profile)>0) {
                 $redirecting_time = $profile->default_redirection_time;
+                $redirecting_text = $profile->default_redirecting_text;
                 if ($url->usedCustomised==1) {
                     $redirecting_time = $url->redirecting_time;
                     $redirecting_text = $url->redirecting_text_template; 
-                } else {
-                    $redirecting_time = $profile->default_redirection_time;
+                }
+                if (($profile->redirection_page_type == 1) && ($url->usedCustomised==0)) {
+                    $redirecting_time = 0;
                 }
             }
             if(!$url) {

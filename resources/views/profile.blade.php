@@ -165,7 +165,7 @@
                                     <div class="row alert">
                                         <div class="col-md-9">
                                             <label class="control-label"> Choose default brand logo </label>
-                                            <small>{{$default_brand_logo == 1 ? '(Already uploaded a brand image. You can choose another file to change the brand logo)' : ''}}</small>
+                                            <small>{{$default_brand_logo == 1 ? '(Already uploaded a brand logo. You can choose another file to change the brand logo)' : ''}}</small>
                                         </div>
                                         <div class="col-md-3">
                                             <input type="file" name="default_image" id="default_image" accept="image/*">
@@ -178,6 +178,14 @@
                                         </div>
                                         <div class="col-md-3">
                                             <input type='number' name='default_redirection_time' class='form-control redirection_time' id='default_redirection_time' min='1' max='30' value='{{$redirectionTime}}'>
+                                        </div>
+                                    </div>
+                                    <div class="row alert">
+                                        <div class="col-md-9">
+                                            <label class="control-label"> Redirection text</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type='text' name='default_redirection_text' class='form-control redirection_time' id='default_redirection_text' value='{{$redirecting_text}}' placeholder="Redirecting...">
                                         </div>
                                     </div>
                                 </div>

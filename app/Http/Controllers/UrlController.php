@@ -93,6 +93,13 @@
                             $pixels = '';
                         }
                         $timezones = Timezone::all();
+                        $red_time = 5000;
+                        $pageColour = '#005C96';
+                        $profileSettings = Profile::where('user_id',Auth::user()->id)->first();
+                        if (count($profileSettings)>0) {
+                            $red_time = $profileSettings->default_redirection_time;
+                            $pageColour = $profileSettings->pageColor;
+                        }
                         if(($type==0)||($type==1)){
                             return view('dashboard.shorten_url' , [
                                 'urlTags'             => $urlTags,
@@ -102,7 +109,9 @@
                                 'user'                => $user,
                                 'type'                => $type,
                                 'timezones'           => $timezones,
-                                'pixels'              => $pixels
+                                'pixels'              => $pixels,
+                                'red_time'            => $red_time,
+                                'pageColor'           => $pageColour  
                             ]);
                         }else{
                             $grouplink=Url::where('link_type',2)->where('user_id',$user->id)->where('parent_id',0)->orderBy('id','DESC')->with('children')->get();
@@ -708,6 +717,16 @@
                         //dd($pxId);
                         $timezones = Timezone::all();
                         $selectedTags = UrlTagMap::where('url_id',$id)->with('urlTag')->get();
+                        $profileSettings = Profile::where('user_id',Auth::user()->id)->first();
+                        $red_time = 5000;
+                        $pageColour = '#005C96';
+                        if ($url->usedCustomised == 1) {
+                            $red_time = $url->redirecting_time;
+                            $pageColour = $url->customColour;
+                        } else if (($url->usedCustomised == 0) && (count($profileSettings)>0)){
+                            $red_time = $profileSettings->default_redirection_time;
+                            $pageColour = $profileSettings->pageColor;
+                        }
                         return view('dashboard.edit_url', [
                             'urlTags'              => $urlTags,
                             'total_links'          => $total_links,
@@ -721,7 +740,9 @@
                             'pxId'                 => $pxId,
                             'pixel_id'             => $pixel_id,
                             'pixels'               => $pixels,
-                            'timezones'            => $timezones
+                            'timezones'            => $timezones,
+                            'red_time'             => $red_time,
+                            'pageColor'            => $pageColour
                         ]);
 
                     }
@@ -1625,6 +1646,7 @@
                                 $imageUrl   = $userRedirection->default_image;
                                 $red_time   = $userRedirection->default_redirection_time;
                                 $pageColour = $userRedirection->pageColor;
+                                $redirectionText = $userRedirection->default_redirecting_text;
                             }
                         }
                     }
@@ -1640,6 +1662,7 @@
                         if (isset($userRedirection)) {
                             $red_time =  $userRedirection->default_redirection_time;
                             $pageColour = $userRedirection->pageColor;
+                            $redirectionText = $userRedirection->default_redirecting_text;
                         }
                     } 
 
@@ -2726,8 +2749,9 @@
                     } else {
                         $default_brand_logo = 0;
                     }
+                    $redirecting_text = $profileSettings->default_redirecting_text;
                     $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
-                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels','default_brand_logo'));
+                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels','default_brand_logo','redirecting_text'));
                 }
             }
         }
@@ -2760,6 +2784,11 @@
                             $profile->default_redirection_time = 5000;
                         }
                         $profile->pageColor = $request->pageColor;
+                        if (isset($request->default_redirection_text) && $request->default_redirection_text !='') {
+                            $profile->default_redirecting_text = $request->default_redirection_text;
+                        } else {
+                            $profile->default_redirecting_text = 'Redirecting...';
+                        }
                         /* Checking for image */
                         if ($request->hasFile('default_image')) {
                             /* checking file type */

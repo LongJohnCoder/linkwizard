@@ -257,13 +257,13 @@
                                         </label>
                                     </div>
                                     <div class="normal-body add-countDown" id="countDownArea">
-                                        <p>Add countdown time for this link</p>
-                                        <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="5"><br>
+                                        <p>Add countdown time for this link <small>(in seconds)</small></p>
+                                        <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="{{$red_time/1000}}"><br>
                                         <p> Choose custom brand logo </p>
                                         <input class="form-control" type="file" name="custom_brand_logo" id="custom_brand_logo" accept="image/*">
                                         <span id="imageError" style="display: none; color: red">*This image is not valid. Please choose another image</span>
                                         <br><p> Select your customize colour </p>
-                                        <input type="color" name="pageColour" value="#005C96"><br><br>
+                                        <input type="color" name="pageColour" value="{{$pageColor}}"><br><br>
                                         <p> Enter your redirecting text </p>
                                         <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
                                     </div>                        
