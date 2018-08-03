@@ -571,11 +571,24 @@
             $('#imageError').hide();
         } else {
             $('#imageError').show();
-            $("#default_image").val('');
         }
     });
     function profileValidate()
     {
+        var fileName = $('#default_image').val().split('\\').pop();
+        var extension = fileName.substr( (fileName.lastIndexOf('.') +1) ).toLowerCase();
+        var allowedExt = new Array("jpg","png","gif");
+        if ($.inArray(extension,allowedExt) > -1) {
+            $('#imageError').hide();
+        } else {
+            $('#imageError').show();
+            swal({
+                    type: 'warning',
+                    title: 'Invalid Image format',
+                    text: 'Please select an image with jpg png or gif file format'
+                });
+                return false;
+        }
         if ($('#redirect_type_one').prop('checked')==false) {
             if ($('#redirect_type_zero').prop('checked')==false) {
                 swal({

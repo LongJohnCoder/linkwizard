@@ -237,20 +237,24 @@
                         if (!file_exists('public/uploads/brand_images')) {
                             mkdir('public/uploads/brand_images', 777 , true);
                         }
-                        $upload_path ='public/uploads/brand_images';
-                        $image_name = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
-                        $data = getimagesize($request->custom_brand_logo);
-                        $width = $data[0];
-                        $height = $data[1];
+                        try {
+                            $upload_path ='public/uploads/brand_images';
+                            $image_name = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
+                            $data = getimagesize($request->custom_brand_logo);
+                            $width = $data[0];
+                            $height = $data[1];
 
-                        /* image resizing */
-                        $temp_height = 450;
-                        $abs_width = ceil(($width*$temp_height)/$height);
-                        $abs_height = $temp_height;
-                        $image_resize = Image::make($request->custom_brand_logo->getRealPath());
-                        $image_resize->resize($abs_width, $abs_height);
-                        $image_resize->save($upload_path.'/'.$image_name);
-                        $url->uploaded_path = $upload_path.'/'.$image_name;
+                            /* image resizing */
+                            $temp_height = 450;
+                            $abs_width = ceil(($width*$temp_height)/$height);
+                            $abs_height = $temp_height;
+                            $image_resize = Image::make($request->custom_brand_logo->getRealPath());
+                            $image_resize->resize($abs_width, $abs_height);
+                            $image_resize->save($upload_path.'/'.$image_name);
+                            $url->uploaded_path = $upload_path.'/'.$image_name;
+                        } catch (\Exception $e) {
+                            return redirect()->back()->with('imgErr', 'error');
+                        }
                     }
                     $url->customColour = $request->pageColour;
                     $url->usedCustomised = '1';
@@ -804,20 +808,24 @@
                             if (!file_exists('public/uploads/brand_images')) {
                                 mkdir('public/uploads/brand_images', 777 , true);
                             }
-                            $upload_path ='public/uploads/brand_images';
-                            $image_name = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
-                            $data = getimagesize($request->custom_brand_logo);
-                            $width = $data[0];
-                            $height = $data[1];
+                            try {
+                                $upload_path ='public/uploads/brand_images';
+                                $image_name = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
+                                $data = getimagesize($request->custom_brand_logo);
+                                $width = $data[0];
+                                $height = $data[1];
 
-                            /* image resizing */
-                            $temp_height = 450;
-                            $abs_width = ceil(($width*$temp_height)/$height);
-                            $abs_height = $temp_height;
-                            $image_resize = Image::make($request->custom_brand_logo->getRealPath());
-                            $image_resize->resize($abs_width, $abs_height);
-                            $image_resize->save($upload_path.'/'.$image_name);
-                            $url->uploaded_path = $upload_path.'/'.$image_name;
+                                /* image resizing */
+                                $temp_height = 450;
+                                $abs_width = ceil(($width*$temp_height)/$height);
+                                $abs_height = $temp_height;
+                                $image_resize = Image::make($request->custom_brand_logo->getRealPath());
+                                $image_resize->resize($abs_width, $abs_height);
+                                $image_resize->save($upload_path.'/'.$image_name);
+                                $url->uploaded_path = $upload_path.'/'.$image_name;
+                            } catch (\Exception $e) {
+                                return redirect()->back()->with('imgErr', 'error');
+                            }
                         }
                     } else {
                         $url->usedCustomised = '0';
@@ -2720,7 +2728,11 @@
                 }
             }
         }
-
+        /**
+         * Save profile settings
+         * @param Request $request
+         * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+         */
         public function saveProfile(Request $request)
         {
             try
@@ -2756,20 +2768,24 @@
                             if (!file_exists('public/uploads/brand_images')) {
                                 mkdir('public/uploads/brand_images', 777 , true);
                             }
-                            $upload_path ='public/uploads/brand_images';
-                            $image_name = uniqid()."-".$request->default_image->getClientOriginalName();
-                            $data = getimagesize($request->default_image);
-                            $width = $data[0];
-                            $height = $data[1];
+                            try {
+                                $upload_path ='public/uploads/brand_images';
+                                $image_name = uniqid()."-".$request->default_image->getClientOriginalName();
+                                $data = getimagesize($request->default_image);
+                                $width = $data[0];
+                                $height = $data[1];
 
-                            /* image resizing */
-                            $temp_height = 450;
-                            $abs_width = ceil(($width*$temp_height)/$height);
-                            $abs_height = $temp_height;
-                            $image_resize = Image::make($request->default_image->getRealPath());
-                            $image_resize->resize($abs_width, $abs_height);
-                            $image_resize->save($upload_path.'/'.$image_name);
-                            $profile->default_image = $upload_path.'/'.$image_name;
+                                /* image resizing */
+                                $temp_height = 450;
+                                $abs_width = ceil(($width*$temp_height)/$height);
+                                $abs_height = $temp_height;
+                                $image_resize = Image::make($request->default_image->getRealPath());
+                                $image_resize->resize($abs_width, $abs_height);
+                                $image_resize->save($upload_path.'/'.$image_name);
+                                $profile->default_image = $upload_path.'/'.$image_name;
+                            } catch (\Exception $e) {
+                                return redirect()->back()->with('msg', 'imgErr');
+                            }
                         }
                         $profile->save();
                     return redirect()->back()->with('msg', 'success');
