@@ -1598,6 +1598,9 @@
                             $red_time =  $search->redirecting_time;
                             $pageColour = $search->customColour;
                             $redirectionText = $search->redirecting_text_template;
+                            if (isset($search->uploaded_path) && ($search->uploaded_path!="")) {
+                                $imageUrl = $search->uploaded_path;
+                            }
                         } else {
                             $red_time = 0000;
                             $pageColour = '#ffffff';
@@ -1621,31 +1624,20 @@
                                 $imageUrl = $search->uploaded_path;
                             }
                         } else if ($search->usedCustomised==0) {
-                            if ($search->uploaded_path == "") {
+                            if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
                                 $imageUrl = $userRedirection->default_image;
-                            }
-                            if(isset($search->uploaded_path) && ($search->uploaded_path!="")){
-                                $imageUrl = $search->uploaded_path;
                             }
                         }
                         $red_time =  $userRedirection->default_redirection_time;
                         if ((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="")) {
                             $pageColour = $userRedirection->pageColor;
                         }
-                        if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
-                            $imageUrl = $userRedirection->default_image;
-                        } 
                     }
                 } else {
                     if ($search->usedCustomised==1) {
                         $red_time =  $search->redirecting_time;
                         $pageColour = $search->customColour;
                         $redirectionText = $search->redirecting_text_template;
-                        if ($search->uploaded_path == "") {
-                            if((isset($userRedirection->default_image))&&( $userRedirection->default_image!="") ){
-                                $imageUrl = $userRedirection->default_image;
-                            }
-                        }
                         if (isset($search->uploaded_path) && ($search->uploaded_path!="")) {
                             $imageUrl = $search->uploaded_path;
                         }
