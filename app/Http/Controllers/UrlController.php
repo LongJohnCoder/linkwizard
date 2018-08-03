@@ -1587,14 +1587,14 @@
             $favicon = 'https://tier5.us/images/favicon.ico';
             $imageUrl = 'public/images/Tier5.jpg';
             $search = Url::where('shorten_suffix', $url)->first();
-            if(count($search )>0){
-                if(!empty($search->favicon) && strlen($search->favicon)>0) {
+            if (count($search )>0) {
+                if (!empty($search->favicon) && strlen($search->favicon)>0) {
                     $favicon = $search->favicon;
                 }
                 $userRedirection = Profile::where('user_id',$search->user_id)->first();
-                if(count($userRedirection )>0){
+                if (count($userRedirection )>0) {
                     if ((isset($userRedirection) ) &&($userRedirection->redirection_page_type==1) ) {
-                        if($search->usedCustomised==1){
+                        if ($search->usedCustomised==1) {
                             $red_time =  $search->redirecting_time;
                             $pageColour = $search->customColour;
                             $redirectionText = $search->redirecting_text_template;
@@ -1605,36 +1605,57 @@
                             $imageUrl = '';
                         }
                     } else if (isset($userRedirection->redirection_page_type) &&($userRedirection->redirection_page_type==0) ) {
-                        if($search->usedCustomised==1){
+                        if ($search->usedCustomised==1) {
                             $red_time =  $search->redirecting_time;
                             $pageColour = $search->customColour;
                             $redirectionText = $search->redirecting_text_template;
-                            if((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="") ){
+                            if ((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="")) {
                                 $pageColour = $userRedirection->pageColor;  
                             }
+<<<<<<< HEAD
+                            if ($search->uploaded_path == "") {
+                                if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
+                                    $imageUrl = $userRedirection->default_image;
+                                }
+                            }
+                            if (isset($search->uploaded_path) && ($search->uploaded_path!="")) {
+                                $imageUrl = $search->uploaded_path;
+                            }
+                        } else if ($search->usedCustomised==0) {
+=======
                             if(isset($search->uploaded_path) && ($search->uploaded_path!="")){
                                 $imageUrl = $search->uploaded_path;
                             }
                         } else if($search->usedCustomised==0){
+>>>>>>> e9b651e85a47bdf6dcf434b1194139cb6c0359c1
                             $red_time =  $userRedirection->default_redirection_time;
-                            if((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="") ){
+                            if ((isset($userRedirection->pageColor))&&( $userRedirection->pageColor!="")) {
                                 $pageColour = $userRedirection->pageColor;  
                             }
+<<<<<<< HEAD
+                            if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
+=======
                             if((isset($userRedirection->default_image))&&( $userRedirection->default_image!="") ){
+>>>>>>> e9b651e85a47bdf6dcf434b1194139cb6c0359c1
                                 $imageUrl = $userRedirection->default_image;
                             } 
                         }
                     }
                 } else {
-                    if($search->usedCustomised==1){
+                    if ($search->usedCustomised==1) {
                         $red_time =  $search->redirecting_time;
                         $pageColour = $search->customColour;
                         $redirectionText = $search->redirecting_text_template;
-                        if(isset($search->uploaded_path) && ($search->uploaded_path!="")){
-                             $imageUrl = $search->uploaded_path;
+                        if ($search->uploaded_path == "") {
+                            if((isset($userRedirection->default_image))&&( $userRedirection->default_image!="") ){
+                                $imageUrl = $userRedirection->default_image;
+                            }
                         }
-                    } else if($search->usedCustomised==0){
-                        if(isset($userRedirection)){
+                        if (isset($search->uploaded_path) && ($search->uploaded_path!="")) {
+                            $imageUrl = $search->uploaded_path;
+                        }
+                    } else if ($search->usedCustomised==0) {
+                        if (isset($userRedirection)) {
                             $red_time =  $userRedirection->default_redirection_time;
                             $pageColour = $userRedirection->pageColor;
                         }
