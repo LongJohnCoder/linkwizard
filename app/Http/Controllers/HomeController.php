@@ -2442,6 +2442,11 @@ class HomeController extends Controller
                 if (($profile->redirection_page_type == 1) && ($url->usedCustomised==0)) {
                     $redirecting_time = 0;
                 }
+            }  else {
+                if ($url->usedCustomised==1) {
+                    $redirecting_time = $url->redirecting_time;
+                    $redirecting_text = $url->redirecting_text_template; 
+                }
             }
             if(!$url) {
                 return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
