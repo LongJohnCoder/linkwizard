@@ -2480,18 +2480,7 @@ class HomeController extends Controller
                   $tags = 'No tag available';
               }
               if($url->link_type==2){
-                return view('dashboard.grouppreview' , [
-                'url'                 => $url,
-                'total_links'         => $total_links,
-                'limit'               => $limit,
-                'subscription_status' => $subscription_status,
-                'user'                => $user,
-                'tags'                => $tags,
-                'redirecting_text'    => $redirecting_text,
-                'redirecting_time'    => $redirecting_time
-
-              ]);
-
+                    return $this->showGroupPreview($url,$total_links,$limit,$subscription_status,$user,$tags,$redirecting_text,$redirecting_time);
               }else{
               return view('dashboard.link_preview' , [
                 'url'                 => $url,
@@ -3294,6 +3283,23 @@ class HomeController extends Controller
         {
             return redirect()->action('HomeController@getDashboard');
         }
+    }
+
+    public function showGroupPreview($url,$total_links,$limit,$subscription_status,$user,$tags,$redirecting_text,$redirecting_time){
+        $getSubLinks=Url::where('parent_id',$url->id)->where('link_type',2)->where('user_id',$user->id)->get();
+        return view('dashboard.grouppreview' , [
+              'url'                 => $url,
+              'total_links'         => $total_links,
+              'limit'               => $limit,
+              'subscription_status' => $subscription_status,
+              'user'                => $user,
+              'tags'                => $tags,
+              'redirecting_text'    => $redirecting_text,
+              'redirecting_time'    => $redirecting_time,
+              'sublink'             => $getSubLinks
+ 
+            ]);
+
     }
 }
 

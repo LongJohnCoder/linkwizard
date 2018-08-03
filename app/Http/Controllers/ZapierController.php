@@ -276,6 +276,8 @@
          * @return Illuminate\Http\JSONResponse
         */
         public function groupMultipleLink(Request $request, $apikey){
+            return $request->all();
+
             $getUser=User::where('zapier_key',$apikey)->first();
             if(count($getUser)>0){
                 $checkParentGroup=Url::where('id',$request->parent_group)->where('user_id',$getUser->id)->where('link_type',2)->first();
