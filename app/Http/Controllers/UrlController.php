@@ -153,7 +153,7 @@
                             $actualUrl = NULL;
                             $protocol  = 'http';
                         }
-                    }if($request->type==2){
+                    }else if($request->type==2){
                         $protocol  = 'http';
                         $actualUrl = NULL;
                         $urltitle  = $request->group_url_title;
@@ -785,6 +785,10 @@
                                 $actualUrl = NULL;
                                 $protocol  = 'http';
                             }
+                        } else if($request->type==2){
+                            $protocol  = 'http';
+                            $actualUrl = NULL;
+                            $urltitle  = $request->group_url_title;
                         }else{
                             return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
                         }
@@ -1117,7 +1121,7 @@
 
                     }
 
-                    if($request->type==0){
+                    if($request->type==0 || $request->type==2){
                         /* link expiration edit */
                         if(isset($request->allowExpiration) && $request->allowExpiration=='on'){
                             if(isset($request->date_time)){

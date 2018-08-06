@@ -18,7 +18,7 @@ $optTypeLI = 'normal';
 <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
 <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
 <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
-<script src="{{ URL::to('/').'/public/js/editurl.js' }}"></script>
+
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
@@ -221,7 +221,7 @@ $optTypeLI = 'normal';
                         <!-- Pixel manage -->
                         <div class="normal-box1">
                             <div class="normal-header">
-                                <label class="custom-checkbox">Manage pixel
+                                <label class="custom-checkbox">Edit pixel
                                     <input type="checkbox" id="managePixel" name="managePixel" <?php echo(count($pixel_name)>0)?'checked':'' ?> >
                                     <span class="checkmark"></span>
                                 </label>
@@ -659,23 +659,25 @@ $optTypeLI = 'normal';
                                 </div>
                             </div>
                         </div>
-                        @if($type==0)
+                        @if($type==0 || $type==2)
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <table class="merge-tab">
                                         <tr>
                                             <td>
-                                                <label class="custom-checkbox">Add expiration date for the link
+                                                <label class="custom-checkbox">Edit expiration date for the link
                                                     <input type="checkbox" id="expirationEnable" name="allowExpiration" <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'n')? 'checked' : '' ?> >
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </td>
+                                            @if($type!=2)
                                             <td>
-                                                <label class="custom-checkbox">Add schedules for the link
+                                                <label class="custom-checkbox">Edit schedules for the link
                                                     <input type="checkbox" id="addSchedule" name="allowSchedule" <?php echo (empty($urls->date_time) && $urls->is_scheduled == 'y')? 'checked' : '' ?> >
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </td>
+                                            @endif
                                         </tr>
                                     </table>
                                 </div>
@@ -696,6 +698,7 @@ $optTypeLI = 'normal';
                                     <p>Select a redirection page url after expiration</p>
                                     <input type="text" class="form-control" name="redirect_url" id="expirationUrl" value="<?php echo(!empty($urls->redirect_url))? $urls->redirect_url : '' ?>" onchange="checkUrl(this.value)">
                                 </div>
+                                @if($type!=2)
                                 <!-- Link schedule part html -->
                                 <div class="normal-body add-link-schedule" id="scheduleArea" style="display: <?php echo (empty($urls->date_time) && $urls->is_scheduled == 'y')? 'block' : 'none' ?>">
                                     <ul class="nav nav-tabs">
@@ -813,6 +816,7 @@ $optTypeLI = 'normal';
                                     </div>
 
                                 </div>
+                                @endif
                             </div>
                             <!--Box For Adding Geo Location-->
                             <div class="normal-box1">
@@ -2045,5 +2049,6 @@ $optTypeLI = 'normal';
                 }*/
     });
 </script>
+<script src="{{ URL::to('/').'/public/js/editurl.js' }}"></script>
 </body>
 </html>

@@ -128,7 +128,7 @@
                                 <!-- Pixel manage -->
                                 <div class="normal-box1">
                                     <div class="normal-header">
-                                        <label class="custom-checkbox">Manage pixel
+                                        <label class="custom-checkbox">Add pixel
                                             <input type="checkbox" id="managePixel" name="managePixel">
                                             <span class="checkmark"></span>
                                         </label>
@@ -229,7 +229,7 @@
                                 <!-- Add Countdown -->
                                 <div class="normal-box1">
                                     <div class="normal-header">
-                                        <label class="custom-checkbox">Customize Redirecting Page
+                                        <label class="custom-checkbox">Add Customize Redirecting Page
                                             <input type="checkbox" id="countDownEnable" name="allowCustomizeUrl">
                                             <span class="checkmark"></span>
                                         </label>
@@ -264,7 +264,7 @@
                                 <!--Add Link Preview Start-->
                                 <div class="normal-box1">
                                     <div class="normal-header">
-                                        <label class="custom-checkbox">Link Preview
+                                        <label class="custom-checkbox">Add Link Preview
                                             <input type="checkbox" id="link_preview_selector" name="link_preview_selector">
                                             <span class="checkmark"></span>
                                         </label>
