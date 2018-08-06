@@ -526,7 +526,7 @@ $optTypeLI = 'normal';
                                 <br><p> Select your customize colour </p>
                                 <input type="color" name="pageColour" value="{{$pageColor}}"><br><br>
                                 <p> Enter your redirecting text </p>
-                                <input class="form-control" type="text" name="redirecting_text_template" value="{{$urls->redirecting_text_template != 'Redirecting...' ? $urls->redirecting_text_template : ''}}" placeholder="Redirecting..."><br>
+                                <input class="form-control" type="text" name="redirecting_text_template" value="{{$redirecting_text}}" placeholder="Redirecting..."><br>
                             </div>
                         </div>
                         <!-- Edit Favicon -->

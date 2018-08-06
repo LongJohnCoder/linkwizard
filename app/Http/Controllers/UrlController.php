@@ -745,14 +745,37 @@
                         $red_time = $defaultSettings[0]->default_redirection_time;
                         $pageColour = $defaultSettings[0]->page_color;
                         $redirecting_text = $defaultSettings[0]->default_redirecting_text;
+                        /* Check if the url is customized atleast once if profile settings is not exists */
+                        if ($url->redirecting_time != $defaultSettings[0]->default_redirection_time) {
+                            $red_time = $url->redirecting_time;
+                        }
+                        if ($url->customColour != $defaultSettings[0]->page_color) {
+                            $pageColour = $url->customColour;
+                        }
+                        if ($url->redirecting_text_template != $defaultSettings[0]->default_redirecting_text) {
+                            $redirecting_text = $url->redirecting_text_template;
+                        }
                         if ($url->usedCustomised == 1) {
                             $red_time = $url->redirecting_time;
                             $pageColour = $url->customColour;
                             $redirecting_text = $url->redirecting_text_template;
                         } else if (($url->usedCustomised == 0) && (count($profileSettings)>0)){
-                            $red_time = $profileSettings->default_redirection_time;
-                            $pageColour = $profileSettings->pageColor;
-                            $redirecting_text = $profileSettings->default_redirecting_text;
+                            /* Checking if the url is customized atleast once if profile settings exists */
+                            if (($url->redirecting_time != $profileSettings->default_redirection_time) && ($url->redirecting_time != $defaultSettings[0]->default_redirection_time)) {
+                                $red_time = $url->redirecting_time;
+                            } else {
+                                $red_time = $profileSettings->default_redirection_time;
+                            }
+                            if (($url->customColour != $profileSettings->pageColor) && ($url->customColour != $defaultSettings[0]->page_color)) {
+                                $pageColour = $url->customColour;
+                            } else {
+                                $pageColour = $profileSettings->pageColor;
+                            }
+                            if (($url->redirecting_text_template != $profileSettings->default_redirecting_text) && ($url->redirecting_text_template != $defaultSettings[0]->default_redirecting_text)) {
+                                $redirecting_text = $url->redirecting_text_template;
+                            } else {
+                                $redirecting_text = $profileSettings->default_redirecting_text;
+                            }
                         }
                         return view('dashboard.edit_url', [
                             'urlTags'              => $urlTags,
@@ -1800,126 +1823,6 @@
             } else {
                 abort(404);
             }
-            /*$userRedirection = Profile::where('user_id',$search->user_id)->first();
-            if ($userRedirection) {
-                $profileSettings = $userRedirection;
-                if (!$search->usedCustomised) {
-                    $search->redirecting_time = $userRedirection->default_redirection_time;
-                    $userRedirectionType = $userRedirection->redirection_page_type;
-                } else {
-                    $userRedirectionType = 1;
-                }   
-            } else {
-                $profileSettings = 0;
-                $userRedirectionType = 0;
-            }
-            if ($search) {
-               
-                $url_features = '';
-              
-                $pxlValue = UrlFeature::where('url_id', $search->id)->first();
-                $pixelIds = [];
-                $pixelColumn = [];
-                $pixelScript = [];
-                if (count($pxlValue)>0) {
-                    if (!empty($pxlValue->fb_pixel_id) or $pxlValue->fb_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->fb_pixel_id;
-                        $pixelColumn[] = 'fb_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->gl_pixel_id) or $pxlValue->gl_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->gl_pixel_id;
-                        $pixelColumn[] = 'gl_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->twt_pixel_id) or $pxlValue->twt_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->twt_pixel_id;
-                        $pixelColumn[] = 'twt_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->li_pixel_id) or $pxlValue->li_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->li_pixel_id;
-                        $pixelColumn[] = 'li_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->pinterest_pixel_id) or $pxlValue->pinterest_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->pinterest_pixel_id;
-                        $pixelColumn[] = 'pinterest_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->quora_pixel_id) or $pxlValue->quora_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->quora_pixel_id;
-                        $pixelColumn[] = 'quora_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                 
-                    elseif (!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->custom_pixel_id;
-                        $pixelColumn[] = 'custom_pixel_id';
-
-
-                        $pxl = Pixel::where('custom_pixel_script', $pxlValue->custom_pixel_id)->first();
-                        if($pxl)
-                        {
-                            $scriptPos[] = $pxl->script_position;
-                        }
-                        else
-                        {
-                            $scriptPos[] = 0;
-                        }
-                    }
-                    for ($i=0; $i< count($pixelColumn); $i++) {
-                        if($pixelColumn[$i]!='custom_pixel_id')
-                        {
-                            $scripts = PixelScript::where('network_type', $pixelColumn[$i])->first();
-                            $upperColumn = strtoupper($pixelColumn[$i]);
-                            $pixelScript[] = str_replace($upperColumn, $pixelIds[$i],$scripts->network_script);
-                        } else {
-                            $pixelScript[] = $pixelIds[$i];
-                        }
-                    }
-                }
-                if (($profileSettings) && ($search->usedCustomised)) {
-                    if ((isset($search->redirecting_time)) && ($search->redirecting_time !== NULL)) {
-                       $red_time = $search->redirecting_time;
-                    }
-                } elseif (($profileSettings) && (!$search->usedCustomised)) {
-                    if ((isset($profileSettings->default_redirection_time)) && ($profileSettings->default_redirection_time !== NULL)) {
-                        $red_time = $profileSettings->default_redirection_time;
-                    } else {
-                        $red_time = 5000;
-                    }
-                    if ((isset($profileSettings->pageColor)) && ($profileSettings->pageColor !== NULL)) {
-                        $pageColour = $profileSettings->pageColor;
-                    } else {
-                        $pageColour = '#005C96';
-                    } 
-                } else {
-                    if ((isset($search->customColour)) && ($search->customColour !== NULL) && ($search->usedCustomised)) {
-                        $pageColour = $search->customColour;
-                    }
-                    if ((isset($search->redirecting_time)) && ($search->redirecting_time !== NULL) && ($search->usedCustomised)) {
-                        $red_time = $search->redirecting_time;
-                    }
-                }
-                $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
-                $referer = $_SERVER['HTTP_HOST'];
-                return view('redirect', [
-                    'redirectionType' => $userRedirectionType,
-                    'url' => $search,
-                    'url_features' => $url_features,
-                    'suffix' => $url,
-                    'pixelScripts' => $pixelScript,
-                    'pageColor' => $pageColour,
-                    'profileSettings' => $profileSettings,
-                    'red_time' => $red_time,
-                    'referer' => $referer,
-                    'user_agent' => $user_agent]
-                );
-
-           /* } else {
-                abort(404);
-            }*/
         }
 
         /**
@@ -2927,6 +2830,8 @@
                         $profile->user_id = Auth::user()->id;
                         $profile->save();
                     }
+                    /* Getting the global settings */
+                    $defaultSettings = DefaultSettings::all();
                     $profileSettings = Profile::where('user_id', Auth::user()->id)->first();
                     if ($profileSettings->redirection_page_type) {
                         $checkRedirectPageZero = '';
@@ -2942,7 +2847,12 @@
                     } else {
                         $default_brand_logo = 0;
                     }
-                    $redirecting_text = $profileSettings->default_redirecting_text;
+                    if ((isset($profileSettings->default_redirecting_text)) && ($profileSettings->default_redirecting_text != '')) {
+                        $redirecting_text = $profileSettings->default_redirecting_text;
+                    } else {
+                       $redirecting_text = $defaultSettings[0]->default_redirecting_text;
+                    }
+                    
                     $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
                     return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels','default_brand_logo','redirecting_text'));
                 }
@@ -2960,6 +2870,8 @@
                 if(Auth::check())
                 {
                     $userId = Auth::user()->id;
+                    /* Get the default settings */
+                    $defaultSettings = DefaultSettings::all();
                     $profile = Profile::where('user_id', $userId)->first();
                         if (isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on') {
                             $profile->redirection_page_type = 1;
@@ -2974,13 +2886,13 @@
                         } elseif (isset($request->redirection_page_type_one) && $request->redirection_page_type_one=='on') {
                             $profile->default_redirection_time = 0000;
                         } else {
-                            $profile->default_redirection_time = 5000;
+                            $profile->default_redirection_time = $defaultSettings[0]->default_redirection_time;
                         }
                         $profile->pageColor = $request->pageColor;
                         if (isset($request->default_redirection_text) && $request->default_redirection_text !='') {
                             $profile->default_redirecting_text = $request->default_redirection_text;
                         } else {
-                            $profile->default_redirecting_text = 'Redirecting...';
+                            $profile->default_redirecting_text = $defaultSettings[0]->default_redirecting_text;
                         }
                         /* Checking for image */
                         if ($request->hasFile('default_image')) {
