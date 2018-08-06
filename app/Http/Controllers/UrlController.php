@@ -108,7 +108,9 @@
                             'user'                => $user,
                             'type'                => $type,
                             'timezones'           => $timezones,
-                            'pixels'              => $pixels
+                            'pixels'              => $pixels,
+                            'red_time'            => $red_time,
+                            'pageColor'           => $pageColour 
                         ]);
                     }
                 } else {
@@ -783,10 +785,6 @@
                                 $actualUrl = NULL;
                                 $protocol  = 'http';
                             }
-                        }if($request->type==2){
-                            if(!isset($request->group_url_title) || ($request->group_url_title =='')){
-                                return redirect()->back()->with('error', 'Need The Group NAme.');
-                            }
                         }else{
                             return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
                         }
@@ -1237,10 +1235,7 @@
 
                     //Edit Tags
                     $tag=$this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
-
-                    if($request->type==2){
-                        $url->title=$request->group_url_title;
-                    }
+                    
                     if($url->save()){
                         return redirect()->route('getDashboard')->with('success', 'Url Updated!');
                     }else{
@@ -1609,7 +1604,7 @@
          * @param $url
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
-        public static function getRequestedUrl($url) {
+        public function getRequestedUrl($url) {
             $red_time = 5000;
             $pageColour = '#005C96';
             $redirectionText = 'Redirecting ...';
@@ -1617,9 +1612,6 @@
             $imageUrl = 'public/images/Tier5.jpg';
             $search = Url::where('shorten_suffix', $url)->first();
             if (count($search )>0) {
-                if(($search->link_type==2)&&($search->parent_id==0)){
-                    abort(404);
-                }
                 if (!empty($search->favicon) && strlen($search->favicon)>0) {
                     $favicon = $search->favicon;
                 }
@@ -1892,28 +1884,24 @@
         */
        
         public function postUserInfo(Request $request) {
-            
             $status = 'error';
-            if(isset($request->country['country_name']) && ($request->country['country_code'])){
-                $country = Country::where('code', $request->country['country_code'])->first();
-                if ($country) {
-                    $country->urls()->attach($request->url);
+            $country = Country::where('code', $request->country['country_code'])->first();
+            if ($country) {
+                $country->urls()->attach($request->url);
+                global $status;
+                $status = 'success';
+            } else {
+                $cn = new Country();
+                $cn->name = $request->country['country_name'];
+                $cn->code = $request->country['country_code'];
+                if ($cn->save()) {
+                    $cn->urls()->attach($request->url);
                     global $status;
                     $status = 'success';
                 } else {
-                    $cn = new Country();
-                    $cn->name = $request->country['country_name'];
-                    $cn->code = $request->country['country_code'];
-                    if ($cn->save()) {
-                        $cn->urls()->attach($request->url);
-                        global $status;
-                        $status = 'success';
-                    } else {
-                        global $status;
-                        $status = 'error';
-                    }
+                    global $status;
+                    $status = 'error';
                 }
-                
             }
 
             $platform = Platform::where('name', $request->platform)->first();
@@ -1980,39 +1968,37 @@
                     $status = 'error';
                 }
             }
-            if(isset($request->country['ip']) && ($request->country['ip'])){
-                $ip = IpLocation::where('url_id', $request->url)->first();
-                if ($ip) {
-                    $ip = new IpLocation();
-                    $ip->url_id = $request->url;
-                    $ip->ip_address = $request->country['ip'];
-                    $ip->city = $request->country['city'];
-                    $ip->country =  $request->country['country_name'];
-                    $ip->latitude =  $request->country['latitude'];
-                    $ip->longitude =  $request->country['longitude'];
-                    $ip->platform = $request->platform;
-                    $ip->browser = $request->browser;
-                    $ip->referer = $request->referer;
-                    // $ip->query_string = $query_string;
-                    $ip->save();
-                } else {
-                    $ip = new IpLocation();
-                    $ip->url_id = $request->url;
-                    $ip->ip_address = $request->country['ip'];
-                    $ip->city = $request->country['city'];
-                    $ip->country =  $request->country['country_name'];
-                    $ip->latitude =  $request->country['latitude'];
-                    $ip->longitude =  $request->country['longitude'];
-                    $ip->platform = $request->platform;
-                    $ip->browser = $request->browser;
-                    $ip->referer = $request->referer;
-                    // $ip->query_string = $query_string;
-                    $ip->save();
-                }
+
+            $ip = IpLocation::where('url_id', $request->url)->first();
+            if ($ip) {
+                $ip = new IpLocation();
+                $ip->url_id = $request->url;
+                $ip->ip_address = $request->country['ip'];
+                $ip->city = $request->country['city'];
+                $ip->country =  $request->country['country_name'];
+                $ip->latitude =  $request->country['latitude'];
+                $ip->longitude =  $request->country['longitude'];
+                $ip->platform = $request->platform;
+                $ip->browser = $request->browser;
+                $ip->referer = $request->referer;
+                // $ip->query_string = $query_string;
+                $ip->save();
+            } else {
+                $ip = new IpLocation();
+                $ip->url_id = $request->url;
+                $ip->ip_address = $request->country['ip'];
+                $ip->city = $request->country['city'];
+                $ip->country =  $request->country['country_name'];
+                $ip->latitude =  $request->country['latitude'];
+                $ip->longitude =  $request->country['longitude'];
+                $ip->platform = $request->platform;
+                $ip->browser = $request->browser;
+                $ip->referer = $request->referer;
+                // $ip->query_string = $query_string;
+                $ip->save();
             }
             /* End link info stored in ip_locations table */
             $search = Url::where('shorten_suffix', $request->suffix)->with('urlSpecialSchedules','url_link_schedules')->first();
-
             if ($search->link_type==0) {
                 /*Check Url Expire */
                 if (($search->date_time!="") && ($search->timezone!="")) {
@@ -2152,100 +2138,6 @@
                 $search->save();
                 $redirectstatus=0;
                 $message="";
-            } else if($search->link_type==2){
-                $getParentGroup=Url::where('id', $search->parent_id)->with('urlSpecialSchedules','url_link_schedules')->first();
-                /*Check Url Expire */
-                if (($getParentGroup->date_time!="") && ($getParentGroup->timezone!="")) {
-                    date_default_timezone_set($search->timezone);
-                    $date1= date('Y-m-d H:i:s') ;
-                    $date2 = $getParentGroup->date_time;
-                    if (strtotime($date1) < strtotime($date2)) {
-                         /*Url Not Expired*/
-                        if ($getParentGroup->geolocation=="") {
-                            $getUrl=$this->schedulSpecialDay($search, $request->querystring);
-                            $redirectUrl=$getUrl['url'];
-                            $redirectstatus=$getUrl['status'];
-                            $message=$getUrl['message'];
-                        } else {
-                            if ($getParentGroup->geolocation==0) {
-                                $getDenyed=Geolocation::where('url_id',$getParentGroup->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
-
-                                if ($getDenyed >0) {
-                                    $redirectUrl="";
-                                    $redirectstatus=1;
-                                    $message="This URL is not accessable from your country";
-                                } else {
-                                    $getUrl=$this->schedulSpecialDay($search, $request->querystring);
-                                    $redirectUrl=$getUrl['url'];
-                                    $redirectstatus=$getUrl['status'];
-                                    $message=$getUrl['message'];
-                                }
-                            } else if ($getParentGroup->geolocation==1) {
-                                $getDenyed=Geolocation::where('url_id',$getParentGroup->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
-                                if ($getDenyed >0) {
-                                    $getUrl=$this->schedulSpecialDay($search, $request->querystring);
-                                    $redirectUrl=$getUrl['url'];
-                                    $redirectstatus=$getUrl['status'];
-                                    $message=$getUrl['message'];
-                                } else {
-                                    $redirectUrl="";
-                                    $redirectstatus=1;
-                                    $message="This URL is not accessable from your country";
-                                }
-                            }
-                        }
-                    } else {
-                        /* Url Expired */
-                        if ($getParentGroup->redirect_url!="") {
-                            $redirectUrl=$getParentGroup->redirect_url;
-                            $redirectstatus=0;
-                            $message="";
-                        } else {
-                            $redirectUrl=NULL;
-                            $redirectstatus=1;
-                            $message="The Url Is Expired";
-                        }
-                    }
-                } else {
-                    if ($getParentGroup->geolocation==0) {
-                        $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
-
-                        if ($getDenyed >0) {
-                            $redirectUrl="";
-                            $redirectstatus=1;
-                            $message="This URL is not accessable from your country";
-                        } else {
-                            $getUrl=$this->schedulSpecialDay($search, $request->querystring);
-                            $redirectUrl=$getUrl['url'];
-                            $redirectstatus=$getUrl['status'];
-                            $message=$getUrl['message'];
-                        }
-                    } else if ($getParentGroup->geolocation==1) {
-                        $getDenyed=Geolocation::where('url_id',$getParentGroup->id)->where('country_code',$request->country['country_code'])->where('allow',1)->first();
-                        if (count($getDenyed) >0) {
-                            if ($getDenyed->redirection==0) {
-                                $getUrl=$this->schedulSpecialDay($search, $request->querystring);
-                                $redirectUrl=$getUrl['url'];
-                                $redirectstatus=$getUrl['status'];
-                                $message=$getUrl['message'];
-                            } else {
-                                $redirectUrl=$getDenyed->url;
-                                $redirectstatus=0;
-                                $message="";
-                            }
-                        } else {
-                            $redirectUrl="";
-                            $redirectstatus=1;
-                            $message="This URL is not accessable from your country";
-                        }
-                    } else {
-                        $getUrl=$this->schedulSpecialDay($search, $request->querystring);
-                        $redirectUrl=$getUrl['url'];
-                        $redirectstatus=$getUrl['status'];
-                        $message=$getUrl['message'];
-                    }   
-                }
-
             }
 
             return response()->json(['status' => $status,
@@ -2466,11 +2358,7 @@
          * @return mixed
          */
         public function schedulSpecialDay($url, $queryString){
-            if(($url->link_type==2) && ($url->parent_id!=0)){
-                $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->parent_id)->get();
-            }else{
-                $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->id)->get();
-            }
+            $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->id)->get();
             if(count($urlSpecialSchedules)>0){
                 foreach ($urlSpecialSchedules as $key=>$urlSplUrl){
                     if($urlSplUrl->special_day==date('Y-m-d')){
@@ -2500,41 +2388,8 @@
          * @return mixed
          */
         public function schedularWeeklyDaywise($url, $queryString){
-            if(($url->link_type==2) && ($url->parent_id!=0)){
-                $url_link_schedules = UrlLinkSchedule::where('url_id', $url->parent_id)->get();
-            }else{
-                $url_link_schedules = UrlLinkSchedule::where('url_id', $url->id)->get();
-            }
-
-            if($url->is_scheduled =='y' && count($url_link_schedules)>0 && $url->link_type!=2){
-                $day = date('N');
-                foreach($url_link_schedules as $schedule){
-                    if ($schedule->day==$day){
-                        $redirect['status']=0;
-                        if($queryString!=='' && strlen($queryString)>0){
-                            $redirect['url']=$schedule->protocol.'://'.$schedule->url.'?'.$queryString;
-                        }else{
-                            $redirect['url']=$schedule->protocol.'://'.$schedule->url;
-                        }
-                        $redirect['message']="";
-                        break;
-                    }else{
-                        if(!empty($url->actual_url) or $url->actual_url!=NULL){
-                            $redirect['status']=0;
-                            if($queryString!=='' && strlen($queryString)>0){
-                                $redirect['url']=$url->protocol.'://'.$url->actual_url.'?'.$queryString;
-                            }else{
-                                $redirect['url']=$url->protocol.'://'.$url->actual_url;
-                            }
-                            $redirect['message']="";
-                        }else{
-                            $redirect['status']=1;
-                            $redirect['url']=NULL;
-                            $redirect['message']="No Link Available To Redirect For Today";
-                        }
-                    }
-                }
-            }if($url->is_scheduled =='y' && count($url_link_schedules)>0 && $url->link_type==2){
+            $url_link_schedules = UrlLinkSchedule::where('url_id', $url->id)->get();
+            if($url->is_scheduled =='y' && count($url_link_schedules)>0){
                 $day = date('N');
                 foreach($url_link_schedules as $schedule){
                     if ($schedule->day==$day){
@@ -3045,36 +2900,32 @@
         }
 
         public function showGroupDetails($groupId){
-            if (Auth::check()){
-                try{
-                    $user=User::where('id',Auth::User()->id)->first();
-                    if ($user->subscribed('main', 'tr5Advanced')) {
-                        $subscription_status = 'tr5Advanced';
-                        $limit = Limit::where('plan_code', 'tr5Advanced')->first();
-                    } elseif ($user->subscribed('main', 'tr5Basic')) {
-                        $subscription_status = 'tr5Basic';
-                        $limit = Limit::where('plan_code', 'tr5Basic')->first();
-                    } else {
-                        $subscription_status = false;
-                        $limit = Limit::where('plan_code', 'tr5free')->first();
-                    }
-                    $groupId=base64_decode($groupId);
-                    if (is_numeric($groupId)) {
-                        $url=Url::where('id',$groupId)->where('link_type',2)->where('user_id',Auth::User()->id)->first();
-                        if(count($url)>0){
-                            $getSubLink=Url::where('parent_id',$groupId)->where('link_type',2)->where('user_id',Auth::User()->id)->get();
-                            return view('dashboard.grouplinkdetails',compact('getSubLink','user','subscription_status','url'));
-                        }else{
-                            return redirect()->back()->with('error', 'No Group Found!');
-                        }
+            try{
+                $user=User::where('id',Auth::User()->id)->first();
+                if ($user->subscribed('main', 'tr5Advanced')) {
+                    $subscription_status = 'tr5Advanced';
+                    $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+                } elseif ($user->subscribed('main', 'tr5Basic')) {
+                    $subscription_status = 'tr5Basic';
+                    $limit = Limit::where('plan_code', 'tr5Basic')->first();
+                } else {
+                    $subscription_status = false;
+                    $limit = Limit::where('plan_code', 'tr5free')->first();
+                }
+                $groupId=base64_decode($groupId);
+                if (is_numeric($groupId)) {
+                    $getGroupDetails=Url::where('id',$groupId)->where('link_type',2)->where('user_id',Auth::User()->id)->first();
+                    if(count($getGroupDetails)>0){
+                        $getSubLink=Url::where('parent_id',$groupId)->where('link_type',2)->where('user_id',Auth::User()->id)->get();
+                        return view('dashboard.grouplinkdetails',compact('getGroupDetails','getSubLink','user','subscription_status'));
                     }else{
                         return redirect()->back()->with('error', 'No Group Found!');
                     }
-                }catch(Exception $e){
-                   abort(404);
+                }else{
+                    return redirect()->back()->with('error', 'No Group Found!');
                 }
-            }else{
-                abort(404);
+            }catch(Exception $e){
+               abort(404);
             }
         }
 
