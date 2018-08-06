@@ -230,9 +230,10 @@
                                                 </thead>
                                                 <tbody>
                                                     @if(count($sublink)>0)
-                                                        @foreach($sublink as $allSublinks)
+
+                                                        @foreach($sublink as $key =>$allSublinks)
                                                             <tr>
-                                                                <td></td>
+                                                                <td>{{$key+1}}</td>
                                                                 <td><a href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}">{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
                                                                 <td>{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
                                                                 <td>{{$allSublinks->count}}</td>
@@ -241,7 +242,8 @@
                                                         @endforeach
                                                     @else
                                                         <tr>
-                                                            No Group Link Available For This Group.
+                                                            <td colspan="5">No Group Link Available For This Group.</td>
+                                                            
                                                         </tr>
                                                     @endif
                                                 </tbody>

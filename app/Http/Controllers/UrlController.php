@@ -1608,7 +1608,7 @@
          * @param $url
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
-        public function getRequestedUrl($url) {
+        public static function getRequestedUrl($url) {
             $red_time = 5000;
             $pageColour = '#005C96';
             $redirectionText = 'Redirecting ...';
@@ -1616,6 +1616,13 @@
             $imageUrl = 'public/images/Tier5.jpg';
             $search = Url::where('shorten_suffix', $url)->first();
             if (count($search )>0) {
+                if(($search->link_type==2) && ($search->parent_id==0)){
+                    abort(404);
+                }
+
+                if(($search->link_type==2) && ($search->parent_id!=0)){
+                    $search = Url::where('id', $search->parent_id)->first();
+                }
                 if (!empty($search->favicon) && strlen($search->favicon)>0) {
                     $favicon = $search->favicon;
                 }
@@ -1721,8 +1728,6 @@
                     } elseif (!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL) {
                         $pixelIds[] = $pxlValue->custom_pixel_id;
                         $pixelColumn[] = 'custom_pixel_id';
-
-
                         $pxl = Pixel::where('custom_pixel_script', $pxlValue->custom_pixel_id)->first();
                         if($pxl){
                             $scriptPos[] = $pxl->script_position;
@@ -1733,8 +1738,14 @@
                     for ($i=0; $i< count($pixelColumn); $i++) {
                         if($pixelColumn[$i]!='custom_pixel_id'){
                             $scripts = PixelScript::where('network_type', $pixelColumn[$i])->first();
-                            $upperColumn = strtoupper($pixelColumn[$i]);
-                            $pixelScript[] = str_replace($upperColumn, $pixelIds[$i],$scripts->network_script);
+                            if(count($scripts)>0){
+                                $upperColumn = strtoupper($pixelColumn[$i]);
+                                $pixelScript[] = str_replace($upperColumn, $pixelIds[$i],$scripts->network_script);
+                            }else{
+                                $pixelIds = [];
+                                $pixelColumn = [];
+                                $pixelScript = [];
+                            }
                         } else {
                             $pixelScript[] = $pixelIds[$i];
                         }
@@ -1753,7 +1764,9 @@
                     'imageUrl'=>$imageUrl,
                     'red_time' => $red_time,
                     'referer' => $referer,
-                    'user_agent' => $user_agent]
+                    'user_agent' => $user_agent,
+                    'redirectionText'=>$redirectionText
+                    ]
                 );
             } else {
                 abort(404);
@@ -2142,6 +2155,100 @@
                 $search->save();
                 $redirectstatus=0;
                 $message="";
+            }else if($search->link_type==2){
+                /*Check Url Expire */
+                if (($search->date_time!="") && ($search->timezone!="")) {
+                    date_default_timezone_set($search->timezone);
+                    $date1= date('Y-m-d H:i:s') ;
+                    $date2 = $search->date_time;
+                    if (strtotime($date1) < strtotime($date2)) {
+                         /*Url Not Expired*/
+                        if ($search->geolocation=="") {
+                            $getUrl=$this->schedulSpecialDay($search, $request->querystring);
+                            $redirectUrl=$getUrl['url'];
+                            $redirectstatus=$getUrl['status'];
+                            $message=$getUrl['message'];
+                        } else {
+                            if ($search->geolocation==0) {
+                                $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
+
+                                if ($getDenyed >0) {
+                                    $redirectUrl="";
+                                    $redirectstatus=1;
+                                    $message="This URL is not accessable from your country";
+                                } else {
+                                    $getUrl=$this->schedulSpecialDay($search, $request->querystring);
+                                    $redirectUrl=$getUrl['url'];
+                                    $redirectstatus=$getUrl['status'];
+                                    $message=$getUrl['message'];
+                                }
+                            } else if ($search->geolocation==1) {
+                                $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
+                                if ($getDenyed >0) {
+                                    $getUrl=$this->schedulSpecialDay($search, $request->querystring);
+                                    $redirectUrl=$getUrl['url'];
+                                    $redirectstatus=$getUrl['status'];
+                                    $message=$getUrl['message'];
+                                } else {
+                                    $redirectUrl="";
+                                    $redirectstatus=1;
+                                    $message="This URL is not accessable from your country";
+                                }
+                            }
+                        }
+                    } else {
+                        /* Url Expired */
+                        if ($search->redirect_url!="") {
+                            $redirectUrl=$search->redirect_url;
+                            $redirectstatus=0;
+                            $message="";
+                        } else {
+                            $redirectUrl=NULL;
+                            $redirectstatus=1;
+                            $message="The Url Is Expired";
+                        }
+                    }
+                } else {
+                    if ($search->geolocation==0) {
+                        $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
+
+                        if ($getDenyed >0) {
+                            $redirectUrl="";
+                            $redirectstatus=1;
+                            $message="This URL is not accessable from your country";
+                        } else {
+                            $getUrl=$this->schedulSpecialDay($search, $request->querystring);
+                            $redirectUrl=$getUrl['url'];
+                            $redirectstatus=$getUrl['status'];
+                            $message=$getUrl['message'];
+                        }
+                    } else if ($search->geolocation==1) {
+                        $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->first();
+                        if (count($getDenyed) >0) {
+                            if ($getDenyed->redirection==0) {
+                                $getUrl=$this->schedulSpecialDay($search, $request->querystring);
+                                $redirectUrl=$getUrl['url'];
+                                $redirectstatus=$getUrl['status'];
+                                $message=$getUrl['message'];
+                            } else {
+                                $redirectUrl=$getDenyed->url;
+                                $redirectstatus=0;
+                                $message="";
+                            }
+                        } else {
+                            $redirectUrl="";
+                            $redirectstatus=1;
+                            $message="This URL is not accessable from your country";
+                        }
+                    } else {
+                        $getUrl=$this->schedulSpecialDay($search, $request->querystring);
+                        $redirectUrl=$getUrl['url'];
+                        $redirectstatus=$getUrl['status'];
+                        $message=$getUrl['message'];
+                    }   
+                }
+            }else{
+                abort(404);
             }
 
             return response()->json(['status' => $status,
@@ -2362,7 +2469,11 @@
          * @return mixed
          */
         public function schedulSpecialDay($url, $queryString){
-            $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->id)->get();
+            if($url->link_type==2 && $url->parent_id!=0){
+                $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->parent_id)->get();
+            }else{
+                $urlSpecialSchedules = UrlSpecialSchedule::where('url_id', $url->id)->get();
+            }
             if(count($urlSpecialSchedules)>0){
                 foreach ($urlSpecialSchedules as $key=>$urlSplUrl){
                     if($urlSplUrl->special_day==date('Y-m-d')){
@@ -2392,8 +2503,13 @@
          * @return mixed
          */
         public function schedularWeeklyDaywise($url, $queryString){
-            $url_link_schedules = UrlLinkSchedule::where('url_id', $url->id)->get();
-            if($url->is_scheduled =='y' && count($url_link_schedules)>0){
+            if($url->link_type==2 && $url->parent_id!=0){
+                $url_link_schedules = UrlLinkSchedule::where('url_id', $url->parent_id)->get();
+            }else{
+                $url_link_schedules = UrlLinkSchedule::where('url_id', $url->id)->get();
+            }
+            
+            if($url->is_scheduled =='y' && count($url_link_schedules)>0 && $url->link_type!=2){
                 $day = date('N');
                 foreach($url_link_schedules as $schedule){
                     if ($schedule->day==$day){
@@ -2419,6 +2535,51 @@
                             $redirect['url']=NULL;
                             $redirect['message']="No Link Available To Redirect For Today";
                         }
+                    }
+                }
+            }else if( $url->link_type==2 &&  $url->parent_id!=0 ){
+                $getParentGroup=Url::where('id',$url->parent_id)->first();
+                if($getParentGroup->is_scheduled =='y' && count($url_link_schedules)>0){
+                    $day = date('N');
+                    foreach($url_link_schedules as $schedule){
+                        if ($schedule->day==$day){
+                            $redirect['status']=0;
+                            if($queryString!=='' && strlen($queryString)>0){
+                                $redirect['url']=$schedule->protocol.'://'.$schedule->url.'?'.$queryString;
+                            }else{
+                                $redirect['url']=$schedule->protocol.'://'.$schedule->url;
+                            }
+                            $redirect['message']="";
+                            break;
+                        }else{
+                            if(!empty($url->actual_url) or $url->actual_url!=NULL){
+                                $redirect['status']=0;
+                                if($queryString!=='' && strlen($queryString)>0){
+                                    $redirect['url']=$url->protocol.'://'.$url->actual_url.'?'.$queryString;
+                                }else{
+                                    $redirect['url']=$url->protocol.'://'.$url->actual_url;
+                                }
+                                $redirect['message']="";
+                            }else{
+                                $redirect['status']=1;
+                                $redirect['url']=NULL;
+                                $redirect['message']="No Link Available To Redirect For Today";
+                            }
+                        }
+                    }
+                }else{
+                    if(!empty($url->actual_url) or $url->actual_url!=NULL){
+                        $redirect['status']=0;
+                        if($queryString!=='' && strlen($queryString)>0){
+                            $redirect['url']=$url->protocol.'://'.$url->actual_url.'?'.$queryString;
+                        }else{
+                            $redirect['url']=$url->protocol.'://'.$url->actual_url;
+                        }
+                        $redirect['message']="";
+                    }else{
+                        $redirect['status']=1;
+                        $redirect['url']=NULL;
+                        $redirect['message']="No Link Available For Redirection";
                     }
                 }
             }else{
