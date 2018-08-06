@@ -240,7 +240,9 @@
                                                             </tr>
                                                         @endforeach
                                                     @else
-                                                        No Group Link Available For This Group.
+                                                        <tr>
+                                                            No Group Link Available For This Group.
+                                                        </tr>
                                                     @endif
                                                 </tbody>
                                             </table>
