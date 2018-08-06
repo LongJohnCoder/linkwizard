@@ -35,6 +35,7 @@
     use Mockery\Exception;
     use Intervention\Image\ImageManagerStatic as Image;
     use App\Timezone;
+    use App\DefaultSettings;
 
     class UrlController extends Controller{
         /**
@@ -93,12 +94,17 @@
                             $pixels = '';
                         }
                         $timezones = Timezone::all();
-                        $red_time = 5000;
-                        $pageColour = '#005C96';
+                        /* Getting the default settings */
+                        $defaultSettings = DefaultSettings::all();
+                        $red_time = $defaultSettings[0]->default_redirection_time;
+                        $pageColour = $defaultSettings[0]->page_color;
+                        $redirecting_text = $defaultSettings[0]->default_redirecting_text;
+                        /* Getting the profile settings if exist */
                         $profileSettings = Profile::where('user_id',Auth::user()->id)->first();
                         if (count($profileSettings)>0) {
                             $red_time = $profileSettings->default_redirection_time;
                             $pageColour = $profileSettings->pageColor;
+                            $redirecting_text = $profileSettings->default_redirecting_text;
                         }
                         return view('dashboard.shorten_url' , [
                             'urlTags'             => $urlTags,
@@ -110,7 +116,8 @@
                             'timezones'           => $timezones,
                             'pixels'              => $pixels,
                             'red_time'            => $red_time,
-                            'pageColor'           => $pageColour 
+                            'pageColor'           => $pageColour,
+                             'redirecting_text'    => $redirecting_text  
                         ]);
                     }
                 } else {
@@ -224,7 +231,10 @@
                     $meta_data['twitter_description']= NULL;
                     $meta_data['twitter_title']= NULL;
                 }
-
+                /* Getting the default settings */
+                $defaultSettings = DefaultSettings::all();
+                /* Getting the profile settings if exist */
+                $profileSettings = Profile::where('user_id',Auth::user()->id)->first();
                 // Add Customize settings for urls
                 if (isset($request->allowCustomizeUrl) && ($request->allowCustomizeUrl == "on")) {
                     $url->redirecting_time = ($request->redirecting_time*1000);
@@ -232,7 +242,7 @@
                     if ($request->redirecting_text_template != NULL) {
                         $url->redirecting_text_template = $request->redirecting_text_template;
                     } else {
-                        $url->redirecting_text_template = "Redirecting...";
+                        $url->redirecting_text_template = $defaultSettings[0]->default_redirecting_text;
                     }
                     /* Checking for image */
                     if ($request->hasFile('custom_brand_logo')) {
@@ -267,7 +277,15 @@
                     $url->customColour = $request->pageColour;
                     $url->usedCustomised = '1';
                 } else {
-                   $url->redirecting_time = 5000; 
+                    if (count($profileSettings)>0) {
+                        if (isset($profileSettings->default_redirection_time)) {
+                            $url->redirecting_time = $profileSettings->default_redirection_time;
+                        }
+                    } else {
+                        if (isset($defaultSettings)) {
+                            $url->redirecting_time = $defaultSettings[0]->default_redirection_time;
+                        }
+                    }
                 }
 
                 // Add favicon
@@ -720,15 +738,21 @@
                         //dd($pxId);
                         $timezones = Timezone::all();
                         $selectedTags = UrlTagMap::where('url_id',$id)->with('urlTag')->get();
+                        /* Getting the default settings */
+                        $defaultSettings = DefaultSettings::all();
+                        /* Getting the profile settings if exist */
                         $profileSettings = Profile::where('user_id',Auth::user()->id)->first();
-                        $red_time = 5000;
-                        $pageColour = '#005C96';
+                        $red_time = $defaultSettings[0]->default_redirection_time;
+                        $pageColour = $defaultSettings[0]->page_color;
+                        $redirecting_text = $defaultSettings[0]->default_redirecting_text;
                         if ($url->usedCustomised == 1) {
                             $red_time = $url->redirecting_time;
                             $pageColour = $url->customColour;
+                            $redirecting_text = $url->redirecting_text_template;
                         } else if (($url->usedCustomised == 0) && (count($profileSettings)>0)){
                             $red_time = $profileSettings->default_redirection_time;
                             $pageColour = $profileSettings->pageColor;
+                            $redirecting_text = $profileSettings->default_redirecting_text;
                         }
                         return view('dashboard.edit_url', [
                             'urlTags'              => $urlTags,
@@ -745,7 +769,8 @@
                             'pixels'               => $pixels,
                             'timezones'            => $timezones,
                             'red_time'             => $red_time,
-                            'pageColor'            => $pageColour
+                            'pageColor'            => $pageColour,
+                            'redirecting_text'     => $redirecting_text
                         ]);
 
                     }
@@ -807,57 +832,6 @@
                     $url->protocol = $protocol;
                     $url->actual_url = $actualUrl;
                     $actual_og_image = $url->og_image;
-                    if (!$request->customizeOption) {
-                        $url->usedCustomised = '1';
-                        /* Check if the shorten link is already exist or not */
-                        if ($url->shorten_suffix != $request->custom_url) {
-                            $checkSuffix=Url::where('shorten_suffix',$request->custom_url)->count();
-                            if ($checkSuffix >0) {
-                                return redirect()->back()->with('error', 'This Url Is Already Taken');
-                            }
-                            if ($request->custom_url != NULL) {
-                                $url->shorten_suffix = $request->custom_url;
-                            }
-                        }
-                        $url->customColour = $request->pageColour;
-                        if ($request->redirecting_text_template != NULL) {
-                            $url->redirecting_text_template = $request->redirecting_text_template;
-                        } else {
-                            $url->redirecting_text_template = "Redirecting...";
-                        }
-                        /* Checking for image */
-                        if ($request->hasFile('custom_brand_logo')) {
-                            /* checking file type */
-                            $allowedExt = array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF');
-                            $imageExt = $request->custom_brand_logo->getClientOriginalExtension();
-                            if (!in_array($imageExt, $allowedExt)) {
-                                return redirect()->back()->with('imgErr', 'error');
-                            }
-                            if (!file_exists('public/uploads/brand_images')) {
-                                mkdir('public/uploads/brand_images', 777 , true);
-                            }
-                            try {
-                                $upload_path ='public/uploads/brand_images';
-                                $image_name = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
-                                $data = getimagesize($request->custom_brand_logo);
-                                $width = $data[0];
-                                $height = $data[1];
-
-                                /* image resizing */
-                                $temp_height = 450;
-                                $abs_width = ceil(($width*$temp_height)/$height);
-                                $abs_height = $temp_height;
-                                $image_resize = Image::make($request->custom_brand_logo->getRealPath());
-                                $image_resize->resize($abs_width, $abs_height);
-                                $image_resize->save($upload_path.'/'.$image_name);
-                                $url->uploaded_path = $upload_path.'/'.$image_name;
-                            } catch (\Exception $e) {
-                                return redirect()->back()->with('imgErr', 'error');
-                            }
-                        }
-                    } else {
-                        $url->usedCustomised = '0';
-                    }
                     //Get Meta Data from browser if user did not provide
                     if(preg_match("~^(?:f|ht)tps?://~i", $request->actual_url[0])){
                         $meta_data = $this->getPageMetaContents($request->actual_url[0]);
@@ -891,11 +865,58 @@
                        $url->meta_description = ""; 
                     }
                     // Edit default redirection settings
+                    /* Getting the default settings */
+                    $defaultSettings = DefaultSettings::all();
+                    /* Getting the profile settings if exist */
+                    $profileSettings = Profile::where('user_id',Auth::user()->id)->first();
                     if (isset($request->allowCustomizeUrl) && ($request->allowCustomizeUrl == "on")) {
-                        if ($request->redirecting_time == '') {
-                            $request->redirecting_time = 5;
+                        $url->customColour = $request->pageColour;
+                        if ($request->redirecting_text_template != NULL) {
+                            $url->redirecting_text_template = $request->redirecting_text_template;
+                        } else if (isset($profileSettings) && ($profileSettings->default_redirecting_text != '')) {
+                            $url->redirecting_text_template = $profileSettings->default_redirecting_text;
+                        } else {
+                            $url->redirecting_text_template = $defaultSettings[0]->default_redirecting_text;
                         }
-                        $url->redirecting_time = ($request->redirecting_time*1000);
+                        /* Checking for image */
+                        if ($request->hasFile('custom_brand_logo')) {
+                            /* checking file type */
+                            $allowedExt = array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF');
+                            $imageExt = $request->custom_brand_logo->getClientOriginalExtension();
+                            if (!in_array($imageExt, $allowedExt)) {
+                                return redirect()->back()->with('imgErr', 'error');
+                            }
+                            if (!file_exists('public/uploads/brand_images')) {
+                                mkdir('public/uploads/brand_images', 777 , true);
+                            }
+                            try {
+                                $upload_path ='public/uploads/brand_images';
+                                $image_name = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
+                                $data = getimagesize($request->custom_brand_logo);
+                                $width = $data[0];
+                                $height = $data[1];
+
+                                /* image resizing */
+                                $temp_height = 450;
+                                $abs_width = ceil(($width*$temp_height)/$height);
+                                $abs_height = $temp_height;
+                                $image_resize = Image::make($request->custom_brand_logo->getRealPath());
+                                $image_resize->resize($abs_width, $abs_height);
+                                $image_resize->save($upload_path.'/'.$image_name);
+                                $url->uploaded_path = $upload_path.'/'.$image_name;
+                            } catch (\Exception $e) {
+                                return redirect()->back()->with('imgErr', 'error');
+                            }
+                        }
+                        if ($request->redirecting_time == '') {
+                            if ((isset($profileSettings)) && ($profileSettings->default_redirection_time != '')) {
+                                $url->redirecting_time = $profileSettings->default_redirection_time;
+                            } else {
+                                $url->redirecting_time = $defaultSettings[0]->default_redirection_time;
+                            }
+                        } else {
+                            $url->redirecting_time = ($request->redirecting_time*1000);
+                        }
                         $request->redirecting_text_template = trim(preg_replace('/\s+/', ' ',$request->redirecting_text_template));
                         if ($request->redirecting_text_template != NULL) {
                             $url->redirecting_text_template = $request->redirecting_text_template;
@@ -1610,12 +1631,13 @@
          * @param $url
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
-        public static function getRequestedUrl($url) {
-            $red_time = 5000;
-            $pageColour = '#005C96';
-            $redirectionText = 'Redirecting ...';
-            $favicon = 'https://tier5.us/images/favicon.ico';
-            $imageUrl = 'public/images/Tier5.jpg';
+        public function getRequestedUrl($url) {
+            $defaultSettings = DefaultSettings::all();
+            $red_time = $defaultSettings[0]->default_redirection_time;
+            $pageColour = $defaultSettings[0]->page_color;
+            $redirectionText = $defaultSettings[0]->default_redirecting_text;
+            $favicon = $defaultSettings[0]->default_fav_icon;
+            $imageUrl = $defaultSettings[0]->default_image;
             $sublink=0;
             $search = Url::where('shorten_suffix', $url)->first();
             if (count($search )>0) {
@@ -1650,11 +1672,11 @@
                         if ($search->usedCustomised==1) {
                             $red_time =  $search->redirecting_time;
                             $pageColour = $search->customColour;
-                            if($search->redirecting_text_template == "Redirecting..." ){
-                                if($userRedirection->default_redirecting_text != "Redirecting..."){
+                            if($search->redirecting_text_template == $defaultSettings[0]->default_redirection_time ){
+                                if($userRedirection->default_redirecting_text != $defaultSettings[0]->default_redirection_time){
                                     $redirectionText = $userRedirection->default_redirecting_text;
                                 }else{
-                                    $redirectionText = 'Redirecting...';
+                                    $redirectionText = $defaultSettings[0]->default_redirection_time;
                                 }
                             }else{
                                 $redirectionText = $search->redirecting_text_template;

@@ -243,7 +243,7 @@
                                         <br><p> Select your customize colour </p>
                                         <input type="color" name="pageColour" value="{{$pageColor}}"><br><br>
                                         <p> Enter your redirecting text </p>
-                                        <input class="form-control" type="text" name="redirecting_text_template" placeholder="Redirecting...">
+                                        <input class="form-control" type="text" name="redirecting_text_template" value="{{$redirecting_text}}" placeholder="{{$redirecting_text}}">
                                     </div>                        
                                 </div>
                                 <!-- Add Countdown End -->

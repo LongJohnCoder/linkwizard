@@ -1,5 +1,4 @@
 <?php
-
     namespace App\Http\Controllers;
 
     use App\Browser;
@@ -29,6 +28,7 @@
     use App\Http\Requests\ForgotPasswordRequest;
     use Intervention\Image\ImageManagerStatic as Image;
     use Mockery\Exception;
+    use App\DefaultSettings;
 
     class HomeController extends Controller{
         /**
