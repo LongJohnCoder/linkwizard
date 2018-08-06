@@ -175,7 +175,7 @@
                             success: function(response){
                                 setTimeout(function() {
                                     if (response.redirectstatus==0) {
-                                        window.location.href =response.redirecturl;
+                                        window.location.href=response.redirecturl;
                                     } else {
                                         $('#msg').text(response.message);
                                     }

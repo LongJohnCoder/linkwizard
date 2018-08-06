@@ -1,19 +1,5 @@
 $(document).ready(function () {
-    /*$('#element').mousedown(function(event) {
-    switch (event.which) {
-        case 1:
-            alert('Left Mouse button pressed.');
-            break;
-        case 2:
-            alert('Middle Mouse button pressed.');
-            break;
-        case 3:
-            alert('Right Mouse button pressed.');
-            break;
-        default:
-            alert('You have a strange Mouse!');
-    }
-});*/
+  
 
     google.charts.load('current', {
         'packages':['geochart'],
@@ -328,6 +314,17 @@ $(document).ready(function () {
                     return false;
                 }
             } 
+        }else if(getUrlType==2){
+            var groupTitle=$('#group_url_title').val().trim();
+            if(!groupTitle){
+                swal({
+                    title: "Error",
+                    text: "Need Group Title",
+                    type: "error",
+                    html: true
+                });
+                return false;
+            }
         }else{
             return false;
         }

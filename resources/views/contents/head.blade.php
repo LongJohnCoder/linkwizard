@@ -36,8 +36,12 @@
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/custom.css" />
     <link rel="stylesheet" href="https://sdkcarlos.github.io/sites/holdon-resources/css/HoldOn.css" />
     <link rel="stylesheet" href="{{ URL('/')}}/public/resources/css/bootstrap-datepicker3.standalone.min.css" />
+    <!-- Choseen Css  -->
     <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/prism.css' }}">
     <link rel="stylesheet" href="{{ URL::to('/').'/public/resources/js/chosen/chosen.css' }}">
+    <!-- Choseen Css  -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="{{ URL::to('/').'/public/resources/js/bootstrap.min.js'}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
@@ -45,8 +49,6 @@
     <script src="https://www.google.com/jsapi"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.jqueryui.min.js"></script>
-
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0-rc.2/Chart.bundle.min.js"></script> --}}
     <script src="{{ URL::to('/').'/public/resources/js/highcharts.js' }}"></script>
     <script src="{{ URL::to('/').'/public/resources/js/highchart-data.js' }}"></script>
     <script src="{{ URL::to('/').'/public/resources/js/highchart-drilldown.js' }}"></script>
@@ -58,10 +60,10 @@
     <script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
     <!-- Choseen jquery  -->
 
-    {{-- Tags css --}}
+    <!-- Tags css  -->
     <link rel="stylesheet" href="{{ URL('/')}}/public/css/bootstrap-tagsinput.css" />
 
-    {{-- Tags js --}}
+    <!-- Tags js  -->
     <script src="{{URL::to('/').'/public/js/bootstrap-tagsinput.js'}}"></script>
 
     @if(\Session::has('plan'))
@@ -73,19 +75,10 @@
     	});
     </script>
     @endif
-<link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-
-<!-- <script src="{{url('/')}}/public/js/bootstrap.min.js"></script> -->
-
-
-
-
-
-
-
-<script src="//connect.facebook.net/en_US/sdk/debug.js"></script>
-<script src="{{ URL::to('/').'/public/js/fb_share.js'}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <!-- <script src="{{url('/')}}/public/js/bootstrap.min.js"></script> -->
+    <script src="//connect.facebook.net/en_US/sdk/debug.js"></script>
+    <script src="{{ URL::to('/').'/public/js/fb_share.js'}}"></script>
 
 <!-- /Facebook API -->
 <!-- Google API -->

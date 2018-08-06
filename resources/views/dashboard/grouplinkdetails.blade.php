@@ -132,22 +132,3 @@
     	});
     </script>
 @stop
-
-
-<VirtualHost *:80>
-        ServerName new.uselinkwizard.com
-        ServerAdmin webmaster@localhost
-
-        DocumentRoot /var/www/html
-
-        <Directory /var/www/html>
-              Allow Override All
-              Order allow,deny
-              Allow from all
-        </Directory>
-
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
-
-

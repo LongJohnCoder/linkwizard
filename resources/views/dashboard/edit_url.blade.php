@@ -139,7 +139,7 @@ $optTypeLI = 'normal';
                                             @endfor
                                         @endif
                                     @endif
-                                @else
+                                @elseif($urls->link_type==0)
                                     <div class="row">
                                         <div class="col-md-2 col-sm-2">
                                             <label>Paste An Actual URL Here</label>
@@ -156,6 +156,30 @@ $optTypeLI = 'normal';
                                     <div class="row"><hr>
                                         <div class="col-md-2 col-sm-2">
                                             <label>Shorten link</label>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8">
+                                            <a href="//{{config('settings.APP_REDIRECT_HOST')}}/{{$urls->shorten_suffix}}" target="_blank">
+                                                <p style="color: #363636">{{config('settings.APP_REDIRECT_HOST')}}/{{$urls->shorten_suffix}}</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="row">
+                                        <div class="col-md-2 col-sm-2">
+                                            <label>Name Your Group </label>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8">
+                                            <div class="form-group">
+                                                <input id="group_url_title" type="text" name="group_url_title" class="form-control" placeholder="Group Name" required="true" value="{{$urls->title}}">
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2">
+                                        </div>
+                                    </div>
+                                     <div class="row"><hr>
+                                        <div class="col-md-2 col-sm-2">
+                                            <label>Group</label>
                                         </div>
                                         <div class="col-md-8 col-sm-8">
                                             <a href="//{{config('settings.APP_REDIRECT_HOST')}}/{{$urls->shorten_suffix}}" target="_blank">
