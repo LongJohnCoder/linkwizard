@@ -22,10 +22,6 @@ $optTypeLI = 'normal';
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
-<script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
 
 <style type="text/css">
     #scheduleArea{
@@ -516,7 +512,7 @@ $optTypeLI = 'normal';
                         </div>
                         <div class="normal-box1">
                             <div class="normal-header">
-                                <label class="custom-checkbox">Customize Redirecting Page
+                                <label class="custom-checkbox">Edit Customize Redirecting Page
                                     <input type="checkbox" id="countDownEnable" name="allowCustomizeUrl" {{$urls->usedCustomised ? 'checked' : ''}} >
                                     <span class="checkmark"></span>
                                 </label>
@@ -662,24 +658,28 @@ $optTypeLI = 'normal';
                         @if($type==0 || $type==2)
                             <div class="normal-box1">
                                 <div class="normal-header">
-                                    <table class="merge-tab">
-                                        <tr>
-                                            <td>
-                                                <label class="custom-checkbox">Edit expiration date for the link
-                                                    <input type="checkbox" id="expirationEnable" name="allowExpiration" <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'n')? 'checked' : '' ?> >
-                                                    <span class="checkmark"></span>
-                                                </label>
-                                            </td>
-                                            @if($type!=2)
-                                            <td>
-                                                <label class="custom-checkbox">Edit schedules for the link
-                                                    <input type="checkbox" id="addSchedule" name="allowSchedule" <?php echo (empty($urls->date_time) && $urls->is_scheduled == 'y')? 'checked' : '' ?> >
-                                                    <span class="checkmark"></span>
-                                                </label>
-                                            </td>
-                                            @endif
-                                        </tr>
-                                    </table>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="custom-checkbox">Edit expiration date for the link
+                                                <input type="checkbox" id="expirationEnable" name="allowExpiration" <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'n')? 'checked' : '' ?> >
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        @if($type!=2)
+                                        <div class="col-md-4">
+                                            <label class="custom-checkbox">Edit schedules for the link
+                                                <input type="checkbox" id="addSchedule" name="allowSchedule" <?php echo (empty($urls->date_time) && $urls->is_scheduled == 'y')? 'checked' : '' ?> >
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                        @endif
+                                        <div class="col-md-4">
+                                            <label class="custom-checkbox">Edit Geo Location
+                                                <input type="checkbox" id="editGeoLocation" name="editGeoLocation" <?php if(isset($urls->geolocation)){echo 'checked';}?>>
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- expiration part html -->
                                 <div class="normal-body add-expiration" id="expirationArea" style="display: <?php echo (!empty($urls->date_time) && $urls->is_scheduled == 'n')? 'block' : 'none' ?> ">
@@ -817,15 +817,6 @@ $optTypeLI = 'normal';
 
                                 </div>
                                 @endif
-                            </div>
-                            <!--Box For Adding Geo Location-->
-                            <div class="normal-box1">
-                                <div class="normal-header">
-                                    <label class="custom-checkbox">Edit Geo Location
-                                        <input type="checkbox" id="editGeoLocation" name="editGeoLocation" <?php if(isset($urls->geolocation)){echo 'checked';}?>>
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
                                 <div class="normal-body" id="geo-location-body" style="display:<?php if(isset($urls->geolocation)){echo 'block';}else{echo 'none';}?>">
                                     <label>Geo Location</label>
                                     <div class="row">
@@ -839,44 +830,44 @@ $optTypeLI = 'normal';
                                         </div>
                                         <div class="col-md-6 form-group">
                                             <input type="checkbox" name="deny_all" id="deny-all" @if(isset($urls->geolocation) && ($urls->geolocation==1)) {{'checked'}} @endif>
-                                            Deny All
+                                            Block All
                                         </div>
                                         <div class="col-md-12 form-group" id="allowable-country">
-                                            @if(isset($urls->geolocation) && ($urls->geolocation==1))
-                                                @if($urls->getGeoLocation->count() > 0)
-                                                    @foreach ($urls->getGeoLocation as $locationDetails)
-                                                        <div id="{{$locationDetails->country_name}}">
-                                                            <input type='hidden' name='denyCountryName[]' value='{{$locationDetails->country_name}}'>
-                                                            <input type='hidden' name='denyCountryCode[]' value='{{$locationDetails->country_code}}'>
-                                                            <input type='hidden' name='denyCountryId[]' value='0'>
-                                                            <input type='hidden' name='allowed[]' value='{{$locationDetails->allow}}'>
-                                                            <input type='hidden' name='denied[]' value='{{$locationDetails->deny}}'>
-                                                            <input type='hidden' name='redirect[]' value='{{$locationDetails->redirection}}'>
-                                                            <input type='hidden' name='redirectUrl[]' value='{{$locationDetails->url}}'>
-                                                        </div>
+                                        @if(isset($urls->geolocation) && ($urls->geolocation==1))
+                                            @if($urls->getGeoLocation->count() > 0)
+                                                @foreach ($urls->getGeoLocation as $locationDetails)
+                                                    <div id="{{$locationDetails->country_name}}">
+                                                        <input type='hidden' name='denyCountryName[]' value='{{$locationDetails->country_name}}'>
+                                                        <input type='hidden' name='denyCountryCode[]' value='{{$locationDetails->country_code}}'>
+                                                        <input type='hidden' name='denyCountryId[]' value='0'>
+                                                        <input type='hidden' name='allowed[]' value='{{$locationDetails->allow}}'>
+                                                        <input type='hidden' name='denied[]' value='{{$locationDetails->deny}}'>
+                                                        <input type='hidden' name='redirect[]' value='{{$locationDetails->redirection}}'>
+                                                        <input type='hidden' name='redirectUrl[]' value='{{$locationDetails->url}}'>
+                                                    </div>
 
-                                                    @endforeach
-                                                @endif
+                                                @endforeach
                                             @endif
+                                        @endif
                                         </div>
                                         <div class="col-md-12 form-group" id="denied-country">
-                                            @if(isset($urls->geolocation) && ($urls->geolocation==0))
-                                                @if($urls->getGeoLocation->count() > 0)
-                                                    @foreach ($urls->getGeoLocation as $locationDetails)
-                                                        <div id="{{$locationDetails->country_name}}">
-                                                            <input type='hidden' name='denyCountryName[]' value='{{$locationDetails->country_name}}'>
-                                                            <input type='hidden' name='denyCountryCode[]' value='{{$locationDetails->country_code}}'>
-                                                            <input type='hidden' name='denyCountryId[]' value='0'>
-                                                            <input type='hidden' name='allowed[]' value='{{$locationDetails->allow}}'>
-                                                            <input type='hidden' name='denied[]' value='{{$locationDetails->deny}}'>
-                                                            <input type='hidden' name='redirect[]' value='{{$locationDetails->redirection}}'>
-                                                            <input type='hidden' name='redirectUrl[]' value='{{$locationDetails->url}}'>
-                                                        </div>
+                                        @if(isset($urls->geolocation) && ($urls->geolocation==0))
+                                            @if($urls->getGeoLocation->count() > 0)
+                                                @foreach ($urls->getGeoLocation as $locationDetails)
+                                                    <div id="{{$locationDetails->country_name}}">
+                                                        <input type='hidden' name='denyCountryName[]' value='{{$locationDetails->country_name}}'>
+                                                        <input type='hidden' name='denyCountryCode[]' value='{{$locationDetails->country_code}}'>
+                                                        <input type='hidden' name='denyCountryId[]' value='0'>
+                                                        <input type='hidden' name='allowed[]' value='{{$locationDetails->allow}}'>
+                                                        <input type='hidden' name='denied[]' value='{{$locationDetails->deny}}'>
+                                                        <input type='hidden' name='redirect[]' value='{{$locationDetails->redirection}}'>
+                                                        <input type='hidden' name='redirectUrl[]' value='{{$locationDetails->url}}'>
+                                                    </div>
 
-                                                    @endforeach
-                                                @endif
-
+                                                @endforeach
                                             @endif
+
+                                        @endif
                                         </div>
                                     </div>
                                 </div>
@@ -890,66 +881,79 @@ $optTypeLI = 'normal';
             </div>
         </div>
         <!-- Modal -->
-        <div class="modal fade" id="allow-country-modal">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row" id="allow-block">
-                            <div class="col-md-12 col-lg-12">
-                                <h4 id="allowed-country-name" style="text-align: center;"></h4>
-                                <input type="hidden" id="allowed-country-id" value="">
-                                <input type="hidden" id="allowed-country-code" value="">
-                            </div>
-                            <div class="col-md-2 col-lg-2">
-                                <input type="checkbox" name="allow-country" id="allow-country" style="height: 30px;">
-                            </div>
-                            <div class="col-md-4 col-lg-4">
-                                <h4> Allow </h4>
-                            </div>
-                            <div class="col-md-2 col-lg-2">
-                                <input type="checkbox" name="allow-redirect-url-checkbox" id="allow-redirect-url-checkbox" style="height: 30px;">
-                            </div>
-                            <div class="col-md-4 col-lg-4">
-                                <h4> Redirect </h4>
-                            </div>
-                            <div class="col-md-12 col-lg-12 form-group">
-                                <input type="text" name="" id="redirect-url-allow" class="form-control" style="display:none;" placeholder="Enter Redirect Url" onchange="checkUrl(this.value)">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn-success" id="allow-the-country">Save changes</button>
-                        <button type="button" class="btn-primary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="deny-country-modal">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div class="row" id="deny-block">
-                            <div class="col-md-6 col-lg-6">
-                                <h4 id="denied-country-name" style="text-align: center;"></h4>
-                                <input type="hidden" name="deny-country-code" id="deny-country-code" value="">
-                                <input type="hidden" name="deny-country-id" id="deny-country-id" value="">
-                            </div>
-                            <div class="col-md-2 col-lg-2">
-                                <input type="checkbox" name="deny-country" id="deny-country" style="height: 30px;">
-                            </div>
-                            <div class="col-md-4 col-lg-4">
-                                <h4> Block </h4>
+                 <div class="modal fade" id="allow-country-modal">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="row" id="allow-block">
+                                        <div class="col-md-12 col-lg-12">
+                                            <h4 id="allowed-country-name" style="text-align: center;"></h4>
+                                            <input type="hidden" id="allowed-country-id" value="">
+                                            <input type="hidden" id="allowed-country-code" value="">
+                                        </div>
+                                        <div class="col-md-2 col-lg-2">
+                                            <input type="checkbox" name="allow-country" id="allow-country" style="height: 30px;">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10">
+                                            <h4> Allow </h4>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2">
+                                            <input type="checkbox" name="allow-redirect-url-checkbox" id="allow-redirect-url-checkbox" style="height: 30px;">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10">
+                                            <h4> Redirect </h4>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10 form-group">
+                                            <input type="text" name="" id="redirect-url-allow" class="form-control" style="display:none;" placeholder="Enter Redirect Url" onchange="checkUrl(this.value)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn-success" id="allow-the-country">Save changes</button>
+                                    <button type="button" class="btn-primary" data-dismiss="modal">Close</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn-success"  id="deny-the-country">Save changes</button>
-                        <button type="button" class="btn-primary" data-dismiss="modal">Close</button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="deny-country-modal">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="row" id="deny-block">
+                                        <div class="col-md-12 col-lg-12">
+                                            <h4 id="denied-country-name" style="text-align: center;"></h4>
+                                            <input type="hidden" name="deny-country-code" id="deny-country-code" value="">
+                                            <input type="hidden" name="deny-country-id" id="deny-country-id" value="">
+                                        </div>
+                                        <div class="col-md-2 col-lg-2">
+                                            <input type="checkbox" name="deny-country" id="deny-country" style="height: 30px;">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10">
+                                            <h4> Block </h4>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2">
+                                            <input type="checkbox" name="redirect-country" id="redirect-country" style="height: 30px;">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10">
+                                            <h4> Redirect </h4>
+                                        </div>
+                                        <div class="col-md-2">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10 form-group">
+                                            <input type="text" name="redirect-url" id="redirect-url" class="form-control" placeholder="Please Enter Redirect Url" style="border:1px solid; display: none;" onchange="checkUrl(this.value)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn-success"  id="deny-the-country">Save changes</button>
+                                    <button type="button" class="btn-primary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 </div>
 @include('contents/footer')
 <!-- Choseen jquery  -->
@@ -2037,18 +2041,6 @@ $optTypeLI = 'normal';
     </script>
 @endif
 
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        /*
-                if (typeof(FB) != 'undefined'
-                    && FB != null ) {
-                    // run the app
-                } else {
-                    alert('check browser settings to enable facebook sharing.. ');
-                }*/
-    });
-</script>
 <script src="{{ URL::to('/').'/public/js/editurl.js' }}"></script>
 </body>
 </html>

@@ -387,24 +387,28 @@
                                 @if($type==0 || $type==2)
                                 <div class="normal-box1">
                                     <div class="normal-header">
-                                        <table class="merge-tab">
-                                            <tr>
-                                                <td>
-                                                    <label class="custom-checkbox">Add expiration date for the link
-                                                        <input type="checkbox" id="expirationEnable" name="allowExpiration">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </td>
-                                                @if($type==0)
-                                                <td>
-                                                    <label class="custom-checkbox">Add schedules for the link
-                                                        <input type="checkbox" id="addSchedule" name="allowSchedule">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </td>
-                                                @endif
-                                            </tr>
-                                        </table>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="custom-checkbox">Add expiration date for the link
+                                                    <input type="checkbox" id="expirationEnable" name="allowExpiration">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                            @if($type==0)
+                                            <div class="col-md-4">
+                                                <label class="custom-checkbox">Add schedules for the link
+                                                    <input type="checkbox" id="addSchedule" name="allowSchedule">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                            @endif
+                                            <div class="col-md-4">
+                                                <label class="custom-checkbox">Add Geo Location
+                                                    <input type="checkbox" id="addGeoLocation" name="addGeoLocation">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="normal-body add-expiration" id="expirationArea">
                                         <p>Select date &amp; time for this link</p>
@@ -517,16 +521,6 @@
                                         </div>
                                     </div>
                                     @endif
-                                </div>
-
-                                <!--Box For Adding Geo Location-->
-                                <div class="normal-box1">
-                                    <div class="normal-header">
-                                        <label class="custom-checkbox">Add Geo Location
-                                            <input type="checkbox" id="addGeoLocation" name="addGeoLocation">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </div>
                                     <div class="normal-body" id="geo-location-body">
                                         <label>Set Geo Location</label>
                                         <div class="row">
@@ -558,8 +552,14 @@
                     </div>
                     <!-- Modal -->
                     <div class="modal fade" id="allow-country-modal">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-md">
                             <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close modalclosebtn" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">Geolocation Settings</h4>
+                                </div>
                                 <div class="modal-body">
                                     <div class="row" id="allow-block">
                                         <div class="col-md-12 col-lg-12">
@@ -570,23 +570,27 @@
                                         <div class="col-md-2 col-lg-2">
                                             <input type="checkbox" name="allow-country" id="allow-country" style="height: 30px;">
                                         </div>
-                                        <div class="col-md-4 col-lg-4">
+                                        <div class="col-md-10 col-lg-10">
                                             <h4> Allow </h4>
                                         </div>
                                         <div class="col-md-2 col-lg-2">
                                             <input type="checkbox" name="allow-redirect-url-checkbox" id="allow-redirect-url-checkbox" style="height: 30px;">
                                         </div>
-                                        <div class="col-md-4 col-lg-4">
+                                        <div class="col-md-10 col-lg-10">
                                             <h4> Redirect </h4>
                                         </div>
-                                        <div class="col-md-12 col-lg-12 form-group">
-                                            <input type="text" name="" id="redirect-url-allow" class="form-control" style="display:none;" placeholder="Enter Redirect Url" onchange="checkUrl(this.value)">
+                                        <div class="col-md-2">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10 form-group">
+                                            <input type="text" name="" id="redirect-url-allow" class="form-control" style="border:1px solid; display:none;" placeholder="PleaseEnter Redirect Url" onchange="checkUrl(this.value)">
+                                        </div>
+                                        <div class="col-md-12 col-lg-12">
+                                            <button type="submit" class="btn btn-success" id="allow-the-country">Save changes</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn-success" id="allow-the-country">Save changes</button>
-                                    <button type="button" class="btn-primary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -594,11 +598,17 @@
 
                     <!-- Modal -->
                     <div class="modal fade" id="deny-country-modal">
-                        <div class="modal-dialog modal-sm">
+                        <div class="modal-dialog modal-md">
                             <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close modalclosebtn" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabel">Geolocation Settings</h4>
+                                </div>
                                 <div class="modal-body">
                                     <div class="row" id="deny-block">
-                                        <div class="col-md-6 col-lg-6">
+                                        <div class="col-md-12 col-lg-12">
                                             <h4 id="denied-country-name" style="text-align: center;"></h4>
                                             <input type="hidden" name="deny-country-code" id="deny-country-code" value="">
                                             <input type="hidden" name="deny-country-id" id="deny-country-id" value="">
@@ -606,14 +616,27 @@
                                         <div class="col-md-2 col-lg-2">
                                             <input type="checkbox" name="deny-country" id="deny-country" style="height: 30px;">
                                         </div>
-                                        <div class="col-md-4 col-lg-4">
+                                        <div class="col-md-10 col-lg-10">
                                             <h4> Block </h4>
+                                        </div>
+                                        <div class="col-md-2 col-lg-2">
+                                            <input type="checkbox" name="redirect-country" id="redirect-country" style="height: 30px;">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10">
+                                            <h4> Redirect </h4>
+                                        </div>
+                                        <div class="col-md-2">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10 form-group">
+                                            <input type="text" name="redirect-url" id="redirect-url" class="form-control" placeholder="Please Enter Redirect Url" style="border:1px solid; display: none;" onchange="checkUrl(this.value)">
+                                        </div>
+                                        <div class="col-md-10 col-lg-10">
+                                            <button type="button" class="btn btn-success"  id="deny-the-country">Save changes</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn-success"  id="deny-the-country">Save changes</button>
-                                    <button type="button" class="btn-primary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -773,162 +796,6 @@
                     }
                 }
             }
-
-   /* var notValidURLs = "";
-    function ValidURL(URLs) {
-        notValidURLs = URLs.filter(function (URL) {
-            return URL.indexOf("http://") < 0 && URL.indexOf("https://") < 0;
-        });
-        if (notValidURLs.length) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    function ValidCustomURL(str) {
-        var regexp = new RegExp("^[a-zA-Z0-9_]+$");
-        var url = str;
-        if (!regexp.test(url)) {
-            return false;
-        } else {
-            return true;
-        }
-    }*/
-
-    /*var shortenUrlFunc = function () {
-        @if($type == 'short')
-        var urlToHit = 
-            "{{ route('postShortUrlTier5') }}"
-        @elseif($type == 'custom')
-            "{{ route('postCustomUrlTier5') }}"
-        @endif;
-        var actualUrl = $('#givenActual_Url').val();
-        var customUrl = null;
-        @if ($type == 'custom')
-            customUrl = $('#makeCustom_Url').val();
-        @endif
-        //$("#url_short_frm").submit();
-    }*/
-   /* $("#shorten_url_btn").on('click', function (e) {
-        if ($("#cust_url_chk").prop('checked') && $("#link_preview_selector").prop('checked') && $("#link_preview_custom").prop('checked')) {
-            var url_inp_len = $("#url_inp").val().trim().length;
-            var url_inp = $("#url_inp").val();
-            if (url_inp.indexOf(' ') != -1 ||
-                (!(url_inp.indexOf('http://') == 0) && !(url_inp.indexOf('https://') == 0)) ||
-                (url_inp.indexOf(',') != -1) ||
-                (url_inp.indexOf(';') != -1)) {
-                swal({
-                    type: "warning",
-                    title: null,
-                    text: "Please give a proper url in your link preview url section",
-                    html: true
-                });
-                return false;
-            }
-        }
-        
-        if ($('#expirationEnable').prop('checked')) {
-            if ($('#datepicker').val() != '' && $('#datepicker').val() != 'month/day/year hours:minutes AM/PM') {
-                if ($('#expirationTZ').val() != '') {
-                } else {
-                    swal({
-                        type: "warning",
-                        title: null,
-                        text: "Please pick a timezone & time for link expiration",
-                        html: true
-                    });
-                    return false;
-                }
-            } else {
-                swal({
-                    type: "warning",
-                    title: null,
-                    text: "Please pick a time for link expiration",
-                    html: true
-                });
-                return false;
-            }
-        }
-
-        var actualUrl = $('.long-url').map(function (index, element) {
-            return element.value;
-        }).get();
-        var customUrl = $('#makeCustom_Url').val();
-        @if (Auth::user())
-            var userId = {{Auth::user()->id}};
-        @else
-            var userId = 0;
-        @endif
-        var cust_url_flag = "{{$type}}";
-        if (cust_url_flag == 'custom') {
-
-            $.ajax({
-                type: "POST",
-                url: "/check_custom",
-                data: {custom_url: customUrl, _token: '{{csrf_token()}}'},
-                success: function (response) {
-                    if (response == 1) {
-                        if (ValidURL(actualUrl)) {
-                            if (ValidCustomURL(customUrl)) {
-                                shortenUrlFunc();
-                            } else {
-                                swal({
-                                    type: "warning",
-                                    title: "Invalid URL",
-                                    text: "Custom URL is not valid",
-                                    html: true
-                                });
-                            }
-                        } else {
-                            var title = actualUrl.length > 1 ?
-                                "Following URLs are not valid" : "Actual URL is not valid";
-                            swal({
-                                type: "warning",
-                                title: title,
-                                text: notValidURLs.join('<br>'),
-                                html: true
-                            });
-                        }
-                    } else {
-                        swal({
-                            type: "warning",
-                            title: 'Sorry this url is taken',
-                            text: "This custom url name is already taken! Try another one"
-                        });
-                        //url already used by this user
-                    }
-
-                }
-            });
-        } else {
-            
-            if($('#addSchedule').prop('checked')==false)
-            {
-                // alert($('#addSchedule').prop('checked'))
-                //if it is not custom
-                if (ValidURL(actualUrl)) {
-                    shortenUrlFunc();
-                } else {
-                    var title = actualUrl.length > 1 ? "Following URLs are not valid" : "Actual URL is not valid";
-                    swal({
-                        type: "warning",
-                        title: title,
-                        text: notValidURLs.join('<br>'),
-                        html: true
-                    });
-                }
-            }
-            else
-            {
-                shortenUrlFunc();
-            }
-        }
-    });*/
-
-   /* var appURL = "{{url('/')}}";
-    appURL = appURL.replace('https://', '');
-    appURL = appURL.replace('http://', '');*/
     
 
     $(document).ready(function () {

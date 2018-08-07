@@ -2662,26 +2662,13 @@
                         $geoLocation->country_name=$request->denyCountryName[$i];
                         $geoLocation->country_code=$request->denyCountryCode[$i];
                         $geoLocation->allow=$request->allowed[$i];
-                        if(!empty($request->denied[$i]) || $request->denied[$i]!=NULL){
-                            $geoLocation->deny=$request->denied[$i];
-                        }else{
-                            $geoLocation->deny = 0;
-                        }
-                        if($request->redirectUrl[$i]==''){
-                            $geoLocation->redirection=0;
-                        }else{
-                           $geoLocation->redirection=1; 
-                        }
+                        $geoLocation->deny=$request->denied[$i];
+                        $geoLocation->redirection=$request->redirect[$i];
                         $geoLocation->url=$request->redirectUrl[$i];
                         $geoLocation->save();
                     }
 
                 }
-                /*return \Response::json(array(
-                    'status' => true,
-                    'status_code' => 200,
-                   
-                ));*/
             } catch (Exception $e) {
                 return \Response::json(array(
                     'status' => false,
@@ -2690,8 +2677,6 @@
                 ));
             }
         }
-
-
         // All information need to load header file
 
         private function getAllDashboardElements($user , $request) {

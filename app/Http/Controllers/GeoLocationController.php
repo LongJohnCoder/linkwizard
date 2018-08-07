@@ -26,19 +26,19 @@
     /** Controller To Manage GEOLOCATOR Curd operation**/
     class GeoLocationController extends Controller{
 
-    	//Method To Get All Country Name and Code
-    	public function getAllCountry(Request $request){
+        //Method To Get All Country Name and Code
+        public function getAllCountry(Request $request){
             try{
-        		$getAllCountry=Country::select('name', 'code')->get();
-        		$location[0][0] = 'Country';
-            	$location[0][1] = 'Code';
-            	if(count($getAllCountry)>0){
-            		foreach ($getAllCountry as $key => $country) {
-                		$location[++$key][0] =$country->name;
-                		$location[$key][1] = $country->code;
-            		}
-            	}
-    			return \Response::json(array(
+                $getAllCountry=Country::select('name', 'code')->get();
+                $location[0][0] = 'Country';
+                $location[0][1] = 'Code';
+                if(count($getAllCountry)>0){
+                    foreach ($getAllCountry as $key => $country) {
+                        $location[++$key][0] =$country->name;
+                        $location[$key][1] = $country->code;
+                    }
+                }
+                return \Response::json(array(
                     'status' => true,
                     'status_code' => 200,
                     'data' => $location
@@ -50,7 +50,7 @@
                     'message'   => $e->getMessage()
                 ));
             }
-    	}
+        }
 
         public function getSelectedCountryDetails(Request $request){
             try{
@@ -138,13 +138,20 @@
 
         public function getDenyCountryInAllowAll(Request $request){
             try{
+                //action redirect
                 $selectedCountry=array();
                 $getCountry=Country::select('id','name', 'code')->get();
                 if($getCountry){
                     foreach ($getCountry as $key => $country) {
                         if($request->data!=""){
                             if (in_array($country->name,$request->data)){
-                                $value=0;
+                                $key = array_search($country->name, $request->data);
+                                if( $request->action[$key]==1){
+                                    $value=0; 
+                                }
+                                if( $request->redirect[$key]==1){
+                                    $value=2; 
+                                }
                             }else{
                                 $value=1; 
                             }

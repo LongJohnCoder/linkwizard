@@ -729,7 +729,9 @@ $(document).ready(function () {
     $('#expirationEnable').click(function(){
         if($(this).is(':checked')){
             $('#addSchedule').prop('checked', false);
+            $('#addGeoLocation').prop('checked', false);
             $('#scheduleArea').hide();
+            $('#geo-location-body').hide();
             $('#day1').val('');
             $('#day2').val('');
             $('#day3').val('');
@@ -757,7 +759,9 @@ $(document).ready(function () {
     $('#addSchedule').click(function(){
         if($(this).is(':checked')){
             $('#expirationEnable').prop('checked', false);
+            $('#addGeoLocation').prop('checked', false);
             $('#expirationArea').hide();
+            $('#geo-location-body').hide();
             $('#datepicker').val('month/day/year hours:minutes AM/PM');
             $('#expirationTZ').val('');
             $('#expirationUrl').val('');

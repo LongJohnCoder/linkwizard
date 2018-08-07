@@ -1,6 +1,5 @@
 $(document).ready(function () {
   
-
     google.charts.load('current', {
         'packages':['geochart'],
         'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
@@ -20,7 +19,11 @@ $(document).ready(function () {
 
     $('#editGeoLocation').click(function(){
         if($('#editGeoLocation').is(":checked")) {
+            $('#expirationEnable').prop('checked', false);
+            $('#addSchedule').prop('checked', false);
             $('#geo-location-body').show();
+            $('#scheduleArea').hide();
+            $('#expirationArea').hide();
             if($('#allow-all').is(":checked")) {
                 google.charts.setOnLoadCallback(drawRegionsAllowMap);
             }else if($('#deny-all').is(":checked")){
@@ -334,7 +337,9 @@ $(document).ready(function () {
     $('#expirationEnable').click(function(){
         if($(this).is(':checked')) {
             $('#addSchedule').prop('checked', false);
+            $('#editGeoLocation').prop('checked', false);
             $('#scheduleArea').hide();
+            $('#geo-location-body').hide();
             $('#day1').val('');
             $('#day2').val('');
             $('#day3').val('');
@@ -360,7 +365,9 @@ $(document).ready(function () {
     $('#addSchedule').click(function(){
         if($(this).is(':checked')){
             $('#expirationEnable').prop('checked', false);
+            $('#editGeoLocation').prop('checked', false);
             $('#expirationArea').hide();
+            $('#geo-location-body').hide();
             $('#datepicker').val('month/day/year hours:minutes AM/PM');
             $('#expirationTZ').val('');
             $('#expirationUrl').val('');
@@ -445,10 +452,20 @@ $(document).ready(function () {
         $("input[name='denyCountryName[]']").each(function() {
             values.push($(this).val());
         });
+
+        var action = [];
+        $("input[name='denied[]']").each(function() {
+            action.push($(this).val());
+        });
+
+        var redirect = [];
+        $("input[name='redirect[]']").each(function() {
+            redirect.push($(this).val());
+        });
         $.ajax({
             type: 'post',
             url: "/getDenyCountryInAllowAll",
-            data: {data:values,_token: '{{csrf_token()}}'},
+            data: {data:values, action:action, redirect:redirect, _token: '{{csrf_token()}}'},
             success: function (response) {
                 if(response.code=200){
                     var arr = Object.values(response.data);
@@ -468,7 +485,11 @@ $(document).ready(function () {
                         border  : 15,
                         legend  : 'none',
                         marginColor : 'black',
-                        colorAxis: {colors: ['#EC6B69','#95D981']},
+                        //colorAxis: {colors: ['#EC6B69','#95D981']},
+                        colorAxis: {
+                            values:[0, 1, 2],
+                            colors:['#EC6B69', '#95D981','#00BFFF']
+                        }
                     };
                     var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
                     chart.draw(data, options);
@@ -492,6 +513,9 @@ $(document).ready(function () {
                                                     $('#deny-country-code').val(response.data.code);
                                                     $('#deny-country-id').val(response.data.id);
                                                     $('#deny-country').prop('checked', false);
+                                                    $('#redirect-country').prop('checked', false);
+                                                    $('#redirect-url').hide();
+                                                    $('#redirect-url').val("");
                                                     $('#deny-country-modal').modal('show');
                                                 }
                                             }
@@ -520,15 +544,34 @@ $(document).ready(function () {
                             "<input type='hidden' name='denyCountryId[]' value='"+countryId+"'>"+
                             "<input type='hidden' name='allowed[]' value='0'>"+
                             "<input type='hidden' name='denied[]' value='1'>"+
+                            "<input type='hidden' name='redirect[]' value='0'>"+
                             "<input type='hidden' name='redirectUrl[]' value=''>"+
                         "</div>";
                 $('#denied-country').append(deny);
                 $('#deny-country-modal').modal('hide');
-                var values = [];
-                $("input[name='denyCountryName[]']").each(function() {
-                    values.push($(this).val());
-                });
                 google.charts.setOnLoadCallback(drawRegionsAllowMap);
+            }else if($("#redirect-country").is(':checked')){
+                var redirectUrl=$('#redirect-url').val();
+                if(!redirectUrl){
+                    swal("Alert", "Please Provide A Redirect Url");
+                }else{
+                    var checkUrl=ValidURL(redirectUrl);
+                    if(checkUrl){
+                        var deny="<div id='"+countryName+"'><input type='hidden' name='denyCountryName[]' value='"+countryName+"'>"+
+                                    "<input type='hidden' name='denyCountryCode[]' value='"+countryCode+"'>"+
+                                    "<input type='hidden' name='denyCountryId[]' value='"+countryId+"'>"+
+                                    "<input type='hidden' name='allowed[]' value='0'>"+
+                                    "<input type='hidden' name='denied[]' value='0'>"+
+                                    "<input type='hidden' name='redirect[]' value='1'>"+
+                                    "<input type='hidden' name='redirectUrl[]' value='"+redirectUrl+"'>"+
+                                "</div>";
+                        $('#denied-country').append(deny);
+                        $('#deny-country-modal').modal('hide');
+                        google.charts.setOnLoadCallback(drawRegionsAllowMap);
+                    }else{
+                        return false;
+                    }
+                }
             }else{
                 swal("Alert", "Nothing To Save");
             }
@@ -543,27 +586,41 @@ $(document).ready(function () {
         var countryId=$('#allowed-country-id').val().trim();
         if(countryName && countryCode && countryId){
             if($("#allow-country").is(':checked')){
-                if($("#allow-redirect-url-checkbox").is(':checked')){
-                    var redirect=1;
-                    var url=$('#redirect-url-allow').val().trim();
-                    if(!url){
-                       swal("Alert", "You Need To Provide Some Redirect URL!");
-                       return false;
-                    }
-                }else{
-                    var redirect=0;
-                    var url='';
-                }
                 var deny="<div id='"+countryName+"'><input type='hidden' name='denyCountryName[]' value='"+countryName+"'>"+
                             "<input type='hidden' name='denyCountryCode[]' value='"+countryCode+"'>"+
                             "<input type='hidden' name='denyCountryId[]' value='"+countryId+"'>"+
                             "<input type='hidden' name='allowed[]' value='1'>"+
-                            "<input type='hidden' name='redirect[]' value='"+redirect+"'>"+
-                            "<input type='hidden' name='redirectUrl[]' value='"+url+"'>"+
+                            "<input type='hidden' name='denied[]' value='0'>"+
+                            "<input type='hidden' name='redirect[]' value='0'>"+
+                            "<input type='hidden' name='redirectUrl[]' value=''>"+
                         "</div>";
                 $('#allowable-country').append(deny);
                 $('#allow-country-modal').modal('hide')
                 google.charts.setOnLoadCallback(drawRegionsDenyMap);
+            }
+            else if($("#allow-redirect-url-checkbox").is(':checked')){
+                var redirectUrl=$('#redirect-url-allow').val();
+                if(!redirectUrl){
+                    swal("Alert", "Please Provide A Redirect Url");
+                }else{
+                    var checkUrl=ValidURL(redirectUrl);
+                    if(checkUrl){
+                
+                        var deny="<div id='"+countryName+"'><input type='hidden' name='denyCountryName[]' value='"+countryName+"'>"+
+                                    "<input type='hidden' name='denyCountryCode[]' value='"+countryCode+"'>"+
+                                    "<input type='hidden' name='denyCountryId[]' value='"+countryId+"'>"+
+                                    "<input type='hidden' name='allowed[]' value='0'>"+
+                                    "<input type='hidden' name='denied[]' value='0'>"+
+                                    "<input type='hidden' name='redirect[]' value='1'>"+
+                                    "<input type='hidden' name='redirectUrl[]' value='"+redirectUrl+"'>"+
+                                "</div>";
+                        $('#allowable-country').append(deny);
+                        $('#allow-country-modal').modal('hide')
+                        google.charts.setOnLoadCallback(drawRegionsDenyMap);
+                    }else{
+                        return false;
+                    }
+                }
 
             }else{
                 swal("Alert", "Nothing To Save");
@@ -575,12 +632,37 @@ $(document).ready(function () {
 
     $('#allow-redirect-url-checkbox').click(function(){
         if($(this).is(":checked")) {
+            $('#allow-country').prop('checked', false);
             $('#redirect-url-allow').css('display', 'block');
             $('#redirect-url-allow').focus();
         }else{
             $('#redirect-url-allow').css('display', 'none');
         }  
-    });    
+    }); 
+
+    $('#allow-country').click(function(){
+        if($(this).is(":checked")) {
+            $('#allow-redirect-url-checkbox').prop('checked', false);
+            $('#redirect-url-allow').css('display', 'none');
+        }
+    });
+
+    $('#redirect-country').click(function(){
+        if($(this).is(":checked")) {
+            $('#deny-country').prop('checked', false);
+            $('#redirect-url').css('display', 'block');
+            $('#redirect-url').focus();
+        }else{
+            $('#redirect-url').css('display', 'none');
+        }  
+    }); 
+
+    $('#deny-country').click(function(){
+        if($(this).is(":checked")) {
+            $('#redirect-country').prop('checked', false);
+            $('#redirect-url').css('display', 'none');
+        }
+    });   
 });
 
 
@@ -626,11 +708,21 @@ function drawRegionsDenyMap() {
         values.push($(this).val());
     });
 
+    var action = [];
+    $("input[name='allowed[]']").each(function() {
+        action.push($(this).val());
+    });
+
+    var redirect = [];
+    $("input[name='redirect[]']").each(function() {
+        redirect.push($(this).val());
+    });
     $.ajax({
         type: 'post',
         url: "/getDenyCountryInAllowAll",
-        data: {data: values, _token: '{{csrf_token()}}'},
+        data: {data: values, action:action, redirect:redirect, _token: '{{csrf_token()}}'},
         success: function (response) {
+            console.log(response);
             if(response.code=200){
                 var arr = Object.values(response.data);
                 var data = new google.visualization.DataTable();
@@ -649,7 +741,10 @@ function drawRegionsDenyMap() {
                     border  : 15,
                     legend: 'none',
                     marginColor : 'black',
-                    colorAxis: {colors: ['#95D981','#EC6B69']},
+                    colorAxis: {
+                        values:[0, 1, 2],
+                        colors:['#95D981', '#EC6B69','#00BFFF']
+                    }
                 };
                 var chart = new google.visualization.GeoChart(document.getElementById('map-div'));
                 chart.draw(data, options);
@@ -673,6 +768,8 @@ function drawRegionsDenyMap() {
                                             $('#allowed-country-id').val(response.data.id);
                                             $('#allow-country').prop('checked', false);
                                             $('#allow-redirect-url-checkbox').prop('checked', false);
+                                            $('#redirect-url-allow').val();
+                                            $('#redirect-url-allow').hide();
                                             $('#allow-country-modal').modal('show');
                                         }
 
@@ -689,4 +786,40 @@ function drawRegionsDenyMap() {
         }
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
