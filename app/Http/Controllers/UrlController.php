@@ -2164,21 +2164,22 @@
                 $redirectstatus=0;
                 $message="";
             }else if($search->link_type==2){
+                $parentUrl = Url::where('id', $search->parent_id)->with('urlSpecialSchedules','url_link_schedules')->first();
                 /*Check Url Expire */
-                if (($search->date_time!="") && ($search->timezone!="")) {
-                    date_default_timezone_set($search->timezone);
+                if (($parentUrl->date_time!="") && ($parentUrl->timezone!="")) {
+                    date_default_timezone_set($parentUrl->timezone);
                     $date1= date('Y-m-d H:i:s') ;
-                    $date2 = $search->date_time;
+                    $date2 = $parentUrl->date_time;
                     if (strtotime($date1) < strtotime($date2)) {
                          /*Url Not Expired*/
-                        if ($search->geolocation=="") {
+                        if ($parentUrl->geolocation=="") {
                             $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                             $redirectUrl=$getUrl['url'];
                             $redirectstatus=$getUrl['status'];
                             $message=$getUrl['message'];
                         } else {
-                            if ($search->geolocation==0) {
-                                $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
+                            if ($parentUrl->geolocation==0) {
+                                $getDenyed=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
 
                                 if ($getDenyed >0) {
                                     $redirectUrl="";
@@ -2191,7 +2192,7 @@
                                     $message=$getUrl['message'];
                                 }
                             } else if ($search->geolocation==1) {
-                                $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
+                                $getDenyed=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
                                 if ($getDenyed >0) {
                                     $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
@@ -2207,7 +2208,7 @@
                     } else {
                         /* Url Expired */
                         if ($search->redirect_url!="") {
-                            $redirectUrl=$search->redirect_url;
+                            $redirectUrl=$parentUrl->redirect_url;
                             $redirectstatus=0;
                             $message="";
                         } else {
@@ -2217,8 +2218,8 @@
                         }
                     }
                 } else {
-                    if ($search->geolocation==0) {
-                        $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
+                    if ($parentUrl->geolocation==0) {
+                        $getDenyed=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
 
                         if ($getDenyed >0) {
                             $redirectUrl="";
@@ -2230,7 +2231,7 @@
                             $redirectstatus=$getUrl['status'];
                             $message=$getUrl['message'];
                         }
-                    } else if ($search->geolocation==1) {
+                    } else if ($parentUrl->geolocation==1) {
                         $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->first();
                         if (count($getDenyed) >0) {
                             if ($getDenyed->redirection==0) {
