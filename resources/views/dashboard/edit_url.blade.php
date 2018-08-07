@@ -884,6 +884,9 @@ $optTypeLI = 'normal';
                  <div class="modal fade" id="allow-country-modal">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4>Geolocation Edit</h4>
+                                </div>
                                 <div class="modal-body">
                                     <div class="row" id="allow-block">
                                         <div class="col-md-12 col-lg-12">
@@ -921,6 +924,9 @@ $optTypeLI = 'normal';
                     <div class="modal fade" id="deny-country-modal">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4>Geolocation Edit</h4>
+                                </div>
                                 <div class="modal-body">
                                     <div class="row" id="deny-block">
                                         <div class="col-md-12 col-lg-12">
