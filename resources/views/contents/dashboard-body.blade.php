@@ -271,6 +271,7 @@
                                         <td class="row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->count}}</td>
                                         <td class="row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">{{$url->created_at->format('d/m/Y')}}</td>
                                         <td class="row-{{$url->id}}">
+                                            afasfasdf
                                             <button class='btn btn-success btn-xs copyBtn' id="copyButton" onclick="copyUrl({{$url->id}}, event)" title="Copy Url"><i class="fa fa-copy"></i></button>
                                             <button class='btn btn-warning btn-xs'><a href="{{route('edit_url_view' , $url->id)}}" style="color: #fff;" title="Edit Url"> <i class="fa fa-edit"></i></a></button>
                                             <button class='btn btn-danger btn-xs delete-url-btn' data-id="{{ $url->id }}" title="Delete"><i class="fa fa-trash"></i></button>

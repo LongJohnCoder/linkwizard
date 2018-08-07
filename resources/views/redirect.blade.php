@@ -78,18 +78,13 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
        <!-- PIXEL SCRIPT FOR HEADER STARTS HERE -->
-    <?php
-        if(isset($pixelScripts) && count($pixelScripts)>0)
-        {
-            foreach($pixelScripts as $key => $pixelScript)
-            {
-                if($scriptPosition[$key]==0)
-                {
-                    echo $pixelScript;
-                }
-            }
-        }
-    ?>
+        @if(isset($pixelScripts) && count($pixelScripts)>0)
+            @foreach($pixelScripts as $key => $pixelScript)
+                @if($pixelScripts[$key]==0)
+                    {!! $pixelScript !!}
+                @endif
+            @endforeach
+        @endforeach
         <!-- PIXEL SCRIPTS FOR HEADER ENDS HERE -->
     </head>
     <body>
@@ -114,18 +109,13 @@
         </div>
            
         <!-- PIXEL SCRIPT FOR FOOTER STARTS HERE -->
-        <?php
-        if(isset($pixelScripts) && count($pixelScripts)>0)
-        {
-            foreach($pixelScripts as $key => $pixelScript)
-            {
-                if($scriptPosition[$key]==1)
-                {
-                    echo $pixelScript;
-                }
-            }
-        }
-        ?>
+        @if(isset($pixelScripts) && count($pixelScripts)>0)
+            @foreach($pixelScripts as $key => $pixelScript)
+                @if($pixelScripts[$key]==1)
+                    {!! $pixelScript !!}
+                @endif
+            @endforeach
+        @endif
         <!-- PIXEL SCRIPTS FOR FOOTER ENDS HERE -->
 
         {{--  redirecting js script  --}}
