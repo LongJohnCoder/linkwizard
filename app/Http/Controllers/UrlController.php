@@ -1614,6 +1614,7 @@
             $redirectionText = 'Redirecting ...';
             $favicon = 'https://tier5.us/images/favicon.ico';
             $imageUrl = 'public/images/Tier5.jpg';
+            $sublink=0;
             $search = Url::where('shorten_suffix', $url)->first();
             if (count($search )>0) {
                 if(($search->link_type==2) && ($search->parent_id==0)){
@@ -1621,6 +1622,7 @@
                 }
 
                 if(($search->link_type==2) && ($search->parent_id!=0)){
+                    $sublink =$search->id;
                     $search = Url::where('id', $search->parent_id)->first();
                 }
                 if (!empty($search->favicon) && strlen($search->favicon)>0) {
@@ -1751,6 +1753,8 @@
                         }
                     }
                 }
+
+            
                 $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
                 $referer = $_SERVER['HTTP_HOST'];
                 return view('redirect', [
@@ -1765,7 +1769,8 @@
                     'red_time' => $red_time,
                     'referer' => $referer,
                     'user_agent' => $user_agent,
-                    'redirectionText'=>$redirectionText
+                    'redirectionText'=>$redirectionText,
+                    'sublink'        =>$sublink,
                     ]
                 );
             } else {
@@ -1966,6 +1971,7 @@
                 $find = Url::find($request->url);
                 $find->count = $find->count + 1;
                 $find->save();
+
                 $referer->urls()->attach($request->url);
                 global $status;
                 $status = 'success';

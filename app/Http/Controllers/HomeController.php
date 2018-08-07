@@ -155,7 +155,6 @@
             $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($userId) {
                 $q->where('user_id',$userId);
             })->pluck('tag')->toArray();
-
             return [
                'tagsToSearch' => $tagsToSearch,
                'count_url' => $count_url,// dynamic

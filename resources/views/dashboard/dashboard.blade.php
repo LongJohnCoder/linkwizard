@@ -319,7 +319,7 @@
                                             @endif
                                             <button class='btn btn-warning btn-xs' onclick="window.location.href = '{{route('edit_url_view',[$url->id])}}'"  ><i class="fa fa-edit"></i></button>
                                             @if($url->link_type!=2)
-                                            <button class='btn btn-danger btn-xs delete-url-btn' data-id="{{ $url->id }}" title="Delete"><i class="fa fa-trash"></i></button>
+                                           <!--  <button class='btn btn-danger btn-xs delete-url-btn' data-id="{{ $url->id }}" title="Delete"><i class="fa fa-trash"></i></button> -->
                                             @endif
                                         </td>
                                     </tr>

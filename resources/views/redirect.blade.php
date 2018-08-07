@@ -163,7 +163,11 @@
                             type: 'POST',
                             url: "{{ route('postUserInfo') }}",
                             data: {
-                                url: '{{ $url->id }}',
+                                @if($url->link_type==2)
+                                    url: '{{$sublink}}',
+                                @else
+                                    url: '{{ $url->id }}',
+                                @endif
                                 country: location,
                                 querystring: '{{$_SERVER['QUERY_STRING']}}',
                                 platform: '{{ $user_agent['platform'] }}',
