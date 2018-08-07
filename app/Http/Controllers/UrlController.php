@@ -1239,7 +1239,9 @@
 
                     //Edit Tags
                     $tag=$this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
-                    
+                    if($request->type==2){
+                        $url->title=$request->group_url_title;
+                    }
                     if($url->save()){
                         return redirect()->route('getDashboard')->with('success', 'Url Updated!');
                     }else{
