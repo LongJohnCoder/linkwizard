@@ -117,7 +117,7 @@
                             'pixels'              => $pixels,
                             'red_time'            => $red_time,
                             'pageColor'           => $pageColour,
-                             'redirecting_text'    => $redirecting_text  
+                            'redirecting_text'    => $redirecting_text
                         ]);
                     }
                 } else {
