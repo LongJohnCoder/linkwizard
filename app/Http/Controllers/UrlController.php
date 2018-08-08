@@ -273,6 +273,8 @@
                         } catch (\Exception $e) {
                             return redirect()->back()->with('imgErr', 'error');
                         }
+                    } else if (isset($profileSettings) && ($profileSettings->default_image != '')) {
+                            $url->uploaded_path = $profileSettings->default_image;
                     }
                     $url->customColour = $request->pageColour;
                     $url->usedCustomised = '1';
@@ -777,6 +779,24 @@
                                 $redirecting_text = $profileSettings->default_redirecting_text;
                             }
                         }
+                        if ((isset($profileSettings)) && ($profileSettings->pageColor != '')) {
+                            $default_colour = $profileSettings->pageColor;
+                        } else {
+                            $default_colour = $defaultSettings[0]->page_color;
+                        }
+                        /* getting the current and default redirecting image */
+                        if ((isset($profileSettings)) && ($profileSettings->pageColor != '')) {
+                            if ($profileSettings->default_image != $defaultSettings[0]->default_image) {
+                               $current_image = $profileSettings->default_image;
+                               $default_image = $profileSettings->default_image;
+                            }
+                        } else {
+                            $current_image = $defaultSettings[0]->default_image;
+                            $default_image = $defaultSettings[0]->default_image;
+                        }
+                        if ($url->uploaded_path != '') {
+                            $current_image = $url->uploaded_path;
+                        }
                         return view('dashboard.edit_url', [
                             'urlTags'              => $urlTags,
                             'total_links'          => $total_links,
@@ -793,7 +813,10 @@
                             'timezones'            => $timezones,
                             'red_time'             => $red_time,
                             'pageColor'            => $pageColour,
-                            'redirecting_text'     => $redirecting_text
+                            'redirecting_text'     => $redirecting_text,
+                            'default_colour'       => $default_colour,
+                            'current_image'        => $current_image,
+                            'default_image'        => $default_image
                         ]);
 
                     }
@@ -930,6 +953,8 @@
                             } catch (\Exception $e) {
                                 return redirect()->back()->with('imgErr', 'error');
                             }
+                        } else if (isset($profileSettings) && ($profileSettings->default_image != '')) {
+                            $url->uploaded_path = $profileSettings->default_image;
                         }
                         if ($request->redirecting_time == '') {
                             if ((isset($profileSettings)) && ($profileSettings->default_redirection_time != '')) {

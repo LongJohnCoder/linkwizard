@@ -24,6 +24,26 @@ $optTypeLI = 'normal';
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
 
 <style type="text/css">
+    div .imgContainer :hover, span.closeImage:hover + .closeImage {
+                opacity: 1;
+            }
+                div .imgContainer :hover + .closeImage {
+                opacity: 1;
+            }
+    .imgContainer {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    }
+    .closeImage {
+        opacity: 0;
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        font-size: 16px;
+        background: white;
+        cursor: pointer;
+    }
     #scheduleArea{
         padding: 10px;
     }
@@ -520,11 +540,18 @@ $optTypeLI = 'normal';
                             <div class="normal-body add-countDown" id="countDownArea" style="display: {{$urls->usedCustomised ? 'block' : 'none'}};">
                                 <p>Edit countdown time for this link <small>(in seconds)</small></p>
                                 <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="{{$red_time/1000}}" ><br>
-                                <p> Choose custom brand logo <small>{{$urls->uploaded_path != '' ? '(Already uploaded a brand logo.You can choose another file to change the brand logo)' : ''}} </small></p>
+                                <div class="imgContainer">
+                                    <img id="image_preview" src="{{url('/')}}/{{$current_image}}" style="height: 125px; width: auto;">
+                                    @if($current_image != $default_image)
+                                        <span title="Set to default" class="closeImage" id="closeImage">&#10008;</span>
+                                    @endif
+                                </div>
+                                <p> Choose custom brand logo </p>
                                 <input class="form-control" type="file" name="custom_brand_logo" id="custom_brand_logo" accept="image/*">
                                 <span id="imageError" style="display: none; color: red">*This image is not valid. Please choose another image</span>
                                 <br><p> Select your customize colour </p>
-                                <input type="color" name="pageColour" value="{{$pageColor}}"><br><br>
+                                <input type="color" name="pageColour" id="pageColour" value="{{$pageColor}}">&emsp;&ensp;
+                                <span class="btn btn-primary" id="setDefaultColour">Set to default colour</span><br><br>
                                 <p> Enter your redirecting text </p>
                                 <input class="form-control" type="text" name="redirecting_text_template" value="{{$redirecting_text}}" placeholder="Redirecting..."><br>
                             </div>
@@ -995,18 +1022,39 @@ $optTypeLI = 'normal';
  // });
 </script>
 <script type="text/javascript">
+    /* Changing page colour to default */
+    $('#setDefaultColour').click(function(){
+        $('#pageColour').val('{{$default_colour}}')
+    });
     /* Checking Image validation */
-    $('#custom_brand_logo').change(function(){
+    $('#custom_brand_logo').change(function() {
         var fileName = $('#custom_brand_logo').val().split('\\').pop();
         var extension = fileName.substr( (fileName.lastIndexOf('.') +1) ).toLowerCase();
         var allowedExt = new Array("jpg","png","gif");
         if ($.inArray(extension,allowedExt) > -1) {
             $('#imageError').hide();
+            readImage(this);
         } else {
             $('#imageError').show();
             $("#custom_brand_logo").val('');
+            $('#image_preview').attr('src', '{{url('/')}}/{{$current_image}}');
         }
     });
+    /* Image hover function */
+
+    /* setting the image to default */
+    $('#closeImage').click(function() {
+        $('#image_preview').attr('src', '{{url('/')}}/{{$default_image}}');
+    });
+    function readImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#image_preview').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
     function addMoreSpecialLink() {
         var special_url_count = $("#special_url_count").val();
         var new_count;

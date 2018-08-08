@@ -79,9 +79,11 @@
                                                     <input id="group_url_title" type="text" name="group_url_title" class="form-control" placeholder="Group Name" required="true">
                                                     @endif
                                                 </div>
+                                                  @if($type!=2 )
                                                 <div class="input-msg form-group">
                                                     * This is where you paste your long URL that you'd like to shorten.
                                                 </div>
+                                                @endif
                                             </div>
                                             <div class="col-md-2 col-sm-2">
                                                 @if($type==1)
