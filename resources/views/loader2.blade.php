@@ -539,11 +539,22 @@ if(!preg_match("~^(?:f|ht)tps?://~i", $redirect_url))
             }
         }, 1000);
         $.ajax({
-            url: '//freegeoip.net/json/',
+            url: '{{ env('GEO_LOCATION_API_URL') }}',
             type: 'POST',
-            dataType: 'jsonp',
-            success: function(location) {
-                console.log(location);
+            success: function(jsonData) {
+                var location = {
+                            "ip" : jsonData.ip,
+                            "country_code" : jsonData.country,
+                            "country_name" : jsonData.country_name,
+                            "region_code" : jsonData.region_code,
+                            "region_name" : jsonData.region,
+                            "city" : jsonData.city,
+                            "zip_code" : jsonData.postal,
+                            "time_zone" : jsonData.timezone,
+                            "latitude" : jsonData.latitude,
+                            "longitude" : jsonData.longitude,
+                            "metro_code" : "",
+                        };
                 $.ajax({
                     type: 'POST',
                     url: "{{ route('postUserInfo') }}",
@@ -575,7 +586,27 @@ if(!preg_match("~^(?:f|ht)tps?://~i", $redirect_url))
                             }
                             HoldOn.close();
                         }, "{{ $url->redirecting_time }}");
-                    }
+                    },
+                    error: function (error) {
+                        setTimeout(function() {
+                            console.log(URL_TO_REDIRECT);
+                            if(URL_TO_REDIRECT=='NULL')
+                            {
+                                $('#msg').text('Sorry! the link has been expired');
+                            }
+                            else if(URL_TO_REDIRECT=='http://')
+                            {
+                                $('#msg').text('Sorry! no url is found');
+                            }
+                            else if(URL_TO_REDIRECT!='NULL' && URL_TO_REDIRECT!='://')
+                            {
+                                URL_TO_REDIRECT = URL_TO_REDIRECT.replace(/&amp;/g, '&');
+                                console.log(URL_TO_REDIRECT);
+                                window.location.href = URL_TO_REDIRECT.replace(/&amp;/g, '&');
+                            }
+                            HoldOn.close();
+                        }, "{{ $url->redirecting_time }}");
+                     }
                 });
             }
         });
