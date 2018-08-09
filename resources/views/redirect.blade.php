@@ -84,7 +84,7 @@
                     {!! $pixelScript !!}
                 @endif
             @endforeach
-        @endforeach
+        @endif
         <!-- PIXEL SCRIPTS FOR HEADER ENDS HERE -->
     </head>
     <body>
