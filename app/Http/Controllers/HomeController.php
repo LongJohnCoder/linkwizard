@@ -883,17 +883,37 @@
          */
         public function postFetchAnalytics(Request $request)
         {
-            //die();
+            $urlInfo=Url::where('id',$request->url_id)->first();
+            if($urlInfo){
+                if(($urlInfo->link_type==2)&& ($urlInfo->parent_id==0)){
+                    $getSubUrl=Url::where('parent_id',$urlInfo->id)->pluck('id');
+                    $noOfSublinks=count($getSubUrl);
+                }
+            }
+
             $location[0][0] = 'Country';
             $location[0][1] = 'Clicks';
 
-            $countries = DB::table('country_url')
+            if(($urlInfo->link_type==2)&& ($urlInfo->parent_id==0) && (count($noOfSublinks)>0)){
+                $countries = DB::table('country_url')
+                    ->join('countries', 'countries.id', '=', 'country_url.country_id')
+                    ->selectRaw('countries.code AS `code`, count(country_url.country_id) AS `count`')
+                    ->whereIn('country_url.url_id', $getSubUrl)
+                    ->groupBy('country_url.country_id')
+                    ->orderBy('count', 'DESC')
+                    ->get();
+
+            }else{
+                $countries = DB::table('country_url')
                     ->join('countries', 'countries.id', '=', 'country_url.country_id')
                     ->selectRaw('countries.code AS `code`, count(country_url.country_id) AS `count`')
                     ->where('country_url.url_id', $request->url_id)
                     ->groupBy('country_url.country_id')
                     ->orderBy('count', 'DESC')
                     ->get();
+
+            }
+            
 
             foreach ($countries as $key => $country) {
                 $location[++$key][0] = $country->code;
@@ -903,13 +923,34 @@
             $operating_system[0][0] = 'Platform';
             $operating_system[0][1] = 'Clicks';
 
-            $platforms = DB::table('platform_url')
+           /* $platforms = DB::table('platform_url')
                     ->join('platforms', 'platforms.id', '=', 'platform_url.platform_id')
                     ->selectRaw('platforms.name, count(platform_url.platform_id) AS `count`')
                     ->where('platform_url.url_id', $request->url_id)
                     ->groupBy('platform_url.platform_id')
                     ->orderBy('count', 'DESC')
                     ->get();
+*/
+                    if(($urlInfo->link_type==2)&& ($urlInfo->parent_id==0) && (count($noOfSublinks)>0)){
+                $platforms = DB::table('platform_url')
+                    ->join('platforms', 'platforms.id', '=', 'platform_url.platform_id')
+                    ->selectRaw('platforms.name, count(platform_url.platform_id) AS `count`')
+                    ->whereIn('platform_url.url_id', $getSubUrl)
+                    ->groupBy('platform_url.platform_id')
+                    ->orderBy('count', 'DESC')
+                    ->get();
+
+            }else{
+                $platforms = DB::table('platform_url')
+                    ->join('platforms', 'platforms.id', '=', 'platform_url.platform_id')
+                    ->selectRaw('platforms.name, count(platform_url.platform_id) AS `count`')
+                    ->where('platform_url.url_id', $request->url_id)
+                    ->groupBy('platform_url.platform_id')
+                    ->orderBy('count', 'DESC')
+                    ->get();
+
+            }
+            
 
             foreach ($platforms as $key => $platform) {
                 $operating_system[++$key][0] = $platform->name;
@@ -919,13 +960,32 @@
             $web_browser[0][0] = 'Browser';
             $web_browser[0][1] = 'Clicks';
 
-            $browsers = DB::table('browser_url')
+            /*$browsers = DB::table('browser_url')
+                    ->join('browsers', 'browsers.id', '=', 'browser_url.browser_id')
+                    ->selectRaw('browsers.name, count(browser_url.browser_id) AS `count`')
+                    ->where('browser_url.url_id', $request->url_id)
+                    ->groupBy('browser_url.browser_id')
+                    ->orderBy('count', 'DESC')
+                    ->get();*/
+                    if(($urlInfo->link_type==2)&& ($urlInfo->parent_id==0) && (count($noOfSublinks)>0)){
+                $browsers = DB::table('browser_url')
+                    ->join('browsers', 'browsers.id', '=', 'browser_url.browser_id')
+                    ->selectRaw('browsers.name, count(browser_url.browser_id) AS `count`')
+                    ->whereIn('browser_url.url_id', $getSubUrl)
+                    ->groupBy('browser_url.browser_id')
+                    ->orderBy('count', 'DESC')
+                    ->get();
+
+            }else{
+                $browsers = DB::table('browser_url')
                     ->join('browsers', 'browsers.id', '=', 'browser_url.browser_id')
                     ->selectRaw('browsers.name, count(browser_url.browser_id) AS `count`')
                     ->where('browser_url.url_id', $request->url_id)
                     ->groupBy('browser_url.browser_id')
                     ->orderBy('count', 'DESC')
                     ->get();
+
+            }
 
             foreach ($browsers as $key => $browser) {
                 $web_browser[++$key][0] = $browser->name;
@@ -935,13 +995,32 @@
             $referring_channel[0][0] = 'Referer';
             $referring_channel[0][1] = 'Clicks';
 
-            $referers = DB::table('referer_url')
+           /* $referers = DB::table('referer_url')
+                    ->join('referers', 'referers.id', '=', 'referer_url.referer_id')
+                    ->selectRaw('referers.name, count(referer_url.referer_id) AS `count`')
+                    ->where('referer_url.url_id', $request->url_id)
+                    ->groupBy('referer_url.referer_id')
+                    ->orderBy('count', 'DESC')
+                    ->get();*/
+                    if(($urlInfo->link_type==2)&& ($urlInfo->parent_id==0) && (count($noOfSublinks)>0)){
+                $referers = DB::table('referer_url')
+                    ->join('referers', 'referers.id', '=', 'referer_url.referer_id')
+                    ->selectRaw('referers.name, count(referer_url.referer_id) AS `count`')
+                    ->whereIn('referer_url.url_id', $getSubUrl)
+                    ->groupBy('referer_url.referer_id')
+                    ->orderBy('count', 'DESC')
+                    ->get();
+
+            }else{
+                $referers = DB::table('referer_url')
                     ->join('referers', 'referers.id', '=', 'referer_url.referer_id')
                     ->selectRaw('referers.name, count(referer_url.referer_id) AS `count`')
                     ->where('referer_url.url_id', $request->url_id)
                     ->groupBy('referer_url.referer_id')
                     ->orderBy('count', 'DESC')
                     ->get();
+
+            }
 
             foreach ($referers as $key => $referer) {
                 if ($referer->name == null) {
@@ -2333,97 +2412,115 @@
             }
         }
 
-       public function getLinkPreview($id) {
-      if (Auth::check())
-      {
-          //dd(Auth::check());  
-          if(\Session::has('plan'))
-          {
-              return redirect()->action('HomeController@getSubscribe');
-          }
-          else
-          {
-            $user = Auth::user();
-            $url = Url::find($id);
-            /* Getting default settings */
-            $defaultSettings = DefaultSettings::all();
-            $redirecting_time = $defaultSettings[0]->default_redirection_time;
-            $redirecting_text = $defaultSettings[0]->default_redirecting_text;
-            $profile = Profile::where('user_id',$url->user_id)->first();
-            if (count($profile)>0) {
-                $redirecting_time = $profile->default_redirection_time;
-                $redirecting_text = $profile->default_redirecting_text;
-                if ($url->usedCustomised==1) {
-                    $redirecting_time = $url->redirecting_time;
-                    $redirecting_text = $url->redirecting_text_template; 
-                }
-                if (($profile->redirection_page_type == 1) && ($url->usedCustomised==0)) {
-                    $redirecting_time = 0;
-                }
-            }  else {
-                if ($url->usedCustomised==1) {
-                    $redirecting_time = $url->redirecting_time;
-                    $redirecting_text = $url->redirecting_text_template; 
-                }
-            }
-            if(!$url) {
-                return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
-            }
+        public function getLinkPreview($id) {
+            if (Auth::check()){
+                //dd(Auth::check());  
+                if(\Session::has('plan')) {
+                    return redirect()->action('HomeController@getSubscribe');
+                }else{
+                    $user = Auth::user();
+                    $url = Url::find($id);
 
-            $total_links = null;
-            if ($url) {
-                $total_links = $url->count;
-                $limit = LinkLimit::where('user_id', $user->id)->first();
-                if ($limit) {
-                    $limit->number_of_links = $total_links;
-                    $limit->save();
+                    $redirecting_time = 5000;
+                    $redirecting_text = "Redirecting...";
+                    $profile = Profile::where('user_id',$url->user_id)->first();
+                    if (count($profile)>0) {
+                        $redirecting_time = $profile->default_redirection_time;
+                        if ($url->usedCustomised==1) {
+                            $redirecting_time = $url->redirecting_time;
+                            $redirecting_text = $url->redirecting_text_template; 
+                        } else {
+                            $redirecting_time = $profile->default_redirection_time;
+                        }
+                    }
+                    if(!$url) {
+                        return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
+                    }
+
+                    $total_links = null;
+                    if ($url) {
+                        $total_links = $url->count;
+                        $limit = LinkLimit::where('user_id', $user->id)->first();
+                        if ($limit) {
+                            $limit->number_of_links = $total_links;
+                            $limit->save();
+                        }
+                    }
+
+                    if ($user->subscribed('main', 'tr5Advanced')) {
+                        $subscription_status = 'tr5Advanced';
+                        $limit = Limit::where('plan_code', 'tr5Advanced')->first();
+                    } elseif ($user->subscribed('main', 'tr5Basic')) {
+                        $subscription_status = 'tr5Basic';
+                        $limit = Limit::where('plan_code', 'tr5Basic')->first();
+                    } else {
+                        $subscription_status = false;
+                        $limit = Limit::where('plan_code', 'tr5free')->first();
+                    }
+
+                    $urlTags = $url->urlTagMap;
+                    $tags = '';
+                    /* Tags for url */
+                    if(count($urlTags)>0){
+                        $tags = array();
+                        foreach($urlTags as $urlTag){
+                            $tagName = UrlTag::find($urlTag->url_tag_id);
+                            $tags[] = $tagName->tag;
+                        }
+                    }else{
+                        $tags = 'No tag available';
+                    }
+                    $getSubLinks=0;
+                    if(($url->link_type==2) && ($url->parent_id==0)){
+                         $getSubLinks=Url::where('parent_id',$url->id)->where('link_type',2)->where('user_id',$user->id)->get();
+                    }
+
+                    if(isset($url->subdomain)) {
+                      if($url->subdomain->type == 'subdomain')
+                          $redirectDomain = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST');
+                      else if($url->subdomain->type == 'subdirectory')
+                          $redirectDomain = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->subdomain->name;
+                    } else {
+                            $redirectDomain = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST');
+                    }
+                              
+
+                    if($url->link_type==2 && $url->parent_id==0){
+                        return view('dashboard.grouppreview' , [
+                        'url'                 => $url,
+                        'total_links'         => $total_links,
+                        //'limit'               => $limit,
+                        'subscription_status' => $subscription_status,
+                        'user'                => $user,
+                        'tags'                => $tags,
+                        'redirecting_text'    => $redirecting_text,
+                        'redirecting_time'    => $redirecting_time,
+                        'sublink'             => $getSubLinks,
+                        'redirectDomain'      => $redirectDomain
+
+                      ]);
+
+                    }else{
+                        return view('dashboard.link_preview' , [
+                        'url'                 => $url,
+                        'total_links'         => $total_links,
+                        //'limit'               => $limit,
+                        'subscription_status' => $subscription_status,
+                        'user'                => $user,
+                        'tags'                => $tags,
+                        'redirecting_text'    => $redirecting_text,
+                        'redirecting_time'    => $redirecting_time,
+                        'sublink'             => $getSubLinks
+
+                      ]);
+
+                    }    
                 }
-            }
 
-            if ($user->subscribed('main', 'tr5Advanced')) {
-                $subscription_status = 'tr5Advanced';
-                $limit = Limit::where('plan_code', 'tr5Advanced')->first();
-
-            } elseif ($user->subscribed('main', 'tr5Basic')) {
-                $subscription_status = 'tr5Basic';
-                $limit = Limit::where('plan_code', 'tr5Basic')->first();
             } else {
-                $subscription_status = false;
-                $limit = Limit::where('plan_code', 'tr5free')->first();
+                return redirect()->action('HomeController@getIndex');
             }
-
-
-            $urlTags = $url->urlTagMap;
-            $tags = '';
-            /* Tags for url */
-            if(count($urlTags)>0)
-            {
-                $tags = array();
-                foreach($urlTags as $urlTag)
-                {
-                    $tagName = UrlTag::find($urlTag->url_tag_id);
-                    $tags[] = $tagName->tag;
-                }
-            }else
-            {
-                $tags = 'No tag available';
-            }
-            return view('dashboard.link_preview' , [
-              'url'                 => $url,
-              'total_links'         => $total_links,
-              'limit'               => $limit,
-              'subscription_status' => $subscription_status,
-              'user'                => $user,
-              'tags'                => $tags,
-              'redirecting_text'    => $redirecting_text,
-              'redirecting_time'    => $redirecting_time
-            ]);
-          }
-
-      } else {
-          return redirect()->action('HomeController@getIndex');
-      }
-    }
+        }
 
         /**
          * Post a brand logo.
@@ -3213,22 +3310,7 @@
             }
         }
 
-        public function showGroupPreview($url,$total_links,$limit,$subscription_status,$user,$tags,$redirecting_text,$redirecting_time){
-            $getSubLinks=Url::where('parent_id',$url->id)->where('link_type',2)->where('user_id',$user->id)->get();
-            return view('dashboard.grouppreview' , [
-                  'url'                 => $url,
-                  'total_links'         => $total_links,
-                  'limit'               => $limit,
-                  'subscription_status' => $subscription_status,
-                  'user'                => $user,
-                  'tags'                => $tags,
-                  'redirecting_text'    => $redirecting_text,
-                  'redirecting_time'    => $redirecting_time,
-                  'sublink'             => $getSubLinks
-     
-                ]);
-
-        }
+       
     }
 
 

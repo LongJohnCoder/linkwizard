@@ -423,10 +423,10 @@ Route::group(['domain' => config('settings.APP_REDIRECT_HOST') , ['middlewareGro
         'as' => 'getRequestedSubdirectoryUrl',
     ]);
 
-   /* Route::get('/{url}', [
+    Route::get('/{url}', [
         'uses' => 'HomeController@getRequestedUrl',
         'as' => 'getRequestedUrl',
-    ]);*/
+    ]);
 
     Route::get('/{url}', [
         'uses' => 'UrlController@getRequestedUrl',
