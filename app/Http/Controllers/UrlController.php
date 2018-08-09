@@ -99,12 +99,14 @@
                         $red_time = $defaultSettings[0]->default_redirection_time;
                         $pageColour = $defaultSettings[0]->page_color;
                         $redirecting_text = $defaultSettings[0]->default_redirecting_text;
+                        $default_image = $defaultSettings[0]->default_image;
                         /* Getting the profile settings if exist */
                         $profileSettings = Profile::where('user_id',Auth::user()->id)->first();
                         if (count($profileSettings)>0) {
                             $red_time = $profileSettings->default_redirection_time;
                             $pageColour = $profileSettings->pageColor;
                             $redirecting_text = $profileSettings->default_redirecting_text;
+                            $default_image = $profileSettings->default_image;
                         }
                         return view('dashboard.shorten_url' , [
                             'urlTags'             => $urlTags,
@@ -117,7 +119,8 @@
                             'pixels'              => $pixels,
                             'red_time'            => $red_time,
                             'pageColor'           => $pageColour,
-                            'redirecting_text'    => $redirecting_text
+                            'redirecting_text'    => $redirecting_text,
+                            'default_image'       => $default_image
                         ]);
                     }
                 } else {

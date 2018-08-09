@@ -17,6 +17,23 @@
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
         <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
         <style>
+            .imgContainer {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            }
+            .imgContainer img {
+                height: 100%;
+                width: 100%;
+            }
+            .closeImage {
+                position: absolute;
+                top: 5%;
+                right: 5%;
+                font-size: 16px;
+                background: white;
+                cursor: pointer;
+            }
             #customized-url-div{
                 display: none;
             }
@@ -239,11 +256,18 @@
                                     <div class="normal-body add-countDown" id="countDownArea">
                                         <p>Add countdown time for this link <small>(in seconds)</small></p>
                                         <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="{{$red_time/1000}}"><br>
+                                        <div class="imgContainer" style="height: 180px; width: 240px;">
+                                            <img id="image_preview" src="{{url('/')}}/{{$default_image}}">
+                                            <span title="Set to default" class="closeImage" id="closeImage">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
                                         <p> Choose custom brand logo </p>
                                         <input class="form-control" type="file" name="custom_brand_logo" id="custom_brand_logo" accept="image/*">
                                         <span id="imageError" style="display: none; color: red">*This image is not valid. Please choose another image</span>
                                         <br><p> Select your customize colour </p>
-                                        <input type="color" name="pageColour" value="{{$pageColor}}"><br><br>
+                                        <input type="color" name="pageColour" id="pageColour" value="{{$pageColor}}">&emsp;&ensp;
+                                        <span class="btn btn-primary" id="setDefaultColour" style="display: none;">Set to default colour</span><br><br>
                                         <p> Enter your redirecting text </p>
                                         <input class="form-control" type="text" name="redirecting_text_template" value="{{$redirecting_text}}" placeholder="{{$redirecting_text}}">
                                     </div>                        
@@ -664,8 +688,29 @@
                
 
         <script src="{{ URL::to('/').'/public/js/fineuploader.min.js' }}"></script>
-       
+            
         <script type="text/javascript">
+            $(document).ready(function(){
+                $('#closeImage').hide();
+            });
+            /* Show 'set to default image' button in hover */
+            $('.imgContainer').hover(function() {
+                    var flag = $("#custom_brand_logo").val();
+                    if (flag) {
+                        $('#closeImage').show();
+                    }
+                }, function(){
+                    $('#closeImage').hide();
+            });
+            /* Changing page colour to default */
+            $('#setDefaultColour').click(function(){
+                $('#pageColour').val('{{$pageColor}}');
+                $('#setDefaultColour').hide();
+            });
+            /* Showing 'set to default colour' after changing the page colour */
+            $('#pageColour').change(function() {
+                $('#setDefaultColour').show();
+            });
             /* Checking Image validation */
             $('#custom_brand_logo').change(function(){
                 var fileName = $('#custom_brand_logo').val().split('\\').pop();
@@ -673,10 +718,27 @@
                 var allowedExt = new Array("jpg","png","gif");
                 if ($.inArray(extension,allowedExt) > -1) {
                     $('#imageError').hide();
+                    $('#closeImage').show();
+                    readImage(this);
                 } else {
                     $('#imageError').show();
                     $("#custom_brand_logo").val('');
                 }
+            });
+            function readImage(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#image_preview').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            /* setting the image to default */
+            $('#closeImage').click(function() {
+                $('#image_preview').attr('src', '{{url('/')}}/{{$default_image}}');
+                $('#closeImage').hide();
+                $("#custom_brand_logo").val('');
             });
             $(".chosen-select").chosen({});
             $(".chosen-container").bind('keyup', function (e) {

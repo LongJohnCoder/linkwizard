@@ -24,22 +24,19 @@ $optTypeLI = 'normal';
 <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
 
 <style type="text/css">
-    div .imgContainer :hover, span.closeImage:hover + .closeImage {
-                opacity: 1;
-            }
-                div .imgContainer :hover + .closeImage {
-                opacity: 1;
-            }
     .imgContainer {
     position: relative;
     width: 100%;
     max-width: 400px;
     }
+    .imgContainer img {
+        height: 100%;
+        width: 100%;
+    }
     .closeImage {
-        opacity: 0;
         position: absolute;
         top: 5%;
-        left: 50%;
+        right: 5%;
         font-size: 16px;
         background: white;
         cursor: pointer;
@@ -540,11 +537,11 @@ $optTypeLI = 'normal';
                             <div class="normal-body add-countDown" id="countDownArea" style="display: {{$urls->usedCustomised ? 'block' : 'none'}};">
                                 <p>Edit countdown time for this link <small>(in seconds)</small></p>
                                 <input type="number" min="1" max="30" id="countDownContents" name="redirecting_time" class = "form-control" value="{{$red_time/1000}}" ><br>
-                                <div class="imgContainer">
-                                    <img id="image_preview" src="{{url('/')}}/{{$current_image}}" style="height: 125px; width: auto;">
-                                    @if($current_image != $default_image)
-                                        <span title="Set to default" class="closeImage" id="closeImage">&#10008;</span>
-                                    @endif
+                                <div class="imgContainer" style="height: 180px; width: 240px;">
+                                    <img id="image_preview" src="{{url('/')}}/{{$current_image}}">
+                                    <span title="Set to default" class="closeImage" style="display: none;" id="closeImage">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </span>
                                 </div>
                                 <p> Choose custom brand logo </p>
                                 <input class="form-control" type="file" name="custom_brand_logo" id="custom_brand_logo" accept="image/*">
@@ -1014,17 +1011,26 @@ $optTypeLI = 'normal';
 <link href="{{ URL::to('/').'/public/css/fine-uploader-new.min.css' }}" rel="stylesheet" />
 
 <script>
- // $(document).ready(function(){
- //     $('.chosen-choices li').each(function(){
- //         var li = $(this).find('span')
- //         console.log('span- '+li.text());
- //     });
- // });
+    $(document).ready(function(){
+        if ('{{$default_image}}' == '{{$current_image}}') {
+            $('#closeImage').hide();
+        }
+    });
 </script>
 <script type="text/javascript">
+    /* Show 'set to default image' button in hover */
+    $('.imgContainer').hover(function() {
+        var file = $('#image_preview').attr('src');
+        if (file != '{{url('/')}}/{{$default_image}}') {
+            $('#closeImage').show();
+        }
+        }, function() {
+            $('#closeImage').hide();
+    });
     /* Changing page colour to default */
     $('#setDefaultColour').click(function(){
-        $('#pageColour').val('{{$default_colour}}')
+        $('#pageColour').val('{{$default_colour}}');
+        $('#setDefaultColour').hide();
     });
     /* Checking Image validation */
     $('#custom_brand_logo').change(function() {
@@ -1033,6 +1039,7 @@ $optTypeLI = 'normal';
         var allowedExt = new Array("jpg","png","gif");
         if ($.inArray(extension,allowedExt) > -1) {
             $('#imageError').hide();
+            $('#closeImage').show();
             readImage(this);
         } else {
             $('#imageError').show();
@@ -1040,11 +1047,16 @@ $optTypeLI = 'normal';
             $('#image_preview').attr('src', '{{url('/')}}/{{$current_image}}');
         }
     });
-    /* Image hover function */
 
     /* setting the image to default */
     $('#closeImage').click(function() {
         $('#image_preview').attr('src', '{{url('/')}}/{{$default_image}}');
+        $('#closeImage').hide();
+        $("#custom_brand_logo").val('');
+    });
+    /* Showing 'set to default colour' after changing the page colour */
+    $('#pageColour').change(function() {
+        $('#setDefaultColour').show();
     });
     function readImage(input) {
         if (input.files && input.files[0]) {
