@@ -30,6 +30,8 @@
     use Intervention\Image\ImageManagerStatic as Image;
     use Mockery\Exception;
     use App\DefaultSettings;
+    use App\PixelProviders;
+    use App\UserPixels;
 
     class HomeController extends Controller{
         /**
@@ -3193,64 +3195,42 @@
          */
         public function savePixels(Request $request)
         {
-            if(Auth::check())
-            {
-                if(Session::has('plan'))
-                {
+            if(Auth::check()) {
+                if(Session::has('plan')) {
                     return redirect()->action('HomeController@getSubscribe');
-                }else
-                {
-                    if($request->network=='custom_pixel_id')
-                    {
+                } else {
+                    if($request->provider_code=='CS') {
                         $this->validate($request,[
-                            'network' => 'required',
+                            'provider_code' => 'required',
                             'pixel_name' => 'required|max:150',
                             'custom_pixel_script' => 'required'
                         ]);
-                    }
-                    elseif($request->network!='custom_pixel_id')
-                    {
+                    } elseif($request->provider_code!='CS') {
                         $this->validate($request,[
-                            'network' => 'required',
+                            'provider_code' => 'required',
                             'pixel_name' => 'required|max:150',
                             'pixel_id' => 'required|max:150'
                         ]);
                     }
-                    try
-                    {
-                        if($request->network=='custom_pixel_id')
-                        {
-                            $pixel = new Pixel();
+                    try {
+                            $pixel = new UserPixels();
                             $pixel->user_id = Auth::user()->id;
-                            $pixel->network = $request->network;
+                            $pixel->pixel_provider_id = PixelProviders::where('provider_code',$request->provider_code)->value('id');
+                            if ($request->provider_code=='CS') {
+                                $pixel->is_custom = '1';
+                                $pixel->pixel_script = $request->custom_pixel_script;
+                            } elseif ($request->provider_code!='CS') {
+                                $pixel->pixel_id = $request->pixel_id;
+                            }
                             $pixel->pixel_name = $request->pixel_name;
-                            $pixel->pixel_id = NULL;
-                            $pixel->custom_pixel_script = $request->custom_pixel_script;
-                            //$pixel->script_position = $request->script_position;
+                            $pixel->script_position = $request->script_position;
                             $pixel->save();
                             return redirect()->back()->with('msg', 'success');
-                        }
-                        elseif($request->network!='custom_pixel_id')
-                        {
-                            $pixel = new Pixel();
-                            $pixel->user_id = Auth::user()->id;
-                            $pixel->network = $request->network;
-                            $pixel->pixel_name = $request->pixel_name;
-                            $pixel->pixel_id = $request->pixel_id;
-                            $pixel->custom_pixel_script = NULL;
-                            //$pixel->script_position = 0;
-                            $pixel->save();
-                            return redirect()->back()->with('msg', 'success');
-                        }
-                    }
-                    catch(Exception $e)
-                    {
+                    } catch(Exception $e) {
                         return redirect()->back()->with('msg', 'error');
                     }
                 }
-            }
-            else
-            {
+            } else {
                 return redirect()->action('HomeController@getDashboard');
             }
         }
@@ -3261,39 +3241,42 @@
          * @return \Illuminate\Http\RedirectResponse
          */
         public function editPixels(Request $request)
-        {
-            if(Auth::check())
-            {
-                if(Session::has('plan'))
-                {
+        {//dd($request);
+            if (Auth::check()) {
+                if(Session::has('plan')) {
                     return redirect()->action('HomeController@getSubscribe');
-                }
-                else
-                {
-                    $this->validate($request,[
-                        'network' => 'required',
-                        'pixel_name' => 'required|max:150',
-                        'pixel_id' => 'required|max:150'
-                    ]);
-
-                    try
-                    {
-                        $pixel = Pixel::find($request->id);
-                        $pixel->user_id = Auth::user()->id;
-                        $pixel->network = $request->network;
-                        $pixel->pixel_name = $request->pixel_name;
-                        $pixel->pixel_id = $request->pixel_id;
-                        $pixel->save();
-                        return redirect()->back()->with('msg', 'editsuccess');
+                } else {
+                    $provider_code = PixelProviders::where('provider_name',$request->provider_name)->pluck('provider_code')->first();
+                    if ($provider_code=='CS') {
+                        $this->validate($request,[
+                            'pixel_name' => 'required|max:150',
+                            'custom_pixel_script' => 'required'
+                        ]);
+                    } elseif ($provider_code!='CS') {
+                        $this->validate($request,[
+                            'pixel_name' => 'required|max:150',
+                            'pixel_id' => 'required|max:150'
+                        ]);
                     }
-                    catch(Exception $e)
-                    {
+                    try {
+                            $pixel = new UserPixels();
+                            $pixel->user_id = Auth::user()->id;
+                            $pixel->pixel_provider_id = PixelProviders::where('provider_code',$provider_code)->value('id');
+                            if ($provider_code=='CS') {
+                                $pixel->is_custom = '1';
+                                $pixel->pixel_script = $request->custom_pixel_script;
+                            } elseif ($provider_code!='CS') {
+                                $pixel->pixel_id = $request->pixel_id;
+                            }
+                            $pixel->pixel_name = $request->pixel_name;
+                            $pixel->script_position = $request->script_position;
+                            $pixel->save();
+                            return redirect()->back()->with('msg', 'success');
+                    } catch(Exception $e) {
                         return redirect()->back()->with('msg', 'editerror');
                     }
                 }
-            }
-            else
-            {
+            } else {
                 return redirect()->action('HomeController@getDashboard');
             }
         }
@@ -3305,29 +3288,20 @@
          */
         public function deletePixels(Request $request)
         {
-            if(Auth::check())
-            {
-                if(Session::has('plan'))
-                {
+            if (Auth::check()) {
+                if (Session::has('plan')) {
                     return redirect()->action('HomeController@getSubscribe');
-                }
-                else
-                {
-                    try
-                    {
+                } else {
+                    try {
                         $id = $request->id;
-                        $pixel = Pixel::find($id);
+                        $pixel = UserPixels::find($id);
                         $pixel->delete();
                         echo json_encode(['status'=>200, 'message'=>'success', 'row'=>$id]);
-                    }
-                    catch(Exception $e)
-                    {
+                    } catch(Exception $e) {
                         echo json_encode(['status'=>400, 'message'=>$e->getMessage(), 'row'=>0]);
                     }
                 }
-            }
-            else
-            {
+            } else {
                 return redirect()->action('HomeController@getDashboard');
             }
         }

@@ -16,6 +16,15 @@ class Url extends Model
     {
         return $this->belongsTo('App\User');
     }
+    /**
+     * An url may have many pixels .
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function pixels()
+    {
+        return $this->belongsToMany('App\UserPixels');
+    }
 
     /**
      * Get all the countries associated with an url.

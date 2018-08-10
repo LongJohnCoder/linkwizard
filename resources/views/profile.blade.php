@@ -211,8 +211,8 @@
                                     <thead>
                                         <tr>
                                             <th>Pixel Name</th>
-                                            <th>Pixel Network</th>
-                                            <th width="30%">Pixel ID</th>
+                                            <th>Pixel Provider</th>
+                                            <th width="50%">Pixel ID</th>
                                             <th>Created On</th>
                                             <th>Action</th>
                                         </tr>
@@ -222,19 +222,17 @@
                                             <tr id="pixel-row-{{$pixel->id}}">
                                                 <td>{{$pixel->pixel_name}}</td>
                                                 <td>
-                                                    @if($pixel->network=='gl_pixel_id')
-                                                        <i class="fa fa-google"></i> Google
-                                                    @elseif($pixel->network=='fb_pixel_id')
+                                                    @if($pixel->pixel_provider_id=='1')
                                                         <i class="fa fa-facebook"></i> Facebook
-                                                    @elseif($pixel->network=='twt_pixel_id')
-                                                        <i class="fa fa-twitter"></i> Twitter
-                                                    @elseif($pixel->network=='li_pixel_id')
+                                                    @elseif($pixel->pixel_provider_id=='2')
+                                                        <i class="fa fa-google"></i> Google
+                                                    @elseif($pixel->pixel_provider_id=='3')
                                                         <i class="fa fa-linkedin"></i> LinkedIn
-                                                    @elseif($pixel->network=='pinterest_pixel_id')
+                                                    @elseif($pixel->pixel_provider_id=='4')
+                                                        <i class="fa fa-twitter"></i> Twitter
+                                                    @elseif($pixel->pixel_provider_id=='5')
                                                         <i class="fa fa-pinterest"></i> Pinterest
-                                                    @elseif($pixel->network=='quora_pixel_id')
-                                                        <i class="fa fa-code"></i> Quora
-                                                    @elseif($pixel->network=='custom_pixel_id')
+                                                    @elseif($pixel->pixel_provider_id=='6')
                                                         <i class="fa fa-code"></i> Custom
                                                     @endif
                                                 </td>
@@ -242,17 +240,17 @@
                                                     @if(!empty($pixel->pixel_id))
                                                         {{$pixel->pixel_id}}
                                                     @else
-                                                        <div>{{$pixel->custom_pixel_script}}</div>
+                                                        <div>{{$pixel->pixel_script}}</div>
                                                     @endif
                                                 </td>
                                                 <td>{{$pixel->created_at->diffForHumans()}}</td>
-                                                <td>
+                                                <td><center>
                                                     <button class="action-btn pixel-edit-btn" href="javascript:void(0);" data-id="{{$pixel->id}}" id="pixel-edit-btn-{{$pixel->id}}">
                                                         <i class="fa fa-edit"></i>
                                                     </button>
                                                     <button class="action-btn pixel-delete-btn" href="javascript:void(0);" data-id="{{$pixel->id}}" id="pixel-delete-btn-{{$pixel->id}}">
                                                         <i class="fa fa-trash"></i>
-                                                    </button>
+                                                    </button></center>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -277,19 +275,10 @@
                         <form action="{{route('savepixel')}}" method="post">
                         <div class="form-group" id="store-modal">
                             <label for="email">Select network:</label>
-                            <select name="network" class="form-control" required>
-                                <option value="fb_pixel_id">Facebook</option>
-                                <option value="twt_pixel_id">Twitter</option>
-                                <option value="li_pixel_id">LinkedIn</option>
-                                <option value="pinterest_pixel_id">Pinterest</option>
-                                <!-- DO NOT DELETE -->
-                                <!--<option value="twt_pixel_id">Twitter</option>
-                                <option value="li_pixel_id">LinkedIn</option>-->
-                                <!--<option value="pinterest_pixel_id">Pinterest</option>
-                                <option value="quora_pixel_id">Quora</option>-->
-                                <option value="gl_pixel_id">Google</option>
-                               <!--  <option value="custom_pixel_id">Custom</option>
-                                                            -->
+                            <select name="provider_code" class="form-control" required>
+                                @foreach($defaultPixels as $provider_code => $provider)
+                                    <option value="{{$provider_code}}">{{$provider}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="form-group">
@@ -329,30 +318,21 @@
                     <div class="modal-body">
                         <form action="{{route('editpixel')}}" method="post">
                         <div class="form-group" id="edit-modal">
-                            <label for="email">Select network:</label>
-                            <select name="network" id="edit-pixel-network" class="form-control" required>
-                                <option value="fb_pixel_id">Facebook</option>
-                                <option value="twt_pixel_id">Twitter</option>
-                                <option value="li_pixel_id">LinkedIn</option>
-                                <option value="pinterest_pixel_id">Pinterest</option>
-                                <!-- DO NOT DELETE -->
-                                <!--<option value="twt_pixel_id">Twitter</option>
-                                <option value="li_pixel_id">LinkedIn</option>-->
-                                <!--<option value="pinterest_pixel_id">Pinterest</option>-->
-
-                                <!--<option value="quora_pixel_id">Quora</option>-->
-                                <option value="gl_pixel_id">Google</option>
-                                <option value="custom_pixel_id">Custom</option>
-                            </select>
+                            <label for="email">Network:</label>
+                            <input name="provider_name" id="edit-pixel-provider" class="form-control" disabled>
+                            <input type="hidden" name="provider_name" id="edit-pixel-provider-val" class="form-control">
+                            <input type="hidden" name="provider_code" class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="pwd">Pixel name:</label>
                             <input type="text" class="form-control" name="pixel_name" id="edit-pixel-name" placeholder="Enter pixel name" required onblur="checkPixelName(this.value, 'Edit')">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="edit-custom-id-div">
                             <label for="pwd">Pixel id:</label>
-
                             <input type="text" class="form-control" name="pixel_id" id="edit-pixel-id" placeholder="Enter pixel id" onblur="checkPixelId(this.value, 'Edit')">
+                        </div>
+                        <div class="form-group" id="edit-custom-script-div">
+                            <label for="pwd">Pixel Script:</label>
                             <textarea class="form-control" name="custom_pixel_script" id="edit-custom-script" placeholder="Enter your custom script" rows="6" style="resize: none;"></textarea>
                         </div>
                         <div class="custom-script-position-edt" style="display: none;">
@@ -431,95 +411,40 @@
                 $("#redirection_time_div").hide();
             }
         });
-        
-        $('.pixel-edit-btn').on('click', function(){
+        /* Edit pixel script */
+        $('.pixel-edit-btn').on('click',function() {
             var id = $(this).data('id');
             var pixelName = $('#pixel-row-'+id).find('td:eq(0)').text();
-            var pixelNetwork = $('#pixel-row-'+id).find('td:eq(1)').text();
-            var pixelId = $('#pixel-row-'+id).find('td:eq(2)').text();
+            var pixelProvider = $('#pixel-row-'+id).find('td:eq(1)').text().trim();
+            var pixelIdOrScript = $('#pixel-row-'+id).find('td:eq(2)').text().trim();
             var scriptPos = $('#pixel-row-'+id).find('td:eq(3)').text();
-            pixelId = pixelId.trim();
-            pixelNetwork = pixelNetwork.trim();
-            scriptPos = scriptPos.trim();
-            var actualNetwork;
-
-            if(pixelNetwork=='Google')
-            {
-                actualNetwork = 'gl_pixel_id';
-            }
-            else if(pixelNetwork=='Facebbok')
-            {
-                actualNetwork = 'fb_pixel_id';
-            }
-            else if(pixelNetwork=='Twitter')
-            {
-                actualNetwork = 'twt_pixel_id';
-            }
-            else if(pixelNetwork=='LinkedIn')
-            {
-                actualNetwork = 'li_pixel_id';
-            }
-            else if(pixelNetwork=='Pinterest')
-            {
-                actualNetwork = 'pinterest_pixel_id';
-            }
-            else if(pixelNetwork=='Quora')
-            {
-                actualNetwork = 'quora_pixel_id';
-            }
-            else if(pixelNetwork=='Custom')
-            {
-                actualNetwork = 'custom_pixel_id';
-            }
-
-            $('#edit-pixel-name').val(pixelName);
-            if(pixelNetwork!='Custom')
-            {
-                $('#edit-pixel-id').val(pixelId);
-                $('#edit-pixel-id').show();
-                $('#edit-pixel-id').prop('required', true);
-
-                $('#edit-custom-script').val('');
-                $('#edit-custom-script').hide();
-                $('.custom-script-position-edt').hide();
-            }
-            else if(pixelNetwork=='Custom')
-            {
-                $('#edit-custom-script').val(pixelId);
-                $('#edit-custom-script').show();
-                $('#edit-custom-script').prop('required', true);
-                $('.custom-script-position-edt').show();
-                if(scriptPos=='Header')
-                {
-                    $('#header-pixel-script-edt').prop('checked', true);
-                    $('#footer-pixel-script-edt').prop('checked', false);
-                }
-                else if(scriptPos=='Footer')
-                {
-                    $('#header-pixel-script-edt').prop('checked', false);
-                    $('#footer-pixel-script-edt').prop('checked', true);
-                }
-
-                $('#edit-pixel-id').val('');
-                $('#edit-pixel-id').hide();
-            }
-            $('#pxlid').val(id);
-            $('#edit-pixel-network').find('option').each(function(index){
-                var elementNetwork = $(this).val();
-                if(elementNetwork==actualNetwork)
-                {
-                    $(this).prop('selected','selected');
-                    return false;
-                }
-            });
             $('#edit-modal').modal('show');
+            $('#edit-pixel-provider').val(pixelProvider);
+            $('#edit-pixel-provider-val').val(pixelProvider);
+            $('#edit-pixel-name').val(pixelName);
+            if(pixelProvider=='Custom') {
+                $('#edit-custom-id-div').hide();
+                $('#edit-pixel-id').prop('required', false);
+                $('#edit-pixel-id').val('');
+                $('#edit-custom-script-div').show();
+                $('#edit-custom-script').val(pixelIdOrScript);
+                $('.custom-script-position-edt').show();
+                $('#edit-custom-script').prop('required', true);
+            } else {
+                $('#edit-custom-id-div').show();
+                $('#edit-pixel-id').prop('required', true);
+                $('#edit-pixel-id').val(pixelIdOrScript);
+                $('#edit-custom-script-div').hide();
+                $('#edit-custom-script').val('');
+                $('#edit-custom-script').prop('required', false);
+            }
         });
-
+        /* Delete pixel script */
         $('.pixel-delete-btn').on('click', function(){
             var id = $(this).data('id');
             swal({
                     title: "Are you sure you want to delete this pixel?",
-                    text: "Once deleted you will not be able to recover this!",
+                    text: "Once deleted you will not be able to recover this!\nThis pixel may be used by some shortlinks.",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonClass: "btn-danger",
@@ -556,6 +481,30 @@
     });
 </script>
 <script>
+    // toggle textarea for custom pixel for adding
+    $('#store-modal select').on('change', function(){
+        var pixelNetwork = $(this).val();
+        if(pixelNetwork=='CS') {
+            $('#add-pixel-id').hide();
+            $('#add-pixel-id').prop('required', false);
+            $('#add-pixel-id').val('');
+            $('#add-custom-script').show();
+            $('#add-custom-script').prop('required', true);
+            $('.custom-script-position').show();
+            $('#script-id').text('Pixel Script:');
+        } else {
+            $('#add-pixel-id').show();
+            $('#add-pixel-id').prop('required', true);
+            $('#add-custom-script').hide();
+            $('#add-custom-script').val('');
+            $('#header-pixel-script').prop('checked', true);
+            $('#footer-pixel-script').prop('checked', false);
+            $('#add-custom-script').prop('required', false);
+            $('.custom-script-position').hide();
+            $('#script-id').text('Pixel Id:');
+        }
+    });
+
     $(function(){
         $('#default_redirection_time').bind('keyup change click' ,function(){
             var countDownTime = $(this).val();
@@ -611,6 +560,42 @@
             }
         } else {
             return true;
+        }
+    }
+    /* Check the pixel name is already exist or not */
+    function checkPixelName(name, type) {
+        if (name.length>0) {
+            $.post('{{route('pixelnames')}}', {
+                'name': name,
+                'type': type,
+                '_token': "{{csrf_token()}}"
+            }, function(data, status, xhr){
+                var jsonData = JSON.parse(data);
+                if (jsonData.status!=200) {
+                    $('#add-pixel-name').val('');
+                    $('#edit-pixel-name').val('');
+                    swal('Name already given, please give another name');
+                }
+            })
+        }
+    }
+
+    /* Check the pixel id is already exist or not */
+    function checkPixelId(id, type) {
+        if(id.length>0) {
+            $.post('{{route('pixelids')}}', {
+                'id': id,
+                'type': type,
+                '_token': "{{csrf_token()}}"
+            }, function(data, status, xhr){
+                var jsonData = JSON.parse(data);
+                if(jsonData.status!=200)
+                {
+                    $('#add-pixel-id').val('');
+                    $('#edit-pixel-id').val('');
+                    swal('ID already given, please give another name');
+                }
+            })
         }
     }
 </script>

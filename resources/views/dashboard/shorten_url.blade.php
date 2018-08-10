@@ -158,49 +158,16 @@
                                         <div class="manage_pixel_area" id="manage_pixel_area">
                                             <select class="chosen-select-pixels" data-placeholder="Choose a pixel" multiple tabindex="4" id="manage_pixel_contents" name="pixels[]">
                                                 <option value=""></option>
-                                                @if(count($pixels)>0 && !empty($pixels))
-                                                    <optgroup label="Facebook" id="opt-Facebook">
-                                                        @foreach($pixels as $key=>$pixel)
-                                                            @if($pixel->network=='fb_pixel_id')
-                                                                <option value="{{$pixel->id}}" data-role="Facebook">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </optgroup>
-                                                    <optgroup label="Google" id="opt-Google">
-                                                        @foreach($pixels as $key=>$pixel)
-                                                            @if($pixel->network=='gl_pixel_id')
-                                                                <option value="{{$pixel->id}}" data-role="Google">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </optgroup>
-                                                    <optgroup label="Twitter" id="opt-Twitter">
-                                                        @foreach($pixels as $key=>$pixel)
-                                                            @if($pixel->network=='twt_pixel_id')
-                                                                <option value="{{$pixel->id}}" data-role="Twitter">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </optgroup>
-                                                    <optgroup label="LinkedIn" id="opt-LinkedIn">
-                                                        @foreach($pixels as $key=>$pixel)
-                                                            @if($pixel->network=='li_pixel_id')
-                                                                <option value="{{$pixel->id}}" data-role="LinkedIn">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </optgroup>
-                                                    <optgroup label="Pinterest" id="opt-Pinterest">
-                                                        @foreach($pixels as $key=>$pixel)
-                                                            @if($pixel->network=='pinterest_pixel_id')
-                                                                <option value="{{$pixel->id}}" data-role="Pinterest">{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </optgroup>
-                                                    <optgroup label="Custom" id="opt-Custom">
-                                                        @foreach($pixels as $key=>$pixel)
-                                                            @if($pixel->network=='custom_pixel_id')
-                                                                <option value="{{$pixel->id}}" data-role="Custom">{{$pixel->pixel_name}}</option>
-                                                            @endif
-                                                        @endforeach
-                                                    </optgroup>
+                                                @if((count($pixels)>0) && (!empty($pixels)))
+                                                    @foreach($pixelProviders as $pixelProvider)
+                                                        <optgroup label="{{$pixelProvider->provider_name}}" id="{{$pixelProvider->provider_name}}">
+                                                            @foreach($pixels as $key=>$pixel)
+                                                                @if($pixelProvider->id == $pixel->pixel_provider_id)
+                                                                    <option value="{{$pixel->id}}">{{$pixel->pixel_name}}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        </optgroup>
+                                                    @endforeach
                                                 @endif
                                             </select>
                                         </div>
@@ -768,68 +735,59 @@
             /* pixel manage */
             $(".chosen-select-pixels").chosen({width: "95%"});
 
-            /* Multi network validation */
-            $(".chosen-select-pixels").on('change', function(evt, el){
-
-                var selected_value  = el.selected;
-                var labelArr = [];
-                $('.chosen-select-pixels').find('option').each(function(){
-                    if($(this).val()==selected_value)
-                    {
-                        var label = $(this).data('role');
-                        labelArr.push(label);
-                    }
-                });
-                var optLabel = labelArr[0];
-                //alert(optLabel);
-                //$('#opt-'+optLabel).prop('disabled', 'disabled').trigger("chosen:updated");
-                $('#opt-'+optLabel).find('option').each(function(){
-                    if($(this).val()!=selected_value)
-                    {
-                        $(this).prop('disabled', 'disabled').trigger("chosen:updated");
-                    }
-                });
-
-                // removing added pixel validation
-                $('.search-choice-close').on('click',function(){
-                    var remIndex = $(this).data('option-array-index');
-                    remIndex = parseInt(remIndex);
-                    var remArr = [];
-                    var remValArr = [];
-                    $('.chosen-select-pixels').find('optgroup, option').each(function(indx){
-
-                        if(indx==remIndex)
-                        {
-                            var remLabel = $(this).data('role');
-                            var remVal = $(this).val();
-                            remArr.push(remLabel);
-                            remValArr.push(remVal);
-                        }
-
-                    });
-                    var remOptlabel = remArr[0];
-
-                    $('#opt-'+remOptlabel).find('option').each(function(){
-                        if($(this).val()!=remValArr[0])
-                        {
-                            $(this).prop('disabled', false).trigger("chosen:updated");
+        /* Multi network validation */
+       $(".chosen-select-pixels").on('change', function(evt, el){
+            var selected_value  = el.selected;
+            var labelArr = [];
+            $('.chosen-select-pixels').find('option').each(function(){
+                if($(this).val()==selected_value) {
+                    var opt_group = $(this).parent().attr('id');
+                    var label = $(this).data('role');
+                    labelArr.push(label);
+                    $('#'+opt_group).find('option').each(function(){
+                        if ($(this).val()!=selected_value) {
+                            $(this).prop('disabled', 'disabled').trigger("chosen:updated");
                         }
                     });
-                });
-
-                var pixels = $('#pixel-ids').val();
-                if(pixels.length==0)
-                {
-                    $('#pixel-ids').val(el.selected);
-                }
-                else
-                {
-                    pixels = pixels+'-'+(el.selected);
-                    $('#pixel-ids').val(pixels);
                 }
             });
+            var optLabel = labelArr[0];
 
-            /* end of pixel manage */
+            /**/
+
+            var pixels = $('#pixel-ids').val();
+            if (pixels.length==0) {
+                $('#pixel-ids').val(el.selected);
+            } else {
+                pixels = pixels+'-'+(el.selected);
+                $('#pixel-ids').val(pixels);
+            }
+
+            // removing added pixel validation for onchange chosen
+            $('.search-choice-close').on('click',function(){
+                var remIndex = $(this).data('option-array-index');
+                remIndex = parseInt(remIndex);
+                var remArr = [];
+                var remValArr = [];
+                $('.chosen-select-pixels').find('optgroup, option').each(function(indx){
+                    if (indx == remIndex) {
+                        var remLabel = $(this).data('role');
+                        var remVal = $(this).val();
+                        remArr.push(remLabel);
+                        remValArr.push(remVal);
+                        var remOptlabel = remArr[0];
+                        var opt_group = $(this).parent().attr('id');
+                        $('#'+opt_group).find('option').each(function(){
+                            if ($(this).val()!=remValArr[0]) {
+                                $(this).prop('disabled', false).trigger("chosen:updated");
+                            }
+                        });
+                    }
+                });
+            });
+            // end of removing pixel validation for onchange chosen
+        });
+        /* end of pixel manage */
 
             var new_count;
             // Special Schedule tab add /
@@ -854,8 +812,8 @@
             function onChange(){
                 var scheDt = $('#schedule_datepicker_'+new_count).val();
                 $('#scd_id_'+new_count).val(scheDt);
-                if(new_count>0){
-                    for(var i=0; i<new_count; i++){
+                if (new_count>0) {
+                    for (var i=0; i<new_count; i++) {
                         if($('#schedule_datepicker_'+i).length>0 && scheDt == $('#schedule_datepicker_'+i).val()){
                             swal("Sorry!", "Date already given as schedule please pick another one", "warning");
                             $('#schedule_datepicker_'+new_count).val('');
@@ -960,8 +918,6 @@
 <script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.all.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-
-
         $.fn.modal.Constructor.prototype.enforceFocus = function () {
         };
 

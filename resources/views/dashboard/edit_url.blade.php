@@ -204,291 +204,42 @@ $optTypeLI = 'normal';
                             </div>
                         </div>
 
-                        <!-- OLD PIXEL FRONT END -->
-                        <!--<div class="normal-box1">
-                            <div class="normal-header">
-                                <label class="custom-checkbox">Edit facebook pixel
-                                    <input type="checkbox" id="checkboxAddFbPixelid" name="checkboxAddFbPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo 'checked';}  ?> >
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="normal-body facebook-pixel" style="display: <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo 'block';}else{ echo 'none';}  ?>" >
-                                <p>Paste Your Facebook-pixel-id Here</p>
-                                <input type="text" name="fbPixelid" class="form-control" id="fbPixel_id" value="<?php if(count($urls->urlFeature)>0 && $urls->urlFeature->fb_pixel_id!=''){ echo $urls->urlFeature->fb_pixel_id;}else{ echo '';}  ?>" >
-                            </div>
-                        </div>
-                        <div class="normal-box1">
-                            <div class="normal-header">
-                                <label class="custom-checkbox">Edit google pixel
-                                    <input type="checkbox" id="checkboxAddGlPixelid" name="checkboxAddGlPixelid" <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo 'checked';} ?> >
-                                    <span class="checkmark"></span>
-                                </label>
-                            </div>
-                            <div class="normal-body google-pixel" style="display: <?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo 'block';}else{ echo 'none';}  ?>" >
-                                <p>Paste Your Google-pixel-id Here</p>
-                                <input type="text" name="glPixelid" class="form-control" id="glPixel_id" value="<?php if(count($urls->urlFeature)>0 && $urls->urlFeature->gl_pixel_id!=''){ echo $urls->urlFeature->gl_pixel_id;}else{ echo '';}  ?>" >
-                            </div>
-                        </div>-->
-                        <!-- END OLD PIXEL FRONT END -->
-
                         <!-- Pixel manage -->
                         <div class="normal-box1">
                             <div class="normal-header">
                                 <label class="custom-checkbox">Edit pixel
-                                    <input type="checkbox" id="managePixel" name="managePixel" <?php echo(count($pixel_name)>0)?'checked':'' ?> >
+                                    <input type="checkbox" id="managePixel" name="managePixel" {{count($pixel_url)>0 ? 'checked' : ''}} >
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
                             <input type="hidden" name="pixels" id="pixel-ids">
-                            <div class="normal-body pixel-area" style="display: <?php echo(count($pixel_name)>0)?'block':''?>">
+                            <div class="normal-body pixel-area" style="display: {{count($pixels)>0 ?'block':''}}">
                                 <p>Add your pixels here</p>
                                 <div class="manage_pixel_area" id="manage_pixel_area">
                                     <select class="chosen-select-pixels" data-placeholder="Choose a pixel" multiple tabindex="4" id="manage_pixel_contents" name="pixels[]">
                                         <option value=""></option>
                                         @if(count($pixels)>0 && !empty($pixels))
-                                            <optgroup label="Facebook" id="opt-Facebook">
-                                                @php
-                                                    foreach($pixels as $pxl)
-                                                    {
-                                                        if(in_array($pxl->id, $pxId) && in_array('Fb_pixel_id', $pixel_name))
-                                                        {
-                                                            $spanType = 'hasKey';
-                                                            break;
-                                                        }
-                                                        else
-                                                        {
-                                                            $spanType = 'noKey';
-                                                        }
-                                                    }
-                                                @endphp
-
-                                                @foreach($pixels as $key=>$pixel)
-                                                    @if($pixel->network=='fb_pixel_id')
-                                                        @if($spanType!=='hasKey')
-                                                            @php
-                                                                if(in_array($pixel->id, $pxId) && $pixel->network=='fb_pixel_id')
-                                                                {
-                                                                    $optTypeFB = 'selectDisable';
-                                                                    break;
-                                                                }
-                                                            @endphp
-                                                        @else
-                                                            <option value="{{$pixel->id}}" data-role="Facebook" disabled>{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                        @endif
-                                                    @endif
-                                                @endforeach
-
-                                                @if($optTypeFB=='selectDisable' && $spanType!=='hasKey')
-                                                    <!-- NO KEY SELECT DISABLE -->
-                                                    @foreach($pixels as $px)
-                                                            @if($px->network == 'fb_pixel_id')
-                                                                <option value="{{$px->id}}" data-role="Facebook" <?php echo(in_array($px->id, $pxId))? 'selected': 'disabled'?> >{{$px->pixel_name}} - {{$px->pixel_id}}</option>
-                                                            @endif
-                                                    @endforeach
-
-                                                @elseif($optTypeFB=='normal' && $spanType!=='hasKey')
-                                                    <!-- NO KEY ONLY NORMAL -->
-                                                    @foreach($pixels as $px)
-                                                        @if($px->network == 'fb_pixel_id')
-                                                            <option value="{{$px->id}}" data-role="Facebook">{{$px->pixel_name}} - {{$px->pixel_id}}</option>
+                                            @foreach($pixelProviders as $pixelProvider)
+                                                <optgroup label="{{$pixelProvider->provider_name}}" id="{{$pixelProvider->provider_name}}" >
+                                                    @foreach($pixels as $key=>$pixel)
+                                                        @if($pixelProvider->id == $pixel->pixel_provider_id)
+                                                            <option value="{{$pixel->id}}"
+                                                                @foreach ($pixel_url as $value)
+                                                                    @if ($value->pixel_id == $pixel->id)
+                                                                        selected
+                                                                    @endif
+                                                                @endforeach
+                                                                >{{$pixel->pixel_name}}</option>
                                                         @endif
                                                     @endforeach
-                                                @endif
-                                            </optgroup>
-                                            <optgroup label="Google" id="opt-Google">
-                                                @php
-                                                    foreach($pixels as $pxl)
-                                                    {
-                                                        if(in_array($pxl->id, $pxId) && in_array('Gl_pixel_id', $pixel_name))
-                                                        {
-                                                            $spanType = 'hasKey';
-                                                            break;
-                                                        }
-                                                        else
-                                                        {
-                                                            $spanType = 'noKey';
-                                                        }
-                                                    }
-                                                @endphp
-
-                                                @foreach($pixels as $key=>$pixel)
-                                                    @if($pixel->network=='gl_pixel_id')
-                                                        @if($spanType!=='hasKey')
-                                                            @php
-                                                                if(in_array($pixel->id, $pxId) && $pixel->network=='gl_pixel_id')
-                                                                {
-                                                                    $optTypeGL = 'selectDisable';
-                                                                    break;
-                                                                }
-                                                            @endphp
-                                                        @else
-                                                            <option value="{{$pixel->id}}" data-role="Google" disabled>{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                        @endif
-                                                    @endif
-                                                @endforeach
-
-                                                @if($optTypeGL=='selectDisable' && $spanType!=='hasKey')
-                                                <!-- NO KEY SELECT DISABLE -->
-                                                    @foreach($pixels as $px)
-                                                        @if($px->network =='gl_pixel_id')
-                                                            <option value="{{$px->id}}" data-role="Google" <?php echo(in_array($px->id, $pxId))? 'selected': 'disabled'?> >{{$px->pixel_name}} - {{$px->pixel_id}}</option>
-                                                        @endif
-                                                    @endforeach
-
-                                                @elseif($optTypeGL=='normal' && $spanType!=='hasKey')
-                                                <!-- NO KEY ONLY NORMAL -->
-                                                    @foreach($pixels as $px)
-                                                        @if($px->network =='gl_pixel_id')
-                                                            <option value="{{$px->id}}" data-role="Google">{{$px->pixel_name}} - {{$px->pixel_id}}</option>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </optgroup>
-                                            <optgroup label="Twitter" id="opt-Twitter">
-                                                @php
-                                                    $spanType = 'noKey';
-                                                @endphp
-
-                                                @foreach($pixels as $key=>$pixel)
-                                                    @if($pixel->network=='twt_pixel_id')
-                                                        @if($spanType!=='hasKey')
-                                                            @php
-                                                                if(in_array($pixel->id, $pxId) && $pixel->network=='twt_pixel_id')
-                                                                {
-                                                                    $optTypeTWT = 'selectDisable';
-                                                                    break;
-                                                                }
-                                                            @endphp
-                                                        @else
-                                                            <option value="{{$pixel->id}}" data-role="Twitter" disabled>{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                        @endif
-                                                    @endif
-                                                @endforeach
-
-                                                @if($optTypeTWT=='selectDisable' && $spanType!=='hasKey')
-                                                <!-- NO KEY SELECT DISABLE -->
-                                                    @foreach($pixels as $px)
-                                                        @if($px->network =='twt_pixel_id')
-                                                            <option value="{{$px->id}}" data-role="Twitter" <?php echo(in_array($px->id, $pxId))? 'selected': 'disabled'?> >{{$px->pixel_name}} - {{$px->pixel_id}}</option>
-                                                        @endif
-                                                    @endforeach
-
-                                                @elseif($optTypeTWT=='normal' && $spanType!=='hasKey')
-                                                <!-- NO KEY ONLY NORMAL -->
-                                                    @foreach($pixels as $px)
-                                                        @if($px->network =='twt_pixel_id')
-                                                            <option value="{{$px->id}}" data-role="Twitter">{{$px->pixel_name}} - {{$px->pixel_id}}</option>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </optgroup>
-                                            <optgroup label="LinkedIn" id="opt-LinkedIn">
-                                                @php
-                                                    $spanType = 'noKey';
-                                                @endphp
-
-                                                @foreach($pixels as $key=>$pixel)
-                                                    @if($pixel->network=='li_pixel_id')
-                                                        @if($spanType!=='hasKey')
-                                                            @php
-                                                                if(in_array($pixel->id, $pxId) && $pixel->network=='li_pixel_id')
-                                                                {
-                                                                    $optTypeLI = 'selectDisable';
-                                                                    break;
-                                                                }
-                                                            @endphp
-                                                        @else
-                                                            <option value="{{$pixel->id}}" data-role="LinkedIn" disabled>{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                        @endif
-                                                    @endif
-                                                @endforeach
-
-                                                @if($optTypeLI=='selectDisable' && $spanType!=='hasKey')
-                                                <!-- NO KEY SELECT DISABLE -->
-                                                    @foreach($pixels as $px)
-                                                        @if($px->network =='li_pixel_id')
-                                                            <option value="{{$px->id}}" data-role="LinkedIn" <?php echo(in_array($px->id, $pxId))? 'selected': 'disabled'?> >{{$px->pixel_name}} - {{$px->pixel_id}}</option>
-                                                        @endif
-                                                    @endforeach
-
-                                                @elseif($optTypeLI=='normal' && $spanType!=='hasKey')
-                                                <!-- NO KEY ONLY NORMAL -->
-                                                    @foreach($pixels as $px)
-                                                        @if($px->network =='li_pixel_id')
-                                                            <option value="{{$px->id}}" data-role="LinkedIn">{{$px->pixel_name}} - {{$px->pixel_id}}</option>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </optgroup>
-                                            <optgroup label="Pinterest" id="opt-Pinterest">
-                                                @php
-                                                    $spanType = 'noKey';
-                                                @endphp
-
-                                                @foreach($pixels as $key=>$pixel)
-                                                    @if($pixel->network=='pinterest_pixel_id')
-                                                        @if($spanType!=='hasKey')
-                                                            @php
-                                                                if(in_array($pixel->id, $pxId) && $pixel->network=='pinterest_pixel_id')
-                                                                {
-                                                                    $optTypeLI = 'selectDisable';
-                                                                    break;
-                                                                }
-                                                            @endphp
-                                                        @else
-                                                            <option value="{{$pixel->id}}" data-role="Pinterest" disabled>{{$pixel->pixel_name}} - {{$pixel->pixel_id}}</option>
-                                                        @endif
-                                                    @endif
-                                                @endforeach
-
-                                                @if($optTypeLI=='selectDisable' && $spanType!=='hasKey')
-                                                <!-- NO KEY SELECT DISABLE -->
-                                                    @foreach($pixels as $px)
-                                                        @if($px->network =='pinterest_pixel_id')
-                                                            <option value="{{$px->id}}" data-role="Pinterest" <?php echo(in_array($px->id, $pxId))? 'selected': 'disabled'?> >{{$px->pixel_name}} - {{$px->pixel_id}}</option>
-                                                        @endif
-                                                    @endforeach
-
-                                                @elseif($optTypeLI=='normal' && $spanType!=='hasKey')
-                                                <!-- NO KEY ONLY NORMAL -->
-                                                    @foreach($pixels as $px)
-                                                        @if($px->network =='pinterest_pixel_id')
-                                                            <option value="{{$px->id}}" data-role="Pinterest">{{$px->pixel_name}} - {{$px->pixel_id}}</option>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            </optgroup>
-                                            <optgroup label="Custom" id="opt-Custom">
-                                                @php
-                                                    $spanType = 'noKey';
-                                                @endphp
-
-                                                @foreach($pixels as $key=>$pixel)
-                                                    @if($pixel->network=='custom_pixel_id')
-                                                        @if($spanType!=='hasKey')
-                                                            <option value="{{$pixel->id}}" data-role="Custom" <?php echo(in_array($pixel->id, $pxId))? 'selected': ''?> >{{$pixel->pixel_name}}</option>
-                                                        @else
-                                                            <option value="{{$pixel->id}}" data-role="Custom" disabled>{{$pixel->pixel_name}}</option>
-                                                        @endif
-                                                    @endif
-                                                @endforeach
-                                            </optgroup>
-                                            <optgroup label="Oldpixel" id="opt-Oldpixel">
-                                                <!-- validation for old pixels -->
-
-                                                @foreach($pxId as $key=>$pxid)
-                                                    @if($pxid==0)
-                                                        <option value="0" data-role="Oldpixel-{{strtolower($pixel_name[$key])}}" selected>{{strtoupper(str_replace('_', ' ', $pixel_name[$key]))}}-{{$pixel_id[$key]}}</option>
-                                                    @endif
-                                                @endforeach
-                                            </optgroup>
+                                                </optgroup>
+                                            @endforeach
                                         @endif
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <!-- end pixel manage -->
-
                         <div class="normal-box1">
                             <div class="normal-header">
                                 <label class="custom-checkbox">Edit tags
@@ -499,7 +250,7 @@ $optTypeLI = 'normal';
                             @if(count($urls->urlTagMap)>0)
                                 <div id="shortTags_Contents_chosen" class="chosen-container chosen-container-multi chosen-with-drop chosen-container-active" style="width: 48px; display: none;">
                                     <ul class="chosen-choices">
-
+                                        
                                     </ul>
                                 </div>
                             @endif
@@ -1145,7 +896,6 @@ $optTypeLI = 'normal';
             $(this).data("kendoDateTimePicker").open( function(){
                 $("#datepicker").bind("click", function(){
                     $(this).data("kendoTimePicker").open();
-
                 });
             });
         });
@@ -1155,39 +905,31 @@ $optTypeLI = 'normal';
 
         /* Multi network validation */
        $(".chosen-select-pixels").on('change', function(evt, el){
-
             var selected_value  = el.selected;
             var labelArr = [];
             $('.chosen-select-pixels').find('option').each(function(){
-                if($(this).val()==selected_value)
-                {
+                if($(this).val()==selected_value) {
+                    var opt_group = $(this).parent().attr('id');
                     var label = $(this).data('role');
                     labelArr.push(label);
+                    $('#'+opt_group).find('option').each(function(){
+                        if ($(this).val()!=selected_value) {
+                            $(this).prop('disabled', 'disabled').trigger("chosen:updated");
+                        }
+                    });
                 }
             });
             var optLabel = labelArr[0];
-            //alert(optLabel);
-            //$('#opt-'+optLabel).prop('disabled', 'disabled').trigger("chosen:updated");
-            $('#opt-'+optLabel).find('option').each(function(){
-                if($(this).val()!=selected_value)
-                {
-                    $(this).prop('disabled', 'disabled').trigger("chosen:updated");
-                }
-            });
 
             /**/
 
             var pixels = $('#pixel-ids').val();
-            if(pixels.length==0)
-            {
+            if (pixels.length==0) {
                 $('#pixel-ids').val(el.selected);
-            }
-            else
-            {
+            } else {
                 pixels = pixels+'-'+(el.selected);
                 $('#pixel-ids').val(pixels);
             }
-
 
             // removing added pixel validation for onchange chosen
             $('.search-choice-close').on('click',function(){
@@ -1196,54 +938,36 @@ $optTypeLI = 'normal';
                 var remArr = [];
                 var remValArr = [];
                 $('.chosen-select-pixels').find('optgroup, option').each(function(indx){
-
-                    if(indx==remIndex)
-                    {
+                    if (indx == remIndex) {
                         var remLabel = $(this).data('role');
                         var remVal = $(this).val();
-                        if(remVal!='0')
-                        {
-                            remArr.push(remLabel);
-                            remValArr.push(remVal);
-                            var remOptlabel = remArr[0];
-
-                            $('#opt-'+remOptlabel).find('option').each(function(){
-                                if($(this).val()!=remValArr[0])
-                                {
-                                    $(this).prop('disabled', false).trigger("chosen:updated");
-                                }
-                            });
-                        }
-                        else if(remVal=='0')
-                        {
-                            $(this).prop('disabled', true).trigger("chosen:updated");
-                            remLabel = remLabel.replace('Oldpixel-', '').trim();
-                            if(remLabel=='fb_pixel_id')
-                            {
-                                $('#opt-Facebook').find('option').each(function(){
-                                    $(this).removeAttr('disabled').trigger("chosen:updated");
-                                })
+                        remArr.push(remLabel);
+                        remValArr.push(remVal);
+                        var remOptlabel = remArr[0];
+                        var opt_group = $(this).parent().attr('id');
+                        $('#'+opt_group).find('option').each(function(){
+                            if ($(this).val()!=remValArr[0]) {
+                                $(this).prop('disabled', false).trigger("chosen:updated");
                             }
-                            else if(remLabel=='gl_pixel_id')
-                            {
-                                $('#opt-Google').find('option').each(function(){
-                                    $(this).removeAttr('disabled').trigger("chosen:updated");
-                                })
-                            }
-                        }
+                        });
                     }
-
                 });
-
             });
-
             // end of removing pixel validation for onchange chosen
         });
-
         /* end of pixel manage */
     });
 </script>
-
+<script type="text/javascript">
+    $(document).ready(function() {
+        var pixels = $("#manage_pixel_contents").val();
+        var tests = $('.chosen-select-pixels').val();
+        console.log(pixels,tests);
+        $.each(pixels, function(remIndex){
+            //fds
+        });            
+    });
+</script>
 <script>
     $(document).on('ready readyAgain', function(){
         // removing added pixel validation
@@ -1253,43 +977,19 @@ $optTypeLI = 'normal';
             var remArr = [];
             var remValArr = [];
             $('.chosen-select-pixels').find('optgroup, option').each(function(indx){
-
-                if(indx==remIndex)
-                {
-                    var remLabel = $(this).data('role');
-                    var remVal = $(this).val();
-                    if(remVal!='0')
-                    {
+                if (indx == remIndex) {
+                        var remLabel = $(this).data('role');
+                        var remVal = $(this).val();
                         remArr.push(remLabel);
                         remValArr.push(remVal);
                         var remOptlabel = remArr[0];
-
-                        $('#opt-'+remOptlabel).find('option').each(function(){
-                            if($(this).val()!=remValArr[0])
-                            {
+                        var opt_group = $(this).parent().attr('id');
+                        $('#'+opt_group).find('option').each(function(){
+                            if ($(this).val()!=remValArr[0]) {
                                 $(this).prop('disabled', false).trigger("chosen:updated");
-                                $(document).trigger('readyAgain');
                             }
                         });
                     }
-                    else if(remVal=='0')
-                    {
-                        $(this).prop('disabled', true).trigger("chosen:updated");
-                        remLabel = remLabel.replace('Oldpixel-', '').trim();
-                        if(remLabel=='fb_pixel_id')
-                        {
-                            $('#opt-Facebook').find('option').each(function(){
-                                $(this).removeAttr('disabled').trigger("chosen:updated");
-                            })
-                        }
-                        else if(remLabel=='gl_pixel_id')
-                        {
-                            $('#opt-Google').find('option').each(function(){
-                                $(this).removeAttr('disabled').trigger("chosen:updated");
-                            })
-                        }
-                    }
-                }
             });
         });
         // end of removing pixel validation
@@ -1704,16 +1404,12 @@ $optTypeLI = 'normal';
             }
         }
 
-        //Add Manage Pixel
-        if(thisInstance.id=="managePixel")
-        {
-            if(thisInstance.checked)
-            {
+        /* Manage Pixel */
+        if (thisInstance.id=="managePixel") {
+            if (thisInstance.checked) {
                 $('.pixel-area').show();
                 $('#manage_pixel_area').show();
-            }
-            else
-            {
+            } else {
                 $('.pixel-area').hide();
                 $('#manage_pixel_area').hide();
                 $('#manage_pixel_contents').val('');

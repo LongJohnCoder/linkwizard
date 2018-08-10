@@ -78,10 +78,16 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
         <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
        <!-- PIXEL SCRIPT FOR HEADER STARTS HERE -->
-        @if(isset($pixelScripts) && count($pixelScripts)>0)
-            @foreach($pixelScripts as $key => $pixelScript)
-                @if($pixelScripts[$key]==0)
-                    {!! $pixelScript !!}
+        @if(isset($assignedPixels) && count($assignedPixels)>0)
+            @foreach($assignedPixels as $assignedPixel)
+                {{-- Checking for custom scripts  --}}
+                @if($assignedPixel['is_custom'] == 1)
+                    @if(($assignedPixel['script_position'] == 0) && ($assignedPixel['pixel_script'] != null))
+                        {!! $assignedPixel['pixel_script'] !!}
+                    @endif
+                @endif
+                @if(($assignedPixel['is_custom'] == 0) && ($assignedPixel['script'] != ''))
+                    {!! $assignedPixel['script'] !!}
                 @endif
             @endforeach
         @endif
@@ -108,15 +114,17 @@
             <div class="sticky-foot"></div>
         </div>
            
-        <!-- PIXEL SCRIPT FOR FOOTER STARTS HERE -->
-        @if(isset($pixelScripts) && count($pixelScripts)>0)
-            @foreach($pixelScripts as $key => $pixelScript)
-                @if($pixelScripts[$key]==1)
-                    {!! $pixelScript !!}
+       <!-- CUSTOM PIXEL SCRIPT FOR FOOTER STARTS HERE -->
+        @if(isset($assignedPixels) && count($assignedPixels)>0)
+            @foreach($assignedPixels as $assignedPixel)
+                @if($assignedPixel['is_custom'] == 1)
+                    @if(($assignedPixel['script_position'] == 1) && ($assignedPixel['pixel_script'] != null))
+                        {!! $assignedPixel['pixel_script'] !!}
+                    @endif
                 @endif
             @endforeach
         @endif
-        <!-- PIXEL SCRIPTS FOR FOOTER ENDS HERE -->
+        <!-- CUSTOM PIXEL SCRIPTS FOR FOOTER ENDS HERE -->
 
         {{--  redirecting js script  --}}
         <script type="text/javascript">

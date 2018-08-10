@@ -36,6 +36,9 @@
     use Intervention\Image\ImageManagerStatic as Image;
     use App\Timezone;
     use App\DefaultSettings;
+    use App\PixelProviders;
+    use App\UserPixels;
+    use App\PixelUrl;
 
     class UrlController extends Controller{
         /**
@@ -84,13 +87,13 @@
                         $urlTags = UrlTag::whereHas('urlTagMap.url',function($q) use($user) {
                                    $q->where('user_id',$user->id);
                                  })->pluck('tag')->toArray();
-                        $pixelsToManage = Pixel::where('user_id', Auth::user()->id)->get();
-                        if(count($pixelsToManage)>0)
-                        {
+                        /* Geting the user profiles */
+                        $pixelsToManage = UserPixels::where('user_id', Auth::user()->id)->get();
+                        /* Getting all the available pixel provider which is active*/
+                        $pixelProviders = PixelProviders::where('is_active','1')->get();
+                        if(count($pixelsToManage)>0) {
                             $pixels = $pixelsToManage;
-                        }
-                        elseif(count($pixelsToManage)==0)
-                        {
+                        } elseif(count($pixelsToManage)==0) {
                             $pixels = '';
                         }
                         $timezones = Timezone::all();
@@ -117,6 +120,7 @@
                             'type'                => $type,
                             'timezones'           => $timezones,
                             'pixels'              => $pixels,
+                            'pixelProviders'      => $pixelProviders,
                             'red_time'            => $red_time,
                             'pageColor'           => $pageColour,
                             'redirecting_text'    => $redirecting_text,
@@ -136,47 +140,46 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function creatShortUrl(Request $request){
-            try{
+            try {
                 if (\Auth::user())
                     $userId = \Auth::user()->id;
                 else {
                     $userId = 0;
                 }
                 //Redirect Link
-                if(isset($request->actual_url[0]) && $request->actual_url[0]!=""){
+                if (isset($request->actual_url[0]) && $request->actual_url[0]!="") {
                     if (strpos($request->actual_url[0], 'https://') === 0) {
                         $actualUrl = str_replace('https://', null, $request->actual_url[0]);
                         $protocol  = 'https';
-                    }elseif(strpos($request->actual_url[0], 'http://') === 0){
+                    } elseif(strpos($request->actual_url[0], 'http://') === 0) {
                         $actualUrl = str_replace('http://', null, $request->actual_url[0]);
                         $protocol  = 'http';
-                    }else{
+                    } else {
                         $actualUrl = $request->actual_url[0];
                         $protocol  = 'http';
                     }
-                }else{
-                    if($request->type==0){
-                        if(isset($request->allowSchedule) && $request->allowSchedule != 'on'){
+                } else {
+                    if ($request->type==0) {
+                        if (isset($request->allowSchedule) && $request->allowSchedule != 'on') {
                             return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect Or Link Scheduler Will Be There.');
-                        }
-                        else{
+                        } else {
                             $actualUrl = NULL;
                             $protocol  = 'http';
                         }
-                    }else if($request->type==2){
+                    } else if ($request->type==2){
                         $protocol  = 'http';
                         $actualUrl = NULL;
                         $urltitle  = $request->group_url_title;
-                    }else{
+                    } else {
                         return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
                     }
                     $actualUrl = NULL;
                     $protocol  = 'http';
                 }
 
-                if(isset($request->custom_url_status)&& ($request->custom_url_status=='on')){
+                if (isset($request->custom_url_status)&& ($request->custom_url_status=='on')) {
                     $checkSuffix=Url::where('shorten_suffix',$request->custom_url)->count();
-                    if($checkSuffix >0){
+                    if ($checkSuffix >0) {
                         return redirect()->back()->with('error', 'This Url Is Already Taken');
                     }
                 }
@@ -210,14 +213,14 @@
                 $url->user_id          = $userId;
 
                 //Get Meta Data from browser if user did not provide
-                if(preg_match("~^(?:f|ht)tps?://~i", $request->actual_url[0])){
+                if (preg_match("~^(?:f|ht)tps?://~i", $request->actual_url[0])) {
                     $meta_data = $this->getPageMetaContents($request->actual_url[0]);
                     $url2 = $this->fillUrlDescriptions($url, $request, $meta_data);
                     $url_image_name_get = $url2;
                     $og_image = NULL;
-                    if(count($url2)>0){
+                    if (count($url2)>0) {
                         $og_image = $url_image_name_get->og_image;
-                    }else{
+                    } else {
                         $og_image = $meta_data['og_image'];
                     }
                 }else{
@@ -238,7 +241,7 @@
                 $defaultSettings = DefaultSettings::all();
                 /* Getting the profile settings if exist */
                 $profileSettings = Profile::where('user_id',Auth::user()->id)->first();
-                // Add Customize settings for urls
+                /* Add Customize settings for urls */
                 if (isset($request->allowCustomizeUrl) && ($request->allowCustomizeUrl == "on")) {
                     $url->redirecting_time = ($request->redirecting_time*1000);
                     $request->redirecting_text_template = trim(preg_replace('/\s+/', ' ',$request->redirecting_text_template));
@@ -294,8 +297,7 @@
                 }
 
                 // Add favicon
-                if (isset($request->allowfavicon) && $request->allowfavicon=='on')
-                {
+                if (isset($request->allowfavicon) && $request->allowfavicon=='on') {
                     if ($request->hasFile('favicon_contents')) {
                         $imgFile        = $request->file('favicon_contents');
                         $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
@@ -324,13 +326,13 @@
                 if (isset($request->allowExpiration) && $request->allowExpiration == 'on'){
                     $url->date_time = date_format(date_create($request->date_time), 'Y-m-d H:i:s');
                     $url->timezone = $request->timezone;
-                    if(strlen($request->redirect_url)>0 && preg_match("~^(?:f|ht)tps?://~i", $request->redirect_url)){
+                    if (strlen($request->redirect_url)>0 && preg_match("~^(?:f|ht)tps?://~i", $request->redirect_url)) {
                         $url->redirect_url = $request->redirect_url;
-                    }else{
+                    } else {
                         $url->redirect_url = NULL;
                     }
                 }
-                if($linkPreview){
+                if ($linkPreview) {
                     $linkprev['usability']=1;
                     if($linkPreviewOriginal){
                         $linkprev['main']=0;
@@ -400,48 +402,27 @@
                 }
 
                 $url->link_preview_type = json_encode($linkprev);
-                if(isset($request->custom_url_status)&& ($request->custom_url_status=='on')){
+                if (isset($request->custom_url_status)&& ($request->custom_url_status=='on')) {
                     $url->is_custom         =1;
                     $url->shorten_suffix    = $request->custom_url;
-                }else{
+                } else {
                     $url->shorten_suffix    = $random_string;
                 }
-                if(isset($request->allowSchedule) && $request->allowSchedule == 'on'){
+                if (isset($request->allowSchedule) && $request->allowSchedule == 'on') {
                     $url->is_scheduled = 'y';
-                }else
-                {
+                } else {
                     $url->is_scheduled = 'n';
                 }
                 if($url->save()){
-                    //If facebook pixel, Google Pixel
-                    if(($checkboxAddFbPixelid && $fbPixelid != null) || ($checkboxAddGlPixelid && $glPixelid != null)) {
-                        $urlfeature = new UrlFeature();
-                        $urlfeature->url_id = $url->id;
-                        if($checkboxAddFbPixelid && $fbPixelid != null) {
-                            $urlfeature->fb_pixel_id = $fbPixelid;
-                        }
-                        if($checkboxAddGlPixelid && $glPixelid != null) {
-                          $urlfeature->gl_pixel_id = $glPixelid;
-                        }
-                        if(!$urlfeature->save()) {
-                            return redirect()->back()->with('error', 'Short Url Features Not Saved! Try Again!');
-                        }
-                    }
-
-                    /**
-                     * Manage pixel
-                     */
-                    if(isset($request->managePixel) && ($request->managePixel))
-                    {
-                        $pixels = [];
-                        //$request->pixels = explode('-', $request->pixels);
-                        if(count($request->pixels)>0 && !empty($request->pixels))
-                        {
-                            for($i=0; $i<count($request->pixels); $i++)
-                            {
-                                $pixels[] = $request->pixels[$i];
+                    /* Manage pixel */
+                    if(isset($request->managePixel) && ($request->managePixel)) {
+                        if (count($request->pixels)>0 && !empty($request->pixels)) {
+                            for ($i=0; $i<count($request->pixels); $i++) {
+                                $pixel_url = new PixelUrl();
+                                $pixel_url->url_id = $url->id;
+                                $pixel_url->pixel_id = $request->pixels[$i];
+                                $pixel_url->save();
                             }
-                            $this->addPixelsToUrlFeature($pixels, $url->id);
                         }
                     }
 
@@ -556,73 +537,6 @@
         }
 
         /**
-         * Add manageable pixels to url_features table
-         * @param $pixel
-         * @param $url_id
-         * @return \Illuminate\Http\RedirectResponse
-         */
-        private function addPixelsToUrlFeature($pixel, $url_id)
-        {
-            $urlFeatureColumn = [];
-            $pixel_id = [];
-            $custom_pixel_script = [];
-            try
-            {
-                if(count($pixel)>0)
-                {
-                    for($i=0; $i<count($pixel); $i++)
-                    {
-                        $pixelData = Pixel::find($pixel[$i]);
-                        $urlFeatureColumn[] = $pixelData->network;
-                        $pixel_id[] = $pixelData->pixel_id;
-                        $custom_pixel_script[] = $pixelData->custom_pixel_script;
-                    }
-
-                    $urlFeatures = new UrlFeature();
-                    $urlFeatures->url_id = $url_id;
-                    for($j=0; $j<count($pixel); $j++)
-                    {
-                        if($urlFeatureColumn[$j] == 'fb_pixel_id')
-                        {
-                            $urlFeatures->fb_pixel_id = $pixel_id[$j];
-                        }
-                        elseif($urlFeatureColumn[$j] == 'gl_pixel_id')
-                        {
-                            $urlFeatures->gl_pixel_id = $pixel_id[$j];
-                        }
-                        elseif($urlFeatureColumn[$j] == 'twt_pixel_id')
-                        {
-                            $urlFeatures->twt_pixel_id = $pixel_id[$j];
-                        }
-                        elseif($urlFeatureColumn[$j] == 'li_pixel_id')
-                        {
-                            $urlFeatures->li_pixel_id = $pixel_id[$j];
-                        }
-                        elseif($urlFeatureColumn[$j] == 'pinterest_pixel_id')
-                        {
-                            $urlFeatures->pinterest_pixel_id = $pixel_id[$j];
-                        }
-                        elseif($urlFeatureColumn[$j] == 'quora_pixel_id')
-                        {
-                            $urlFeatures->quora_pixel_id = $pixel_id[$j];
-                        }
-                        /* DON'T DELETE */
-                        elseif($urlFeatureColumn[$j] == 'custom_pixel_id')
-                        {
-                            $urlFeatures->custom_pixel_id = $custom_pixel_script[$j];
-                        }
-
-                    }
-                    $urlFeatures->save();
-                }
-            }
-            catch(Exception $e)
-            {
-                return redirect()->back()->with('error', 'Sorry we\'re having some problem with processing your pixels!');
-            }
-        }
-
-        /**
          * Function returns view for edit url
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
@@ -669,84 +583,12 @@
                             $q->where('user_id', $user->id);
                         })->pluck('tag')->toArray();
 
-                        //Url features
-                        $urlFeatures = UrlFeature::where('url_id', $id)->first();
-                        $pixel_name = [];
-                        $pixel_id = [];
-                        $pxId = [];
-                        $features = [];
-                        $networks = [];
-                        $pixel = [];
-                        if(count($urlFeatures)>0)
-                        {
-                            if(!empty($urlFeatures->fb_pixel_id))
-                            {
-                                $features[] = $urlFeatures->fb_pixel_id;
-                                $networks[] = 'fb_pixel_id';
-                            }
-                            if(!empty($urlFeatures->gl_pixel_id))
-                            {
-                                $features[] = $urlFeatures->gl_pixel_id;
-                                $networks[] = 'gl_pixel_id';
-                            }
-                            if(!empty($urlFeatures->twt_pixel_id))
-                            {
-                                $features[] = $urlFeatures->twt_pixel_id;
-                                $networks[] = 'twt_pixel_id';
-                            }
-                            if(!empty($urlFeatures->li_pixel_id))
-                            {
-                                $features[] = $urlFeatures->li_pixel_id;
-                                $networks[] = 'li_pixel_id';
-                            }
-                            if(!empty($urlFeatures->pinterest_pixel_id))
-                            {
-                                $features[] = $urlFeatures->pinterest_pixel_id;
-                                $networks[] = 'pinterest_pixel_id';
-                            }
-                            if(!empty($urlFeatures->quora_pixel_id))
-                            {
-                                $features[] = $urlFeatures->quora_pixel_id;
-                                $networks[] = 'quora_pixel_id';
-                            }
-                            if(!empty($urlFeatures->custom_pixel_id))
-                            {
-                                $features[] = $urlFeatures->custom_pixel_id;
-                                $networks[] = 'custom_pixel_id';
-                            }
-                            for($i=0; $i<count($networks); $i++)
-                            {
-                                if($networks[$i]!='custom_pixel_id')
-                                {
-                                    $pixel = Pixel::where('network', $networks[$i])
-                                        ->where('pixel_id', $features[$i])
-                                        ->first();
-                                    if(count($pixel)>0)
-                                    {
-                                        $pixel_name[] = $pixel->pixel_name;
-                                        $pxId[] = $pixel->id;
-                                        $pixel_id[] = $pixel->pixel_id;
-                                    }
-                                    else
-                                    {
-                                        $pixel_name[] = ucwords($networks[$i]);
-                                        $pixel_id[] = $features[$i];
-                                        $pxId[] = 0;
-                                    }
-                                }
-                                else
-                                {
-                                    $pixel = Pixel::where('network', $networks[$i])
-                                        ->where('custom_pixel_script', $features[$i])
-                                        ->first();
-                                $pixel_name[] = $pixel->pixel_name;
-                                $pxId[] = $pixel->id;
-                                $pixel_id[] = $pixel->pixel_id;
-                                }
-                            }
-                        }
-                        $pixels = Pixel:: where('user_id', $user->id)->get();
-                        //dd($pxId);
+                        /* Getting the pixels that current user had created */
+                        $pixels = UserPixels:: where('user_id', $user->id)->get();
+                        /* Getting all the available pixel provider which is active*/
+                        $pixelProviders = PixelProviders::where('is_active','1')->get();
+                        /* Getting the pixels related to this url */
+                        $pixel_url = PixelUrl::where('url_id',$id)->get();
                         $timezones = Timezone::all();
                         $selectedTags = UrlTagMap::where('url_id',$id)->with('urlTag')->get();
                         /* Getting the default settings */
@@ -817,10 +659,9 @@
                             'type'                 => $urls->link_type,
                             'selectedTags'         => $selectedTags,
                             'urls'                 => $urls,
-                            'pixel_name'           => $pixel_name,
-                            'pxId'                 => $pxId,
-                            'pixel_id'             => $pixel_id,
                             'pixels'               => $pixels,
+                            'pixelProviders'       => $pixelProviders,
+                            'pixel_url'            => $pixel_url,
                             'timezones'            => $timezones,
                             'red_time'             => $red_time,
                             'pageColor'            => $pageColour,
@@ -845,33 +686,32 @@
          */
         public function editUrl(Request $request, $id=NULL){
             if (Auth::check()) {
-                try{
+                try {
                     //Redirect Link
-                    if(isset($request->actual_url[0]) && $request->actual_url[0]!=""){
+                    if (isset($request->actual_url[0]) && $request->actual_url[0]!="") {
                         if (strpos($request->actual_url[0], 'https://') === 0) {
                             $actualUrl = str_replace('https://', null, $request->actual_url[0]);
                             $protocol  = 'https';
-                        }elseif(strpos($request->actual_url[0], 'http://') === 0){
+                        } elseif(strpos($request->actual_url[0], 'http://') === 0) {
                             $actualUrl = str_replace('http://', null, $request->actual_url[0]);
                             $protocol  = 'http';
-                        }else{
+                        } else {
                             $actualUrl = $request->actual_url[0];
                             $protocol  = 'http';
                         }
-                    }else{
-                        if($request->type==0){
-                            if(isset($request->allowSchedule) && $request->allowSchedule != 'on'){
+                    } else {
+                        if ($request->type==0) {
+                            if (isset($request->allowSchedule) && $request->allowSchedule != 'on') {
                                 return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect Or Link Scheduler Will Be There.');
-                            }
-                            else{
+                            } else {
                                 $actualUrl = NULL;
                                 $protocol  = 'http';
                             }
-                        } else if($request->type==2){
+                        } else if ($request->type==2) {
                             $protocol  = 'http';
                             $actualUrl = NULL;
                             $urltitle  = $request->group_url_title;
-                        }else{
+                        } else {
                             return redirect()->back()->with('error', 'There Should Be Atleast One Url To Redirect');
                         }
                         $actualUrl = NULL;
@@ -921,7 +761,7 @@
                     }else{
                        $url->meta_description = "";
                     }
-                    // Edit default redirection settings
+                    /* Edit default redirection settings */
                     /* Getting the default settings */
                     $defaultSettings = DefaultSettings::all();
                     /* Getting the profile settings if exist */
@@ -997,57 +837,39 @@
                             $actualFileExtension = $imgFile->getClientOriginalExtension();
                             $validExtensionRegex = '/(jpg|jpeg|png|svg|ico)/i';
                             $uploadPath = 'public/uploads/favicons';
-                            if (!file_exists($uploadPath))
-                            {
+                            if (!file_exists($uploadPath)) {
                                 mkdir($uploadPath,  0777 , true);
                             }
                             $newFileName = uniqid() . "-" . date('U');
-                            if (preg_match($validExtensionRegex, $actualFileExtension))
-                            {
-                                if(!empty($oldFavicon) && strlen($oldFavicon)>0)
-                                {
+                            if (preg_match($validExtensionRegex, $actualFileExtension)) {
+                                if(!empty($oldFavicon) && strlen($oldFavicon)>0) {
                                     unlink(substr($oldFavicon, 1));
                                 }
                                 $uploadSuccess = $imgFile->move($uploadPath, $newFileName.'.'.$actualFileExtension);
                                 $url->favicon = '/'.$uploadPath.'/'.$newFileName.'.'.$actualFileExtension;
-                            }
-                            else
-                            {
-                                if(!empty($oldFavicon) && strlen($oldFavicon)>0)
-                                {
+                            } else {
+                                if (!empty($oldFavicon) && strlen($oldFavicon)>0) {
                                     $url->favicon = $oldFavicon;
-                                }
-                                else
-                                {
+                                } else {
                                     $url->favicon = NULL;
                                 }
                             }
-                        }
-                        else
-                        {
-                            if(!empty($oldFavicon) && strlen($oldFavicon)>0)
-                            {
+                        } else {
+                            if (!empty($oldFavicon) && strlen($oldFavicon)>0) {
                                 $url->favicon = $oldFavicon;
-                            }
-                            else
-                            {
+                            } else {
                                 $url->favicon = NULL;
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         $urlInstance = Url::find($id);
                         $oldFavicon = $urlInstance->favicon;
-                        if(!empty($oldFavicon) && strlen($oldFavicon)>0)
-                        {
+                        if (!empty($oldFavicon) && strlen($oldFavicon)>0) {
                             $urlInstance = Url::find($id);
                             $oldFavicon = $urlInstance->favicon;
                             unlink(substr($oldFavicon, 1));
                             $url->favicon = NULL;
-                        }
-                        else
-                        {
+                        } else {
                             $url->favicon = NULL;
                         }
                     }
@@ -1056,43 +878,43 @@
                     $linkPreviewCustom    = isset($request->link_preview_custom) && $request->link_preview_custom == true ? true : false;
                     $linkPreviewOriginal  = isset($request->link_preview_original) && $request->link_preview_original == true ? true : false;
 
-                    if($linkPreview){
+                    
+                    if ($linkPreview) {
                         $linkprev['usability']=1;
-                        if($linkPreviewOriginal){
+                        if ($linkPreviewOriginal) {
                             $linkprev['main']=0;
                             $linkprev['title']=0;
                             $linkprev['image']=0;
                             $linkprev['description']=0;
                         }
-                        if($linkPreviewCustom){
-                            $linkprev['main']=1;
-
-                            if(isset($request->org_img_chk) && $request->org_img_chk=='on'){
+                        if ($linkPreviewCustom) {
+                   
+                            if (isset($request->org_img_chk) && $request->org_img_chk=='on') {
                                 $linkprev['image']=0;
-                            }elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on'){
+                            } elseif (isset($request->cust_img_chk) && $request->cust_img_chk =='on') {
                                 $linkprev['image']=1;
                                 $url->og_image = $actual_og_image;
                             }
 
-                            if(isset($request->org_title_chk) && $request->org_title_chk=='on'){
+                            if (isset($request->org_title_chk) && $request->org_title_chk=='on') {
                                 $linkprev['title']=0;
                                 $url->og_title = $meta_data['og_title'];
-                            }elseif(isset($request->cust_title_chk) && $request->cust_title_chk=='on'){
+                            } elseif (isset($request->cust_title_chk) && $request->cust_title_chk=='on') {
                                 $linkprev['title']=1;
                                 $url->og_title = $request->title_inp;
                             }
 
-                            if(isset($request->org_dsc_chk) && $request->org_dsc_chk=='on'){
+                            if (isset($request->org_dsc_chk) && $request->org_dsc_chk=='on') {
                                 $linkprev['description']=0;
                                 $url->og_description = $meta_data['og_description'];
-                            }elseif(isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on'){
+                            } elseif (isset($request->cust_dsc_chk) && $request->cust_dsc_chk=='on') {
                                 $linkprev['description']=1;
                                 $url->og_description = $request->dsc_inp;
                             }
 
 
 
-                            if($request->hasFile('img_inp')) {
+                            if ($request->hasFile('img_inp')) {
                                 $imgFile        = $request->file('img_inp');
                                 $actualFileName = preg_replace('/\\.[^.\\s]{3,4}$/', '', $imgFile->getClientOriginalName());
                                 $actualFileExtension = $imgFile->getClientOriginalExtension();
@@ -1109,7 +931,7 @@
                         $url->twitter_url = $meta_data['twitter_url'];
                         $url->twitter_description = $meta_data['twitter_description'];
                         $url->twitter_title = $meta_data['twitter_title'];
-                    }else{
+                    } else {
 
                         /*$url->link_preview_type=NULL;
                         $url->og_title=NULL;
@@ -1139,46 +961,19 @@
                     }
                     $url->link_preview_type = json_encode($linkprev);
 
-                    /* OLD PIXEL CODES */
-
-//                    if((isset($request->checkboxAddFbPixelid)&&($request->checkboxAddFbPixelid=='on')) || ((isset($request->checkboxAddGlPixelid)&&($request->checkboxAddGlPixelid=='on')))) {
-//                        $checkFeature=UrlFeature::where('url_id',$id)->first();
-//                        if($checkFeature){
-//                           $urlfeature = UrlFeature::where('url_id',$id)->first();
-//                        }else{
-//                            $urlfeature = new UrlFeature();
-//                            $urlfeature->url_id =$id;
-//                        }
-//                        if(isset($request->checkboxAddFbPixelid)&&($request->checkboxAddFbPixelid=='on')){
-//                            $urlfeature->fb_pixel_id = $request->fbPixelid;
-//                        }else{
-//                            $urlfeature->fb_pixel_id="";
-//                        }
-//                        if(isset($request->checkboxAddGlPixelid)&&($request->checkboxAddGlPixelid=='on')){
-//                            $urlfeature->gl_pixel_id = $request->glPixelid;
-//                        }else{
-//                            $urlfeature->gl_pixel_id ="";
-//                        }
-//                        if(!$urlfeature->save()) {
-//                            return redirect()->back()->with('error', 'Short Url Features Not Saved! Try Again!');
-//                        }
-//                    }else{
-//                        $deleteFeature=UrlFeature::where('url_id',$id)->delete();
-//                    }
-
-                    //Check Rotating Link
-                    if($request->type==1){
+                    //Check Rotating Link 
+                    if ($request->type==1) {
                         $noOfLink=count($request->actual_url);
                         $url->no_of_circular_links=$noOfLink;
-                        if($noOfLink>1){
+                        if ($noOfLink>1) {
                             $currentRotatingLinks=CircularLink::where('url_id',$url->id)->pluck('id')->toArray();
                             $updatedRotatingLinks=$request->url_id;
                             $removableLinks=(array_diff($currentRotatingLinks,$updatedRotatingLinks));
-                            $deletedLinks=CircularLink::whereIn('id', $removableLinks)->delete();
-                            for($i=0; $i < $noOfLink; $i++){
-                                if($request->url_id[$i]!=0){
+                            $deletedLinks=CircularLink::whereIn('id', $removableLinks)->delete(); 
+                            for ($i=0; $i < $noOfLink; $i++) {
+                                if ($request->url_id[$i]!=0) {
                                     $circularLink = CircularLink::find($request->url_id[$i]);
-                                }else{
+                                } else {
                                     $circularLink = new CircularLink();
                                     $circularLink->url_id = $url->id;
                                 }
@@ -1186,10 +981,10 @@
                                 if (strpos($request->actual_url[$i], 'https://') === 0) {
                                     $actualCirularUrl = str_replace('https://', null, $request->actual_url[$i]);
                                     $cirularProtocol  = 'https';
-                                }elseif(strpos($request->actual_url[$i], 'http://') === 0){
+                                } elseif (strpos($request->actual_url[$i], 'http://') === 0) {
                                     $actualCirularUrl = str_replace('http://', null, $request->actual_url[$i]);
                                     $cirularProtocol  = 'http';
-                                }else{
+                                } else {
                                     $actualCirularUrl = $request->actual_url[$i];
                                     $cirularProtocol  = 'http';
                                 }
@@ -1201,63 +996,63 @@
 
                     }
 
-                    if($request->type==0 || $request->type==2){
+                    if ($request->type==0 || $request->type==2) {
                         /* link expiration edit */
-                        if(isset($request->allowExpiration) && $request->allowExpiration=='on'){
-                            if(isset($request->date_time)){
+                        if (isset($request->allowExpiration) && $request->allowExpiration=='on') {
+                            if (isset($request->date_time)) {
                                 $url->is_scheduled = 'n';
                                 $url->date_time=date_format(date_create($request->date_time), 'Y-m-d H:i:s');
                                 $url->timezone=$request->timezone;
                                 //$url->redirect_url=$request->redirect_url;
-                                if(strlen($request->redirect_url)>0 && preg_match("~^(?:f|ht)tps?://~i", $request->redirect_url)){
+                                if (strlen($request->redirect_url)>0 && preg_match("~^(?:f|ht)tps?://~i", $request->redirect_url)) {
                                     $url->redirect_url = $request->redirect_url;
-                                }else{
+                                } else {
                                     $url->redirect_url = NULL;
                                 }
-                            }else{
+                            } else {
                                 $url->date_time=NULL;
                                 $url->timezone=NULL;
                                 $url->redirect_url=NULL;
 
                             }
-                        }else{
+                        } else {
                             $url->date_time=NULL;
                             $url->timezone=NULL;
                             $url->redirect_url=NULL;
                         }
                         /*Geo Location Edit*/
-                        if(isset($request->editGeoLocation) && $request->editGeoLocation=='on') {
+                        if (isset($request->editGeoLocation) && $request->editGeoLocation=='on') {
                             $deleteGeolocation=Geolocation::where('url_id',$url->id)->delete();
-                            if(isset($request->allow_all) && $request->allow_all=='on') {
+                            if (isset($request->allow_all) && $request->allow_all=='on') {
                                 $url->geolocation=0;
                             }
-                            if(isset($request->deny_all) && $request->deny_all=='on') {
+                            if (isset($request->deny_all) && $request->deny_all=='on') {
                                 $url->geolocation=1;
                             }
                             $addGeoloc=$this->addGeoLocation($request,$url->id);
-                        }else{
+                        } else {
                             $deleteGeolocation=Geolocation::where('url_id',$url->id)->delete();
                             $url->geolocation=NULL;
                         }
                         /*link schedule edit*/
 
-                        if(isset($request->allowSchedule) && $request->allowSchedule=='on') {
+                        if (isset($request->allowSchedule) && $request->allowSchedule=='on') {
                             $url->is_scheduled = 'y';
                             /* special schedule pre existing check */
 
                             // special schedule already exist
-                            if($url->urlSpecialSchedules->count() > 0){
+                            if ($url->urlSpecialSchedules->count() > 0) {
                                 $request->special_date = array_values(array_unique($request->special_date));
                                 $request->special_date_redirect_url = array_values($request->special_date_redirect_url);
                                 $this->specialScheduleInsertion($request->special_date, $request->special_date_redirect_url, $id);
-                            }else{
+                            } else {
                                 $this->specialScheduleInsertion($request->special_date, $request->special_date_redirect_url, $id);
                             }
 
                             /* day-wise schedule pre existing check */
 
                             // day-wise schedule already exist
-                            if($url->url_link_schedules->count() > 0){
+                            if ($url->url_link_schedules->count() > 0) {
                                 $link_schedule_array[0] = $request->day1;
                                 $link_schedule_array[1] = $request->day2;
                                 $link_schedule_array[2] = $request->day3;
@@ -1266,7 +1061,7 @@
                                 $link_schedule_array[5] = $request->day6;
                                 $link_schedule_array[6] = $request->day7;
                                 $this->url_link_schedules($link_schedule_array, $url->id);
-                            }else{
+                            } else {
                                 $link_schedule_array[0] = $request->day1;
                                 $link_schedule_array[1] = $request->day2;
                                 $link_schedule_array[2] = $request->day3;
@@ -1276,61 +1071,60 @@
                                 $link_schedule_array[6] = $request->day7;
                                 $this->url_link_schedules($link_schedule_array, $url->id);
                             }
-                        } else{
+                        } else {
                             $url->is_scheduled = 'n';
-                            if($url->urlSpecialSchedules->count() > 0)
-                            {
+                            if ($url->urlSpecialSchedules->count() > 0) {
                                 $splUrl = UrlSpecialSchedule::where('url_id', $id);
                                 $splUrl->delete();
                             }
 
-                            if($url->url_link_schedules->count() > 0) {
+                            if ($url->url_link_schedules->count() > 0) {
                                 $dayUrl = UrlLinkSchedule::where('url_id', $id);
                                 $dayUrl->delete();
                             }
                         }
                     }
-
                     //Edit pixels
-                    if(isset($request->managePixel) && $request->managePixel=='on')
-                    {
-
-                        if(!empty($request->pixels))
-                        {
-                            $this->managePixel($id, $request->pixels);
-                        }
-                        else
-                        {
-                            $urlFeatures = UrlFeature::where('url_id', $id)->first();
-                            if(count($urlFeatures)>0)
-                            {
-                                $urlFeatures->delete();
+                    if (isset($request->managePixel) && $request->managePixel=='on') {
+                        if (!empty($request->pixels)) {
+                            /* Deleting the pixel from url */
+                            $pixelUrls = PixelUrl::where('url_id',$id)->get();
+                            foreach ($pixelUrls as $pixelUrl) {
+                                if (!in_array($pixelUrl->pixel_id, $request->pixels)) {
+                                    $pixelUrl->delete();
+                                }
                             }
+                            /* Adding new pixel to the url */
+                            $pixelUrls = PixelUrl::where('url_id',$id)->pluck('pixel_id')->toArray();
+                            foreach ($request->pixels as $pixel) {
+                                if (!in_array($pixel,$pixelUrls)) {
+                                    $pixel_url = new PixelUrl();
+                                    $pixel_url->url_id = $url->id;
+                                    $pixel_url->pixel_id = $pixel;
+                                    $pixel_url->save();
+                                }
+                            }
+                        } else {
+                            $pixelUrl = PixelUrl::where('url_id', $id)->delete();
                         }
-                    }
-                    else
-                    {
-                        $urlFeatures = UrlFeature::where('url_id', $id)->first();
-                        if(count($urlFeatures)>0)
-                        {
-                            $urlFeatures->delete();
-                        }
+                    } else {
+                        $pixelUrl = PixelUrl::where('url_id', $id)->delete();
                     }
 
                     //Edit Tags
                     $tag=$this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
-                    if($request->type==2){
+                    if ($request->type==2) {
                         $url->title=$request->group_url_title;
                     }
-                    if($url->save()){
+                    if ($url->save()) {
                         return redirect()->route('getDashboard')->with('success', 'Url Updated!');
-                    }else{
+                    } else {
                         return redirect()->back()->with('error', 'Try Again');
                     }
-                }catch(Exception $e){
-                    return redirect()->back()->with('error', 'Try Again');
+                } catch (Exception $e) {
+                    return redirect()->back()->with('error', 'Try Again'); 
                 }
-            }else{
+            } else {
                 abort(404);
             }
         }
@@ -1694,29 +1488,75 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public static function getRequestedUrl($url) {
-            $defaultSettings = DefaultSettings::all();
-            $red_time = $defaultSettings[0]->default_redirection_time;
-            $pageColour = $defaultSettings[0]->page_color;
-            $redirectionText = $defaultSettings[0]->default_redirecting_text;
-            $favicon = $defaultSettings[0]->default_fav_icon;
-            $imageUrl = $defaultSettings[0]->default_image;
-            $sublink=0;
-            $search = Url::where('shorten_suffix', $url)->first();
-            if (count($search )>0) {
-                if(($search->link_type==2) && ($search->parent_id==0)){
-                    abort(404);
-                }
+            try {
+                $defaultSettings = DefaultSettings::all();
+                $red_time = $defaultSettings[0]->default_redirection_time;
+                $pageColour = $defaultSettings[0]->page_color;
+                $redirectionText = $defaultSettings[0]->default_redirecting_text;
+                $favicon = $defaultSettings[0]->default_fav_icon;
+                $imageUrl = $defaultSettings[0]->default_image;
+                $sublink=0;
+                $search = Url::where('shorten_suffix', $url)->first();
+                if (count($search )>0) {
+                    if(($search->link_type==2) && ($search->parent_id==0)){
+                        abort(404);
+                    }
 
-                if(($search->link_type==2) && ($search->parent_id!=0)){
-                    $sublink =$search->id;
-                    $search = Url::where('id', $search->parent_id)->first();
-                }
-                if (!empty($search->favicon) && strlen($search->favicon)>0) {
-                    $favicon = $search->favicon;
-                }
-                $userRedirection = Profile::where('user_id',$search->user_id)->first();
-                if (count($userRedirection )>0) {
-                    if ((isset($userRedirection) ) &&($userRedirection->redirection_page_type==1) ) {
+                    if(($search->link_type==2) && ($search->parent_id!=0)){
+                        $sublink =$search->id;
+                        $search = Url::where('id', $search->parent_id)->first();
+                    }
+                    if (!empty($search->favicon) && strlen($search->favicon)>0) {
+                        $favicon = $search->favicon;
+                    }
+                    $userRedirection = Profile::where('user_id',$search->user_id)->first();
+                    if (count($userRedirection )>0) {
+                        if ((isset($userRedirection) ) &&($userRedirection->redirection_page_type==1) ) {
+                            if ($search->usedCustomised==1) {
+                                $red_time =  $search->redirecting_time;
+                                $pageColour = $search->customColour;
+                                $redirectionText = $search->redirecting_text_template;
+                                if (isset($search->uploaded_path) && ($search->uploaded_path!="")) {
+                                    $imageUrl = $search->uploaded_path;
+                                }
+                            } else {
+                                $red_time = 0000;
+                                $pageColour = '#ffffff';
+                                $redirectionText = '';
+                                $imageUrl = '';
+                            }
+                        } else if (isset($userRedirection->redirection_page_type) &&($userRedirection->redirection_page_type==0) ) {
+                            if ($search->usedCustomised==1) {
+                                $red_time =  $search->redirecting_time;
+                                $pageColour = $search->customColour;
+                                if($search->redirecting_text_template == $defaultSettings[0]->default_redirection_time ){
+                                    if($userRedirection->default_redirecting_text != $defaultSettings[0]->default_redirection_time){
+                                        $redirectionText = $userRedirection->default_redirecting_text;
+                                    }else{
+                                        $redirectionText = $defaultSettings[0]->default_redirection_time;
+                                    }
+                                }else{
+                                    $redirectionText = $search->redirecting_text_template;
+                                }
+
+                                if ($search->uploaded_path == "") {
+                                    if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
+                                        $imageUrl = $userRedirection->default_image;
+                                    }
+                                }
+                                if (isset($search->uploaded_path) && ($search->uploaded_path!="")) {
+                                    $imageUrl = $search->uploaded_path;
+                                }
+                            } else if ($search->usedCustomised==0) {
+                                if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
+                                    $imageUrl   = $userRedirection->default_image;
+                                    $red_time   = $userRedirection->default_redirection_time;
+                                    $pageColour = $userRedirection->pageColor;
+                                    $redirectionText = $userRedirection->default_redirecting_text;
+                                }
+                            }
+                        }
+                    } else {
                         if ($search->usedCustomised==1) {
                             $red_time =  $search->redirecting_time;
                             $pageColour = $search->customColour;
@@ -1724,143 +1564,55 @@
                             if (isset($search->uploaded_path) && ($search->uploaded_path!="")) {
                                 $imageUrl = $search->uploaded_path;
                             }
-                        } else {
-                            $red_time = 0000;
-                            $pageColour = '#ffffff';
-                            $redirectionText = '';
-                            $imageUrl = '';
-                        }
-                    } else if (isset($userRedirection->redirection_page_type) &&($userRedirection->redirection_page_type==0) ) {
-                        if ($search->usedCustomised==1) {
-                            $red_time =  $search->redirecting_time;
-                            $pageColour = $search->customColour;
-                            if($search->redirecting_text_template == $defaultSettings[0]->default_redirection_time ){
-                                if($userRedirection->default_redirecting_text != $defaultSettings[0]->default_redirection_time){
-                                    $redirectionText = $userRedirection->default_redirecting_text;
-                                }else{
-                                    $redirectionText = $defaultSettings[0]->default_redirection_time;
-                                }
-                            }else{
-                                $redirectionText = $search->redirecting_text_template;
-                            }
-
-                            if ($search->uploaded_path == "") {
-                                if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
-                                    $imageUrl = $userRedirection->default_image;
-                                }
-                            }
-                            if (isset($search->uploaded_path) && ($search->uploaded_path!="")) {
-                                $imageUrl = $search->uploaded_path;
-                            }
                         } else if ($search->usedCustomised==0) {
-                            if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
-                                $imageUrl   = $userRedirection->default_image;
-                                $red_time   = $userRedirection->default_redirection_time;
+                            if (isset($userRedirection)) {
+                                $red_time =  $userRedirection->default_redirection_time;
                                 $pageColour = $userRedirection->pageColor;
                                 $redirectionText = $userRedirection->default_redirecting_text;
                             }
-                        }
+                        } 
                     }
-                } else {
-                    if ($search->usedCustomised==1) {
-                        $red_time =  $search->redirecting_time;
-                        $pageColour = $search->customColour;
-                        $redirectionText = $search->redirecting_text_template;
-                        if (isset($search->uploaded_path) && ($search->uploaded_path!="")) {
-                            $imageUrl = $search->uploaded_path;
-                        }
-                    } else if ($search->usedCustomised==0) {
-                        if (isset($userRedirection)) {
-                            $red_time =  $userRedirection->default_redirection_time;
-                            $pageColour = $userRedirection->pageColor;
-                            $redirectionText = $userRedirection->default_redirecting_text;
-                        }
-                    }
-
-                }
-                $url_features = '';
-                $pxlValue = UrlFeature::where('url_id', $search->id)->first();
-                $pixelIds = [];
-                $pixelColumn = [];
-                $pixelScript = [];
-                if (count($pxlValue)>0) {
-                    if (!empty($pxlValue->fb_pixel_id) or $pxlValue->fb_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->fb_pixel_id;
-                        $pixelColumn[] = 'fb_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->gl_pixel_id) or $pxlValue->gl_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->gl_pixel_id;
-                        $pixelColumn[] = 'gl_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->twt_pixel_id) or $pxlValue->twt_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->twt_pixel_id;
-                        $pixelColumn[] = 'twt_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->li_pixel_id) or $pxlValue->li_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->li_pixel_id;
-                        $pixelColumn[] = 'li_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->pinterest_pixel_id) or $pxlValue->pinterest_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->pinterest_pixel_id;
-                        $pixelColumn[] = 'pinterest_pixel_id';
-                        $scriptPos[] = 0;
-                    }
-                    if (!empty($pxlValue->quora_pixel_id) or $pxlValue->quora_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->quora_pixel_id;
-                        $pixelColumn[] = 'quora_pixel_id';
-                        $scriptPos[] = 0;
-                    } elseif (!empty($pxlValue->custom_pixel_id) or $pxlValue->custom_pixel_id!=NULL) {
-                        $pixelIds[] = $pxlValue->custom_pixel_id;
-                        $pixelColumn[] = 'custom_pixel_id';
-                        $pxl = Pixel::where('custom_pixel_script', $pxlValue->custom_pixel_id)->first();
-                        if($pxl){
-                            $scriptPos[] = $pxl->script_position;
-                        } else{
-                            $scriptPos[] = 0;
-                        }
-                    }
-                    for ($i=0; $i< count($pixelColumn); $i++) {
-                        if($pixelColumn[$i]!='custom_pixel_id'){
-                            $scripts = PixelScript::where('network_type', $pixelColumn[$i])->first();
-                            if(count($scripts)>0){
-                                $upperColumn = strtoupper($pixelColumn[$i]);
-                                $pixelScript[] = str_replace($upperColumn, $pixelIds[$i],$scripts->network_script);
-                            }else{
-                                $pixelIds = [];
-                                $pixelColumn = [];
-                                $pixelScript = [];
+                    /* Getting the associative pixel to that url */
+                    $urlPixel = PixelUrl::where('url_id',$search->id)->pluck('pixel_id')->toArray();
+                    if (count($urlPixel) > 0) {
+                        $assignedPixels = [];
+                        foreach ($urlPixel as $key => $pixel) {
+                            $getPixelDetails = UserPixels::where('id',$pixel)->first();
+                            if (count($getPixelDetails) > 0) {
+                                $assignedPixels[$key] = $getPixelDetails->toArray();
+                               if ($getPixelDetails->is_custom == 0) {
+                                    $getScripts = PixelProviders::where('id',$getPixelDetails->pixel_provider_id)->first();
+                                    if (count($getScripts) > 0) {
+                                        $scriptInfo=$getScripts->toArray();
+                                        $scriptDetails=$scriptInfo['script'];
+                                        $scriptInfo['script']=str_replace(["FB_PIXEL_ID","GL_PIXEL_ID","LI_PIXEL_ID","TWT_PIXEL_ID","YOUR_TAG_ID"],$getPixelDetails['pixel_id'],$scriptDetails);
+                                        $assignedPixels[$key]=array_merge($assignedPixels[$key],$scriptInfo);
+                                    }
+                                }
                             }
-                        } else {
-                            $pixelScript[] = $pixelIds[$i];
                         }
                     }
+                    $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
+                    $referer = $_SERVER['HTTP_HOST'];
+                    return view('redirect', [
+                        'url' => $search,
+                        'suffix' => $url,
+                        'favicon' => $favicon,
+                        'sublink' => $sublink,
+                        'referer' => $referer,
+                        'imageUrl' => $imageUrl,
+                        'red_time' => $red_time,
+                        'pageColor' => $pageColour,
+                        'user_agent' => $user_agent,
+                        'assignedPixels' => $assignedPixels,
+                        'redirectionText' => $redirectionText,
+                        ]
+                    );
+                } else {
+                    abort(404);
                 }
-
-
-                $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
-                $referer = $_SERVER['HTTP_HOST'];
-                return view('redirect', [
-                    'url' => $search,
-                    'url_features' => $url_features,
-                    'suffix' => $url,
-                    'pixelScripts' => $pixelScript,
-                    'redirectionText'=>$redirectionText,
-                    'pageColor' => $pageColour,
-                    'favicon' =>$favicon,
-                    'imageUrl'=>$imageUrl,
-                    'red_time' => $red_time,
-                    'referer' => $referer,
-                    'user_agent' => $user_agent,
-                    'redirectionText'=>$redirectionText,
-                    'sublink'        =>$sublink,
-                    ]
-                );
-            } else {
-                abort(404);
+            } catch (\Exception $e) {
+                abort(503);
             }
         }
 
@@ -2804,32 +2556,27 @@
          */
         public function checkPixelName(Request $request)
         {
-            try
-            {
-                if (Auth::check())
-                {
+            try {
+                if (Auth::check()) {
                     $userId = Auth::user()->id;
-                    if (strlen($request->name) > 0 && !empty($request->name))
-                    {
-                        $pixel = Pixel::where('pixel_name', $request->name)
+                    if (strlen($request->name) > 0 && !empty($request->name)) {
+                        $pixel = UserPixels::where('pixel_name', $request->name)
                                         ->where('user_id', $userId)
                                         ->first();
-                        if(count($pixel)>0)
-                        {
-                            echo json_encode(['status'=>'403', 'message'=>'name already exist']);
+                        if (($request->type == 'Edit') && (count($pixel)>0)) {
+                            echo json_encode(['status'=>'200', 'message'=>'name ok']);                
+                        } else {              
+                            if (count($pixel)>0) {
+                                echo json_encode(['status'=>'403', 'message'=>'name already exist']);
+                            } elseif (count($pixel)==0) {
+                                echo json_encode(['status'=>'200', 'message'=>'name ok']);
+                            }
                         }
-                        elseif(count($pixel)==0)
-                        {
-                            echo json_encode(['status'=>'200', 'message'=>'name ok']);
-                        }
-                    }
-                    else
-                    {
+                    } else {
                         echo json_encode(['status'=>'404', 'message'=>'no name given']);
                     }
                 }
-            }catch(Exception $e)
-            {
+            } catch (Exception $e) {
                 return redirect()->back()->with('msg', 'error');
             }
         }
@@ -2841,33 +2588,27 @@
          */
         public function checkPixelId(Request $request)
         {
-            try
-            {
-                if(Auth::check())
-                {
+            try {
+                if(Auth::check()) {
                     $userId = Auth::user()->id;
-                    if(strlen($request->id)>0 && !empty($request->id))
-                    {
+                    if(strlen($request->id)>0 && !empty($request->id)) {
                         $pixel = Pixel::where('pixel_id', $request->id)
                                       ->where('user_id', $userId)
                                       ->first();
-                        if(count($pixel)>0)
-                        {
-                            echo json_encode(['status'=>'403', 'message'=>'id already exist']);
+                        if (($request->type == 'Edit') && (count($pixel)>0)) {
+                            echo json_encode(['status'=>'200', 'message'=>'name ok']);                
+                        } else {
+                            if (count($pixel)>0) {
+                                echo json_encode(['status'=>'403', 'message'=>'id already exist']);
+                            } elseif (count($pixel)==0) {
+                                echo json_encode(['status'=>'200', 'message'=>'id ok']);
+                            }
                         }
-                        elseif(count($pixel)==0)
-                        {
-                            echo json_encode(['status'=>'200', 'message'=>'id ok']);
-                        }
-                    }
-                    else
-                    {
+                    } else {
                         echo json_encode(['status'=>'404', 'message'=>'no name given']);
                     }
                 }
-            }
-            catch(Exception $e)
-            {
+            } catch (Exception $e) {
                 return redirect()->back()->with('msg', 'error');
             }
         }
@@ -2895,7 +2636,6 @@
                         $limit = Limit::where('plan_code', 'tr5free')->first();
                     }
                     $arr = $this->getAllDashboardElements($user, $request);
-                    $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
                     $profile = Profile::where('user_id', Auth::user()->id)->exists();
                     if (!$profile) {
                         $profile = new Profile();
@@ -2925,8 +2665,9 @@
                        $redirecting_text = $defaultSettings[0]->default_redirecting_text;
                     }
 
-                    $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
-                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels','default_brand_logo','redirecting_text'));
+                    $userPixels = UserPixels::where('user_id',Auth::user()->id)->get();
+                    $defaultPixels = PixelProviders::pluck('provider_name','provider_code');
+                    return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels','default_brand_logo','redirecting_text','defaultPixels'));
                 }
             }
         }
