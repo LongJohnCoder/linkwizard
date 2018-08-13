@@ -114,6 +114,7 @@
             .show-info-tab{
                 box-shadow: 2px 2px 4px #888888;
                 padding: 5px;
+               
             }
             .link-info-date{
                 font-size: 13px!important;
@@ -124,6 +125,16 @@
             .normal-date{
                 display: none;
             }
+
+            #ipTable, #subLinkTable {
+                display: block;
+                overflow:auto;
+            }
+            
+            
+            
+
+
         </style>
         <body>
         <!-- head end -->
@@ -158,7 +169,7 @@
                             <ul class="nav nav-tabs">
                                 <li class="active"><a data-toggle="tab" href="#link-details">Link Details</a></li>
                                 <li><a data-toggle="tab" href="#link-status">Link Status</a></li>
-                                <li><a data-toggle="tab" href="#group-details">Group Details</a></li>
+                                <li><a data-toggle="tab" href="#group-details" id="show-group">Group Details</a></li>
                             </ul>
                             <div class="tab-content tab-holder">
                                 <div id="link-details" class="tab-pane fade in active">
@@ -250,7 +261,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-condensed show-info-tab">
+                                                <table class="table table-striped table-condensed show-info-tab" id="ipTable">
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
@@ -381,7 +392,7 @@
                                         </div>
                                    </div>
                                 </div>
-                                <div id="group-details" class="tab-pane fade">
+                                <div id="group-details" class="tab-pane fade in active">
                                     @php
                                     if(isset($url->subdomain)) {
                                         if($url->subdomain->type == 'subdomain')
@@ -396,17 +407,18 @@
                                     <div class="row">
                                         <div class="col-md-10 col-sm-10"><p><strong>All links Of the Group</strong></p></div>
                                     </div>
+                                   
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="table-responsive">
-                                                <table class="table table-striped table-condensed show-info-tab">
+                                                <table class="table table-striped table-condensed show-info-tab" id="subLinkTable">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
-                                                            <th>Short Link</th>
-                                                            <th>Long Link</th>
-                                                            <th>Count</th>
-                                                            <th>Action</th>
+                                                            <th width="5%">#</th>
+                                                            <th width="25%">Short Link</th>
+                                                            <th width="25%">Long Link</th>
+                                                            <th width="5%">Count</th>
+                                                            <th width="5%">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -427,10 +439,9 @@
                                                         @endif
                                                     </tbody>
                                                 </table>
-                                              
                                             </div>
                                         </div>
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -926,7 +937,36 @@ window.onload = function(){
                 $("div.tab-content").eq(index).addClass("active");
             });
     });
+
+    
 </script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var count = $('#ipTable tr').length;
+        if(count > 11){
+            var hight=0;
+            for( i=0; i < 11; i++){
+                hight=parseInt(hight+($('#ipTable tr').eq(i).height()));
+            }
+            $("#ipTable").css({'height': hight+"px" });
+        } 
+   
+
+        var linecount = $('#subLinkTable tr').length;
+        if(linecount > 21){
+            var linehight=0;
+            for( i=0; i < 21; i++){
+                console.log($('#subLinkTable tr').eq(i).height());
+                linehight=parseInt(linehight+($('#subLinkTable tr').eq(i).height()));
+            }
+            
+            $("#subLinkTable").css({'height': linehight+"px" });
+        }
+
+        $("#group-details").removeClass("in active"); 
+    });
+
+        </script>
 
 
 <script>

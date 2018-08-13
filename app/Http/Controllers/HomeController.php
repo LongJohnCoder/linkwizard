@@ -2814,6 +2814,7 @@
                     abort(404);
                 }
             } else {
+
                 $redirectUrl = Url::where('shorten_suffix', $subdirectory."/".$url)->first();
                 if($redirectUrl){
                     echo UrlController::getRequestedUrl($subdirectory."/".$url);

@@ -1682,7 +1682,7 @@
          * @param $url
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
-        public function getRequestedUrl($url) {
+        public static function getRequestedUrl($url) {
             $defaultSettings = DefaultSettings::all();
             $red_time = $defaultSettings[0]->default_redirection_time;
             $pageColour = $defaultSettings[0]->page_color;
