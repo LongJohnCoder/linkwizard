@@ -2481,6 +2481,7 @@
                                 if(count($sublinks->ipLocations)>0){
                                     foreach($sublinks->ipLocations as $ipLocation){
                                         $ipLocation['sublink_suffix']=$sublinks['shorten_suffix'];
+                                        $ipLocation['destination_suffix']=$sublinks['protocol']."://".$sublinks['actual_url'];
                                         $alliplocation[$key]=$ipLocation;
                                         $key=$key+1;
                                     }
@@ -2498,7 +2499,7 @@
                     } else {
                             $redirectDomain = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST');
                     }
-                              
+                    
                     if($url->link_type==2 && $url->parent_id==0){
                         return view('dashboard.grouppreview' , [
                         'url'                 => $url,

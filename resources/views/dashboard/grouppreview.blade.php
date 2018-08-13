@@ -272,7 +272,7 @@
                                                             <th>Browser</th>
                                                             <th>Platform</th>
                                                             <th width="5%">Referring Channel</th>
-                                                            <th width="18%">Query String</th>
+                                                            <th width="18%">Destination Url</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -328,7 +328,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    {{$redirectDomain}}/{{$ipLocation->sublink_suffix}}
+                                                                   {{$ipLocation->destination_suffix}}
                                                                 </td>
                                                             </tr>
                                                         @endforeach
