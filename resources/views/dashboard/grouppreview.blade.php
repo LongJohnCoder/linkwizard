@@ -153,11 +153,17 @@
                 background-color: black;
             }
 
-           
-            
-            
+            .dataTables_wrapper .dataTables_paginate .fg-button{
+                background-color: #fff;
+                color: #337ab7;
+                border: 1px solid #ddd;
+            }
 
-
+            .dataTables_wrapper .dataTables_paginate  .ui-state-disabled{
+                background-color: #337ab7;
+                color: #fff;
+                border: 1px solid #337ab7;
+            }
         </style>
         <body>
         <!-- head end -->
@@ -459,10 +465,14 @@
                                                             @foreach($sublink as $key =>$allSublinks)
                                                                 <tr>
                                                                     <td>{{$key+1}}</td>
-                                                                    <td><a href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}">{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
+                                                                    <td><a href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}"  id="url-{{$key+1}}" >{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
                                                                     <td>{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
                                                                     <td>{{$allSublinks->count}}</td>
-                                                                    <td> <a class="btn-primary btn-xs" title="Link Info" href="{{route('getLinkPreview',[$allSublinks->id])}}" terget="_blank"><i class="fa fa-info"></i></a></td>
+                                                                    <td> 
+                                                                        <a class="btn-primary btn-xs" title="Link Info" href="{{route('getLinkPreview',[$allSublinks->id])}}" terget="_blank"><i class="fa fa-info"></i></a>
+                                                                        <a class="btn-primary btn-xs" title="Link Copy"  onclick="copyUrl({{$key+1}})"><i class="fa fa-copy"></i></a>
+
+                                                                    </td>
                                                                 </tr>
                                                             @endforeach
                                                         @else
@@ -485,6 +495,17 @@
         @include('contents/footer')
 
         <script>
+            $(function(){
+                var hash = window.location.hash;
+                hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+                $('.nav-tabs a').click(function (e) {
+                    $(this).tab('show');
+                    var scrollmem = $('body').scrollTop() || $('html').scrollTop();
+                    window.location.hash = this.hash;
+                    $('html,body').scrollTop(scrollmem);
+                });
+            });
+
             $(function(){
                 $('.redirection-link-box').mouseover(function(){
                     $('.copy-btn').show();

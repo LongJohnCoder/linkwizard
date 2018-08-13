@@ -1541,6 +1541,9 @@
             try{
                 $url = Url::find($id);
                 $url->delete();
+
+                $url = Url::where('parent_id',$id)->delete();
+
                 echo 0;
             }catch(Exception $e){
                 echo $e->getMessage();
