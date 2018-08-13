@@ -6,6 +6,8 @@
     <!-- head of th page -->
     <html lang="en">
         @include('contents/head')
+
+
         <style>
             .redirection-link-box a{
                 padding-right: 5px;
@@ -107,13 +109,13 @@
             }
 
             .show-info-tab thead{
-                background-color: #4b86b4;
-                color: #ffffff;
-                height: 40px;
+                background-color: #4b86b4 !important;
+                color: #ffffff !important;
+                height: 40px !important;
             }
             .show-info-tab{
-                box-shadow: 2px 2px 4px #888888;
-                padding: 5px;
+                box-shadow: 2px 2px 4px #888888 !important;
+                padding: 5px !important;
                
             }
             .link-info-date{
@@ -126,11 +128,32 @@
                 display: none;
             }
 
-            #ipTable, #subLinkTable {
-                display: block;
-                overflow:auto;
+            #subLinkTable_info, #ipTable_info, #ipTable_previous, #ipTable_next, #subLinkTable_previous,#subLinkTable_next {
+                display: none;
             }
-            
+            .ui-corner-br{
+                background: #fff;
+                border: 0px !important;
+                text-align: center;
+            }
+
+            .dataTables_wrapper .ui-toolbar{
+                padding: 0px !important;
+            }
+
+            .ui-widget-header{
+                border: 0px !important;
+            }
+
+            .table.dataTable.no-footer{
+                border: 0px !important;
+            }
+
+            .ui-state-default{
+                background-color: black;
+            }
+
+           
             
             
 
@@ -254,6 +277,16 @@
                                             </div>
                                     </div>
                                     <hr>
+                                    <div class="tag">
+                                        <ul>
+                                            <li>
+                                                <button id="addBrand" class="btn btn-default btn-sm btngrpthree" style="width:130px"><i class="fa fa-bullhorn"></i> Create Ad</button>
+                                            </li>
+                                            <li>
+                                                <button id="brandLink" class="btn btn-default btn-sm btngrpthree" style="width:130px"><i class="fa fa-anchor"></i> Brand Link</button>
+                                            </li>
+                                        </ul>
+                                    </div>
                                     <div class="map-area">
                                         <div id="regions_div"></div>
                                     </div>
@@ -277,9 +310,9 @@
                                                     </thead>
                                                     <tbody>
                                                         @if(count($iplocations) >0)  
-                                                        @foreach($iplocations as $ipLocation)
+                                                        @foreach($iplocations as $key=>$ipLocation)
                                                             <tr>
-                                                                <td></td>
+                                                                <td>{{$key+1}}.</td>
                                                                 <td>
                                                                     <p class="link-info-date" id="momentDt-">{{date_format(date_create($ipLocation->created_at), 'D M d, Y')}}</p>
                                                                     <p class="link-info-date" id="momentTm-">{{date_format(date_create($ipLocation->created_at), 'h:i:s a')}}</p>
@@ -392,7 +425,7 @@
                                         </div>
                                    </div>
                                 </div>
-                                <div id="group-details" class="tab-pane fade in active">
+                                <div id="group-details" class="tab-pane fade">
                                     @php
                                     if(isset($url->subdomain)) {
                                         if($url->subdomain->type == 'subdomain')
@@ -639,218 +672,101 @@
                       }
                   });
           </script>
+<script>
+    $(document).ready(function () {
+
+
+      function initSummernote(preloadText) {
+      $('#redirectingTextTemplate').summernote({
+      height: 100,
+      minHeight: null,
+      maxHeight: null,
+      focus: true,
+      toolbar: [
+          ['style', ['bold', 'italic', 'underline']],
+          ['fontsize', ['fontsize']],
+          ['color', ['color']],
+          ['height', ['height']],
+          ['insert', ['link']],
+          ['misc', ['undo', 'redo', 'codeview']]
+      ]
+      });
+        $('#redirectingTextTemplate').summernote('code', preloadText);
+      }
+
+        $('#clipboard').on('click', function () {
+            new Clipboard('#clipboard');
+        });
+        $('#edit-btn').on('click', function () {
+            //alert('clicked - here');
+            $("#editModalBody #urlTitle").val('{{$url->title}}');
+            $("#editModalBody #urlId").val('{{$url->id}}');
+            $('#myModal').modal('show');
+            editAction();
+        });
+       
+        $('#addBrand').on('click', function () {
+            $("#urlId1").val('{{$url->id}}');
+            $("#redirectingTime").val('{{$url->redirecting_time/1000}}');
+            initSummernote('{!! $url->redirecting_text_template !!}');
+            $('#myModal1').modal('show');
+        });
+        $('#brandLink').on('click', function () {
+            $("#subdomainModalBody #urlId").val('{{ $url->id }}');
+            $("#subdomainBrand").val('');
+            $("#subdomainAlert").text('');
+            $("#subdomainRadioAlert").text('');
+            $("#subdomainRadio").attr('checked',false);
+            $("#subdirectoryRadio").attr('checked',false);
+            $('#subdomainModal').modal('show');
+        });
+    });
+
+
+    function editAction() {
+        $('#editUrlTitle').on('click', function () {
+            var id = $('.modal-body #urlId').val();
+            var title = $('.modal-body #urlTitle').val();
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('postEditUrlInfo') }}",
+                data: {id: id, title: title, _token: "{{ csrf_token() }}"},
+                success: function(response) {
+                  console.log('postEditUrlInfo');
+                    $('#myModal').modal('hide');
+                    swal({
+                        title: "Success",
+                        text: "Successfully edited title",
+                        type: "success",
+                        html: true
+                    });
+                    $('#urlTitleHeading').replaceWith('<h1 id="urlTitleHeading">'+response.url.title+'</div>');
+                    $('#tab-title').replaceWith('<span id="tab-title" class="title">'+response.url.title+'</span>');
+                    $(".modal-body #urlTitle").val(response.url.title);
+                },
+                error: function(response) {
+                    swal({
+                        title: "Oops!",
+                        text: "Cannot edit this title",
+                        type: "warning",
+                        html: true
+                    });
+                }
+            });
+        });
+    }
+
+</script>
 
 
 
 <script type="text/javascript">
 
-var appURL = "{{url('/')}}";
-appURL = appURL.replace('https://','');
-appURL = appURL.replace('http://','');
 
-console.log('appURL : ',appURL);
-
-// var giveMyTags = function() {
-//  $.ajax({
-//      type    :   "POST",
-//      url     :   "{{route('giveMyTags')}}",
-//      data    : {_token:'{{csrf_token()}}'},
-//      success : function(res) {
-//          console.log(res);
-//          var tagsArray = [];
-//          for(var i = 0 ; i < res.data.length ; i ++) {
-//              var ob = {tag : res.data[i]};
-//              console.log('each ob : ',ob);
-//              tagsArray.push(ob);
-//          }
-//          console.log('final tags : ',tagsArray);
-//          $('#shortTagsContentss').selectize({
-//              maxItems: null,
-//              valueField: 'tag',
-//              labelField: 'tag',
-//              searchField: 'tag',
-//              options: tagsArray,
-//              create: true
-//          });
-//      },
-//      error : function(res) {
-//          console.log(res);
-//      }
-//  });
-// }
-
-window.onload = function(){
-    console.log('reached here');
-    //giveMyTags();
-}
-
-// var $select = $('#shortTagsContentss').selectize({
-//              maxItems: null,
-//              valueField: 'tag',
-//              labelField: 'tag',
-//              searchField: 'tag',
-//              options: [
-//                  {tag: 'tag1'},{tag:'tag2'},{tag:'tag3'}
-//              ],
-//              create: true
-//          });
-
-    var maintainSidebar = function(thisInstance) {
-        //facebook analytics checkbox for short urls
-        if (thisInstance.id === "checkboxAddFbPixelid" && thisInstance["name"] === "chk_fb_short") {
-            if(thisInstance.checked) {
-                $('#fbPixelid').show();
-            } else {
-                $('#fbPixelid').hide();
-                $('#fbPixelid').val('');
-            }
-        }
-
-        //facebook analytics checkbox for custom urls
-        if (thisInstance.id === "checkboxAddFbPixelid1" && thisInstance["name"] === "chk_fb_custom") {
-            if(thisInstance.checked) {
-                $('#fbPixelid1').show();
-            } else {
-                $('#fbPixelid1').hide();
-                $('#fbPixelid1').val('');
-            }
-        }
-
-        //google analytics checkbox for short urls
-        if (thisInstance.id === "checkboxAddGlPixelid" && thisInstance["name"] === "chk_gl_short") {
-            if(thisInstance.checked) {
-                $('#glPixelid').show();
-            } else {
-                $('#glPixelid').hide();
-                $('#glPixelid').val('');
-            }
-        }
-
-        //google analytics checkbox for custom urls
-        if (thisInstance.id === "checkboxAddGlPixelid1" && thisInstance["name"] === "chk_gl_custom") {
-            if(thisInstance.checked) {
-
-                $('#glPixelid1').show();
-            } else {
-                $('#glPixelid1').hide();
-                $('#glPixelid1').val('');
-            }
-        }
-
-        //addtags for short urls
-        if (thisInstance.id === "shortTagsEnable" && thisInstance["name"] === "shortTagsEnable") {
-            if(thisInstance.checked) {
-                $('#shortTagsArea').show();
-            } else {
-                $('#shortTagsArea').hide();
-                $("#shortTagsContents").tagsinput('removeAll');
-            }
-        }
-
-        //addtags for custom urls
-        if (thisInstance.id === "customTagsEnable" && thisInstance["name"] === "customTagsEnable") {
-            if(thisInstance.checked) {
-                $('#customTagsArea').show();
-            } else {
-                $('#customTagsArea').hide();
-                $("#customTagsContents").tagsinput('removeAll');
-            }
-        }
-
-        //add short descriptions for short urls
-        if (thisInstance.id === "shortDescriptionEnable" && thisInstance["name"] === "shortDescriptionEnable") {
-            if(thisInstance.checked) {
-                $('#shortDescriptionContents').show();
-            } else {
-                $('#shortDescriptionContents').hide();
-                $('#shortDescriptionContents').val('');
-            }
-        }
-
-        //add short descriptions for short urls
-        if (thisInstance.id === "customDescriptionEnable" && thisInstance["name"] === "customDescriptionEnable") {
-            if(thisInstance.checked) {
-                $('#customDescriptionContents').show();
-            } else {
-                $('#customDescriptionContents').hide();
-                $('#customDescriptionContents').val('');
-            }
-        }
-    }
-
+   
     $(document).ready(function() {
 
-        // $('#dashboard-tags-to-search').on('beforeItemAdd', function(event) {
-        //  var string = $(this).text();
-        //  $(this).html(string.replace(/,/g , ''));
-        //   // event.item: contains the item
-        //   // event.cancel: set to true to prevent the item getting added
-        // });
-
-        $("#dashboard-search-btn").on('click',function() {
-            console.log('came here : submitting form');
-            var data = $("#dashboard-search-form").serialize();
-            $("#dashboard-search-form").submit();
-        });
-
-        // $("#dashboard-search-form").on('submit',function(e){
-        //  console.log('form submit handler called');
-        //  e.preventDefault();
-        // });
-
-        $("#dashboard-search").on('click',function() {
-            var tags = $("#dashboard-tags-to-search").tagsinput('items');
-            var text = $("#dashboard-text-to-search").val();
-            console.log('tags :',tags,' text: ',text);
-        });
-
-        // $('.shortTagsContents').tagsinput({
-    //      allowDuplicates: false,
-        //      maxChars: 20,
-    //     // itemValue: 'id',  // this will be used to set id of tag
-    //     // itemText: 'label' // this will be used to set text of tag
-    // });
-        // $('.customTagsContents').tagsinput({
-    //      allowDuplicates: false,
-        //      maxChars: 20,
-    //     // itemValue: 'id',  // this will be used to set id of tag
-    //     // itemText: 'label' // this will be used to set text of tag
-    // });
-        // $('.dashboard-tags-to-search').tagsinput({
-    //      allowDuplicates: false,
-        //      maxChars: 20,
-        //      maxTags: 3
-    //     // itemValue: 'id',  // this will be used to set id of tag
-    //     // itemText: 'label' // this will be used to set text of tag
-    // });
-
-
-        $(":checkbox").on("change", function() {
-            maintainSidebar(this);
-    });
-
-
-
-        // $('#checkboxAddGlPixelid1, input[type="checkbox"]').on('click', function(){
-        //  if($(this).prop("checked") == true){
-        //          $('#glPixelid1').show();
-    //   }
-    //   else if($(this).prop("checked") == false){
-        //          $('#glPixelid1').hide();
-        //          $('#glPixelid1').val('');
-    //   }
-        // });
-    //
-        // $('#checkboxAddFbPixelid1, input[type="checkbox"]').on('click', function(){
-        //  if($(this).prop("checked") == true){
-        //          $('#fbPixelid1').show();
-    //   }
-    //   else if($(this).prop("checked") == false){
-        //          $('#fbPixelid1').hide();
-        //          $('#fbPixelid1').val('');
-    //   }
-        // });
-
+       
         $(this).on('click', '.menu-icon', function(){
             $(this).addClass("close");
             $('#userdetails').slideToggle(500);
@@ -940,37 +856,27 @@ window.onload = function(){
 
     
 </script>
-<script type="text/javascript">
-    $(document).ready(function(){
-        var count = $('#ipTable tr').length;
-        if(count > 11){
-            var hight=0;
-            for( i=0; i < 11; i++){
-                hight=parseInt(hight+($('#ipTable tr').eq(i).height()));
-            }
-            $("#ipTable").css({'height': hight+"px" });
-        } 
-   
-
-        var linecount = $('#subLinkTable tr').length;
-        if(linecount > 21){
-            var linehight=0;
-            for( i=0; i < 21; i++){
-                console.log($('#subLinkTable tr').eq(i).height());
-                linehight=parseInt(linehight+($('#subLinkTable tr').eq(i).height()));
-            }
-            
-            $("#subLinkTable").css({'height': linehight+"px" });
-        }
-
-        $("#group-details").removeClass("in active"); 
-    });
-
-        </script>
 
 
 <script>
             $(document).ready(function () {
+                $('#ipTable').DataTable({
+    searching: false,
+    ordering:  false,
+    lengthChange: false,
+   
+
+} );
+                $('#subLinkTable').DataTable({
+    searching: false,
+    ordering:  false,
+        lengthChange: false,
+
+    
+} );
+
+$('#ipTable thead tr th').removeClass('ui-state-default sorting_disabled');
+$('#subLinkTable thead tr th').removeClass('ui-state-default sorting_disabled');  
                 var options = {
                     theme:"custom",
                     content:'<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" class="center-block">',
