@@ -2472,9 +2472,24 @@
                     }
                     $getSubLinks=0;
                     if(($url->link_type==2) && ($url->parent_id==0)){
-                         $getSubLinks=Url::where('parent_id',$url->id)->where('link_type',2)->where('user_id',$user->id)->get();
-                    }
+                        $getSubLinks=Url::where('parent_id',$url->id)->where('link_type',2)->where('user_id',$user->id)->get();
+                        $alliplocation=[];
+                        if(count($getSubLinks)>0){
+                            $key=0;
+                            foreach($getSubLinks as $sublinks){
 
+                                if(count($sublinks->ipLocations)>0){
+                                    foreach($sublinks->ipLocations as $ipLocation){
+                                        $ipLocation['sublink_suffix']=$sublinks['shorten_suffix'];
+                                        $alliplocation[$key]=$ipLocation;
+                                        $key=$key+1;
+                                    }
+                                }
+                            }
+                            usort($alliplocation, array($this, "date_sort")); 
+                        }
+                    }
+                    
                     if(isset($url->subdomain)) {
                       if($url->subdomain->type == 'subdomain')
                           $redirectDomain = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST');
@@ -2484,7 +2499,6 @@
                             $redirectDomain = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST');
                     }
                               
-
                     if($url->link_type==2 && $url->parent_id==0){
                         return view('dashboard.grouppreview' , [
                         'url'                 => $url,
@@ -2496,8 +2510,8 @@
                         'redirecting_text'    => $redirecting_text,
                         'redirecting_time'    => $redirecting_time,
                         'sublink'             => $getSubLinks,
-                        'redirectDomain'      => $redirectDomain
-
+                        'redirectDomain'      => $redirectDomain,
+                        'iplocations'         => $alliplocation
                       ]);
 
                     }else{
@@ -3309,6 +3323,14 @@
                 return redirect()->action('HomeController@getDashboard');
             }
         }
+
+
+        public function date_sort($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        }
+
+
+
 
        
     }

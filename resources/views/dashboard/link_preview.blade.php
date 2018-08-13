@@ -191,9 +191,6 @@
           <ul class="nav nav-tabs">
               <li class="active"><a data-toggle="tab" href="#link-details">Link Details</a></li>
               <li><a data-toggle="tab" href="#link-status">Link Status</a></li>
-              @if($url->link_type==2)
-              <li><a data-toggle="tab" href="#group-details">Group Details</a></li>
-              @endif
           </ul>
           <div class="tab-content tab-holder">
             <div id="link-details" class="tab-pane fade in active">
@@ -674,63 +671,6 @@
                     </div>
                </div>
             </div>
-            @if($url->link_type==2)
-              
-                            <div id="group-details" class="tab-pane fade ">
-                                @php
-                                if(isset($url->subdomain)) {
-                                    if($url->subdomain->type == 'subdomain')
-                                       $shrt_url = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST');
-                                    else
-                                                    if($url->subdomain->type == 'subdirectory')
-                                           $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST').'/'.$url->subdomain->name;
-                                } else {
-                                   $shrt_url = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST');
-                                }
-                                @endphp
-                                <div class="row">
-                                    <div class="col-md-10 col-sm-10"><p><strong>All links Of the Group</strong></p></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-condensed show-info-tab">
-                                                <thead>
-                                                  <tr>
-                                                      <th>#</th>
-                                                      <th>Short Link</th>
-                                                      <th>Long Link</th>
-                                                      <th>Count</th>
-                                                      <th>Action</th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if(count($sublink)>0)
-
-                                                        @foreach($sublink as $key =>$allSublinks)
-                                                            <tr>
-                                                                <td>{{$key+1}}</td>
-                                                                <td><a href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}">{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
-                                                                <td>{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
-                                                                <td>{{$allSublinks->count}}</td>
-                                                                <td> <a class="btn-primary btn-xs" title="Link Info" href="{{route('getLinkPreview',[$allSublinks->id])}}" terget="_blank"><i class="fa fa-info"></i></a></td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @else
-                                                        <tr>
-                                                            <td colspan="5">No Group Link Available For This Group.</td>
-                                                            
-                                                        </tr>
-                                                    @endif
-                                                </tbody>
-                                            </table>
-                                          
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            @endif
 
 
           </div>
