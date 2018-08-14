@@ -114,7 +114,6 @@
                 height: 40px !important;
             }
             .show-info-tab{
-                box-shadow: 2px 2px 4px #888888 !important;
                 padding: 5px !important;
                
             }
@@ -139,6 +138,7 @@
 
             .dataTables_wrapper .ui-toolbar{
                 padding: 0px !important;
+                display: table;
             }
 
             .ui-widget-header{
