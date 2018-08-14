@@ -361,14 +361,14 @@
                                                                         <small class="no-info">NA</small>
                                                                     @endif
                                                                 </td>
-                                                                <td>
+                                                                <td style="word-wrap: break-word;">
                                                                     @if(!empty($ipLocation->referer))
                                                                         {{$ipLocation->referer}}
                                                                     @else
                                                                         <small class="no-info">NA</small>
                                                                     @endif
                                                                 </td>
-                                                                <td>
+                                                                <td style="word-wrap: break-word;">
                                                                    {{$ipLocation->destination_suffix}}
                                                                 </td>
                                                             </tr>
@@ -467,8 +467,8 @@
                                                             @foreach($sublink as $key =>$allSublinks)
                                                                 <tr>
                                                                     <td>{{$key+1}}</td>
-                                                                    <td><a href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}"  id="url-{{$key+1}}" >{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
-                                                                    <td>{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
+                                                                    <td style="word-wrap: break-word;"><a href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}"  id="url-{{$key+1}}" >{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
+                                                                    <td style="word-wrap: break-word;">{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
                                                                     <td>{{$allSublinks->count}}</td>
                                                                     <td> 
                                                                         <a class="btn-primary btn-xs" title="Link Info" href="{{route('getLinkPreview',[$allSublinks->id])}}" terget="_blank"><i class="fa fa-info"></i></a>

@@ -899,7 +899,7 @@ $optTypeLI = 'normal';
 
                         @endif
                         {{csrf_field()}}
-                        <button type="submit" id="edit-short-url" class=" btn-shorten">Update URL</button>
+                        <button type="submit" id="edit-short-url" class=" btn-shorten">@if($type==2) Add Group @else Update URL @endif</button>
                     </form>
                 </div>
             </div>

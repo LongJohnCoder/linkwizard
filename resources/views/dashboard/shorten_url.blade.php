@@ -572,7 +572,9 @@
                                 @endif
                                 <!--Add Link Preview End-->
                                 {{csrf_field()}}
-                                <button type="submit" id="shorten_url_btn" class=" btn-shorten">Shorten URL</button>
+                                
+                                <button type="submit" id="shorten_url_btn" class=" btn-shorten">@if($type==2) Add Group @else Shorten URL @endif</button>
+                                
                             </form>
                         </div>
                     </div>
