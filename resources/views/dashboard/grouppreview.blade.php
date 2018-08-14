@@ -150,7 +150,8 @@
             }
 
             .ui-state-default{
-                background-color: black;
+                background-color: #4b86b4 !important;
+                color: #fff !important;
             }
 
             .dataTables_wrapper .dataTables_paginate .fg-button{
