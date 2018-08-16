@@ -256,7 +256,7 @@
                             return redirect()->back()->with('imgErr', 'error');
                         }
                         if (!file_exists('public/uploads/brand_images')) {
-                            mkdir('public/uploads/brand_images', 777 , true);
+                            mkdir('public/uploads/brand_images', 0777 , true);
                         }
                         try {
                             $upload_path ='public/uploads/brand_images';
@@ -303,7 +303,7 @@
                         $validExtensionRegex = '/(jpg|jpeg|png|svg|ico)/i';
                         $uploadPath = 'public/uploads/favicons';
                         if (!file_exists($uploadPath)) {
-                            mkdir($uploadPath,  777 , true);
+                            mkdir($uploadPath,  0777 , true);
                         }
                         $newFileName = uniqid() . "-" . date('U');
                         if (preg_match($validExtensionRegex, $actualFileExtension)) {
@@ -750,6 +750,7 @@
                         $red_time = $defaultSettings[0]->default_redirection_time;
                         $pageColour = $defaultSettings[0]->page_color;
                         $redirecting_text = $defaultSettings[0]->default_redirecting_text;
+                        $default_image = $defaultSettings[0]->default_image;
                         /* Check if the url is customized atleast once if profile settings is not exists */
                         if ($url->redirecting_time != $defaultSettings[0]->default_redirection_time) {
                             $red_time = $url->redirecting_time;
@@ -936,7 +937,7 @@
                                 return redirect()->back()->with('imgErr', 'error');
                             }
                             if (!file_exists('public/uploads/brand_images')) {
-                                mkdir('public/uploads/brand_images', 777 , true);
+                                mkdir('public/uploads/brand_images', 0777 , true);
                             }
                             try {
                                 $upload_path ='public/uploads/brand_images';
@@ -991,7 +992,7 @@
                             $uploadPath = 'public/uploads/favicons';
                             if (!file_exists($uploadPath))
                             {
-                                mkdir($uploadPath,  777 , true);
+                                mkdir($uploadPath,  0777 , true);
                             }
                             $newFileName = uniqid() . "-" . date('U');
                             if (preg_match($validExtensionRegex, $actualFileExtension))
@@ -2934,7 +2935,7 @@
                                 return redirect()->back()->with('msg', 'imgErr');
                             }
                             if (!file_exists('public/uploads/brand_images')) {
-                                mkdir('public/uploads/brand_images', 777 , true);
+                                mkdir('public/uploads/brand_images', 0777 , true);
                             }
                             try {
                                 $upload_path ='public/uploads/brand_images';

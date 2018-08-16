@@ -18,5 +18,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PixelScrptsTableSeeder::class);
         $this->call(TimezonesTableSeeder::class);
         $this->call(ProfileTableSeeder::class);
+	$this->call(DefaultSettingsSeeder::class);
     }
 }
