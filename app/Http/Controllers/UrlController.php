@@ -751,6 +751,7 @@
                         $pageColour = $defaultSettings[0]->page_color;
                         $redirecting_text = $defaultSettings[0]->default_redirecting_text;
                         $default_image = $defaultSettings[0]->default_image;
+                        $current_image = $defaultSettings[0]->default_image;
                         /* Check if the url is customized atleast once if profile settings is not exists */
                         if ($url->redirecting_time != $defaultSettings[0]->default_redirection_time) {
                             $red_time = $url->redirecting_time;

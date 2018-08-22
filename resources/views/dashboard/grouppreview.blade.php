@@ -179,6 +179,7 @@
         <script src="{{URL::to('/').'/public/Link-Preview-master/js/linkPreview.js'}}"></script>
         <script src="{{URL::to('/').'/public/Link-Preview-master/js/linkPreviewRetrieve.js'}}"></script>
         <link href="{{URL::to('/').'/public/Link-Preview-master/css/linkPreview.css'}}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="//cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css">
         <!-- End Of Link Preview Files -->
         <!-- Moment JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.0/moment.min.js"></script>
@@ -467,12 +468,12 @@
                                                             @foreach($sublink as $key =>$allSublinks)
                                                                 <tr>
                                                                     <td>{{$key+1}}</td>
-                                                                    <td style="word-wrap: break-word;"><a href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}"  id="url-{{$key+1}}" >{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
-                                                                    <td style="word-wrap: break-word;">{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
+                                                                    <td style="word-wrap: normal;"><a href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}"  id="url-{{$key+1}}" >{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
+                                                                    <td style="word-wrap: normal;">{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
                                                                     <td>{{$allSublinks->count}}</td>
                                                                     <td> 
-                                                                        <a class="btn-primary btn-xs" title="Link Info" href="{{route('getLinkPreview',[$allSublinks->id])}}" terget="_blank"><i class="fa fa-info"></i></a>
-                                                                        <a class="btn-primary btn-xs" title="Link Copy"  onclick="copyUrl({{$key+1}})"><i class="fa fa-copy"></i></a>
+                                                                        <a class="btn-info btn-xs" title="Link Info" href="{{route('getLinkPreview',[$allSublinks->id])}}" terget="_blank"><i class="fa fa-info"></i></a>
+                                                                        <a class="btn-success btn-xs" title="Link Copy"  onclick="copyUrl({{$key+1}})"><i class="fa fa-copy"></i></a>
 
                                                                     </td>
                                                                 </tr>
@@ -537,7 +538,6 @@
                     }
                 });
             });
-
 
             function copyUrl(id)
             {
@@ -860,6 +860,8 @@
 </script>
 <script src="https://sdkcarlos.github.io/sites/holdon-resources/js/HoldOn.js"></script>
 <script src="{{ URL::to('/').'/public/resources/js/min/toucheffects-min.js'}}"></script>
+<script src="//cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -880,51 +882,43 @@
     
 </script>
 
-
 <script>
-            $(document).ready(function () {
-                $('#ipTable').DataTable({
-    searching: false,
-    ordering:  false,
-    lengthChange: false,
-   
-
-} );
-                $('#subLinkTable').DataTable({
-    searching: false,
-    ordering:  false,
+$(document).ready(function () {
+    $('#ipTable').DataTable({
+        searching: false,
+        ordering:  false,
         lengthChange: false,
+    } );
+    $('#subLinkTable').DataTable({
+        searching: false,
+        ordering:  false,
+        lengthChange: false,
+    });
 
-    
-} );
-
-$('#ipTable thead tr th').removeClass('ui-state-default sorting_disabled');
-$('#subLinkTable thead tr th').removeClass('ui-state-default sorting_disabled');  
-                var options = {
-                    theme:"custom",
-                    content:'<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" class="center-block">',
-                    message:"Please wait a while",
-                    backgroundColor:"#212230"
-                };
-            $('#swalbtn1').click(function(){
-
-                    var actualUrl = $('#givenActualUrl').val();
-                    var customUrl = $('#makeCustomUrl').val();
-                    @if (Auth::user())
-                        var userId = {{ Auth::user()->id }};
-                    @else
-                        var userId = 0;
-                    @endif
-
-                                        var checkboxAddFbPixelid    =   $("#checkboxAddFbPixelid1").prop('checked');
-                                        var fbPixelid                           =   $("#fbPixelid1").val();
-                                        var checkboxAddGlPixelid    =   $("#checkboxAddGlPixelid1").prop('checked');
-                                        var glPixelid                           =   $("#glPixelid1").val();
-                                        var allowTag                            =   $("#customTagsEnable").prop('checked');
-                                        var tags                                    =   $("#customTagsContents").tagsinput('items');
-                                        var allowDescription      =     $("#customDescriptionEnable").prop('checked');
-                                        var searchDescription           =   $("#customDescriptionContents").val();
-
+    $('#ipTable thead tr th').removeClass('ui-state-default sorting_disabled');
+    $('#subLinkTable thead tr th').removeClass('ui-state-default sorting_disabled');  
+    var options = {
+        theme:"custom",
+        content:'<img style="width:80px;" src="{{ URL::to('/').'/public/resources/img/company_logo.png' }}" class="center-block">',
+        message:"Please wait a while",
+        backgroundColor:"#212230"
+    };
+    $('#swalbtn1').click(function(){
+        var actualUrl = $('#givenActualUrl').val();
+        var customUrl = $('#makeCustomUrl').val();
+        @if (Auth::user())
+            var userId = {{ Auth::user()->id }};
+        @else
+            var userId = 0;
+        @endif
+        var checkboxAddFbPixelid    =   $("#checkboxAddFbPixelid1").prop('checked');
+        var fbPixelid                           =   $("#fbPixelid1").val();
+        var checkboxAddGlPixelid    =   $("#checkboxAddGlPixelid1").prop('checked');
+        var glPixelid                           =   $("#glPixelid1").val();
+        var allowTag                            =   $("#customTagsEnable").prop('checked');
+        var tags                                    =   $("#customTagsContents").tagsinput('items');
+        var allowDescription      =     $("#customDescriptionEnable").prop('checked');
+        var searchDescription           =   $("#customDescriptionContents").val();
                     $.ajax({
                         type:"POST",
                         url:"/check_custom",
