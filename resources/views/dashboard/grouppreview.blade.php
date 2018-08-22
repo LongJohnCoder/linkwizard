@@ -126,6 +126,11 @@
             .normal-date{
                 display: none;
             }
+            .test{
+                width: 280px;
+                word-break: break-word;
+                display: block;
+            }
 
             #subLinkTable_info, #ipTable_info, #ipTable_previous, #ipTable_next, #subLinkTable_previous,#subLinkTable_next {
                 display: none;
@@ -468,7 +473,7 @@
                                                             @foreach($sublink as $key =>$allSublinks)
                                                                 <tr>
                                                                     <td>{{$key+1}}</td>
-                                                                    <td style="word-wrap: normal;"><a href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}"  id="url-{{$key+1}}" >{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
+                                                                    <td style="word-wrap: normal;"><a class="test" href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}"  id="url-{{$key+1}}" >{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
                                                                     <td style="word-wrap: normal;">{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
                                                                     <td>{{$allSublinks->count}}</td>
                                                                     <td> 
@@ -888,7 +893,7 @@ $(document).ready(function () {
         searching: false,
         ordering:  false,
         lengthChange: false,
-    } );
+    });
     $('#subLinkTable').DataTable({
         searching: false,
         ordering:  false,
