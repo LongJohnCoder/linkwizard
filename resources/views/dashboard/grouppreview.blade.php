@@ -176,9 +176,9 @@
         <link href="{{ URL::to('/').'/public/css/footer.css'}}" rel="stylesheet" />
         <!-- Header Start -->
         <!-- Link Preview Files -->
-        <script src="{{URL::to('/').'/public/Link-Preview-master/js/linkPreview.js'}}"></script>
+        {{-- <script src="{{URL::to('/').'/public/Link-Preview-master/js/linkPreview.js'}}"></script>
         <script src="{{URL::to('/').'/public/Link-Preview-master/js/linkPreviewRetrieve.js'}}"></script>
-        {{-- <link href="{{URL::to('/').'/public/Link-Preview-master/css/linkPreview.css'}}" rel="stylesheet" type="text/css"> --}}
+        <link href="{{URL::to('/').'/public/Link-Preview-master/css/linkPreview.css'}}" rel="stylesheet" type="text/css"> --}}
         <link rel="stylesheet" href="//cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css">
         <!-- End Of Link Preview Files -->
         <!-- Moment JS -->
