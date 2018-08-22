@@ -126,7 +126,7 @@
             .normal-date{
                 display: none;
             }
-            .test{
+            .group-width{
                 width: 280px;
                 word-break: break-word;
                 display: block;
@@ -473,7 +473,7 @@
                                                             @foreach($sublink as $key =>$allSublinks)
                                                                 <tr>
                                                                     <td>{{$key+1}}</td>
-                                                                    <td style="word-wrap: normal;"><a class="test" href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}"  id="url-{{$key+1}}" >{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
+                                                                    <td style="word-wrap: normal;"><a class="group-width" href="{{$shrt_url}}/{{$allSublinks->shorten_suffix}}"  id="url-{{$key+1}}" >{{$shrt_url}}/{{$allSublinks->shorten_suffix}}</a></td>
                                                                     <td style="word-wrap: normal;">{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
                                                                     <td>{{$allSublinks->count}}</td>
                                                                     <td> 
