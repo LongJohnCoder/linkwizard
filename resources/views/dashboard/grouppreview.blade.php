@@ -112,6 +112,8 @@
                 background-color: #4b86b4 !important;
                 color: #ffffff !important;
                 height: 40px !important;
+                width: 100%;
+                word-wrap: break-all;
             }
             .show-info-tab{
                 padding: 5px !important;
@@ -170,6 +172,11 @@
                 background-color: #337ab7;
                 color: #fff;
                 border: 1px solid #337ab7;
+            }
+
+            table.dataTable tbody td {
+                word-break: break-word;
+                vertical-align: top;
             }
         </style>
         <body>
@@ -318,69 +325,10 @@
                                                             <th>Country</th>
                                                             <th>Browser</th>
                                                             <th>Platform</th>
-                                                            <th width="5%">Referring Channel</th>
-                                                            <th width="18%">Destination Url</th>
+                                                            <th>Referring Channel</th>
+                                                            <th>Destination Url</th>
                                                         </tr>
                                                     </thead>
-                                                    {{-- <tbody>
-                                                        @if(count($iplocations) >0)  
-                                                        @foreach($iplocations as $key=>$ipLocation)
-                                                            <tr>
-                                                                <td>{{$key+1}}.</td>
-                                                                <td>
-                                                                    <p class="link-info-date" id="momentDt-">{{date_format(date_create($ipLocation->created_at), 'D M d, Y')}}</p>
-                                                                    <p class="link-info-date" id="momentTm-">{{date_format(date_create($ipLocation->created_at), 'h:i:s a')}}</p>
-                                                                    <span class="normal-date" id="moment-date-">{{$ipLocation->created_at}}</span>
-                                                                </td>
-                                                                <td>
-                                                                    @if(!empty($ipLocation->ip_address))
-                                                                        {{$ipLocation->ip_address}}
-                                                                    @else
-                                                                        <small class="no-info">NA</small>
-                                                                    @endif
-                                                                </td>
-                                                                <td>
-                                                                    @if(!empty($ipLocation->city))
-                                                                        {{$ipLocation->city}}
-                                                                    @else
-                                                                        <small class="no-info">NA</small>
-                                                                    @endif
-                                                                </td>
-                                                                <td>
-                                                                    @if(!empty($ipLocation->country))
-                                                                        {{$ipLocation->country}}
-                                                                    @else
-                                                                        <small class="no-info">NA</small>
-                                                                    @endif
-                                                                </td>
-                                                                <td>
-                                                                    @if(!empty($ipLocation->browser))
-                                                                        {{$ipLocation->browser}}
-                                                                    @else
-                                                                        <small class="no-info">NA</small>
-                                                                    @endif
-                                                                </td>
-                                                                <td>
-                                                                    @if(!empty($ipLocation->platform))
-                                                                        {{$ipLocation->platform}}
-                                                                    @else
-                                                                        <small class="no-info">NA</small>
-                                                                    @endif
-                                                                </td>
-                                                                <td style="word-wrap: break-word;">
-                                                                    @if(!empty($ipLocation->referer))
-                                                                        {{$ipLocation->referer}}
-                                                                    @else
-                                                                        <small class="no-info">NA</small>
-                                                                    @endif
-                                                                </td>
-                                                                <td style="word-wrap: break-word;">
-                                                                   {{$ipLocation->destination_suffix}}
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                        @endif
-                                                    </tbody> --}}
                                                 </table>
                                             </div>
                                         </div>
@@ -894,6 +842,18 @@ $(document).ready(function () {
         ordering:  false,
         lengthChange: false,
         ajax: "{{url('/')}}/app/url/{{$url->id}}/linkDetails",
+        autoWidth: false,
+        columns : [
+            { width : '50px' },
+            { width : '50px' },
+            { width : '50px' },
+            { width : '50px' },        
+            { width : '50px' },
+            { width : '50px' },      
+            { width : '50px' },      
+            { width : '50px' },      
+            { width : '50px' },      
+        ]
     });
     $('#subLinkTable').DataTable({
         searching: false,
