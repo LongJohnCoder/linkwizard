@@ -3241,7 +3241,7 @@
          * @return \Illuminate\Http\RedirectResponse
          */
         public function editPixels(Request $request)
-        {//dd($request);
+        {
             if (Auth::check()) {
                 if(Session::has('plan')) {
                     return redirect()->action('HomeController@getSubscribe');
@@ -3259,9 +3259,7 @@
                         ]);
                     }
                     try {
-                            $pixel = new UserPixels();
-                            $pixel->user_id = Auth::user()->id;
-                            $pixel->pixel_provider_id = PixelProviders::where('provider_code',$provider_code)->value('id');
+                            $pixel = UserPixels::where('id',$request->edit_id)->first();
                             if ($provider_code=='CS') {
                                 $pixel->is_custom = '1';
                                 $pixel->pixel_script = $request->custom_pixel_script;
@@ -3270,7 +3268,7 @@
                             }
                             $pixel->pixel_name = $request->pixel_name;
                             $pixel->script_position = $request->script_position;
-                            $pixel->save();
+                            $pixel->update();
                             return redirect()->back()->with('msg', 'success');
                     } catch(Exception $e) {
                         return redirect()->back()->with('msg', 'editerror');

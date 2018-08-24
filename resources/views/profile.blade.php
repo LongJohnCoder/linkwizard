@@ -320,6 +320,7 @@
                         <div class="form-group" id="edit-modal">
                             <label for="email">Network:</label>
                             <input name="provider_name" id="edit-pixel-provider" class="form-control" disabled>
+                            <input type="hidden" name="edit_id" id="edit_pixel_id">
                             <input type="hidden" name="provider_name" id="edit-pixel-provider-val" class="form-control">
                             <input type="hidden" name="provider_code" class="form-control">
                         </div>
@@ -419,6 +420,7 @@
             var pixelIdOrScript = $('#pixel-row-'+id).find('td:eq(2)').text().trim();
             var scriptPos = $('#pixel-row-'+id).find('td:eq(3)').text();
             $('#edit-modal').modal('show');
+            $('#edit_pixel_id').val(id);
             $('#edit-pixel-provider').val(pixelProvider);
             $('#edit-pixel-provider-val').val(pixelProvider);
             $('#edit-pixel-name').val(pixelName);
