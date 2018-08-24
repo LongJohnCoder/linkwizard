@@ -844,7 +844,7 @@ $(document).ready(function () {
         ajax: "{{url('/')}}/app/url/{{$url->id}}/linkDetails",
         autoWidth: false,
         columns : [
-            { width : '50px' },
+            { width : '10px' },
             { width : '50px' },
             { width : '50px' },
             { width : '50px' },        
