@@ -1573,9 +1573,9 @@
                         } 
                     }
                     /* Getting the associative pixel to that url */
+                    $assignedPixels = [];
                     $urlPixel = PixelUrl::where('url_id',$search->id)->pluck('pixel_id')->toArray();
                     if (count($urlPixel) > 0) {
-                        $assignedPixels = [];
                         foreach ($urlPixel as $key => $pixel) {
                             $getPixelDetails = UserPixels::where('id',$pixel)->first();
                             if (count($getPixelDetails) > 0) {
@@ -1612,7 +1612,7 @@
                     abort(404);
                 }
             } catch (\Exception $e) {
-                abort(503);
+                // abort(503);
             }
         }
 
@@ -2095,7 +2095,6 @@
                     }
                 }
             }
-            //dd($spl_dt);
             $deleteOldSchedule = UrlSpecialSchedule::where('url_id', $url_id)
                 ->whereNotIn('special_day', $spl_dt);
             $deleteOldSchedule->delete();
@@ -2147,7 +2146,6 @@
                     }
                 }
             }
-            //dd($oldScheduleArray);
             for($i=0; $i<count($newScheduleArray); $i++)
             {
                 if(!empty($newScheduleArray[$i]) && strlen($newScheduleArray[$i])>0)

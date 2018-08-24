@@ -745,8 +745,10 @@
                     var label = $(this).data('role');
                     labelArr.push(label);
                     $('#'+opt_group).find('option').each(function(){
-                        if ($(this).val()!=selected_value) {
-                            $(this).prop('disabled', 'disabled').trigger("chosen:updated");
+                        if (opt_group != 'Custom') {
+                            if ($(this).val()!=selected_value) {
+                                $(this).prop('disabled', 'disabled').trigger("chosen:updated");
+                            }
                         }
                     });
                 }

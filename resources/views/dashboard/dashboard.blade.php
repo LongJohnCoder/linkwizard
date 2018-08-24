@@ -207,8 +207,11 @@
                                     <tr>
                                         @if(($url->link_type==2) && ($url->parent_id==0))
                                             <td class="width-modification row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">
-
-                                                <a href="{{$shrt_url}}" id="link-{{$url->id}}" target="_blank">{{$shrt_url}}</a>
+                                                @if($url->actual_url != '')
+                                                    <a href="{{$shrt_url}}" id="link-{{$url->id}}" target="_blank">{{$shrt_url}}</a>
+                                                @else
+                                                    {{$shrt_url}}
+                                                @endif
                                             </td>
                                         
                                         @else

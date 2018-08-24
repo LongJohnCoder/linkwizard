@@ -195,9 +195,13 @@ $optTypeLI = 'normal';
                                             <label>Group</label>
                                         </div>
                                         <div class="col-md-8 col-sm-8">
-                                            <a href="//{{config('settings.APP_REDIRECT_HOST')}}/{{$urls->shorten_suffix}}" target="_blank">
+                                            @if($urls->actual_url != '')
+                                                <a href="//{{config('settings.APP_REDIRECT_HOST')}}/{{$urls->shorten_suffix}}" target="_blank">
+                                                    <p style="color: #363636">{{config('settings.APP_REDIRECT_HOST')}}/{{$urls->shorten_suffix}}</p>
+                                                </a>
+                                            @else
                                                 <p style="color: #363636">{{config('settings.APP_REDIRECT_HOST')}}/{{$urls->shorten_suffix}}</p>
-                                            </a>
+                                            @endif
                                         </div>
                                     </div>
                                 @endif
