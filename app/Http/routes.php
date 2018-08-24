@@ -172,6 +172,16 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                 'uses' => 'HomeController@getLinkPreview',
                 'as' => 'getLinkPreview'
             ]);
+            /*Route::any('/{id}/link_preview/linkDetails', [
+                'uses' => 'HomeController@groupLinkDetails',
+                'as' => 'linkDetails'
+            ]);*/
+
+             Route::any('/{id}/linkDetails', [
+                'uses' => 'HomeController@groupLinkDetails',
+                'as' => 'linkDetails',
+            ]);
+            //Route::any('linkDetails', 'HomeController@groupLinkDetails');
 
             // load retarget pixel view
             Route::get('/pixels', [

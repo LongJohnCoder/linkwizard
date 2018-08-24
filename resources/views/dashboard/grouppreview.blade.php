@@ -322,7 +322,7 @@
                                                             <th width="18%">Destination Url</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    {{-- <tbody>
                                                         @if(count($iplocations) >0)  
                                                         @foreach($iplocations as $key=>$ipLocation)
                                                             <tr>
@@ -380,7 +380,7 @@
                                                             </tr>
                                                         @endforeach
                                                         @endif
-                                                    </tbody>
+                                                    </tbody> --}}
                                                 </table>
                                             </div>
                                         </div>
@@ -477,7 +477,7 @@
                                                                     <td style="word-wrap: normal;">{{$allSublinks->protocol}}://{{$allSublinks->actual_url}}</td>
                                                                     <td>{{$allSublinks->count}}</td>
                                                                     <td> 
-                                                                        <a class="btn-info btn-xs" title="Link Info" href="{{route('getLinkPreview',[$allSublinks->id])}}" terget="_blank"><i class="fa fa-info"></i></a>
+                                                                        <a class="btn-info btn-xs" title="Link Info" href="{{route('getLinkPreview',[$allSublinks->id])}}" target="_blank"><i class="fa fa-info"></i></a>
                                                                         <a class="btn-success btn-xs" title="Link Copy"  onclick="copyUrl({{$key+1}})"><i class="fa fa-copy"></i></a>
 
                                                                     </td>
@@ -893,6 +893,7 @@ $(document).ready(function () {
         searching: false,
         ordering:  false,
         lengthChange: false,
+        ajax: "{{url('/')}}/app/url/{{$url->id}}/linkDetails",
     });
     $('#subLinkTable').DataTable({
         searching: false,
@@ -942,17 +943,17 @@ $(document).ready(function () {
                                             type: "POST",
                                             url: "{{ route('postCustomUrlTier5') }}",
                                             data: {
-                                                                                    checkboxAddFbPixelid    : checkboxAddFbPixelid,
-                                                                                    fbPixelid                           : fbPixelid,
-                                                                                    checkboxAddGlPixelid    : checkboxAddGlPixelid,
-                                                                                    glPixelid                       : glPixelid,
+                                                checkboxAddFbPixelid    : checkboxAddFbPixelid,
+                                                fbPixelid                           : fbPixelid,
+                                                checkboxAddGlPixelid    : checkboxAddGlPixelid,
+                                                glPixelid                       : glPixelid,
                                                 actual_url                      : actualUrl,
                                                 custom_url                      : customUrl,
                                                 user_id                             : userId,
-                                                                                    allowTag                            : allowTag,
-                                                                                    tags                                    : tags,
-                                                                                    allowDescription            : allowDescription,
-                                                                                    searchDescription           : searchDescription,
+                                                allowTag                            : allowTag,
+                                                tags                                    : tags,
+                                                allowDescription            : allowDescription,
+                                                searchDescription           : searchDescription,
                                                 _token: "{{ csrf_token() }}"
                                             }, success: function (response) {
                                                 console.log('postCustomUrlTier5');

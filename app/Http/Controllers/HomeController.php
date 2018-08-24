@@ -13,6 +13,7 @@
     use App\RefererUrl;
     use App\Subdomain;
     use App\Url;
+    use App\IpLocation;
     use App\UrlSpecialSchedule;
     use App\User;
     use Illuminate\Http\Request;
@@ -2413,7 +2414,7 @@
         }
 
         public function getLinkPreview($id) {
-            if (Auth::check()){
+            if (Auth::check()) {
                 //dd(Auth::check());  
                 if(\Session::has('plan')) {
                     return redirect()->action('HomeController@getSubscribe');
@@ -2421,8 +2422,10 @@
                     $user = Auth::user();
                     $url = Url::find($id);
 
-                    $redirecting_time = 5000;
-                    $redirecting_text = "Redirecting...";
+                    /* Getting the global settings */
+                    $defaultSettings = DefaultSettings::all();
+                    $redirecting_time = $defaultSettings[0]->default_redirection_time;
+                    $redirecting_text = $defaultSettings[0]->default_redirecting_text;
                     $profile = Profile::where('user_id',$url->user_id)->first();
                     if (count($profile)>0) {
                         $redirecting_time = $profile->default_redirection_time;
@@ -2490,7 +2493,7 @@
                             usort($alliplocation, array($this, "date_sort")); 
                         }
                     }
-                    
+
                     if(isset($url->subdomain)) {
                       if($url->subdomain->type == 'subdomain')
                           $redirectDomain = config('settings.SECURE_PROTOCOL').$url->subdomain->name.'.'.config('settings.APP_REDIRECT_HOST');
@@ -2526,9 +2529,7 @@
                         'redirecting_text'    => $redirecting_text,
                         'redirecting_time'    => $redirecting_time,
                         'sublink'             => $getSubLinks
-
                       ]);
-
                     }    
                 }
 
@@ -3330,12 +3331,27 @@
         public function date_sort($a, $b) {
             return strtotime($b['created_at']) - strtotime($a['created_at']);
         }
-
-
-
-
-       
+        public function groupLinkDetails ($id) {
+            $ipLocationsArray = [];
+            $url = Url::where('parent_id',$id)->with('ipLocations')->get();
+            foreach ($url as $key => $value) {
+                 $ipLocationsArray[$value->id] = [
+                    'actul_url' => $value->actual_url,
+                    'ipLocationsData' => $value->ipLocations->toArray()
+                 ];
+            }
+            $data = [];
+            $index= 1;
+            foreach ($ipLocationsArray as $iploc) {
+                foreach ($iploc['ipLocationsData'] as $value1) {
+                    // dd($value1['ip_address']);
+                    $data['data'][] =  [$index ,date("D M d ,Y H:i:s a", strtotime($value1['created_at'])), $value1['ip_address'] , $value1['city'] , $value1['country'] , $value1['browser'] ,$value1['platform'] , $value1['referer'] , $iploc['actul_url']];
+                    $index++;
+                }
+            } 
+            // usort($data, array($this, "date_sort"));
+            return response()->json($data);
+        }
     }
-
 
 
