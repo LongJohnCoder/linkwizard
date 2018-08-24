@@ -916,11 +916,6 @@ $optTypeLI = 'normal';
                     var opt_group = $(this).parent().attr('id');
                     var label = $(this).data('role');
                     labelArr.push(label);
-                    $('#'+opt_group).find('option').each(function(){
-                        if ($(this).val()!=selected_value) {
-                            $(this).prop('disabled', 'disabled').trigger("chosen:updated");
-                        }
-                    });
                 }
             });
             var optLabel = labelArr[0];
