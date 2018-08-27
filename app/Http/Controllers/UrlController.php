@@ -2562,7 +2562,12 @@
                                         ->where('user_id', $userId)
                                         ->first();
                         if (($request->type == 'Edit') && (count($pixel)>0)) {
-                            echo json_encode(['status'=>'200', 'message'=>'name ok']);                
+                            $checkName = UserPixels::where('id',$request->id)->first();
+                            if ($checkName->pixel_name == $request->name) {
+                                echo json_encode(['status'=>'200', 'message'=>'name ok']);
+                            } else {
+                                echo json_encode(['status'=>'403', 'message'=>'name already exist']);
+                            }                            
                         } else {              
                             if (count($pixel)>0) {
                                 echo json_encode(['status'=>'403', 'message'=>'name already exist']);

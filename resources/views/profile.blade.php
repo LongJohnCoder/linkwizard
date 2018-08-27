@@ -566,10 +566,12 @@
     }
     /* Check the pixel name is already exist or not */
     function checkPixelName(name, type) {
+        var id = $("#edit_pixel_id").val();
         if (name.length>0) {
             $.post('{{route('pixelnames')}}', {
                 'name': name,
                 'type': type,
+                'id': id,
                 '_token': "{{csrf_token()}}"
             }, function(data, status, xhr){
                 var jsonData = JSON.parse(data);
