@@ -288,7 +288,8 @@
                                 <!--<option value="pinterest_pixel_id">Pinterest</option>
                                 <option value="quora_pixel_id">Quora</option>-->
                                 <option value="gl_pixel_id">Google</option>
-                                <option value="custom_pixel_id">Custom</option>
+                               <!--  <option value="custom_pixel_id">Custom</option>
+                                                            -->
                             </select>
                         </div>
                         <div class="form-group">
