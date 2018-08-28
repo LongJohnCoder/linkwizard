@@ -839,9 +839,9 @@
 $(document).ready(function () {
     $('#ipTable').DataTable({
         searching: false,
-        ordering:  false,
         lengthChange: false,
         ajax: "{{url('/')}}/app/url/{{$url->id}}/linkDetails",
+        order:[[1,"desc"]],
         autoWidth: false,
         columns : [
             { width : '10px' },
