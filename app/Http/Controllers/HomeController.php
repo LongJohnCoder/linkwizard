@@ -3335,21 +3335,25 @@
        public function groupLinkDetails ($id) {
             $ipLocationsArray = [];
             $url = Url::where('parent_id',$id)->with('ipLocations')->get();
-            foreach ($url as $key => $value) {
-                 $ipLocationsArray[$value->id] = [
-                    'actul_url' => $value->actual_url,
-                    'ipLocationsData' => $value->ipLocations->toArray()
-                 ];
-            }
-            $data = [];
-            $ipdetail = [];
-            foreach ($ipLocationsArray as $iploc) {
-                foreach ($iploc['ipLocationsData'] as $value1) {
-                    $ipdetail['datadetail'][strtotime($value1['created_at'])] =  [date("D M d, Y H:i:s A", strtotime($value1['created_at'])), $value1['ip_address'] , $value1['city'] , $value1['country'] , $value1['browser'] ,$value1['platform'] , $value1['referer'] , "<a href=\"//". $iploc['actul_url'] . "\" target=\"_blank\">" . $iploc['actul_url'] . "</a>"];
+            if (count($url) > 0) {
+                foreach ($url as $key => $value) {
+                     $ipLocationsArray[$value->id] = [
+                        'actul_url' => $value->actual_url,
+                        'ipLocationsData' => $value->ipLocations->toArray()
+                     ];
                 }
+                $data = [];
+                $ipdetail = [];
+                foreach ($ipLocationsArray as $iploc) {
+                    foreach ($iploc['ipLocationsData'] as $value1) {
+                        $ipdetail['datadetail'][strtotime($value1['created_at'])] =  [date("D M d, Y H:i:s A", strtotime($value1['created_at'])), $value1['ip_address'] , $value1['city'] , $value1['country'] , $value1['browser'] ,$value1['platform'] , $value1['referer'] , "<a href=\"//". $iploc['actul_url'] . "\" target=\"_blank\">" . $iploc['actul_url'] . "</a>"];
+                    }
+                }
+                krsort($ipdetail['datadetail']);
+                $data['data']=array_values($ipdetail['datadetail']);
+            } else {
+                $data['data']=array();
             }
-            krsort($ipdetail['datadetail']);
-            $data['data']=array_values($ipdetail['datadetail']);
             return response()->json($data);
         }
     }
