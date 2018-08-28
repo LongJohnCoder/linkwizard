@@ -410,7 +410,7 @@
                                     </div>
                                 </div>
                                 <!--Add Link Schedular-->
-                                @if($type==0 || $type==2)
+                                @if($type==0 || $type==2 || $type==1)
                                 <div class="normal-box1">
                                     <div class="normal-header">
                                         <div class="row">
@@ -428,12 +428,14 @@
                                                 </label>
                                             </div>
                                             @endif
+                                            @if($type==0 || $type==2 || $type==1)
                                             <div class="col-md-4">
                                                 <label class="custom-checkbox">Add Geo Location
                                                     <input type="checkbox" id="addGeoLocation" name="addGeoLocation">
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="normal-body add-expiration" id="expirationArea">
@@ -454,7 +456,7 @@
                                         <p>Select a redirection page url after expiration</p>
                                         <input type="text" class="form-control" name="redirect_url" id="expirationUrl" onchange="checkUrl(this.value)">
                                     </div>
-                                    @if($type==0)
+                                    @if($type==0 || $type==1)
                                     <!-- Link schedule part html -->
                                     <div class="normal-body add-link-schedule" id="scheduleArea">
                                         <ul class="nav nav-tabs">

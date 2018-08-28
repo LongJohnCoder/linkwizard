@@ -679,7 +679,7 @@ $optTypeLI = 'normal';
                                 </div>
                             </div>
                         </div>
-                        @if($type==0 || $type==2)
+                        @if($type==0 || $type==2 || $type ==1)
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <div class="row">
@@ -689,7 +689,7 @@ $optTypeLI = 'normal';
                                                 <span class="checkmark"></span>
                                             </label>
                                         </div>
-                                        @if($type!=2)
+                                        @if($type == 0)
                                         <div class="col-md-4">
                                             <label class="custom-checkbox">Edit schedules for the link
                                                 <input type="checkbox" id="addSchedule" name="allowSchedule" <?php echo (empty($urls->date_time) && $urls->is_scheduled == 'y')? 'checked' : '' ?> >
