@@ -3341,12 +3341,10 @@
                  ];
             }
             $data = [];
-            $index= 1;
             foreach ($ipLocationsArray as $iploc) {
                 foreach ($iploc['ipLocationsData'] as $value1) {
                     // dd($value1['ip_address']);
-                    $data['data'][] =  [$index ,date("D M d, Y H:i:s A", strtotime($value1['created_at'])), $value1['ip_address'] , $value1['city'] , $value1['country'] , $value1['browser'] ,$value1['platform'] , $value1['referer'] , "<a href=\"//". $iploc['actul_url'] . "\" target=\"_blank\">" . $iploc['actul_url'] . "</a>"];
-                    $index++;
+                    $data['data'][] =  [date("D M d, Y H:i:s A", strtotime($value1['created_at'])), $value1['ip_address'] , $value1['city'] , $value1['country'] , $value1['browser'] ,$value1['platform'] , $value1['referer'] , "<a href=\"//". $iploc['actul_url'] . "\" target=\"_blank\">" . $iploc['actul_url'] . "</a>"];
                 }
             } 
             // usort($data, array($this, "date_sort"));

@@ -318,7 +318,6 @@
                                                 <table class="table table-striped table-condensed show-info-tab" id="ipTable">
                                                     <thead>
                                                         <tr>
-                                                            <th>#</th>
                                                             <th>Date & Time</th>
                                                             <th>IP Address</th>
                                                             <th>City</th>
@@ -844,7 +843,6 @@ $(document).ready(function () {
         order:[[1,"desc"]],
         autoWidth: false,
         columns : [
-            { width : '10px' },
             { width : '50px' },
             { width : '50px' },
             { width : '50px' },        
