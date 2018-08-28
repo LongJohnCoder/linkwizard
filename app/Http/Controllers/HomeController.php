@@ -3326,12 +3326,13 @@
                 return redirect()->action('HomeController@getDashboard');
             }
         }
-
-
         public function date_sort($a, $b) {
             return strtotime($b['created_at']) - strtotime($a['created_at']);
         }
-        public function groupLinkDetails ($id) {
+        private static function cmp($a, $b) {
+            return $a['created_at'] - $b['created_at'];
+        }
+       public function groupLinkDetails ($id) {
             $ipLocationsArray = [];
             $url = Url::where('parent_id',$id)->with('ipLocations')->get();
             foreach ($url as $key => $value) {
@@ -3341,13 +3342,14 @@
                  ];
             }
             $data = [];
+            $ipdetail = [];
             foreach ($ipLocationsArray as $iploc) {
                 foreach ($iploc['ipLocationsData'] as $value1) {
-                    // dd($value1['ip_address']);
-                    $data['data'][] =  [date("D M d, Y H:i:s A", strtotime($value1['created_at'])), $value1['ip_address'] , $value1['city'] , $value1['country'] , $value1['browser'] ,$value1['platform'] , $value1['referer'] , "<a href=\"//". $iploc['actul_url'] . "\" target=\"_blank\">" . $iploc['actul_url'] . "</a>"];
+                    $ipdetail['datadetail'][strtotime($value1['created_at'])] =  [date("D M d, Y H:i:s A", strtotime($value1['created_at'])), $value1['ip_address'] , $value1['city'] , $value1['country'] , $value1['browser'] ,$value1['platform'] , $value1['referer'] , "<a href=\"//". $iploc['actul_url'] . "\" target=\"_blank\">" . $iploc['actul_url'] . "</a>"];
                 }
-            } 
-            // usort($data, array($this, "date_sort"));
+            }
+            krsort($ipdetail['datadetail']);
+            $data['data']=array_values($ipdetail['datadetail']);
             return response()->json($data);
         }
     }

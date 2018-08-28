@@ -838,9 +838,9 @@
 $(document).ready(function () {
     $('#ipTable').DataTable({
         searching: false,
+        ordering:false,
         lengthChange: false,
         ajax: "{{url('/')}}/app/url/{{$url->id}}/linkDetails",
-        order:[[0,"desc"]],
         autoWidth: false,
         columns : [
             { width : '50px' },
@@ -853,6 +853,7 @@ $(document).ready(function () {
             { width : '50px' },      
         ]
     });
+    $('#ipTable').find('th').removeClass('sorting_asc sorting_desc sorting');
     $('#subLinkTable').DataTable({
         searching: false,
         ordering:  false,
