@@ -840,7 +840,7 @@ $(document).ready(function () {
         searching: false,
         lengthChange: false,
         ajax: "{{url('/')}}/app/url/{{$url->id}}/linkDetails",
-        order:[[1,"desc"]],
+        order:[[0,"desc"]],
         autoWidth: false,
         columns : [
             { width : '50px' },
