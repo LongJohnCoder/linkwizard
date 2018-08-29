@@ -2060,6 +2060,7 @@
                         }
                     } else if ($search->geolocation==1) {
                         $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->first();
+                        $getRedirect=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('redirection',1)->first();
                         if (count($getDenyed) >0) {
                             if ($getDenyed->redirection==0) {
                                 $getUrl=$this->schedulSpecialDay($search, $request->querystring);
@@ -2071,6 +2072,10 @@
                                 $redirectstatus=0;
                                 $message="";
                             }
+                        } else if (count($getRedirect)>0){
+                            $redirectUrl=$getRedirect->url;
+                            $redirectstatus=0;
+                            $message="";
                         } else {
                             $redirectUrl="";
                             $redirectstatus=1;
