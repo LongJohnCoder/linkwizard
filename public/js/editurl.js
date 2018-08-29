@@ -275,11 +275,11 @@ $(document).ready(function () {
                         }
                     }
 
-                    var trueURL = $('#givenActual_Url_0').val();
-                    if(trueURL.trim()!='' && trueURL.length>0){
-                        checkEmptySchedule = 'y';
-                        //var scheduleCheckBox = 'uncheck';
-                    }
+                    // var trueURL = $('#givenActual_Url_0').val();alert(trueURL);
+                    // if(trueURL.trim()!='' && trueURL.length>0){
+                    //     checkEmptySchedule = 'y';
+                    //     //var scheduleCheckBox = 'uncheck';
+                    // }
                     /* check schedule flag */
                     //alert(checkEmptySchedule+'-------'+scheduleCheckBox);
                     var preventSubmit = checkLinkSchedule(checkEmptySchedule, scheduleCheckBox);
