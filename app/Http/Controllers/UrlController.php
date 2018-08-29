@@ -1998,11 +1998,16 @@
                         } else {
                             if ($search->geolocation==0) {
                                 $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
+                                $getRedirect=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('redirection',1)->first();
 
                                 if ($getDenyed >0) {
                                     $redirectUrl="";
                                     $redirectstatus=1;
                                     $message="This URL is not accessable from your country";
+                                } else if (count($getRedirect)>0){
+                                    $redirectUrl=$getRedirect->url;
+                                    $redirectstatus=0;
+                                    $message="";
                                 } else {
                                     $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
@@ -2038,11 +2043,15 @@
                 } else {
                     if ($search->geolocation==0) {
                         $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
-
+                        $getRedirect=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('redirection',1)->first();
                         if ($getDenyed >0) {
                             $redirectUrl="";
                             $redirectstatus=1;
                             $message="This URL is not accessable from your country";
+                         } else if (count($getRedirect)>0){
+                            $redirectUrl=$getRedirect->url;
+                            $redirectstatus=0;
+                            $message="";
                         } else {
                             $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                             $redirectUrl=$getUrl['url'];
@@ -2138,11 +2147,15 @@
                         } else {
                             if ($parentUrl->geolocation==0) {
                                 $getDenyed=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
-
+                                $getRedirect=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('redirection',1)->first();
                                 if ($getDenyed >0) {
                                     $redirectUrl="";
                                     $redirectstatus=1;
                                     $message="This URL is not accessable from your country";
+                                } else if (count($getRedirect)>0){
+                                    $redirectUrl=$getRedirect->url;
+                                    $redirectstatus=0;
+                                    $message="";
                                 } else {
                                     $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
@@ -2151,11 +2164,16 @@
                                 }
                             } else if ($search->geolocation==1) {
                                 $getDenyed=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('allow',1)->count();
+                                $getRedirect=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('redirection',1)->first();
                                 if ($getDenyed >0) {
                                     $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                                     $redirectUrl=$getUrl['url'];
                                     $redirectstatus=$getUrl['status'];
                                     $message=$getUrl['message'];
+                                } else if (count($getRedirect)>0){
+                                    $redirectUrl=$getRedirect->url;
+                                    $redirectstatus=0;
+                                    $message="";
                                 } else {
                                     $redirectUrl="";
                                     $redirectstatus=1;
@@ -2178,11 +2196,16 @@
                 } else {
                     if ($parentUrl->geolocation==0) {
                         $getDenyed=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
+                        $getRedirect=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('redirection',1)->first();
 
                         if ($getDenyed >0) {
                             $redirectUrl="";
                             $redirectstatus=1;
                             $message="This URL is not accessable from your country";
+                        } else if (count($getRedirect)>0){
+                                    $redirectUrl=$getRedirect->url;
+                                    $redirectstatus=0;
+                                    $message="";
                         } else {
                             $getUrl=$this->schedulSpecialDay($search, $request->querystring);
                             $redirectUrl=$getUrl['url'];
@@ -2190,7 +2213,8 @@
                             $message=$getUrl['message'];
                         }
                     } else if ($parentUrl->geolocation==1) {
-                        $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->first();
+                        $getDenyed=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('allow',1)->first();
+                        $getRedirect=Geolocation::where('url_id',$parentUrl->id)->where('country_code',$request->country['country_code'])->where('redirection',1)->first();
                         if (count($getDenyed) >0) {
                             if ($getDenyed->redirection==0) {
                                 $getUrl=$this->schedulSpecialDay($search, $request->querystring);
@@ -2202,6 +2226,10 @@
                                 $redirectstatus=0;
                                 $message="";
                             }
+                        } else if (count($getRedirect) > 0) {
+                            $redirectUrl=$getRedirect->url;
+                            $redirectstatus=0;
+                            $message="";
                         } else {
                             $redirectUrl="";
                             $redirectstatus=1;
