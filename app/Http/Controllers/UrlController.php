@@ -490,6 +490,21 @@
                             }
                             /* Update urls table accordingly */
                         }
+                        /**Geo Location for rotating**/
+                        if(isset($request->addGeoLocation) && $request->addGeoLocation == 'on'){
+                            if(isset($request->allow_all) && $request->allow_all == 'on'){
+                                $url->geolocation=0;
+                            }
+                            if(isset($request->deny_all) && $request->deny_all == 'on'){
+                                $url->geolocation=1;
+                            }
+                            $this->addGeoLocation($request, $url->id);
+                        }
+                        /**redirecting link**/
+                        /*if($request->redirectUrl){
+                            // dd($request->redirectUrl);
+                            $url->redirect_url = $value;
+                        }*/
                         $url->link_type = 1;
                         $url->no_of_circular_links = $noOfCircularLinks;
                         $url->save();
@@ -2150,8 +2165,37 @@
                         $search->twitter_url = $metaData['twitter_url'];
                         $search->twitter_image = $metaData['twitter_image'];
                     }
-
                 }
+/*if ($search->geolocation==0) {
+    $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('deny',1)->count();
+    $getRedirect=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('redirection',1)->first();
+
+    if ($getDenyed >0) {
+        $redirectUrl="";
+        $redirectstatus=1;
+        $message="This URL is not accessable from your country";
+    } else if (count($getRedirect)>0){
+        $redirectUrl=$getRedirect->url;
+        $redirectstatus=0;
+        $message="";
+    } else {
+        $getUrl=$this->schedulSpecialDay($search, $request->querystring);
+        $redirectUrl=$getUrl['url'];
+        $redirectstatus=$getUrl['status'];
+        $message=$getUrl['message'];
+    }
+} else if ($search->geolocation==1) {
+    $getDenyed=Geolocation::where('url_id',$search->id)->where('country_code',$request->country['country_code'])->where('allow',1)->get()->first();
+    if ($getDenyed) {
+        $redirectUrl=$getDenyed->url;
+        $redirectstatus=0;
+        $message="This URL is accessable from your country";
+    } else {
+        $redirectUrl="";
+        $redirectstatus=1;
+        $message="This URL is not accessable from your country";
+    }
+}*/
                 $search->save();
                 $redirectstatus=0;
                 $message="";
