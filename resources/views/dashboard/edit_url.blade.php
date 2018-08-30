@@ -176,6 +176,34 @@ $optTypeLI = 'normal';
                                             </a>
                                         </div>
                                     </div>
+                                @elseif($urls->link_type==3)
+                                    <div class="row">
+                                        <div class="col-md-2 col-sm-2">
+                                            <label>Upload a file from here</label>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8">
+                                            <input id="inputfile" type="file" name="inputfile" class="form-control ">
+                                            <div class="input-msg">* This is where you can upload a file to share that you'd like to shorten.</div>
+                                        </div>
+
+                                        <div class="col-md-2 col-sm-2">
+                                          <a href="{{$urls->protocol}}://{{$urls->actual_url}}" download>
+                                            <i class="fa fa-file" aria-hidden="true" style="font-size: 50px;"></i>
+                                            <!-- <span>Click to download file</span> -->
+                                            <span class="row">{{$urls->title}}</span>
+                                          </a>
+                                        </div>
+                                    </div>
+                                    <div class="row"><hr>
+                                        <div class="col-md-2 col-sm-2">
+                                            <label>Shorten link</label>
+                                        </div>
+                                        <div class="col-md-8 col-sm-8">
+                                            <a href="//{{config('settings.APP_REDIRECT_HOST')}}/{{$urls->shorten_suffix}}" target="_blank">
+                                                <p style="color: #363636">{{config('settings.APP_REDIRECT_HOST')}}/{{$urls->shorten_suffix}}</p>
+                                            </a>
+                                        </div>
+                                    </div>
                                 @else
                                     <div class="row">
                                         <div class="col-md-2 col-sm-2">
@@ -184,7 +212,7 @@ $optTypeLI = 'normal';
                                         <div class="col-md-8 col-sm-8">
                                             <div class="form-group">
                                                 <input id="group_url_title" type="text" name="group_url_title" class="form-control" placeholder="Group Name" required="true" value="{{$urls->title}}">
-                                                
+
                                             </div>
                                         </div>
                                         <div class="col-md-2 col-sm-2">
@@ -340,7 +368,7 @@ $optTypeLI = 'normal';
                                 </label>
                             </div>
                             <div class="normal-body link-preview" style="display: <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->usability==1){echo 'block'; } }else{echo 'none';}?>">
-                                <ul>
+                                <ul class="cust-file">
                                     <li>
                                         <label class="custom-checkbox">Use Original
                                             <input type="checkbox" id="link_preview_original" name="link_preview_original" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->main==0){echo 'checked'; } }else{echo '';}?> >
@@ -359,14 +387,14 @@ $optTypeLI = 'normal';
                                         <div class="white-panel-header">Image</div>
                                         <div class="white-panel-body">
                                             <ul>
-                                                <li>
+                                                <li class="cust-file">
                                                     <label class="custom-checkbox">Use Original
                                                         <input type="checkbox" id="org_img_chk" name="org_img_chk" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==0){echo 'checked'; } }else{echo '';}?> >
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
-                                                    <label class="custom-checkbox">Use Custom
+                                                    <label class="custom-checkbox"><span class="cust-msg">Use Custom</span>
                                                         <input type="checkbox" id="cust_img_chk" name="cust_img_chk" onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==1){echo 'checked'; } }else{echo '';}?>>
                                                         <span class="checkmark"></span>
                                                     </label>
@@ -391,14 +419,14 @@ $optTypeLI = 'normal';
                                         <div class="white-panel-header">Title</div>
                                         <div class="white-panel-body">
                                             <ul>
-                                                <li>
+                                                <li class="cust-file">
                                                     <label class="custom-checkbox">Use Original
                                                         <input type="checkbox" id="org_title_chk" name="org_title_chk"  <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->title==0){echo 'checked'; } }else{echo '';}?>>
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
-                                                    <label class="custom-checkbox">Use Custom
+                                                    <label class="custom-checkbox"><span class="cust-msg">Use Custom</span>
                                                         <input type="checkbox" id="cust_title_chk" name="cust_title_chk" onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->title==1){echo 'checked'; } }else{echo '';}?> >
                                                         <span class="checkmark"></span>
                                                     </label>
@@ -413,14 +441,14 @@ $optTypeLI = 'normal';
                                         <div class="white-panel-header">Description</div>
                                         <div class="white-panel-body">
                                             <ul>
-                                                <li>
+                                                <li class="cust-file">
                                                     <label class="custom-checkbox">Use Original
                                                         <input type="checkbox" id="org_dsc_chk" name="org_dsc_chk"  <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->description==0){echo 'checked'; } }else{echo '';}?> >
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
-                                                    <label class="custom-checkbox">Use Custom
+                                                    <label class="custom-checkbox"><span class="cust-msg">Use Custom</span>
                                                         <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk"  onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->description==1){echo 'checked'; } }else{echo '';}?>>
                                                         <span class="checkmark"></span>
                                                     </label>
@@ -434,7 +462,7 @@ $optTypeLI = 'normal';
                                 </div>
                             </div>
                         </div>
-                        @if($type==0 || $type==2)
+                        @if($type==0 || $type==2 || $type==3)
                             <div class="normal-box1">
                                 <div class="normal-header">
                                     <div class="row">
@@ -749,6 +777,9 @@ $optTypeLI = 'normal';
 <script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
 
 <script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.all.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
 
 <!-- Choseen jquery  -->
 <style type="text/css">
@@ -1803,5 +1834,11 @@ $optTypeLI = 'normal';
 @endif
 
 <script src="{{ URL::to('/').'/public/js/editurl.js' }}"></script>
+@if($type == 3)
+<script src="{{ URL::to('/').'/public/js/file_link_preview.js' }}"></script>
+<script  type="text/javascript">
+ $('.cust-msg').text('Edit Custom');
+</script>
+@endif
 </body>
 </html>

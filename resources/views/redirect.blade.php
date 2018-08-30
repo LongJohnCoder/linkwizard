@@ -113,7 +113,7 @@
             </div>
             <div class="sticky-foot"></div>
         </div>
-           
+
        <!-- CUSTOM PIXEL SCRIPT FOR FOOTER STARTS HERE -->
         @if(isset($assignedPixels) && count($assignedPixels)>0)
             @foreach($assignedPixels as $assignedPixel)
@@ -176,10 +176,17 @@
                             },
                             success: function(response){
                                 setTimeout(function() {
+                                  @if($url->link_type==3)
+                                  $('.production-div').html('<span class="text">Your download should start automatically in a few seconds.<span>')
+                                  @endif
                                     if (response.redirectstatus==0) {
                                         window.location.href=response.redirecturl;
                                     } else {
+                                      @if($url->link_type==3)
+                                        $('.production-div').html('<p id="msg" style="color: #9f3a38;">'+response.message+'</p>');
+                                      @else
                                         $('#msg').text(response.message);
+                                      @endif
                                     }
                                 }, {{$red_time}});
                             }

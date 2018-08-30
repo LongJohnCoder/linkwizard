@@ -46,7 +46,7 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function createLink($linktype){
-            if((isset($linktype) && ($linktype=='wizard'))||(isset($linktype) && ($linktype=='rotating'))||(isset($linktype) && ($linktype=='grouplink'))){
+            if( (isset($linktype)) && ( $linktype=='wizard' ||$linktype=='rotating' || $linktype=='grouplink' || $linktype=='filelink' ) ){
                 if (Auth::check()) {
                     if(\Session::has('plan')){
                         return redirect()->action('HomeController@getSubscribe');
@@ -55,6 +55,8 @@
                             $type=0;
                         }else if($linktype=='rotating'){
                             $type=1;
+                        }else if($linktype=='filelink'){
+                            $type=3;
                         }else{
                             $type=2;
                         }
@@ -147,7 +149,20 @@
                     $userId = 0;
                 }
                 //Redirect Link
-                if (isset($request->actual_url[0]) && $request->actual_url[0]!="") {
+                if ($request->hasFile('inputfile') && $request->type==3) {
+                  $inputFile = $request->file('inputfile');
+                  $fileName = $userId.'LW'.time().'.'.$inputFile->getClientOriginalExtension();
+                  \Storage::disk('local')->put('upload/'.$fileName, (string) file_get_contents($inputFile), 'public');
+                  $fileUrl = \Storage::disk('local')->url('upload/'.$fileName);
+                  $downloadUrl = url('/api/downloadfile/'.$fileName);
+                  if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443)) {
+                    $actualUrl = str_replace('https://', null, $downloadUrl);
+                    $protocol  = 'https';
+                  } else {
+                    $actualUrl = str_replace('http://', null, $downloadUrl);
+                    $protocol  = 'http';
+                  }
+                }else if(isset($request->actual_url[0]) && $request->actual_url[0]!=""){
                     if (strpos($request->actual_url[0], 'https://') === 0) {
                         $actualUrl = str_replace('https://', null, $request->actual_url[0]);
                         $protocol  = 'https';
@@ -459,7 +474,7 @@
                         $url->link_type = 1;
                         $url->no_of_circular_links = $noOfCircularLinks;
                         $url->save();
-                    }else if($request->type==0|| $request->type==2){
+                    }else if($request->type==0|| $request->type==2 || $request->type==3){
                         $link_schedule_array = [];
                         if(isset($request->allowSchedule) && $request->allowSchedule == 'on'){
                             $url->is_scheduled = 'y';
@@ -524,6 +539,9 @@
                         if($request->type==2){
                             $url->link_type = 2;
                             $url->title=$urltitle;
+                        } else if ($request->type==3) {
+                          $url->link_type = 3;
+                          $url->title=$fileName;
                         }
                         $url->save();
                     }
@@ -533,6 +551,98 @@
                 }
             }catch (Exception $e){
                 return $e->getMessage();
+            }
+        }
+
+        /**
+        * Function for download files
+        * @param $path
+        */
+        public function downloadFile($file='')
+        {
+          try {
+            $exists = \Storage::disk('local')->exists('upload/'.$file);
+            if ($exists) {
+              $path = storage_path('app/upload/'.$file);
+              return response()->download($path);
+            } else {
+              return response()->json([
+                'status' => false,
+                'message' => 'File not exists'
+              ], 400);
+            }
+          } catch (\Exception $e) {
+            return response()->json([
+              'status' => false,
+              'message' => $e->getMessage()
+            ], 500);
+          }
+        }
+
+        /**
+         * Add manageable pixels to url_features table
+         * @param $pixel
+         * @param $url_id
+         * @return \Illuminate\Http\RedirectResponse
+         */
+        private function addPixelsToUrlFeature($pixel, $url_id)
+        {
+            $urlFeatureColumn = [];
+            $pixel_id = [];
+            $custom_pixel_script = [];
+            try
+            {
+                if(count($pixel)>0)
+                {
+                    for($i=0; $i<count($pixel); $i++)
+                    {
+                        $pixelData = Pixel::find($pixel[$i]);
+                        $urlFeatureColumn[] = $pixelData->network;
+                        $pixel_id[] = $pixelData->pixel_id;
+                        $custom_pixel_script[] = $pixelData->custom_pixel_script;
+                    }
+
+                    $urlFeatures = new UrlFeature();
+                    $urlFeatures->url_id = $url_id;
+                    for($j=0; $j<count($pixel); $j++)
+                    {
+                        if($urlFeatureColumn[$j] == 'fb_pixel_id')
+                        {
+                            $urlFeatures->fb_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'gl_pixel_id')
+                        {
+                            $urlFeatures->gl_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'twt_pixel_id')
+                        {
+                            $urlFeatures->twt_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'li_pixel_id')
+                        {
+                            $urlFeatures->li_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'pinterest_pixel_id')
+                        {
+                            $urlFeatures->pinterest_pixel_id = $pixel_id[$j];
+                        }
+                        elseif($urlFeatureColumn[$j] == 'quora_pixel_id')
+                        {
+                            $urlFeatures->quora_pixel_id = $pixel_id[$j];
+                        }
+                        /* DON'T DELETE */
+                        elseif($urlFeatureColumn[$j] == 'custom_pixel_id')
+                        {
+                            $urlFeatures->custom_pixel_id = $custom_pixel_script[$j];
+                        }
+
+                    }
+                    $urlFeatures->save();
+                }
+            }
+            catch(Exception $e)
+            {
+                return redirect()->back()->with('error', 'Sorry we\'re having some problem with processing your pixels!');
             }
         }
 
@@ -548,7 +658,7 @@
                     } else {
                         $user = Auth::user();
                         $url = Url::find($id);
-                        
+
                         /* Prevent other user to access of a user data */
                         if ($url->user_id != $user->id) {
                           return view('errors.403');
@@ -685,10 +795,33 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function editUrl(Request $request, $id=NULL){
+          // dd(1);
             if (Auth::check()) {
                 try {
                     //Redirect Link
-                    if (isset($request->actual_url[0]) && $request->actual_url[0]!="") {
+                    if ($request->type==3) {
+                      $url = Url::find($id);
+                      $userId = \Auth::user()->id;
+                      if ($request->hasFile('inputfile')) {
+                        $inputFile = $request->file('inputfile');
+                        $fileName = $userId.'LW'.time().'.'.$inputFile->getClientOriginalExtension();
+                        \Storage::disk('local')->put('upload/'.$fileName, (string) file_get_contents($inputFile), 'public');
+                        \Storage::disk('local')->delete('upload/'.$url->title);
+                        $fileUrl = \Storage::disk('local')->url('upload/'.$fileName);
+                        $downloadUrl = url('/api/downloadfile/'.$fileName);
+                        if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443)) {
+                          $actualUrl = str_replace('https://', null, $downloadUrl);
+                          $protocol  = 'https';
+                        } else {
+                          $actualUrl = str_replace('http://', null, $downloadUrl);
+                          $protocol  = 'http';
+                        }
+                      } else {
+                        $actualUrl = $url->actual_url;
+                        $protocol  = $url->protocol;
+                        $fileName = $url->title;
+                      }
+                    }else if(isset($request->actual_url[0]) && $request->actual_url[0]!=""){
                         if (strpos($request->actual_url[0], 'https://') === 0) {
                             $actualUrl = str_replace('https://', null, $request->actual_url[0]);
                             $protocol  = 'https';
@@ -804,7 +937,11 @@
                             } catch (\Exception $e) {
                                 return redirect()->back()->with('imgErr', 'error');
                             }
-                        } else if (isset($profileSettings) && ($profileSettings->default_image != '')) {
+                        }
+                        // else if($url->uploaded_path != "") {
+                        //
+                        // }
+                        else if (isset($profileSettings) && ($profileSettings->default_image != '')) {
                             $url->uploaded_path = $profileSettings->default_image;
                         }
                         if ($request->redirecting_time == '') {
@@ -878,7 +1015,7 @@
                     $linkPreviewCustom    = isset($request->link_preview_custom) && $request->link_preview_custom == true ? true : false;
                     $linkPreviewOriginal  = isset($request->link_preview_original) && $request->link_preview_original == true ? true : false;
 
-                    
+
                     if ($linkPreview) {
                         $linkprev['usability']=1;
                         if ($linkPreviewOriginal) {
@@ -888,7 +1025,7 @@
                             $linkprev['description']=0;
                         }
                         if ($linkPreviewCustom) {
-                   
+
                             if (isset($request->org_img_chk) && $request->org_img_chk=='on') {
                                 $linkprev['image']=0;
                             } elseif (isset($request->cust_img_chk) && $request->cust_img_chk =='on') {
@@ -961,7 +1098,7 @@
                     }
                     $url->link_preview_type = json_encode($linkprev);
 
-                    //Check Rotating Link 
+                    //Check Rotating Link
                     if ($request->type==1) {
                         $noOfLink=count($request->actual_url);
                         $url->no_of_circular_links=$noOfLink;
@@ -969,7 +1106,7 @@
                             $currentRotatingLinks=CircularLink::where('url_id',$url->id)->pluck('id')->toArray();
                             $updatedRotatingLinks=$request->url_id;
                             $removableLinks=(array_diff($currentRotatingLinks,$updatedRotatingLinks));
-                            $deletedLinks=CircularLink::whereIn('id', $removableLinks)->delete(); 
+                            $deletedLinks=CircularLink::whereIn('id', $removableLinks)->delete();
                             for ($i=0; $i < $noOfLink; $i++) {
                                 if ($request->url_id[$i]!=0) {
                                     $circularLink = CircularLink::find($request->url_id[$i]);
@@ -996,7 +1133,7 @@
 
                     }
 
-                    if ($request->type==0 || $request->type==2) {
+                    if($request->type==0 || $request->type==2 || $request->type==3){
                         /* link expiration edit */
                         if (isset($request->allowExpiration) && $request->allowExpiration=='on') {
                             if (isset($request->date_time)) {
@@ -1113,8 +1250,10 @@
 
                     //Edit Tags
                     $tag=$this->setSearchFields($allowTags,$searchTags,$allowDescription,$searchDescription,$url->id);
-                    if ($request->type==2) {
-                        $url->title=$request->group_url_title;
+                    if($request->type==2){
+                        $url->title = $request->group_url_title;
+                    } elseif ($request->type==3) {
+                      $url->title = $fileName;
                     }
                     if ($url->save()) {
                         return redirect()->route('getDashboard')->with('success', 'Url Updated!');
@@ -1122,7 +1261,7 @@
                         return redirect()->back()->with('error', 'Try Again');
                     }
                 } catch (Exception $e) {
-                    return redirect()->back()->with('error', 'Try Again'); 
+                    return redirect()->back()->with('error', 'Try Again');
                 }
             } else {
                 abort(404);
@@ -1570,7 +1709,7 @@
                                 $pageColour = $userRedirection->pageColor;
                                 $redirectionText = $userRedirection->default_redirecting_text;
                             }
-                        } 
+                        }
                     }
                     /* Getting the associative pixel to that url */
                     $assignedPixels = [];
@@ -1740,7 +1879,7 @@
             }
             /* End link info stored in ip_locations table */
             $search = Url::where('shorten_suffix', $request->suffix)->with('urlSpecialSchedules','url_link_schedules')->first();
-            if ($search->link_type==0) {
+            if ($search->link_type==0 || $search->link_type==3) {
                 /*Check Url Expire */
                 if (($search->date_time!="") && ($search->timezone!="")) {
                     date_default_timezone_set($search->timezone);
@@ -2567,8 +2706,8 @@
                                 echo json_encode(['status'=>'200', 'message'=>'name ok']);
                             } else {
                                 echo json_encode(['status'=>'403', 'message'=>'name already exist']);
-                            }                            
-                        } else {              
+                            }
+                        } else {
                             if (count($pixel)>0) {
                                 echo json_encode(['status'=>'403', 'message'=>'name already exist']);
                             } elseif (count($pixel)==0) {
@@ -2599,7 +2738,7 @@
                                       ->where('user_id', $userId)
                                       ->first();
                         if (($request->type == 'Edit') && (count($pixel)>0)) {
-                            echo json_encode(['status'=>'200', 'message'=>'name ok']);                
+                            echo json_encode(['status'=>'200', 'message'=>'name ok']);
                         } else {
                             if (count($pixel)>0) {
                                 echo json_encode(['status'=>'403', 'message'=>'id already exist']);

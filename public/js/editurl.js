@@ -1,10 +1,10 @@
 $(document).ready(function () {
-  
+
     google.charts.load('current', {
         'packages':['geochart'],
         'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
     });
-     
+
     //If Geolocation Is Active
     if($('#editGeoLocation').is(":checked")) {
         if($('#allow-all').is(":checked")) {
@@ -84,7 +84,7 @@ $(document).ready(function () {
             $('#allowable-country').html("");
             $('#denied-country').html("");
             google.charts.setOnLoadCallback(drawRegionsDenyMap);
-        }   
+        }
     });
 
     //Click On Deny All Checkbox in geolocation
@@ -99,7 +99,7 @@ $(document).ready(function () {
             $('#allowable-country').html("");
             $('#denied-country').html("");
             google.charts.setOnLoadCallback(drawRegionsAllowMap);
-        }   
+        }
     });
 
     //Add Tag
@@ -316,7 +316,7 @@ $(document).ready(function () {
                     });
                     return false;
                 }
-            } 
+            }
         }else if(getUrlType==2){
             var groupTitle=$('#group_url_title').val().trim();
             if(!groupTitle){
@@ -328,9 +328,18 @@ $(document).ready(function () {
                 });
                 return false;
             }
+        }else if(getUrlType==3){
+          var inputfile = $('#inputfile').val();
         }else{
             return false;
         }
+        $(".main-dashboard-body").busyLoad("show", {
+          maxSize: "150px",
+          minSize: "150px",
+          text: "Please Wait ...",
+          fontSize: "3rem",
+          color: "#01579b",
+        });
         $("#url_short_frm").submit();
     });
 
@@ -373,7 +382,7 @@ $(document).ready(function () {
             $('#expirationUrl').val('');
         }
     });
-  
+
     function ValidURL(str) {
         var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
         if(!pattern.test(str)) {
@@ -477,7 +486,7 @@ $(document).ready(function () {
                     data.addRows(arr);
                     var options = {
                         backgroundColor: '#FFFF',
-                        defaultColor: '#95D981', 
+                        defaultColor: '#95D981',
                         width   : '100%',
                         hight   : '100%',
                         keepAspectRatio: false,
@@ -605,7 +614,7 @@ $(document).ready(function () {
                 }else{
                     var checkUrl=ValidURL(redirectUrl);
                     if(checkUrl){
-                
+
                         var deny="<div id='"+countryName+"'><input type='hidden' name='denyCountryName[]' value='"+countryName+"'>"+
                                     "<input type='hidden' name='denyCountryCode[]' value='"+countryCode+"'>"+
                                     "<input type='hidden' name='denyCountryId[]' value='"+countryId+"'>"+
@@ -637,8 +646,8 @@ $(document).ready(function () {
             $('#redirect-url-allow').focus();
         }else{
             $('#redirect-url-allow').css('display', 'none');
-        }  
-    }); 
+        }
+    });
 
     $('#allow-country').click(function(){
         if($(this).is(":checked")) {
@@ -654,15 +663,15 @@ $(document).ready(function () {
             $('#redirect-url').focus();
         }else{
             $('#redirect-url').css('display', 'none');
-        }  
-    }); 
+        }
+    });
 
     $('#deny-country').click(function(){
         if($(this).is(":checked")) {
             $('#redirect-country').prop('checked', false);
             $('#redirect-url').css('display', 'none');
         }
-    });   
+    });
 });
 
 
@@ -733,7 +742,7 @@ function drawRegionsDenyMap() {
                 data.addRows(arr);
                 var options = {
                     backgroundColor: '#FFFF',
-                    defaultColor: '#EC6B69', 
+                    defaultColor: '#EC6B69',
                     width   : '100%',
                     hight   : '100%',
                     keepAspectRatio: false,
@@ -786,40 +795,3 @@ function drawRegionsDenyMap() {
         }
     });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

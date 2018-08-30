@@ -31,8 +31,8 @@ $(document).ready(function () {
 	    }else{
 	    	$('#error-custom-url').html("");
 	    }
-	}); 
-    
+	});
+
     //Rotating Link Add
     var blockIndex = 0;
 
@@ -69,7 +69,7 @@ $(document).ready(function () {
     $('body').on('click', '.remove-this-circular-url', function () {
         $(this).parent().parent().remove();
     });
-        
+
     //Front End Validation Of Count Down Timer
     $('#countDownContents').bind('keyup change click' ,function(){
         var countDownTime = $(this).val();
@@ -221,7 +221,7 @@ $(document).ready(function () {
                 //$('#link_preview_original').hide();
             }
         }
-        
+
         //Add Link Preview Custom Settings
         if (thisInstance.id === 'link_preview_custom') {
             if (thisInstance.checked) {
@@ -327,7 +327,7 @@ $(document).ready(function () {
 
         if (thisInstance.id === 'addSchedule') {
             if (thisInstance.checked) {
-                $('#scheduleArea').show();  
+                $('#scheduleArea').show();
             } else {
                 $('#scheduleArea').hide();
                 $('#day1').val('');
@@ -346,6 +346,7 @@ $(document).ready(function () {
         event.preventDefault();
         //Actual Link Validation
         var getUrlType=$('#type').val();
+        // console.log(getUrlType);
         if(getUrlType==0){
             var originalUrl=$('#givenActual_Url_0').val().trim();
             if(!originalUrl){
@@ -546,6 +547,17 @@ $(document).ready(function () {
                     return false;
                 }
             }
+        }else if(getUrlType==3){
+          var inputFile = $('#inputfile').val();
+          console.log(inputFile);
+          if (inputFile === '' || inputFile === null || inputFile === undefined) {
+            swal({
+                title: "Error",
+                text:  "Please select a file",
+                type: "error",
+            });
+            return false;
+          }
         }else{
             return false;
         }
@@ -574,7 +586,7 @@ $(document).ready(function () {
                     html: true
                 });
                 return false;
-            } 
+            }
         }
 
         if(googlePixel==true){
@@ -587,7 +599,7 @@ $(document).ready(function () {
                     html: true
                 });
                 return false;
-            } 
+            }
         }
 
         if(tag==true){
@@ -651,7 +663,13 @@ $(document).ready(function () {
                 return false;
             }
         }
-
+        $(".main-dashboard-body").busyLoad("show", {
+          maxSize: "150px",
+          minSize: "150px",
+          text: "Please Wait ...",
+          fontSize: "3rem",
+          color: "#01579b",
+        });
         $("#url_short_frm").submit();
     });
 
@@ -694,7 +712,7 @@ $(document).ready(function () {
         }
     }
     // create DateTimePicker from input HTML element
-    
+
 
     $("#datepicker").kendoDateTimePicker({
         value: '',
@@ -711,7 +729,7 @@ $(document).ready(function () {
             });
         });
     });
-    
+
     function onChange(){
         var scheDt = $("#schedule_datepicker_0").val();
         $('#scd_id_0').val(scheDt);
@@ -723,7 +741,7 @@ $(document).ready(function () {
         change: onChange,
         dateInput: false
     });
-    
+
 
 
     $('#expirationEnable').click(function(){
@@ -813,8 +831,3 @@ $(document).ready(function () {
     function delTabRow(indx){
         $('#special_url-'+indx).remove();
     }
-
-
-
-
-

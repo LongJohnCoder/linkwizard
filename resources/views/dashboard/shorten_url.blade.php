@@ -84,6 +84,8 @@
                                             <div class="col-md-2 col-sm-2">
                                                 @if($type==0 || $type==1)
                                                 <label> Paste An Actual URL Here </label>
+                                                @elseif($type==3)
+                                                <label> Upload A File From Here </label>
                                                 @else
                                                 <label>Name Your Group </label>
                                                 @endif
@@ -92,11 +94,13 @@
                                                 <div class="form-group">
                                                     @if($type==0 || $type==1)
                                                     <input id="givenActual_Url_0" type="text" name="actual_url[0]" class="form-control actual-url" placeholder="Please Provide A Valid Url Like http://www.example.com">
+                                                    @elseif($type==3)
+                                                    <input id="inputfile" type="file" name="inputfile" class="form-control" required="true">
                                                     @else
                                                     <input id="group_url_title" type="text" name="group_url_title" class="form-control" placeholder="Group Name" required="true">
                                                     @endif
                                                 </div>
-                                                  @if($type!=2 )
+                                                @if($type!=2 )
                                                 <div class="input-msg form-group">
                                                     * This is where you paste your long URL that you'd like to shorten.
                                                 </div>
@@ -113,7 +117,7 @@
                                         @if(count($limit) > 0)
                                             <div class="row">
                                                 <div class="col-md-2 col-sm-2">
-                                                        <label> <input type="checkbox" id="custom_url_status" name="custom_url_status"> </label>   
+                                                        <label> <input type="checkbox" id="custom_url_status" name="custom_url_status"> </label>
                                                 </div>
                                                 <div class="col-md-10 col-sm-10 input-msg">
                                                         <b>Check If You Want To Customize Url</b>
@@ -133,14 +137,14 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2 col-sm-2">
-                                                        
-                                                    </div>  
+
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="row" id="error-custom-url">
                                             </div>
-                                        @endif 
-                                    @endif 
+                                        @endif
+                                    @endif
                                 </div>
                                 <!--Add URL End-->
 
@@ -237,7 +241,7 @@
                                         <span class="btn btn-primary" id="setDefaultColour" style="display: none;">Set to default colour</span><br><br>
                                         <p> Enter your redirecting text </p>
                                         <input class="form-control" type="text" name="redirecting_text_template" value="{{$redirecting_text}}" placeholder="{{$redirecting_text}}">
-                                    </div>                        
+                                    </div>
                                 </div>
                                 <!-- Add Countdown End -->
                                 <!-- Add Favicon -->
@@ -264,6 +268,7 @@
                                     </div>
                                     <div class="normal-body link-preview">
                                         <ul>
+                                            @if($type != 3)
                                             <li>
                                                 <label class="custom-checkbox">Use Original
                                                     <input type="checkbox" checked id="link_preview_original"
@@ -271,7 +276,8 @@
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </li>
-                                            <li>
+                                            @endif
+                                            <li class="cust-file">
                                                 <label class="custom-checkbox">Use Custom
                                                     <input type="checkbox" id="link_preview_custom" name="link_preview_custom">
                                                     <span class="checkmark"></span>
@@ -283,6 +289,7 @@
                                                 <div class="white-panel-header">Image</div>
                                                 <div class="white-panel-body">
                                                     <ul>
+                                                        @if($type != 3)
                                                         <li>
                                                             <label class="custom-checkbox">Use Original
                                                                 <input checked type="checkbox" id="org_img_chk"
@@ -290,8 +297,9 @@
                                                                 <span class="checkmark"></span>
                                                             </label>
                                                         </li>
+                                                        @endif
                                                         <li>
-                                                            <label class="custom-checkbox">Use Custom
+                                                            <label class="custom-checkbox"><span class="cust-msg">Use Custom</span>
                                                                 <input type="checkbox" id="cust_img_chk" name="cust_img_chk">
                                                                 <span class="checkmark"></span>
                                                             </label>
@@ -306,6 +314,7 @@
                                                 <div class="white-panel-header">Title</div>
                                                 <div class="white-panel-body">
                                                     <ul>
+                                                        @if($type != 3)
                                                         <li>
                                                             <label class="custom-checkbox">Use Original
                                                                 <input checked type="checkbox" id="org_title_chk"
@@ -313,8 +322,9 @@
                                                                 <span class="checkmark"></span>
                                                             </label>
                                                         </li>
+                                                        @endif
                                                         <li>
-                                                            <label class="custom-checkbox">Use Custom
+                                                            <label class="custom-checkbox"><span class="cust-msg">Use Custom</span>
                                                                 <input type="checkbox" id="cust_title_chk"
                                                                        name="cust_title_chk">
                                                                 <span class="checkmark"></span>
@@ -330,6 +340,7 @@
                                                 <div class="white-panel-header">Description</div>
                                                 <div class="white-panel-body">
                                                     <ul>
+                                                        @if($type != 3)
                                                         <li>
                                                             <label class="custom-checkbox">Use Original
                                                                 <input checked type="checkbox" id="org_dsc_chk"
@@ -337,8 +348,9 @@
                                                                 <span class="checkmark"></span>
                                                             </label>
                                                         </li>
+                                                        @endif
                                                         <li>
-                                                            <label class="custom-checkbox">Use Custom
+                                                            <label class="custom-checkbox"><span class="cust-msg">Use Custom</span>
                                                                 <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk">
                                                                 <span class="checkmark"></span>
                                                             </label>
@@ -361,7 +373,7 @@
                                                             </label>
                                                         </li>
                                                         <li>
-                                                            <label class="custom-checkbox">Use Custom
+                                                            <label class="custom-checkbox"><span class="cust-msg">Use Custom<span>
                                                                 <input type="checkbox" id="cust_url_chk" name="cust_url_chk">
                                                                 <span class="checkmark"></span>
                                                             </label>
@@ -377,7 +389,7 @@
                                     </div>
                                 </div>
                                 <!--Add Link Schedular-->
-                                @if($type==0 || $type==2 )
+                                @if($type==0 || $type==2 || $type==3 )
                                 <div class="normal-box1">
                                     <div class="normal-header">
                                         <div class="row">
@@ -395,7 +407,7 @@
                                                 </label>
                                             </div>
                                             @endif
-                                            @if($type==0 || $type==2 || $type==1)
+                                            @if($type==0 || $type==2 || $type==1 || $type==3)
                                             <div class="col-md-4">
                                                 <label class="custom-checkbox">Add Geo Location
                                                     <input type="checkbox" id="addGeoLocation" name="addGeoLocation">
@@ -541,9 +553,9 @@
                                 @endif
                                 <!--Add Link Preview End-->
                                 {{csrf_field()}}
-                                
+
                                 <button type="submit" id="shorten_url_btn" class=" btn-shorten">@if($type==2) Add Group @else Shorten URL @endif</button>
-                                
+
                             </form>
                         </div>
                     </div>
@@ -651,15 +663,18 @@
         <script src="{{ URL::to('/').'/public/resources/js/chosen/init.js' }}" type="text/javascript" charset="utf-8"></script>
         <script src="{{ URL::to('/').'/public/js/selectize.js' }}"></script>
         <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
+        
         <script src="{{ URL::to('/').'/public/js/createurl.js' }}"></script>
         <!-- Choseen jquery  -->
 
         <!-- ManyChat -->
         <!-- <script src="//widget.manychat.com/216100302459827.js" async="async"></script> -->
-               
+
 
         <script src="{{ URL::to('/').'/public/js/fineuploader.min.js' }}"></script>
-            
+
         <script type="text/javascript">
             $(document).ready(function(){
                 $('#closeImage').hide();
@@ -817,7 +832,7 @@
                     }
                 }
             }
-    
+
 
     $(document).ready(function () {
 
@@ -925,7 +940,7 @@
             $("div.tab-content").eq(index).addClass("active");
         });
     });
-    
+
 </script>
 <script>
     $(document).ready(function () {
@@ -1072,5 +1087,11 @@
     });*/
 </script>
  <script src="{{ URL::to('/').'/public/js/addurlshortner.js' }}"></script>
+ @if($type == 3)
+ <script src="{{ URL::to('/').'/public/js/file_link_preview.js' }}"></script>
+ <script  type="text/javascript">
+  $('.cust-msg').text('Add Custom');
+ </script>
+ @endif
 </body>
 </html>

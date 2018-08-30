@@ -137,8 +137,8 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
     Route::post('/getCountryDetails', 'GeoLocationController@getCountryDetails');
     Route::post('/getnotSelectedcountry', 'GeoLocationController@getnotSelectedcountry');
     Route::post('/getDenyCountryInAllowAll', 'GeoLocationController@getDenyCountryInAllowAll');
-    
-    
+
+
     Route::get('test' , function(){
         return view('test');
     });
@@ -297,7 +297,7 @@ Route::group(['domain' => config('settings.APP_LOGIN_HOST'), ['middlewareGroups'
                 'as' => 'deleteGroupLink',
             ]);
 
-            
+
         });
 
         Route::group(['prefix' => 'user'], function () {
@@ -476,3 +476,6 @@ Route::post('/pixelids', 'UrlController@checkPixelId')->name('pixelids');
 
 //Store profile informations
 Route::post('/saveprofile', 'UrlController@saveProfile')->name('saveprofile');
+
+// Download file link api
+Route::get('/api/downloadfile/{file}', 'UrlController@downloadFile')->name('downloadFile');

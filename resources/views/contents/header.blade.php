@@ -32,6 +32,9 @@
 			</div>
 			<div class="col-md-8 col-sm-8">
 				<div class="top-right">
+					<div class="createlink boder openpop <?php echo ($uri=='filelink')?'active-toplink' : '' ?>">
+						<a href="{{route('createLink',['type' => 'filelink'])}}">Create File Link</a>
+					</div>
 					<div class="createlink boder openpop <?php echo ($uri=='wizard')?'active-toplink' : '' ?>">
 							<a href="{{route('createLink',['type' => 'wizard'])}}">
 								@if(config('settings.VIEW.SHORT_LINK') !== null)
@@ -51,9 +54,9 @@
 						</a>
 					</div>
 					<div class="createlink openpop <?php echo ($uri=='grouplink')?'active-toplink' : '' ?>">
-						<a href="{{route('createLink',['type' => 'grouplink'])}}">Create Group Link</a>	
+						<a href="{{route('createLink',['type' => 'grouplink'])}}">Create Group Link</a>
 					</div>
-				
+
 					<div class="hamburg-menu">
 	                  	<a href="#" id="menu-icon" class="menu-icon">
 		                    <div class="span bar top" style="background-color: #fff;"></div>
