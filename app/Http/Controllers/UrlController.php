@@ -184,7 +184,7 @@
                 $linkPreview          = isset($request->link_preview_selector) && $request->link_preview_selector == true ? true : false;
                 $linkPreviewCustom    = isset($request->link_preview_custom) && $request->link_preview_custom == true ? true : false;
                 $linkPreviewOriginal  = isset($request->link_preview_original) && $request->link_preview_original == true ? true : false;
-                
+
                 //Facebook pixel id
                 $checkboxAddFbPixelid = isset($request->checkboxAddFbPixelid) && $request->checkboxAddFbPixelid == true ? true : false;
                 $fbPixelid            = isset($request->fbPixelid) && strlen($request->fbPixelid) > 0 ? $request->fbPixelid : null;
@@ -192,7 +192,7 @@
                 //Google pixel id
                 $checkboxAddGlPixelid = isset($request->checkboxAddGlPixelid) && $request->checkboxAddGlPixelid == true ? true : false;
                 $glPixelid            = isset($request->glPixelid) && strlen($request->glPixelid) > 0 ? $request->glPixelid : null;
-                
+
                 //Tag
                 $allowTags            = isset($request->allowTag) && $request->allowTag == true ? true : false;
                 $searchTags           = isset($request->tags) && count($request->tags) > 0 ? $request->tags : null;
@@ -340,7 +340,7 @@
                     }
                     if($linkPreviewCustom){
                         $linkprev['main']=1;
-                        
+
                         if(isset($request->org_img_chk) && $request->org_img_chk=='on'){
                             $linkprev['image']=0;
                         }elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on'){
@@ -451,7 +451,7 @@
                     //** Day wise link schedule for shorten url **//
                     $link_schedule_array = [];
 
-                
+
                     //Check For Circular Url
                     if($request->type==1){
                         $noOfCircularLinks = count($request->actual_url);
@@ -634,6 +634,12 @@
                     } else {
                         $user = Auth::user();
                         $url = Url::find($id);
+                        
+                        /* Prevent other user to access of a user data */
+                        if ($url->user_id != $user->id) {
+                          return view('errors.403');
+                        }
+
                         if(!$url) {
                             return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
                         }
@@ -826,7 +832,7 @@
 
                     }
                 }catch(Exception $e){
-                    abort(404); 
+                    abort(404);
                 }
             }else{
                 abort(404);
@@ -878,7 +884,7 @@
                     //Description
                     $allowDescription     = isset($request->allowDescription) && $request->allowDescription == true ? true : false;
                     $searchDescription    = isset($request->searchDescription) && strlen($request->searchDescription) > 0 ? $request->searchDescription : null;
-                    
+
                     $url = Url::find($id);
                     $url->protocol = $protocol;
                     $url->actual_url = $actualUrl;
@@ -913,7 +919,7 @@
                     if(isset($request->allowDescription) && ($request->allowDescription == "on")){
                         $url->meta_description = $request->searchDescription;
                     }else{
-                       $url->meta_description = ""; 
+                       $url->meta_description = "";
                     }
                     // Edit default redirection settings
                     /* Getting the default settings */
@@ -1049,7 +1055,7 @@
                     $linkPreview          = isset($request->link_preview_selector) && $request->link_preview_selector == true ? true : false;
                     $linkPreviewCustom    = isset($request->link_preview_custom) && $request->link_preview_custom == true ? true : false;
                     $linkPreviewOriginal  = isset($request->link_preview_original) && $request->link_preview_original == true ? true : false;
-                    
+
                     if($linkPreview){
                         $linkprev['usability']=1;
                         if($linkPreviewOriginal){
@@ -1060,7 +1066,7 @@
                         }
                         if($linkPreviewCustom){
                             $linkprev['main']=1;
-                            
+
                             if(isset($request->org_img_chk) && $request->org_img_chk=='on'){
                                 $linkprev['image']=0;
                             }elseif(isset($request->cust_img_chk) && $request->cust_img_chk =='on'){
@@ -1160,7 +1166,7 @@
 //                        $deleteFeature=UrlFeature::where('url_id',$id)->delete();
 //                    }
 
-                    //Check Rotating Link 
+                    //Check Rotating Link
                     if($request->type==1){
                         $noOfLink=count($request->actual_url);
                         $url->no_of_circular_links=$noOfLink;
@@ -1168,7 +1174,7 @@
                             $currentRotatingLinks=CircularLink::where('url_id',$url->id)->pluck('id')->toArray();
                             $updatedRotatingLinks=$request->url_id;
                             $removableLinks=(array_diff($currentRotatingLinks,$updatedRotatingLinks));
-                            $deletedLinks=CircularLink::whereIn('id', $removableLinks)->delete(); 
+                            $deletedLinks=CircularLink::whereIn('id', $removableLinks)->delete();
                             for($i=0; $i < $noOfLink; $i++){
                                 if($request->url_id[$i]!=0){
                                     $circularLink = CircularLink::find($request->url_id[$i]);
@@ -1232,7 +1238,7 @@
                         }else{
                             $deleteGeolocation=Geolocation::where('url_id',$url->id)->delete();
                             $url->geolocation=NULL;
-                        } 
+                        }
                         /*link schedule edit*/
 
                         if(isset($request->allowSchedule) && $request->allowSchedule=='on') {
@@ -1322,7 +1328,7 @@
                         return redirect()->back()->with('error', 'Try Again');
                     }
                 }catch(Exception $e){
-                    return redirect()->back()->with('error', 'Try Again'); 
+                    return redirect()->back()->with('error', 'Try Again');
                 }
             }else{
                 abort(404);
@@ -1620,7 +1626,7 @@
             $url->twitter_description   = $meta_data['twitter_description'];
             $url->twitter_url           = $meta_data['twitter_url'];
             $url->twitter_title         = $meta_data['twitter_title'];
-            
+
             if(isset($request->link_preview_selector) && strtolower(trim($request->link_preview_selector)) == 'on') {
                 if(isset($request->link_preview_original) && strtolower(trim($request->link_preview_original)) == 'on') {
                     return $url;
@@ -1672,7 +1678,7 @@
                             $url->og_image            =   $meta_data['og_image'];
                             $url->twitter_image       =   $meta_data['twitter_url'];
                         }
-                        
+
                     }
                   return $url;
                 }
@@ -1737,7 +1743,7 @@
                             }else{
                                 $redirectionText = $search->redirecting_text_template;
                             }
-                            
+
                             if ($search->uploaded_path == "") {
                                 if ((isset($userRedirection->default_image))&&( $userRedirection->default_image!="")) {
                                     $imageUrl = $userRedirection->default_image;
@@ -1769,7 +1775,7 @@
                             $pageColour = $userRedirection->pageColor;
                             $redirectionText = $userRedirection->default_redirecting_text;
                         }
-                    } 
+                    }
 
                 }
                 $url_features = '';
@@ -1834,7 +1840,7 @@
                     }
                 }
 
-            
+
                 $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
                 $referer = $_SERVER['HTTP_HOST'];
                 return view('redirect', [
@@ -1864,7 +1870,7 @@
         * @param Request $request
         * @return \Illuminate\Http\Response
         */
-       
+
         public function postUserInfo(Request $request) {
             $status = 'error';
             $country = Country::where('code', $request->country['country_code'])->first();
@@ -2086,11 +2092,11 @@
                         $redirectUrl=$getUrl['url'];
                         $redirectstatus=$getUrl['status'];
                         $message=$getUrl['message'];
-                    }   
+                    }
                 }
                 /* Check Special Date */
             } else if ($search->link_type==1) {
-                $redirectUrl=$search->protocol.'://'.$search->actual_url; 
+                $redirectUrl=$search->protocol.'://'.$search->actual_url;
                 if ($search->no_of_circular_links > 1) {
                     $circularLinks = CircularLink::where('url_id', $search->id)->get();
                     $search->actual_url       = $circularLinks[($search->count) % $search->no_of_circular_links]->actual_link;
@@ -2245,7 +2251,7 @@
                         $redirectUrl=$getUrl['url'];
                         $redirectstatus=$getUrl['status'];
                         $message=$getUrl['message'];
-                    }   
+                    }
                 }
             }else{
                 abort(404);
@@ -2508,7 +2514,7 @@
             }else{
                 $url_link_schedules = UrlLinkSchedule::where('url_id', $url->id)->get();
             }
-            
+
             if($url->is_scheduled =='y' && count($url_link_schedules)>0 && $url->link_type!=2){
                 $day = date('N');
                 foreach($url_link_schedules as $schedule){
@@ -2918,7 +2924,7 @@
                     } else {
                        $redirecting_text = $defaultSettings[0]->default_redirecting_text;
                     }
-                    
+
                     $userPixels = Pixel::where('user_id', Auth::user()->id)->get();
                     return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels','default_brand_logo','redirecting_text'));
                 }
@@ -3128,6 +3134,3 @@
             }
         }
     }
-
-
-

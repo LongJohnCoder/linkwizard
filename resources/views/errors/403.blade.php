@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow" />
     <meta name="viewport" content="width=device-width,maximum-scale=1,user-scalable=no,minimal-ui">
-    <title>Tier5 | URL Shortener | 403 Forbidden</title>
+    <title>Tier5 | URL Shortener | 404 URL Not Found</title>
     <meta name="description" content="A free URL shortner brought to you by Tier5 LLC." />
     <meta name="keywords" content="Tier5 URL Shortner, Tr5.io, Tier5" />
     <meta name="author" content="Tier5 LLC" />
@@ -26,10 +26,32 @@
         text-align: center;
         color: white;
     }
-    
-    .title {
-        font-size: 80px;
-        margin-top: 225px;
+
+    .button {
+        background-color: transparent;
+        /* Green */
+        border: none;
+        color: white;
+        padding: 16px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        -webkit-transition-duration: 0.4s;
+        /* Safari */
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    .button5 {
+        color: #00AEEF;
+        border: 2px solid #555555;
+    }
+
+    .button5:hover {
+        background-color: #555555;
+        color: white;
     }
 
     </style>
@@ -42,7 +64,12 @@
     <!-- open/close -->
     <section class="hero">
         <section class="main-content">
-            <div class="title">Forbidden</div>
+            <h1 class="title" style="font-size: 250px;">403</h1>
+            <h2 class="title">Forbidden</h2>
+            <br>
+            <a href="{{ route('getIndex') }}">
+                <button type="button" class="button button5">Go Home</button>
+            </a>
         </section>
     </section>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -66,4 +93,3 @@
 </body>
 
 </html>
-

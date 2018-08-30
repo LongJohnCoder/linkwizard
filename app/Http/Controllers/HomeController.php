@@ -914,7 +914,7 @@
                     ->get();
 
             }
-            
+
 
             foreach ($countries as $key => $country) {
                 $location[++$key][0] = $country->code;
@@ -951,7 +951,7 @@
                     ->get();
 
             }
-            
+
 
             foreach ($platforms as $key => $platform) {
                 $operating_system[++$key][0] = $platform->name;
@@ -2415,12 +2415,17 @@
 
         public function getLinkPreview($id) {
             if (Auth::check()) {
-                //dd(Auth::check());  
+                //dd(Auth::check());
                 if(\Session::has('plan')) {
                     return redirect()->action('HomeController@getSubscribe');
                 }else{
                     $user = Auth::user();
                     $url = Url::find($id);
+
+                    /* Prevent other user to access of a user data */
+                    if ($url->user_id != $user->id) {
+                      return view('errors.403');
+                    }
 
                     /* Getting the global settings */
                     $defaultSettings = DefaultSettings::all();
@@ -2431,7 +2436,7 @@
                         $redirecting_time = $profile->default_redirection_time;
                         if ($url->usedCustomised==1) {
                             $redirecting_time = $url->redirecting_time;
-                            $redirecting_text = $url->redirecting_text_template; 
+                            $redirecting_text = $url->redirecting_text_template;
                         } else {
                             $redirecting_time = $profile->default_redirection_time;
                         }
@@ -2490,7 +2495,7 @@
                                     }
                                 }
                             }
-                            usort($alliplocation, array($this, "date_sort")); 
+                            usort($alliplocation, array($this, "date_sort"));
                         }
                     }
 
@@ -2502,7 +2507,7 @@
                     } else {
                             $redirectDomain = config('settings.SECURE_PROTOCOL').config('settings.APP_REDIRECT_HOST');
                     }
-                    
+
                     if($url->link_type==2 && $url->parent_id==0){
                         return view('dashboard.grouppreview' , [
                         'url'                 => $url,
@@ -2530,7 +2535,7 @@
                         'redirecting_time'    => $redirecting_time,
                         'sublink'             => $getSubLinks
                       ]);
-                    }    
+                    }
                 }
 
             } else {
@@ -2803,7 +2808,7 @@
          */
         public function getRequestedSubdirectoryUrl($subdirectory, $url)
         {
-           
+
             $redirectUrl = Url::where('shorten_suffix', $url)->first();
             if ($redirectUrl) {
                 $subDirectory = Subdomain::where('name', $subdirectory)
@@ -2875,7 +2880,7 @@
                         ->from($request->input('userEmail'))
                         ->subject('Price request for LinkWizard');
                 });
-                 
+
                 return 'MessageSent';
         }
 
@@ -3358,5 +3363,3 @@
             return response()->json($data);
         }
     }
-
-
