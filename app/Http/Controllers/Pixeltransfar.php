@@ -26,6 +26,7 @@ class Pixeltransfar extends Controller
 
 					$user_pixel=new UserPixels();
         	//user pixel table data
+        	$user_pixel->id=$value->id;
         	$user_pixel->user_id=$value->user_id; 	
 
         	if($value->network == 'fb_pixel_id'){
