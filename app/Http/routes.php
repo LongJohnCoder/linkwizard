@@ -15,10 +15,10 @@ Route::get(config('settings.APP_REDIRECT_HOST'),[
         'as' => 'getIndex',
     ]);
 
-Route::get('/pixel',[
+/*Route::get('/pixel',[
     'uses' => 'Pixeltransfar@pixel',
     'as' => 'pixel',
-]);
+]);*/
 
 Route::pattern('domain', config('settings.APP_HOST').'|'.config('settings.APP_LOGIN_HOST'));
 
