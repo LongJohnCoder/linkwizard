@@ -282,7 +282,7 @@ $optTypeLI = 'normal';
                             @if(count($urls->urlTagMap)>0)
                                 <div id="shortTags_Contents_chosen" class="chosen-container chosen-container-multi chosen-with-drop chosen-container-active" style="width: 48px; display: none;">
                                     <ul class="chosen-choices">
-                                        
+
                                     </ul>
                                 </div>
                             @endif
@@ -371,42 +371,42 @@ $optTypeLI = 'normal';
                                 <ul class="cust-file">
                                     <li>
                                         <label class="custom-checkbox">Use Original
-                                            <input type="checkbox" id="link_preview_original" name="link_preview_original" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->main==0){echo 'checked'; } }else{echo '';}?> >
+                                            <input type="checkbox" id="link_preview_original" name="link_preview_original" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->main) && $link_preview->main==0){echo 'checked'; } }else{echo '';}?> >
                                             <span class="checkmark"></span>
                                         </label>
                                     </li>
                                     <li>
                                         <label class="custom-checkbox">Use Custom
-                                            <input type="checkbox" id="link_preview_custom" name="link_preview_custom"<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->main==1){echo 'checked'; } }else{echo '';}?> >
+                                            <input type="checkbox" id="link_preview_custom" name="link_preview_custom"<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->main) && $link_preview->main==1){echo 'checked'; } }else{echo '';}?> >
                                             <span class="checkmark"></span>
                                         </label>
                                     </li>
                                 </ul>
-                                <div class="use-custom" style="display :<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->main==1){echo 'block'; } }else{echo 'none';}?>">
+                                <div class="use-custom" style="display :<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->main) && $link_preview->main==1){echo 'block'; } }else{echo 'none';}?>">
                                     <div class="white-paneel">
                                         <div class="white-panel-header">Image</div>
                                         <div class="white-panel-body">
                                             <ul>
                                                 <li class="cust-file">
                                                     <label class="custom-checkbox">Use Original
-                                                        <input type="checkbox" id="org_img_chk" name="org_img_chk" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==0){echo 'checked'; } }else{echo '';}?> >
+                                                        <input type="checkbox" id="org_img_chk" name="org_img_chk" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->image) && $link_preview->image==0){echo 'checked'; } }else{echo '';}?> >
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="custom-checkbox"><span class="cust-msg">Use Custom</span>
-                                                        <input type="checkbox" id="cust_img_chk" name="cust_img_chk" onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==1){echo 'checked'; } }else{echo '';}?>>
+                                                        <input type="checkbox" id="cust_img_chk" name="cust_img_chk" onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->image) && $link_preview->image==1){echo 'checked'; } }else{echo '';}?>>
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                             </ul>
-                                            <div class="use-custom1 img-inp" style="display:<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==1){echo 'block'; } }else{echo 'none';}?>">
+                                            <div class="use-custom1 img-inp" style="display:<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->image) && $link_preview->image==1){echo 'block'; } }else{echo 'none';}?>">
                                                 <div class="row">
                                                     <div class="col-md-10">
                                                         <input type="file" class="form-control" id="img_inp" name="img_inp">
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->image==1){ ?>
+                                                        <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->image) && $link_preview->image==1){ ?>
                                                         <img src="{{$urls->og_image}}" class="img-responsive" style="width: 100px;">
                                                         <?php } }?>
 
@@ -421,18 +421,18 @@ $optTypeLI = 'normal';
                                             <ul>
                                                 <li class="cust-file">
                                                     <label class="custom-checkbox">Use Original
-                                                        <input type="checkbox" id="org_title_chk" name="org_title_chk"  <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->title==0){echo 'checked'; } }else{echo '';}?>>
+                                                        <input type="checkbox" id="org_title_chk" name="org_title_chk"  <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->title) && $link_preview->title==0){echo 'checked'; } }else{echo '';}?>>
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="custom-checkbox"><span class="cust-msg">Use Custom</span>
-                                                        <input type="checkbox" id="cust_title_chk" name="cust_title_chk" onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->title==1){echo 'checked'; } }else{echo '';}?> >
+                                                        <input type="checkbox" id="cust_title_chk" name="cust_title_chk" onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->title) && $link_preview->title==1){echo 'checked'; } }else{echo '';}?> >
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                             </ul>
-                                            <div class="use-custom1 title-inp" style="display:<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->title==1){echo 'block'; } }else{echo 'none';}?>">
+                                            <div class="use-custom1 title-inp" style="display:<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->title) && $link_preview->title==1){echo 'block'; } }else{echo 'none';}?>">
                                                 <input type="text" class="form-control" id="title_inp" name="title_inp" value="<?php echo $urls->og_title;?>" >
                                             </div>
                                         </div>
@@ -443,18 +443,18 @@ $optTypeLI = 'normal';
                                             <ul>
                                                 <li class="cust-file">
                                                     <label class="custom-checkbox">Use Original
-                                                        <input type="checkbox" id="org_dsc_chk" name="org_dsc_chk"  <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->description==0){echo 'checked'; } }else{echo '';}?> >
+                                                        <input type="checkbox" id="org_dsc_chk" name="org_dsc_chk"  <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->description) && $link_preview->description==0){echo 'checked'; } }else{echo '';}?> >
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="custom-checkbox"><span class="cust-msg">Use Custom</span>
-                                                        <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk"  onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->description==1){echo 'checked'; } }else{echo '';}?>>
+                                                        <input type="checkbox" id="cust_dsc_chk" name="cust_dsc_chk"  onclick="set_custom_prev_on(this.checked)" <?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->description) && $link_preview->description==1){echo 'checked'; } }else{echo '';}?>>
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </li>
                                             </ul>
-                                            <div class="use-custom2 dsc-inp" style="display:<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if($link_preview->description==1){echo 'block'; } }else{echo 'none';}?>">
+                                            <div class="use-custom2 dsc-inp" style="display:<?php if(isset($urls->link_preview_type) && ($urls->link_preview_type!="")  ){ $link_preview = json_decode($urls->link_preview_type);if(isset($link_preview->description) && $link_preview->description==1){echo 'block'; } }else{echo 'none';}?>">
                                                 <textarea class="form-control" id="dsc_inp" name="dsc_inp"><?php echo trim($urls->og_description);?></textarea>
                                             </div>
                                         </div>
@@ -995,7 +995,7 @@ $optTypeLI = 'normal';
         console.log(pixels,tests);
         $.each(pixels, function(remIndex){
             //fds
-        });            
+        });
     });
 </script>
 <script>

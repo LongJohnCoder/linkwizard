@@ -1925,6 +1925,9 @@
                                 }
                             }
                         }
+                        if ($search->link_type==3 && $redirectstatus != 0) {
+                          $message="This file download is not accessable from your country";
+                        }
                     } else {
                         /* Url Expired */
                         if ($search->redirect_url!="") {
@@ -1935,6 +1938,9 @@
                             $redirectUrl=NULL;
                             $redirectstatus=1;
                             $message="The Url Is Expired";
+                        }
+                        if ($search->link_type==3 && $redirectstatus != 0) {
+                          $message="This file download link is expired";
                         }
                     }
                 } else {
@@ -1983,6 +1989,9 @@
                         $redirectUrl=$getUrl['url'];
                         $redirectstatus=$getUrl['status'];
                         $message=$getUrl['message'];
+                    }
+                    if ($search->link_type==3 && $redirectstatus != 0) {
+                      $message="This file download is not accessable from your country";
                     }
                 }
                 /* Check Special Date */
@@ -2146,6 +2155,10 @@
                 }
             }else{
                 abort(404);
+            }
+
+            if ($redirectstatus == 0 && $search->link_type==3) {
+              $message="Your download should start automatically in a few seconds";
             }
 
             return response()->json(['status' => $status,

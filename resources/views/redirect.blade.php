@@ -108,6 +108,7 @@
                     @endif
                     @if(isset($red_time) && ($red_time >0))
                         in <span id="txt_" style="display: inline;">{{$red_time / 1000 }}</span> sec  <p id="msg" style="color: #9f3a38;"></p>
+                        <p class="msg-green" style="color: green;"></p>
                     @endif
                 </div>
             </div>
@@ -176,17 +177,11 @@
                             },
                             success: function(response){
                                 setTimeout(function() {
-                                  @if($url->link_type==3)
-                                  $('.production-div').html('<span class="text">Your download should start automatically in a few seconds.<span>')
-                                  @endif
                                     if (response.redirectstatus==0) {
                                         window.location.href=response.redirecturl;
+                                        $('.production-div').html('<span style="color: green; font-size:20px;">'+response.message+'</span>');
                                     } else {
-                                      @if($url->link_type==3)
-                                        $('.production-div').html('<p id="msg" style="color: #9f3a38;">'+response.message+'</p>');
-                                      @else
-                                        $('#msg').text(response.message);
-                                      @endif
+                                        $('.production-div').html('<span style="color: red; font-size:20px;">'+response.message+'</span>');;
                                     }
                                 }, {{$red_time}});
                             }
