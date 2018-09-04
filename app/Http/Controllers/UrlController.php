@@ -1626,7 +1626,7 @@
          * @param $url
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
-        public static function getRequestedUrl($url) {
+        public function getRequestedUrl($url) {
             try {
                 $defaultSettings = DefaultSettings::all();
                 $red_time = $defaultSettings[0]->default_redirection_time;
@@ -1733,18 +1733,54 @@
                     }
                     $user_agent = get_browser($_SERVER['HTTP_USER_AGENT'], true);
                     $referer = $_SERVER['HTTP_HOST'];
+                    $clientIP = \Request::ip() == '127.0.0.1' ? '223.31.41.147' : \Request::ip();
+                    $access_key = env('GEO_LOCATION_API_KEY');
+                    /* Initialize CURL: */
+                    $ch = curl_init(env('GEO_LOCATION_API_URL').$clientIP.'?access_key='.env('GEO_LOCATION_API_KEY'));
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    /* Store the data */
+                    $jsonData = json_decode(curl_exec($ch),true);
+                    curl_close($ch);
+                    $location = [
+                        'ip' => $clientIP,
+                        'country_code' => $jsonData['country_code'],
+                        'country_name' => $jsonData['country_name'],
+                        'region_code' => $jsonData['region_code'],
+                        'region_name' => $jsonData['region_name'],
+                        'city' => $jsonData['city'],
+                        'zip_code' => $jsonData['zip'],
+                        'time_zone' => $jsonData['time_zone']['id'],
+                        'latitude' => $jsonData['latitude'],
+                        'longitude' => $jsonData['longitude'],
+                        'metro_code' => ""
+                    ];
+                    if ($search->link_type==2) {
+                        $urlData = $sublink;
+                    } else {
+                        $urlData = $search->id;
+                    }
+                    $userData['country'] =  $location;
+                    $userData['urlData'] = $urlData;
+                    $userData['querystring'] = $_SERVER['QUERY_STRING'];
+                    $userData['platform'] = $user_agent['platform'];
+                    $userData['browser'] = $user_agent['browser'];
+                    $userData['referer'] = $referer;
+                    $userData['suffix'] = $url;
+                    $userData = new Request($userData);
+                    $responseData = self::postUserInfo($userData);
+                    $responseData = json_decode($responseData->getContent());
                     return view('redirect', [
                         'url' => $search,
                         'suffix' => $url,
-                        'favicon' => $favicon,
-                        'sublink' => $sublink,
-                        'referer' => $referer,
-                        'imageUrl' => $imageUrl,
-                        'red_time' => $red_time,
+                        'redirectionText'=>$redirectionText,
                         'pageColor' => $pageColour,
-                        'user_agent' => $user_agent,
+                        'favicon' =>$favicon,
+                        'imageUrl'=>$imageUrl,
+                        'red_time' => $red_time,
+                        'responseData' => $responseData,
                         'assignedPixels' => $assignedPixels,
-                        'redirectionText' => $redirectionText,
+                        'redirectionText'=>$redirectionText,
+                        'responseData' => $responseData
                         ]
                     );
                 } else {
@@ -1766,7 +1802,7 @@
             $status = 'error';
             $country = Country::where('code', $request->country['country_code'])->first();
             if ($country) {
-                $country->urls()->attach($request->url);
+                $country->urls()->attach($request->urlData);
                 global $status;
                 $status = 'success';
             } else {
@@ -1774,7 +1810,7 @@
                 $cn->name = $request->country['country_name'];
                 $cn->code = $request->country['country_code'];
                 if ($cn->save()) {
-                    $cn->urls()->attach($request->url);
+                    $cn->urls()->attach($request->urlData);
                     global $status;
                     $status = 'success';
                 } else {
@@ -1785,14 +1821,14 @@
 
             $platform = Platform::where('name', $request->platform)->first();
             if ($platform) {
-                $platform->urls()->attach($request->url);
+                $platform->urls()->attach($request->urlData);
                 global $status;
                 $status = 'success';
             } else {
                 $platform = new Platform();
                 $platform->name = $request->platform;
                 $platform->save();
-                $platform->urls()->attach($request->url);
+                $platform->urls()->attach($request->urlData);
 
                 if ($platform) {
                     global $status;
@@ -1805,14 +1841,14 @@
 
             $browser = Browser::where('name', $request->browser)->first();
             if ($browser) {
-                $browser->urls()->attach($request->url);
+                $browser->urls()->attach($request->urlData);
                 global $status;
                 $status = 'success';
             } else {
                 $browser = new Browser();
                 $browser->name = $request->browser;
                 $browser->save();
-                $browser->urls()->attach($request->url);
+                $browser->urls()->attach($request->urlData);
 
                 if ($browser) {
                     global $status;
@@ -1825,21 +1861,21 @@
 
             $referer = Referer::where('name', $request->referer)->first();
             if ($referer) {
-                $find = Url::find($request->url);
+                $find = Url::find($request->urlData);
                 $find->count = $find->count + 1;
                 $find->save();
 
-                $referer->urls()->attach($request->url);
+                $referer->urls()->attach($request->urlData);
                 global $status;
                 $status = 'success';
             } else {
                 $referer = new Referer();
                 $referer->name = $request->referer;
                 $referer->save();
-                $u = Url::where('id' , $request->url)->first();
+                $u = Url::where('id' , $request->urlData)->first();
                 $u->count++;
                 $u->save();
-                $referer->urls()->attach($request->url);
+                $referer->urls()->attach($request->urlData);
                 if ($referer) {
                     global $status;
                     $status = 'success';
@@ -1849,10 +1885,10 @@
                 }
             }
 
-            $ip = IpLocation::where('url_id', $request->url)->first();
+            $ip = IpLocation::where('url_id', $request->urlData)->first();
             if ($ip) {
                 $ip = new IpLocation();
-                $ip->url_id = $request->url;
+                $ip->url_id = $request->urlData;
                 $ip->ip_address = $request->country['ip'];
                 $ip->city = $request->country['city'];
                 $ip->country =  $request->country['country_name'];
@@ -1865,7 +1901,7 @@
                 $ip->save();
             } else {
                 $ip = new IpLocation();
-                $ip->url_id = $request->url;
+                $ip->url_id = $request->urlData;
                 $ip->ip_address = $request->country['ip'];
                 $ip->city = $request->country['city'];
                 $ip->country =  $request->country['country_name'];

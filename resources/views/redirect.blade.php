@@ -140,54 +140,22 @@
                                 $('#txt_').text('');
                             }
                         }, 1000);
-                $.ajax({
-                    //url: '//freegeoip.net/json/',
-                    url: '{{ env('GEO_LOCATION_API_URL') }}',
-                    type: 'POST',
-                    success: function(jsonData) {
-                        var location = {
-                            "ip" : jsonData.ip,
-                            "country_code" : jsonData.country,
-                            "country_name" : jsonData.country_name,
-                            "region_code" : jsonData.region_code,
-                            "region_name" : jsonData.region,
-                            "city" : jsonData.city,
-                            "zip_code" : jsonData.postal,
-                            "time_zone" : jsonData.timezone,
-                            "latitude" : jsonData.latitude,
-                            "longitude" : jsonData.longitude,
-                            "metro_code" : "",
-                        }
-                        $.ajax({
-                            type: 'POST',
-                            url: "{{ route('postUserInfo') }}",
-                            data: {
-                                @if($url->link_type==2)
-                                    url: '{{$sublink}}',
-                                @else
-                                    url: '{{ $url->id }}',
-                                @endif
-                                country: location,
-                                querystring: '{{$_SERVER['QUERY_STRING']}}',
-                                platform: '{{ $user_agent['platform'] }}',
-                                browser: '{{ $user_agent['browser'] }}',
-                                referer: '{{ $referer }}',
-                                suffix : '{{ $suffix}}',
-                                _token:  '{{ csrf_token() }}'
-                            },
-                            success: function(response){
-                                setTimeout(function() {
-                                    if (response.redirectstatus==0) {
-                                        window.location.href=response.redirecturl;
-                                        $('.production-div').html('<span style="color: green; font-size:20px;">'+response.message+'</span>');
-                                    } else {
-                                        $('.production-div').html('<span style="color: red; font-size:20px;">'+response.message+'</span>');;
-                                    }
-                                }, {{$red_time}});
-                            }
-                        });
+            });
+        </script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                setTimeout(function(){
+                    var status = '{{$responseData->status}}';
+                    var redirecturl = '{{$responseData->redirecturl}}';
+                    var redirectstatus = '{{$responseData->redirectstatus}}';
+                    var message = '{{$responseData->message}}';
+                    if (redirectstatus==0) {
+                        window.location.href=redirecturl;
+                        $('.production-div').html('<span style="color: green; font-size:20px;">'+message+'</span>');
+                    } else {
+                        $('.production-div').html('<span style="color: red; font-size:20px;">'+message+'</span>');
                     }
-                });
+                }, {{$red_time}}+1000);
             });
         </script>
         <script>
