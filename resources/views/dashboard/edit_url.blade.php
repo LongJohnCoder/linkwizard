@@ -245,7 +245,7 @@ $optTypeLI = 'normal';
                                 </label>
                             </div>
                             <input type="hidden" name="pixels" id="pixel-ids">
-                            <div class="normal-body pixel-area" style="display: {{count($pixels)>0 ?'block':''}}">
+                            <div class="normal-body pixel-area" style="display: {{count($pixel_url)>0 ?'block':''}}">
                                 <p>Add your pixels here</p>
                                 <div class="manage_pixel_area" id="manage_pixel_area">
                                     <select class="chosen-select-pixels" data-placeholder="Choose a pixel" multiple tabindex="4" id="manage_pixel_contents" name="pixels[]">
