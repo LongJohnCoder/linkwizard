@@ -101,8 +101,13 @@
                                                     @endif
                                                 </div>
                                                 @if($type!=2 )
-                                                <div class="input-msg form-group">
+                                                <div class="input-msg">
                                                     * This is where you paste your long URL that you'd like to shorten.
+                                                </div>
+                                                @endif
+                                                @if($type==3)
+                                                <div class="input-msg">
+                                                    * Maximum file size is 500MB.
                                                 </div>
                                                 @endif
                                             </div>
@@ -665,7 +670,7 @@
         <script src="{{ URL::to('/').'/public/js/selectize_index.js' }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
-        
+
         <script src="{{ URL::to('/').'/public/js/createurl.js' }}"></script>
         <!-- Choseen jquery  -->
 

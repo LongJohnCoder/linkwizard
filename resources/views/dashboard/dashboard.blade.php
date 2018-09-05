@@ -213,7 +213,7 @@
                                                     {{$shrt_url}}
                                                 @endif
                                             </td>
-                                        
+
                                         @else
                                             <td class="width-modification row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">
 
@@ -295,6 +295,8 @@
                                         <td class="width-modification row-{{$url->id}}" onclick="window.location.href = '{{route('getLinkPreview',[$url->id])}}'" id="row-{{$url->id}}">
                                             @if(($url->link_type==2) && ($url->parent_id==0))
                                                 <span class="badge badge-primary">Group Link</span>
+                                            @elseif($url->link_type==3)
+                                                <span class="badge badge-success">File Link</span>
                                             @else
                                                 <a href="{{$actual_url}}" data-index"{{$url->id}}">{{$actual_url}}</a>
                                             @endif
@@ -321,9 +323,9 @@
                                             <button class='btn btn-success btn-xs copyBtn' id="copyButton" onclick="copyUrl({{$url->id}}, event)" title="Copy Url"><i class="fa fa-copy"></i></button>
                                             @endif
                                             <button class='btn btn-warning btn-xs' onclick="window.location.href = '{{route('edit_url_view',[$url->id])}}'"  ><i class="fa fa-edit"></i></button>
-                                          
+
                                            <button class='btn btn-danger btn-xs delete-url-btn' data-id="{{ $url->id }}" title="Delete"><i class="fa fa-trash"></i></button>
-                                            
+
                                         </td>
                                     </tr>
                                     @endforeach

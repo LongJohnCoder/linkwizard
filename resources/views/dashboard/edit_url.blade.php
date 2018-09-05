@@ -184,6 +184,7 @@ $optTypeLI = 'normal';
                                         <div class="col-md-8 col-sm-8">
                                             <input id="inputfile" type="file" name="inputfile" class="form-control ">
                                             <div class="input-msg">* This is where you can upload a file to share that you'd like to shorten.</div>
+                                            <div class="input-msg">* Maximum file size is 500MB.</div>
                                         </div>
 
                                         <div class="col-md-2 col-sm-2">

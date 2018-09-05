@@ -659,14 +659,15 @@
                         $user = Auth::user();
                         $url = Url::find($id);
 
+                        if(!$url) {
+                            return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
+                        }
+
                         /* Prevent other user to access of a user data */
                         if ($url->user_id != $user->id) {
                           return view('errors.403');
                         }
 
-                        if(!$url) {
-                            return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
-                        }
                         $urls = Url::where('id',$id)->where('user_id',$user->id)->with('circularLink')->with('urlSearchInfo')->with('getGeoLocation')->first();
                         $count = DB::table('urls')->selectRaw('count(user_id) AS `count`')->where('user_id', $user->id)->groupBy('user_id')->get();
                         $total_links = null;
