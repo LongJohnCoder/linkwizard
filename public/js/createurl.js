@@ -21,11 +21,11 @@ $(document).ready(function () {
 	            url: "/app/url/check_suffix_availability",
 	            data: {suffix: getCustomUrl, _token: '{{csrf_token()}}'},
 	            success: function(response){
-	                if(response.status=='error'){
-	                	$('#error-custom-url').html("This Url Is Already Taken!");
-	                }else{
-	                	$('#error-custom-url').html("");
-	                }
+                if(response.status=='error'){
+                	$('#error-custom-url').html("This Url Is Already Taken!");
+                }else{
+                	$('#error-custom-url').html("");
+                }
 	            }
 	        });
 	    }else{

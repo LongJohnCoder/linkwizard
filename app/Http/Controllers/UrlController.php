@@ -259,17 +259,17 @@
                   }
                 }else{
                     //$url->title = NULL;
-                    $og_image = NULL;
-                    $meta_data['title'] = NULL;
-                    $meta_data['meta_description']= NULL;
-                    $meta_data['og_image']= NULL;
-                    $meta_data['og_url']= NULL;
-                    $meta_data['og_description']= NULL;
-                    $meta_data['og_title']= NULL;
-                    $meta_data['twitter_image']= NULL;
-                    $meta_data['twitter_url']= NULL;
-                    $meta_data['twitter_description']= NULL;
-                    $meta_data['twitter_title']= NULL;
+                    $og_image                         = NULL;
+                    $meta_data['title']               = NULL;
+                    $meta_data['meta_description']    = NULL;
+                    $meta_data['og_image']            = NULL;
+                    $meta_data['og_url']              = NULL;
+                    $meta_data['og_description']      = NULL;
+                    $meta_data['og_title']            = NULL;
+                    $meta_data['twitter_image']       = NULL;
+                    $meta_data['twitter_url']         = NULL;
+                    $meta_data['twitter_description'] = NULL;
+                    $meta_data['twitter_title']       = NULL;
                 }
                 /* Getting the default settings */
                 $defaultSettings = DefaultSettings::all();
@@ -288,7 +288,8 @@
                     if ($request->hasFile('custom_brand_logo')) {
                         /* checking file type */
                         $allowedExt = array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF');
-                        $imageExt = $request->custom_brand_logo->getClientOriginalExtension();
+                        $imageExt = $request->custom_brand_logo->getClientOriginalExtension();                        
+
                         if (!in_array($imageExt, $allowedExt)) {
                             return redirect()->back()->with('imgErr', 'error');
                         }
@@ -296,21 +297,22 @@
                             mkdir('public/uploads/brand_images', 0777 , true);
                         }
                         try {
-                            $upload_path ='public/uploads/brand_images';
-                            $image_name = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
-                            $data = getimagesize($request->custom_brand_logo);
-                            $width = $data[0];
-                            $height = $data[1];
+                            $upload_path        ='public/uploads/brand_images';
+                            $image_name         = uniqid()."-".$request->custom_brand_logo->getClientOriginalName();
+                            $data               = getimagesize($request->custom_brand_logo);
+                            $width              = $data[0];
+                            $height             = $data[1];
 
                             /* image resizing */
-                            $temp_height = 450;
-                            $abs_width = ceil(($width*$temp_height)/$height);
-                            $abs_height = $temp_height;
-                            $image_resize = Image::make($request->custom_brand_logo->getRealPath());
+                            $temp_height        = 450;
+                            $abs_width          = ceil(($width*$temp_height)/$height);
+                            $abs_height         = $temp_height;
+                            $image_resize       = Image::make($request->custom_brand_logo->getRealPath());
                             $image_resize->resize($abs_width, $abs_height);
                             $image_resize->save($upload_path.'/'.$image_name);
                             $url->uploaded_path = $upload_path.'/'.$image_name;
                         } catch (\Exception $e) {
+                          dd($e);
                             return redirect()->back()->with('imgErr', 'error');
                         }
                     } else if (isset($profileSettings) && ($profileSettings->default_image != '')) {
@@ -988,6 +990,7 @@
                                 $image_resize->save($upload_path.'/'.$image_name);
                                 $url->uploaded_path = $upload_path.'/'.$image_name;
                             } catch (\Exception $e) {
+                              dd('sddssadygerhyedhdfhddfhfdhfdhfdhdfhfdhdfhdfhasd');
                                 return redirect()->back()->with('imgErr', 'error');
                             }
                         }
@@ -3115,6 +3118,7 @@
                             $allowedExt = array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF');
                             $imageExt = $request->default_image->getClientOriginalExtension();
                             if (!in_array($imageExt, $allowedExt)) {
+                              dd('1');
                                 return redirect()->back()->with('msg', 'imgErr');
                             }
                             if (!file_exists('public/uploads/brand_images')) {
@@ -3136,6 +3140,7 @@
                                 $image_resize->save($upload_path.'/'.$image_name);
                                 $profile->default_image = $upload_path.'/'.$image_name;
                             } catch (\Exception $e) {
+                              dd('2');
                                 return redirect()->back()->with('msg', 'imgErr');
                             }
                         }

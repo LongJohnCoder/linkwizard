@@ -23,14 +23,14 @@ Route::get(config('settings.APP_REDIRECT_HOST'),[
 Route::pattern('domain', config('settings.APP_HOST').'|'.config('settings.APP_LOGIN_HOST'));
 
 /**Test Route Start**/
-Route::get('/test', function(){
+/*Route::get('/test', function(){
     $url = 'http://insidetech.monster.com/benefits/articles/8537-10-best-tech-blogs';
     dd(app('App\Http\Controllers\HomeController')->getPageMetaContents($url));
 });
 
 Route::get('/test12', function () {
     dd(env('PUBLISHABLE_KEY'));
-});
+});*/
 /**Test Route Start**/
 
 Route::post('priceRequest', [

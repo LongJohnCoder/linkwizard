@@ -442,7 +442,7 @@
                                         <p>Select a redirection page url after expiration</p>
                                         <input type="text" class="form-control" name="redirect_url" id="expirationUrl" onchange="checkUrl(this.value)">
                                     </div>
-                                    @if($type==0 || $type==1)
+                                    @if( $type==0 || $type==1 )
                                     <!-- Link schedule part html -->
                                     <div class="normal-body add-link-schedule" id="scheduleArea">
                                         <ul class="nav nav-tabs">
@@ -974,6 +974,7 @@
     });
 </script>
 @if(session()->has('imgErr'))
+  <script type="text/javascript">alert("imgErrg");</script>
     @if(session()->get('imgErr')=='error')
         <script>
             swal({
