@@ -1788,6 +1788,9 @@
                         'longitude' => $jsonData['longitude'],
                         'metro_code' => ""
                     ];
+                    if ($jsonData['city'] == NULL) {
+                        $location['city'] = $jsonData['location']['capital'];
+                    }
                     if ($search->link_type==2) {
                         $urlData = $sublink;
                     } else {
