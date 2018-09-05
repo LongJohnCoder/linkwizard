@@ -1821,7 +1821,7 @@
                     abort(404);
                 }
             } catch (\Exception $e) {
-                // abort(503);
+                abort(503);
             }
         }
 
