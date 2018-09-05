@@ -100,12 +100,14 @@
                                                     <input id="group_url_title" type="text" name="group_url_title" class="form-control" placeholder="Group Name" required="true">
                                                     @endif
                                                 </div>
-                                                @if($type!=2 )
+                                                @if($type!=2 && $type!=3)
                                                 <div class="input-msg">
                                                     * This is where you paste your long URL that you'd like to shorten.
                                                 </div>
-                                                @endif
-                                                @if($type==3)
+                                                @elseif($type==3)
+                                                <div class="input-msg">
+                                                    * This is where you can upload your file to share that you'd like to shorten.
+                                                </div>
                                                 <div class="input-msg">
                                                     * Maximum file size is 500MB.
                                                 </div>
