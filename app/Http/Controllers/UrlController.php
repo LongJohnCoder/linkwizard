@@ -1622,6 +1622,40 @@
         }
 
         /**
+         * Get requested url branf subdirectory and serach for the actual url.
+         * If found redirect to actual url else show 404.
+         *
+         * @param string $subdirectory
+         * @param string $url
+         *
+         * @return Illuminate\Http\Response
+         */
+        public function getRequestedSubdirectoryUrl($subdirectory, $url)
+        {
+
+            $redirectUrl = Url::where('shorten_suffix', $url)->first();
+            if ($redirectUrl) {
+                $subDirectory = Subdomain::where('name', $subdirectory)
+                                ->where('type', 'subdirectory')
+                                ->where('url_id', $redirectUrl->id)
+                                ->first();
+                if ($subDirectory) {
+                    echo $this->getRequestedUrl($url);
+                } else {
+                    abort(404);
+                }
+            } else {
+
+                $redirectUrl = Url::where('shorten_suffix', $subdirectory."/".$url)->first();
+                if($redirectUrl){
+                    echo self::getRequestedUrl($subdirectory."/".$url);
+                }else{
+                    abort(404);
+                }
+            }
+        }
+
+        /**
          * Redirect To Main Url
          * @param $url
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View

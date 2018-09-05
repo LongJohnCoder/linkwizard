@@ -2808,30 +2808,30 @@
          *
          * @return Illuminate\Http\Response
          */
-        public function getRequestedSubdirectoryUrl($subdirectory, $url)
-        {
+        // public function getRequestedSubdirectoryUrl($subdirectory, $url)
+        // {
 
-            $redirectUrl = Url::where('shorten_suffix', $url)->first();
-            if ($redirectUrl) {
-                $subDirectory = Subdomain::where('name', $subdirectory)
-                                ->where('type', 'subdirectory')
-                                ->where('url_id', $redirectUrl->id)
-                                ->first();
-                if ($subDirectory) {
-                    echo $this->getRequestedUrl($url);
-                } else {
-                    abort(404);
-                }
-            } else {
+        //     $redirectUrl = Url::where('shorten_suffix', $url)->first();
+        //     if ($redirectUrl) {
+        //         $subDirectory = Subdomain::where('name', $subdirectory)
+        //                         ->where('type', 'subdirectory')
+        //                         ->where('url_id', $redirectUrl->id)
+        //                         ->first();
+        //         if ($subDirectory) {
+        //             echo $this->getRequestedUrl($url);
+        //         } else {
+        //             abort(404);
+        //         }
+        //     } else {
 
-                $redirectUrl = Url::where('shorten_suffix', $subdirectory."/".$url)->first();
-                if($redirectUrl){
-                    echo UrlController::getRequestedUrl($subdirectory."/".$url);
-                }else{
-                    abort(404);
-                }
-            }
-        }
+        //         $redirectUrl = Url::where('shorten_suffix', $subdirectory."/".$url)->first();
+        //         if($redirectUrl){
+        //             echo UrlController::getRequestedUrl($subdirectory."/".$url);
+        //         }else{
+        //             abort(404);
+        //         }
+        //     }
+        // }
 
 
 

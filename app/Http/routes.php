@@ -434,7 +434,7 @@ Route::group(['domain' => '{subdomain}.'.config('settings.APP_REDIRECT_HOST'), [
 Route::group(['domain' => config('settings.APP_REDIRECT_HOST') , ['middlewareGroups' => ['web','auth']]], function () {
     //Route::get('/{url}', 'HomeController@getRequestedSubdomainUrl');
     Route::get('/{subdirectory}/{url}', [
-        'uses' => 'HomeController@getRequestedSubdirectoryUrl',
+        'uses' => 'UrlController@getRequestedSubdirectoryUrl',
         'as' => 'getRequestedSubdirectoryUrl',
     ]);
 
