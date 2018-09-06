@@ -1743,9 +1743,9 @@
                 $imageUrl = $defaultSettings[0]->default_image;
                 $sublink=0;
                 $search = Url::where('shorten_suffix', $url)->first();
-                if (count($search )>0) {
+                if ($search) {
                     if(($search->link_type==2) && ($search->parent_id==0)){
-                        abort(404);
+                        return view('errors.404');
                     }
 
                     if(($search->link_type==2) && ($search->parent_id!=0)){
@@ -1894,7 +1894,7 @@
                         ]
                     );
                 } else {
-                    abort(404);
+                  return view('errors.404');
                 }
             } catch (\Exception $e) {
                 abort(503);

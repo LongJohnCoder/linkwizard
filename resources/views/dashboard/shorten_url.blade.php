@@ -396,7 +396,7 @@
                                     </div>
                                 </div>
                                 <!--Add Link Schedular-->
-                                @if($type==0 || $type==2 || $type==3 )
+                                @if($type==0 || $type==1 || $type==2 || $type==3 )
                                 <div class="normal-box1">
                                     <div class="normal-header">
                                         <div class="row">
