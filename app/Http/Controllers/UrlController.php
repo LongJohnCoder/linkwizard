@@ -815,7 +815,7 @@
          * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
          */
         public function editUrl(Request $request, $id=NULL){
-          // dd(1);
+          dd($request->all());
             if (Auth::check()) {
                 try {
                     //Redirect Link
@@ -977,9 +977,9 @@
                                 return redirect()->back()->with('imgErr', 'error');
                             }
                         }
-                        // else if($url->uploaded_path != "") {
-                        //
-                        // }
+                        else if($url->uploaded_path != "") {
+                          $url->uploaded_path = $url->uploaded_path;
+                        }
                         else if (isset($profileSettings) && ($profileSettings->default_image != '')) {
                             $url->uploaded_path = $profileSettings->default_image;
                         }
@@ -1064,7 +1064,7 @@
                             $linkprev['description']=0;
                         }
                         if ($linkPreviewCustom) {
-
+                            $linkprev['main']=1;
                             if (isset($request->org_img_chk) && $request->org_img_chk=='on') {
                                 $linkprev['image']=0;
                             } elseif (isset($request->cust_img_chk) && $request->cust_img_chk =='on') {
@@ -1586,6 +1586,8 @@
          * @return string
          */
         public function fillUrlDescriptions(Url $url ,Request $request, $meta_data) {
+            $twtImage = $url->twitter_image;
+            $ogImage  = $url->og_image;
 
             $url->title             = $meta_data['title'];
             $url->og_image          = $meta_data['og_image'];
@@ -1643,12 +1645,13 @@
                         $url->og_image            =   config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/'.config('settings.UPLOAD_IMG').$newFileName.'.'.$actualFileExtension;
                         $url->twitter_image       =   config('settings.SECURE_PROTOCOL').config('settings.APP_LOGIN_HOST').'/'.config('settings.UPLOAD_IMG').$newFileName.'.'.$actualFileExtension;
                     } else {
-                        if(isset($url->og_image) && ($url->og_image!=NULL)){
-                            $url->og_image            =   $url->og_image;
-                            $url->twitter_image       =   $url->og_image;
-                        }else{
-                            $url->og_image            =   $meta_data['og_image'];
-                            $url->twitter_image       =   $meta_data['twitter_url'];
+                        $url->og_image            =   $meta_data['og_image'];
+                        $url->twitter_image       =   $meta_data['twitter_image'];
+                        if(isset($ogImage) && ($ogImage!=NULL) && $request->cust_img_chk){
+                            $url->og_image =   $ogImage;
+                        }
+                        if (isset($twtImage) && ($twtImage!=NULL && $request->cust_img_chk)) {
+                          $url->twitter_image =  $twtImage;
                         }
 
                     }
