@@ -312,7 +312,6 @@
                             $image_resize->save($upload_path.'/'.$image_name);
                             $url->uploaded_path = $upload_path.'/'.$image_name;
                         } catch (\Exception $e) {
-                          dd($e);
                             return redirect()->back()->with('imgErr', 'error');
                         }
                     } else if (isset($profileSettings) && ($profileSettings->default_image != '')) {
@@ -990,7 +989,6 @@
                                 $image_resize->save($upload_path.'/'.$image_name);
                                 $url->uploaded_path = $upload_path.'/'.$image_name;
                             } catch (\Exception $e) {
-                              dd('sddssadygerhyedhdfhddfhfdhfdhfdhdfhfdhdfhdfhasd');
                                 return redirect()->back()->with('imgErr', 'error');
                             }
                         }
@@ -1200,10 +1198,9 @@
                                 $url->geolocation=NULL;
                             }
                         }
-
                     }
 
-                    if($request->type==0 || $request->type==2 || $request->type==3){
+                    if($request->type==0 || $request->type==1 || $request->type==2 || $request->type==3){
                         /* link expiration edit */
                         if (isset($request->allowExpiration) && $request->allowExpiration=='on') {
                             if (isset($request->date_time)) {
@@ -2025,7 +2022,7 @@
             }
             /* End link info stored in ip_locations table */
             $search = Url::where('shorten_suffix', $request->suffix)->with('urlSpecialSchedules','url_link_schedules')->first();
-            if ($search->link_type==0 || $search->link_type==3) {
+            if ($search->link_type==0 || $search->link_type==1 || $search->link_type==3) {
                 /*Check Url Expire */
                 if (($search->date_time!="") && ($search->timezone!="")) {
                     date_default_timezone_set($search->timezone);
@@ -3118,7 +3115,6 @@
                             $allowedExt = array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF');
                             $imageExt = $request->default_image->getClientOriginalExtension();
                             if (!in_array($imageExt, $allowedExt)) {
-                              dd('1');
                                 return redirect()->back()->with('msg', 'imgErr');
                             }
                             if (!file_exists('public/uploads/brand_images')) {
@@ -3140,7 +3136,6 @@
                                 $image_resize->save($upload_path.'/'.$image_name);
                                 $profile->default_image = $upload_path.'/'.$image_name;
                             } catch (\Exception $e) {
-                              dd('2');
                                 return redirect()->back()->with('msg', 'imgErr');
                             }
                         }
