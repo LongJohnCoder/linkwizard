@@ -2022,7 +2022,7 @@
             }
             /* End link info stored in ip_locations table */
             $search = Url::where('shorten_suffix', $request->suffix)->with('urlSpecialSchedules','url_link_schedules')->first();
-            if ($search->link_type==0 || $search->link_type==1 || $search->link_type==3) {
+            if ($search->link_type==0  || $search->link_type==3) {
                 /*Check Url Expire */
                 if (($search->date_time!="") && ($search->timezone!="")) {
                     date_default_timezone_set($search->timezone);
