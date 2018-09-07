@@ -41,7 +41,7 @@ Route::get('/blog' , 'HomeController@blog');
 Route::get('/pricing' , 'HomeController@pricing');
 Route::get('/features' , 'HomeController@features');
 Route::get('/about' , 'HomeController@about');
-Route::get('/login' , 'HomeController@login');
+Route::get('/login' , 'HomeController@login')->name('login');
 
 /* API Routes */
 Route::group(['prefix' => 'api/v1'],function() {
@@ -107,7 +107,7 @@ Route::group(['prefix' => 'api/v1'],function() {
 Route::group(['domain' => config('settings.APP_HOST'), ['middlewareGroups' => 'web']], function () {
     Route::get('/', [
         'uses' => 'HomeController@getIndex',
-        'as' => 'getIndex',
+        'as' => 'index',
     ]);
 
     Route::get('forgot_password', [

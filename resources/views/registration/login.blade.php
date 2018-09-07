@@ -8,6 +8,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Login</title>
 
+<style media="screen">
+  .inputEmail{
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  @media screen and (max-width: 440px){
+    div.headerLogo{
+      width: 50%;
+      margin-top: 10px;
+    }
+    div.headerLogo img{
+      width: 100%;
+    }
+    .headerSignUp{
+      line-height: 100%;
+    }
+    .headerSignUp a span{
+      font-size: 16px !important;  
+    }
+  }
+
+</style>
+
 <link href="{{config('settings.FAVICON')}}" rel="shortcut icon" type="image/ico">
 <link href="{{url('/')}}/public/css/bootstrap.min.css" rel="stylesheet">
 <link href="{{url('/')}}/public/css/style.css" rel="stylesheet">
@@ -35,11 +59,11 @@
         <section>
             <div class="container">
                 <div class="row nav-wrapper">
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-left">
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-left headerLogo">
                         <a href="{{ URL::to('/')}}"><img src="{{config('settings.SITE_LOGO')}}" alt="Boxify Logo"></a>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6 text-right"><br>
-                        <a href="//www.uselinkwwizard.com"><span style="font-size:20px; color: #ffffff">Signup</span></a>
+                    <div class="col-md-6 col-sm-6 col-xs-6 text-right headerSignUp"><br>
+                        <a href="https://www.uselinkwizard.com"><span style="font-size:20px; color: #ffffff">Signup</span></a>
                     </div>
                 </div>
             </div>
@@ -47,16 +71,17 @@
     </header>
 <!-- Header end -->
 <!-- Main Content -->
-<div class="container">
-    <div class="row">
+<div class="container centered box">
+    <div class="elelment">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
+          <div>
+            <div class="panel panel-default" style="margin-top: 40px;">
                 <div class="panel-heading">Login</div>
                 <div class="panel-body">
                     <form method="post" action="{{ route('postLogin') }}">
                         {{csrf_field()}}
                         <!-- E-Mail Address -->
-                        <div class="form-group">
+                        <div class="form-group inputEmail">
                             <label class="col-md-4 control-label">E-Mail Address</label>
                             <div class="col-md-6">
                                 <input type="email" class="form-control" name="loginemail" value="" autofocus>

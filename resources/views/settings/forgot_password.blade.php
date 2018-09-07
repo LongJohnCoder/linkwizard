@@ -110,7 +110,7 @@
         		<form class="form" method="post" action="{{url('forgotPasswordEmail')}}">
               {{csrf_field()}}
         			<input  class="form-control" type="text" name="email" placeholder="Your e-mail address" value=""><br>
-        			<input style="width:20%" class="form-group btn btn-success" type="submit" value="Send">
+        			<input style="width:20%" class="form-group btn btn-primary" type="submit" value="Send">
         		</form>
         	</div>
         </div>

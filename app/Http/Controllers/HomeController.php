@@ -275,12 +275,13 @@
         public function getIndex(Request $request){
             //dd(Auth::check());
             if (Auth::check()) {
-              return view('index1');
+              // return view('index1');
                 //return app('App\Http\Controllers\HomeController')->getDashboard($request);
               return redirect()->action('HomeController@getDashboard');
             } else {
                 Session::put('login_error' , 'incorect username or password');
-                return view('index1');
+                // return view('index1');
+                return redirect()->route('login');
             }
         }
 
@@ -2218,7 +2219,7 @@
                 return redirect()->action('HomeController@getDashboard');
             } else {
                 return redirect()->back()
-                        ->with('error', 'Login unsucessful, cannot matches any credential!');
+                        ->with('error', 'Invalid Credentials!');
             }
         }
 
@@ -2423,7 +2424,7 @@
                 }else{
                     $user = Auth::user();
                     $url = Url::find($id);
-                    
+
                     if(!$url) {
                         return redirect()->action('HomeController@getDashboard')->with('error','This url have been deleted!');
                     }
@@ -3342,5 +3343,14 @@
                 return redirect()->action('HomeController@getDashboard');
             } else  {
             return view('registration.login');}
+        }
+
+        public function index()
+        {
+          if (Auth::check()) {
+            return redirect()->action('HomeController@getDashboard');
+          } else {
+            return view('index1');
+          }
         }
     }
