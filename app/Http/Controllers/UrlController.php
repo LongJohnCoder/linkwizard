@@ -299,7 +299,7 @@
                     if ($request->hasFile('custom_brand_logo')) {
                         /* checking file type */
                         $allowedExt = array('jpg','JPG','jpeg','JPEG','png','PNG','gif','GIF');
-                        $imageExt = $request->custom_brand_logo->getClientOriginalExtension();                        
+                        $imageExt = $request->custom_brand_logo->getClientOriginalExtension();
 
                         if (!in_array($imageExt, $allowedExt)) {
                             return redirect()->back()->with('imgErr', 'error');
@@ -868,6 +868,7 @@
                     }
                     if ($request->type==3) {
                       $url = Url::find($id);
+                      $mimeType = $url->mime_type;
                       $userId = \Auth::user()->id;
                       if ($request->hasFile('inputfile')) {
                         $inputFile = $request->file('inputfile');
