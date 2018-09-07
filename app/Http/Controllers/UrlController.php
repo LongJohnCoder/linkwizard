@@ -39,6 +39,7 @@
     use App\PixelProviders;
     use App\UserPixels;
     use App\PixelUrl;
+    use Illuminate\Http\Response;
 
     class UrlController extends Controller{
         /**
@@ -149,11 +150,21 @@
                     $userId = 0;
                 }
                 //Redirect Link
+                if (empty($request->all())) {
+                  return redirect()->back()->with('error', 'File is too large to upload. Please select another file.');
+                }
                 if ($request->hasFile('inputfile') && $request->type==3) {
                   $inputFile = $request->file('inputfile');
-                  $fileName = $userId.'LW'.time().'.'.$inputFile->getClientOriginalExtension();
-                  \Storage::disk('local')->put('upload/'.$fileName, (string) file_get_contents($inputFile), 'public');
-                  $fileUrl = \Storage::disk('local')->url('upload/'.$fileName);
+                  $mimeType  = $inputFile->getMimeType();
+                  $fileName  = $userId.'LW'.time().'.'.$inputFile->getClientOriginalExtension();
+                  try {
+                    \Storage::disk(env('USE_STORAGE', 'local'))->put('upload/'.$fileName, (string) file_get_contents($inputFile), 'public');
+                  } catch (\Exception $ex) {
+                    \Log::info('File upload failed. message #'.$ex->getMessage());
+                    return redirect()->back()->with('error', 'File is not uploaded. Please try again.');
+                  }
+
+                  // $fileUrl = \Storage::disk(env('USE_STORAGE', 'local'))->url('upload/'.$fileName);
                   $downloadUrl = url('/api/downloadfile/'.$fileName);
                   if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443)) {
                     $actualUrl = str_replace('https://', null, $downloadUrl);
@@ -576,6 +587,7 @@
                             $url->title=$urltitle;
                         } else if ($request->type==3) {
                           $url->link_type = 3;
+                          $url->mime_type = $mimeType;
                           $url->title=$fileName;
                         }
                         $url->save();
@@ -585,6 +597,7 @@
                     return redirect()->back()->with('error', 'Short Url Not Created! Try Again!');
                 }
             }catch (Exception $e){
+                \Log::info('create url error on line number #'.$e->getLine().' message # '.$e->getMessage());
                 return $e->getMessage();
             }
         }
@@ -596,10 +609,25 @@
         public function downloadFile($file='')
         {
           try {
-            $exists = \Storage::disk('local')->exists('upload/'.$file);
-            if ($exists) {
-              $path = storage_path('app/upload/'.$file);
-              return response()->download($path);
+            // $exists = \Storage::disk(env('USE_STORAGE', 'local'))->exists('upload/'.$file);
+            $url = Url::where('title', $file)->first();
+            if ($url) {
+              $path = \Storage::disk(env('USE_STORAGE', 'local'))->get('upload/'.$file);
+
+              $mimeType = $url->mime_type;
+              // dd($mimeType);
+              // $path = storage_path('app/upload/'.$file);
+              // return response()->download($path);
+              // return (new Response($path, 200))
+              //       ->header('Content-Type', $mimeType);
+              $headers = [
+                  'Content-Type' => $mimeType,
+                  'Content-Description' => 'File Transfer',
+                  'Content-Disposition' => "attachment; filename={$file}",
+                  'filename'=> $file
+              ];
+
+              return response($path, 200, $headers);
             } else {
               return response()->json([
                 'status' => false,
@@ -607,9 +635,10 @@
               ], 400);
             }
           } catch (\Exception $e) {
+            \Log::info('download file error on line number #'.$e->getLine().' message # '.$e->getMessage());
             return response()->json([
               'status' => false,
-              'message' => $e->getMessage()
+              'message' => 'Too much traffic in server. Please try again later.'
             ], 500);
           }
         }
@@ -834,15 +863,31 @@
             if (Auth::check()) {
                 try {
                     //Redirect Link
+                    if (empty($request->all())) {
+                      return redirect()->back()->with('error', 'File is too large to upload. Please select another file.');
+                    }
                     if ($request->type==3) {
                       $url = Url::find($id);
                       $userId = \Auth::user()->id;
                       if ($request->hasFile('inputfile')) {
                         $inputFile = $request->file('inputfile');
                         $fileName = $userId.'LW'.time().'.'.$inputFile->getClientOriginalExtension();
-                        \Storage::disk('local')->put('upload/'.$fileName, (string) file_get_contents($inputFile), 'public');
-                        \Storage::disk('local')->delete('upload/'.$url->title);
-                        $fileUrl = \Storage::disk('local')->url('upload/'.$fileName);
+                        $mimeType  = $inputFile->getMimeType();
+
+                        try {
+                          \Storage::disk(env('USE_STORAGE', 'local'))->put('upload/'.$fileName, (string) file_get_contents($inputFile), 'public');
+                        } catch (\Exception $ex) {
+                          \Log::info('File upload failed. message #'.$ex->getMessage());
+                          return redirect()->back()->with('error', 'File is not uploaded. Please try again.');
+                        }
+
+                        try {
+                          \Storage::disk(env('USE_STORAGE', 'local'))->delete('upload/'.$url->title);
+                        } catch (\Exception $exx) {
+                          \Log::info('File not deleted. file_name #'.$url->title.' id #'.$url->id);
+                        }
+
+                        // $fileUrl = \Storage::disk(env('USE_STORAGE', 'local'))->url('upload/'.$fileName);
                         $downloadUrl = url('/api/downloadfile/'.$fileName);
                         if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443)) {
                           $actualUrl = str_replace('https://', null, $downloadUrl);
@@ -1320,7 +1365,8 @@
                     if($request->type==2){
                         $url->title = $request->group_url_title;
                     } elseif ($request->type==3) {
-                      $url->title = $fileName;
+                      $url->title     = $fileName;
+                      $url->mime_type = $mimeType;
                     }
                     if ($url->save()) {
                         return redirect()->route('getDashboard')->with('success', 'Url Updated!');
