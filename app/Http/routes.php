@@ -41,6 +41,7 @@ Route::get('/blog' , 'HomeController@blog');
 Route::get('/pricing' , 'HomeController@pricing');
 Route::get('/features' , 'HomeController@features');
 Route::get('/about' , 'HomeController@about');
+Route::get('/login' , 'HomeController@login');
 
 /* API Routes */
 Route::group(['prefix' => 'api/v1'],function() {

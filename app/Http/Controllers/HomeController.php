@@ -2217,7 +2217,7 @@
             if (Auth::attempt(['email' => $request->loginemail, 'password' => $request->loginpassword], $request->remember)) {
                 return redirect()->action('HomeController@getDashboard');
             } else {
-                return redirect()->action('HomeController@getIndex')
+                return redirect()->back()
                         ->with('error', 'Login unsucessful, cannot matches any credential!');
             }
         }
@@ -3336,5 +3336,11 @@
                 $data['data']=array();
             }
             return response()->json($data);
+        }
+        public function login(){
+            if (Auth::check()) {
+                return redirect()->action('HomeController@getDashboard');
+            } else  {
+            return view('registration.login');}
         }
     }
