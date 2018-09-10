@@ -1595,6 +1595,15 @@
         public function deleteUrl($id=NULL){
             try{
                 $url = Url::find($id);
+                if($url->link_type == 3) {
+                    try {
+                        \Storage::disk(env('USE_STORAGE', 'local'))->delete('upload/'.$url->title);
+                    } catch (\Exception $exx) {
+                        echo $exx->getMessage();
+                        \Log::info('File not deleted. file_name #'.$url->title.' id #'.$url->id);
+                        die;
+                    }
+                }
                 $url->delete();
 
                 $url = Url::where('parent_id',$id)->delete();

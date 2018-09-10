@@ -26,7 +26,7 @@
       line-height: 100%;
     }
     .headerSignUp a span{
-      font-size: 16px !important;  
+      font-size: 16px !important;
     }
   }
 
@@ -85,20 +85,26 @@
                             <label class="col-md-4 control-label">E-Mail Address</label>
                             <div class="col-md-6">
                                 <input type="email" class="form-control" name="loginemail" value="" autofocus>
+                                @if($errors->any())
+                                  <span style="color:red">{{ $errors->first('loginemail') }}</span>
+                                @endif
                             </div>
-                            @if($errors->any())
+                            {{-- @if($errors->any())
                                 <div id="useremailValidation" style="color:red">{{ $errors->first('loginemail') }}</div>
-                            @endif
+                            @endif --}}
                         </div>
                         <!-- Password -->
                         <div class="form-group">
                             <label class="col-md-4 control-label">Password</label>
                             <div class="col-md-6">
                                 <input type="password" class="form-control" name="loginpassword">
+                                @if($errors->any())
+                                  <span style="color:red">{{ $errors->first('loginpassword') }}</span>
+                                @endif
                             </div>
-                            @if($errors->any())
+                            {{-- @if($errors->any())
                                 <div id="passwordloginValidation" style="color:red">{{ $errors->first('loginpassword') }}</div>
-                            @endif
+                            @endif --}}
                         </div>
                         <!-- Remember Me -->
                         <div class="form-group">

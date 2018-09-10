@@ -2210,6 +2210,10 @@
             $this->validate($request, [
                 'loginemail' => 'required|email',
                 'loginpassword' => 'required',
+            ],[
+              'loginemail.required' => 'Email ID is required',
+              'loginemail.email' => 'Please enter valid Email ID',
+              'loginpassword.required' => 'Password is required',
             ]);
 
             if(isset($request->__plan)) \Session::flash('planin' , $request->_plan);

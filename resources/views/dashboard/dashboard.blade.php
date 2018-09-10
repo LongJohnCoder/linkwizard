@@ -437,6 +437,14 @@ $(document).ready(function(){
                                         $('.row-'+delId).hide(200);
                                     }
                                 );
+                            } else {
+                                swal({
+                                        title: "Error",
+                                        text: data,
+                                        icon: "error",
+                                        button: "OK",
+                                    }
+                                );
                             }
                         }
                     });
@@ -475,10 +483,10 @@ $(document).ready(function(){
         appURL = appURL.replace('https://','');
         appURL = appURL.replace('http://','');
 
-        console.log('appURL : ',appURL);
+        // console.log('appURL : ',appURL);
 
         window.onload = function(){
-            console.log('reached here');
+            // console.log('reached here');
         }
 
         var maintainSidebar = function(thisInstance) {
@@ -580,7 +588,7 @@ $(document).ready(function(){
             $("#dashboard-search").on('click',function() {
                 var tags = $("#dashboard-tags-to-search").tagsinput('items');
                 var text = $("#dashboard-text-to-search").val();
-                console.log('tags :',tags,' text: ',text);
+                // console.log('tags :',tags,' text: ',text);
             });
 
             $(":checkbox").on("change", function() {
@@ -699,10 +707,10 @@ $(document).ready(function(){
                     url:"/check_custom",
                     data: {custom_url: customUrl , _token:'{{csrf_token()}}'},
                     success:function(response){
-                        console.log('check_custom');
-                        console.log(response);
+                        // console.log('check_custom');
+                        // console.log(response);
                         if(response == 1){
-                            console.log(response);
+                            // console.log(response);
                             if (ValidURL(actualUrl)){
                                 if (ValidCustomURL(customUrl)){
                                     $.ajax({
@@ -722,7 +730,7 @@ $(document).ready(function(){
                                             searchDescription       : searchDescription,
                                             _token                  : "{{ csrf_token() }}"
                                         }, success: function (response) {
-                                            console.log('postCustomUrlTier5');
+                                            // console.log('postCustomUrlTier5');
                                             if(response.status=="success") {
                                                 var shortenUrl = response.url;
                                                 var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
@@ -749,7 +757,7 @@ $(document).ready(function(){
                                                 HoldOn.close();
                                             }
                                         }, error: function(response) {
-                                            console.log('Response error!');
+                                            // console.log('Response error!');
                                             HoldOn.close();
                                         }, statusCode: {
                                             500: function() {
@@ -842,7 +850,7 @@ $(document).ready(function(){
                                 searchDescription       : searchDescription,
                                 _token                  : "{{ csrf_token() }}"},
                                 success: function (response) {
-                                    console.log('postShortUrlTier5');
+                                    // console.log('postShortUrlTier5');
                                     if(response.status=="success") {
                                         var shortenUrl = response.url;
                                         var displayHtml = "<a href="+shortenUrl+" target='_blank' id='newshortlink'>"+shortenUrl+"</a><br><button class='button' id='clipboardswal' data-clipboard-target='#newshortlink''><i class='fa fa-clipboard'></i> Copy</button>";
@@ -869,7 +877,7 @@ $(document).ready(function(){
                                         HoldOn.close();
                                     }
                                 }, error: function(response) {
-                                    console.log('Response error!');
+                                    // console.log('Response error!');
                                     HoldOn.close();
                                 }, statusCode: {
                                     500: function() {
@@ -929,8 +937,8 @@ $(document).ready(function(){
                             "_token": "{{ csrf_token() }}"
                         },
                         success: function(response) {
-                            console.log('postChartDataFilterDateRange');
-                            console.log(response);
+                            // console.log('postChartDataFilterDateRange');
+                            // console.log(response);
                             var date_from = "{{ date( 'M d'  , strtotime($filter['start'])) }}";
                             var date_to   = "{{ date( 'M d'  , (strtotime($filter['end']))-86400) }}";
 
@@ -1058,11 +1066,11 @@ $(document).ready(function(){
                             @endif
                         },
                         error: function(response) {
-                            console.log('Response error!');
+                            // console.log('Response error!');
                         },
                         statusCode: {
                             500: function(response) {
-                                console.log('500 Internal server error!');
+                                // console.log('500 Internal server error!');
                             }
                         }
                     });
@@ -1071,7 +1079,7 @@ $(document).ready(function(){
                     var textToSearch = $("#dashboard-text-to-search").val();
                     var tagsToSearch = $("#dashboard-tags-to-search").val();
                     var pageLimit = $("#dashboard-select").val();
-                    console.log('Page limit '+ pageLimit);
+                    // console.log('Page limit '+ pageLimit);
                     var qry         = QueryStringToJSON();
                     var c_page  =   1;
                     if(qry['page'] !== undefined) {
@@ -1146,17 +1154,17 @@ $(document).ready(function(){
                                                                                     //var urlToSearch = "{{url('/')}}";
                                                                                     var urlToSearch = appURL;
                                             if (pointName.search(urlToSearch) == -1) {
-                                                                                            console.log('searching for :',urlToSearch);
-                                                                                            console.log('serach_ res',pointName.search(urlToSearch));
-                                                                                            console.log('came here 1 : pointname : ',pointName);
-                                                                                            console.log('');
+                                                                                            // console.log('searching for :',urlToSearch);
+                                                                                            // console.log('serach_ res',pointName.search(urlToSearch));
+                                                                                            // console.log('came here 1 : pointname : ',pointName);
+                                                                                            // console.log('');
                                                 pushChartDataStack(pointName);
                                             } else {
-                                                                                            console.log('searching for :',urlToSearch);
-                                                                                            console.log('serach_ res',pointName.search(pointName));
-                                                                                            console.log('came here 2 : pointname : ',pointName);
+                                                                                            // console.log('searching for :',urlToSearch);
+                                                                                            // console.log('serach_ res',pointName.search(pointName));
+                                                                                            // console.log('came here 2 : pointname : ',pointName);
                                                 chartDataStack = [];
-                                                                                            console.log('');
+                                                                                            // console.log('');
                                                 chartDataStack.push(pointName);
                                             }
                                         }
@@ -1219,22 +1227,22 @@ $(document).ready(function(){
 
                         @if ($subscription_status != null)
                             function pushChartDataStack(data) {
-                                console.log('came here 3');
+                                // console.log('came here 3');
                                 chartDataStack.push(data);
                                 date = new Date(chartDataStack.pop());
                                 month = date.getMonth()+1;
                                 isoDate = date.getFullYear()+"-"+month+"-"+date.getDate();
-                                console.log('location to redirect : ',chartDataStack[0]+"/date/"+isoDate+"/analytics");
+                                // console.log('location to redirect : ',chartDataStack[0]+"/date/"+isoDate+"/analytics");
                                 //window.location.href = chartDataStack[0]+"/date/"+isoDate+"/analytics";
                         }
                         @endif
                         },
                         error: function(response) {
-                            console.log('Response error!');
+                            // console.log('Response error!');
                         },
                         statusCode: {
                             500: function(response) {
-                                console.log('500 Internal server error!');
+                                // console.log('500 Internal server error!');
                             }
                         }
                     });
