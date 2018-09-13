@@ -227,6 +227,16 @@
                             $actualUrl = str_replace('http://', null, $request->url);
                             $protocol  = 'http';
                         }else{
+                            $checkValidation = strstr($request->url, '.',true);
+                            if (preg_match('/[\'^£$%&*()}{@#~?><>,:|=+¬]/', $checkValidation)) {
+                                $response = [
+                                    "http_code" => 400,
+                                    "status"    => "error",
+                                    "message"   => "Url is not valid",
+                                ];
+                                $responseCode = 400;
+                                return response()->json($response, $responseCode);
+                            }
                             $actualUrl = $request->url;
                             $protocol  = 'http';
                         }
