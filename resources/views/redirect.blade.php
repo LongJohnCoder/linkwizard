@@ -126,7 +126,6 @@
             @endforeach
         @endif
         <!-- CUSTOM PIXEL SCRIPTS FOR FOOTER ENDS HERE -->
-
         {{--  redirecting js script  --}}
         <script type="text/javascript">
             $(document).ready(function() {
@@ -146,7 +145,7 @@
             $(document).ready(function() {
                 setTimeout(function(){
                     var status = '{{$responseData->status}}';
-                    var redirecturl = '{{$responseData->redirecturl}}';
+                    var redirecturl = '{!! $responseData->redirecturl !!}';
                     var redirectstatus = '{{$responseData->redirectstatus}}';
                     var message = '{{$responseData->message}}';
                     if (redirectstatus==0) {

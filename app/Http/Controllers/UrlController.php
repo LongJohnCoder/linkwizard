@@ -1788,6 +1788,7 @@
          */
         public function getRequestedUrl($url) {
             try {
+
                 $defaultSettings = DefaultSettings::all();
                 $red_time = $defaultSettings[0]->default_redirection_time;
                 $pageColour = $defaultSettings[0]->page_color;
@@ -1914,6 +1915,7 @@
                         'longitude' => $jsonData['longitude'],
                         'metro_code' => ""
                     ];
+
                     if ($jsonData['city'] == NULL) {
                         $location['city'] = $jsonData['location']['capital'];
                     }
@@ -1930,7 +1932,7 @@
                     $userData['referer'] = $referer;
                     $userData['suffix'] = $url;
                     $userData = new Request($userData);
-                    $responseData = self::postUserInfo($userData);
+                    $responseData = self::postUserInfo($userData);                    
                     $responseData = json_decode($responseData->getContent());
                     return view('redirect', [
                         'url' => $search,
@@ -3127,6 +3129,10 @@
                     $defaultPixels = PixelProviders::pluck('provider_name','provider_code');
                     return view('profile', compact('arr', 'userPixels', 'checkRedirectPageZero', 'checkRedirectPageOne', 'redirectionTime', 'skinColour','user','subscription_status','userPixels','default_brand_logo','redirecting_text','defaultPixels'));
                 }
+            }else{
+                Auth::logout();
+                Session::flush();
+                return redirect()->action('HomeController@getIndex');
             }
         }
         /**
